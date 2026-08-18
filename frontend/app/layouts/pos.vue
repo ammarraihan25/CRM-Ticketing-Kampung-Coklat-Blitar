@@ -1,9 +1,13 @@
 <template>
   <div class="pos-layout">
-    <!-- POS usually takes the full screen and has a custom top bar -->
     <header class="pos-header">
-      <h1>POS Kasir - Kampung Coklat</h1>
-      <NuxtLink to="/">Kembali ke Dashboard</NuxtLink>
+      <div class="brand">
+        <h2>POS Kasir</h2>
+      </div>
+      <div class="user-info">
+        <span>Kasir: Budi</span>
+        <NuxtLink to="/" class="btn-link">Tutup Kasir</NuxtLink>
+      </div>
     </header>
     <main class="pos-content">
       <slot />
@@ -16,24 +20,39 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  background-color: #ecf0f1;
+  background-color: var(--color-surface);
+  overflow: hidden;
 }
+
 .pos-header {
+  background-color: var(--color-primary);
+  color: var(--color-neutral);
+  padding: var(--spacing-sm) var(--spacing-md);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
-  background-color: #2980b9;
-  color: white;
+  border-bottom: 2px solid var(--color-secondary);
 }
-.pos-header h1 {
+
+.pos-header h2 {
+  color: var(--color-neutral);
   margin: 0;
-  font-size: 1.5rem;
+  font-size: var(--text-headline-sm);
 }
-.pos-header a {
-  color: white;
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+  font-size: var(--text-body-sm);
+}
+
+.btn-link {
+  color: var(--color-secondary);
   text-decoration: none;
+  font-weight: 500;
 }
+
 .pos-content {
   flex: 1;
   overflow: hidden;
