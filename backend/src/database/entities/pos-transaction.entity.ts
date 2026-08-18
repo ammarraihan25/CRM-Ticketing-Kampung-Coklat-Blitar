@@ -1,4 +1,5 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Member } from './member.entity';
 
 export enum PaymentMethod {
   CASH = 'CASH',
@@ -20,6 +21,10 @@ export class PosTransaction {
 
   @Column({ type: 'varchar', length: 20 })
   nomor_whatsapp: string;
+
+  @ManyToOne(() => Member)
+  @JoinColumn({ name: 'nomor_whatsapp' })
+  member: Member;
 
   @Column({ type: 'varchar', length: 50 })
   cashier_id: string;
