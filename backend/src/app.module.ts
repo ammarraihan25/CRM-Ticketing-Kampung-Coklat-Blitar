@@ -1,10 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { MembersModule } from './members/members.module';
-import { TicketsModule } from './tickets/tickets.module';
-import { PosModule } from './pos/pos.module';
-import { CrmModule } from './crm/crm.module';
+import { MemberModule } from './modules/member/member.module';
+import { PosModule } from './modules/pos/pos.module';
+import { GateModule } from './modules/gate/gate.module';
+import { VoucherModule } from './modules/voucher/voucher.module';
+import { ReportsModule } from './modules/reports/reports.module';
 
 @Module({
   imports: [
@@ -20,13 +21,14 @@ import { CrmModule } from './crm/crm.module';
         password: configService.get<string>('DB_PASSWORD', 'postgres'),
         database: configService.get<string>('DB_DATABASE', 'moobi_kcb'),
         autoLoadEntities: true,
-        synchronize: true, // Otomatis generate tabel di PostgreSQL!
+        synchronize: true,
       }),
     }),
-    MembersModule,
-    TicketsModule,
+    MemberModule,
     PosModule,
-    CrmModule,
+    GateModule,
+    VoucherModule,
+    ReportsModule,
   ],
 })
 export class AppModule {}
