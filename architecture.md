@@ -23,10 +23,11 @@ Berikut adalah daftar RESTful API yang harus disiapkan oleh Tim Backend untuk di
 | `GET` | `/api/v1/members` | Mengambil daftar member untuk tabel CRM. Mendukung filter *query param*: `?tipe_member=PP&domisili=Blitar`. |
 | `GET` | `/api/v1/members/:nomor_whatsapp` | Mengambil detail spesifik member dan riwayat transaksi/voucher mereka. |
 
-### C. Modul Transaksi POS (Penjualan Tiket)
+### C. Modul Transaksi POS (Penjualan Tiket & Payment Gateway)
 | Method | Endpoint | Deskripsi |
 | :--- | :--- | :--- |
-| `POST` | `/api/v1/pos/checkout` | Proses pembayaran tiket, kalkulasi diskon, update DB `pos_transactions` & `tickets`, dan men-generate e-ticket WA. |
+| `POST` | `/api/v1/pos/checkout` | Proses pembayaran tiket, integrasi Payment Gateway (generate QRIS), update DB `pos_transactions` & `tickets`, dan men-generate e-ticket WA. |
+| `POST` | `/api/v1/pos/webhook` | Endpoint *Callback/Webhook* yang dipanggil oleh server Payment Gateway (Midtrans/Xendit) untuk memberitahu status pembayaran sudah lunas (PAID). |
 | `GET` | `/api/v1/pos/transactions` | Daftar riwayat transaksi per shift kasir untuk kebutuhan rekonsiliasi. |
 
 ### D. Modul Validasi Akses Gate
