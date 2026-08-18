@@ -1,22 +1,32 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { MembersModule } from './members/members.module';
+import { TicketsModule } from './tickets/tickets.module';
+import { PosModule } from './pos/pos.module';
+import { CrmModule } from './crm/crm.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'password',
-      database: 'kampung_coklat',
-      autoLoadEntities: true,
-      synchronize: true, // Not recommended for production
+    ConfigModule.forRoot({ isGlobal: true }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.get<string>('DB_HOST', 'localhost'),
+        port: configService.get<number>('DB_PORT', 5432),
+        username: configService.get<string>('DB_USERNAME', 'postgres'),
+        password: configService.get<string>('DB_PASSWORD', 'postgres'),
+        database: configService.get<string>('DB_DATABASE', 'moobi_kcb'),
+        autoLoadEntities: true,
+        synchronize: true, // Otomatis generate tabel di PostgreSQL!
+      }),
     }),
+    MembersModule,
+    TicketsModule,
+    PosModule,
+    CrmModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
 })
 export class AppModule {}
