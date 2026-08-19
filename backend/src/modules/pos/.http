@@ -1,0 +1,14 @@
+curl -X POST http://localhost:3000/pos/checkout \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nomor_whatsapp": "628123456789",
+    "cashier_id": "KASIR-01",
+    "payment_method": "CASH",
+    "items": [
+      {
+        "paket_id": "PAKET-REGULER",
+        "harga": 20000,
+        "qty": 2
+      }
+    ]
+  }'
