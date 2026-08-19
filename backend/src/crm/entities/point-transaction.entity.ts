@@ -1,9 +1,17 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, JoinColumn } from 'typeorm';
-import { Member } from './member.entity';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
+import { Member } from '../../database/entities/member.entity';
+import { PosTransaction } from '../../database/entities/pos-transaction.entity';
 
 export enum TrxType {
   EARN = 'EARN',
-  BURN = 'BURN',
+  REDEEM = 'REDEEM',
 }
 
 @Entity('point_transactions')
@@ -18,14 +26,18 @@ export class PointTransaction {
   @JoinColumn({ name: 'nomor_whatsapp' })
   member: Member;
 
+  @Column({ type: 'uuid' })
+  pos_trx_id: string;
+
+  @ManyToOne(() => PosTransaction)
+  @JoinColumn({ name: 'pos_trx_id' })
+  posTransaction: PosTransaction;
+
   @Column({ type: 'enum', enum: TrxType })
   trx_type: TrxType;
 
   @Column({ type: 'int' })
   points_amount: number;
-
-  @Column({ type: 'varchar', length: 255 })
-  description: string;
 
   @CreateDateColumn()
   created_at: Date;
