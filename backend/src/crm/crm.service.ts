@@ -14,17 +14,11 @@ import {
   PaymentStatus,
   PosTransaction,
 } from '../database/entities/pos-transaction.entity';
-import {
-  PointTransaction,
-  TrxType,
-} from './entities/point-transaction.entity';
 import { GetMembersQueryDto } from './dto/get-members-query.dto';
 import { BlastWaDto } from './dto/blast-wa.dto';
 
 const TIER_SILVER_THRESHOLD = 500_000;
 const TIER_GOLD_THRESHOLD = 2_000_000;
-const POINTS_EARN_BLOCK = 20;
-const SPEND_BLOCK = 20_000;
 
 @Injectable()
 export class CrmService {
@@ -33,8 +27,6 @@ export class CrmService {
   constructor(
     @InjectRepository(Member)
     private readonly memberRepository: Repository<Member>,
-    @InjectRepository(PointTransaction)
-    private readonly pointTransactionRepository: Repository<PointTransaction>,
     @InjectRepository(PosTransaction)
     private readonly posTransactionRepository: Repository<PosTransaction>,
     private readonly dataSource: DataSource,
@@ -81,25 +73,7 @@ export class CrmService {
       );
     }
 
-    const existingPointTransaction = await manager.findOne(PointTransaction, {
-      where: { pos_trx_id: posTrxId, trx_type: TrxType.EARN },
-    });
-
-    if (existingPointTransaction) {
-      return;
-    }
-
     const totalAmount = Number(posTransaction.total_amount);
-    const addedPoints =
-      Math.floor(totalAmount / SPEND_BLOCK) * POINTS_EARN_BLOCK;
-
-    const pointTransaction = manager.create(PointTransaction, {
-      nomor_whatsapp: posTransaction.nomor_whatsapp,
-      pos_trx_id: posTransaction.pos_trx_id,
-      trx_type: TrxType.EARN,
-      points_amount: addedPoints,
-    });
-    await manager.save(pointTransaction);
 
     const member = await manager.findOne(Member, {
       where: { nomor_whatsapp: posTransaction.nomor_whatsapp },
@@ -113,11 +87,9 @@ export class CrmService {
     }
 
     const newTotalSpend = Number(member.total_spend) + totalAmount;
-    const newCurrentPoints = member.current_points + addedPoints;
     const newTier = this.determineTier(newTotalSpend);
 
     member.total_spend = newTotalSpend;
-    member.current_points = newCurrentPoints;
     member.tier = newTier;
 
     await manager.save(member);
