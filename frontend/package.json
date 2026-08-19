@@ -12,6 +12,7 @@
   "dependencies": {
     "nuxt": "^4.5.2",
     "vue": "^3.5.41",
+    "vue-qrcode-reader": "^5.7.3",
     "vue-router": "^5.2.0"
   },
   "devDependencies": {
