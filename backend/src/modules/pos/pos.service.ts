@@ -7,6 +7,7 @@ import { Ticket, StatusTiket } from '../../database/entities/ticket.entity';
 import { CheckoutPosDto } from './dto/checkout-pos.dto';
 import { PaymentWebhookDto } from './dto/payment-webhook.dto';
 import { WaGatewayService } from '../wa-gateway/wa-gateway.service';
+import { CrmService } from '../../crm/crm.service';
 
 @Injectable()
 export class PosService {
@@ -17,8 +18,9 @@ export class PosService {
     private readonly memberRepository: Repository<Member>,
     @InjectRepository(Ticket)
     private readonly ticketRepository: Repository<Ticket>,
-    private readonly waGatewayService: WaGatewayService, // Inject WA Service
-  ) { }
+    private readonly waGatewayService: WaGatewayService,
+    private readonly crmService: CrmService,
+  ) {}
 
   async checkout(dto: CheckoutPosDto) {
     const { nomor_whatsapp, cashier_id, payment_method, items } = dto;
@@ -71,7 +73,10 @@ export class PosService {
       }
     }
 
-    // 5. Panggil WA Gateway Service Modular
+    // 5. Proses loyalty points & tier upgrade
+    await this.crmService.processLoyaltyAfterPaidTransaction(savedTrx.pos_trx_id);
+
+    // 6. Panggil WA Gateway Service Modular
     const ticketCodes = ticketsIssued.map((t) => t.ticket_code);
     this.waGatewayService.sendTicketNotification(nomor_whatsapp, ticketCodes);
 
@@ -106,6 +111,8 @@ export class PosService {
     if (transaction_status === 'settlement' || transaction_status === 'capture') {
       transaction.payment_status = PaymentStatus.PAID;
       await this.posTransactionRepository.save(transaction);
+
+      await this.crmService.processLoyaltyAfterPaidTransaction(pos_trx_id);
 
       console.log(`[PAYMENT WEBHOOK] Transaksi ${pos_trx_id} berhasil di-update menjadi PAID`);
 
