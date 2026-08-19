@@ -84,8 +84,8 @@ Produk Moobi Ticketing & CRM dirancang untuk menyelesaikan dua isu krusial di Ka
 | **FEAT-21** | Integrasi | WhatsApp Gateway | Koneksi ke official WhatsApp API Gateway untuk OTP & pesan e-ticket/voucher. | Must Have | Kanal komunikasi WA. |
 | **FEAT-22** | Integrasi | Payment Gateway QRIS | Koneksi ke PG Midtrans/Xendit/BRI untuk penerbitan QRIS dinamis di POS. | Must Have | Pembayaran cashless. |
 | **FEAT-23** | Integrasi | Web Scanner Module | Aplikasi pemindai QR berbasis web responsive untuk petugas verifikator pintu masuk. | Must Have | Verifikasi tiket pintu. |
-| **FEAT-24** | B2B Portal | DP Booking Engine | Agen bisa melakukan booking tiket berdasarkan tanggal & pax dengan pembayaran Down Payment (DP). | Must Have | Terbentuk status booking DP. |
-| **FEAT-25** | CRM Loyalty | Cash Commission System | Sistem hitung otomatis & dompet saldo komisi agen berdasarkan transaksi tier. | Must Have | Saldo komisi agen bertambah. |
+| **FEAT-24** | B2B Portal | DP Booking Engine | Agen bisa melakukan booking tiket berdasarkan tanggal & pax dengan pembayaran Down Payment (DP) wajib 30% atau Lunas. | Must Have | Terbentuk status booking DP. |
+| **FEAT-25** | CRM Loyalty | Cash Commission System | Sistem hitung otomatis & dompet saldo komisi agen tetap 10% dari total transaksi. | Must Have | Saldo komisi agen bertambah. |
 | **FEAT-26** | Admin BD | Commission Withdrawal | Fitur approval pencairan komisi oleh BD. | Must Have | Saldo komisi cair ke agen. |
 
 ## 5. Functional Requirements (FR)
@@ -123,12 +123,12 @@ Produk Moobi Ticketing & CRM dirancang untuk menyelesaikan dua isu krusial di Ka
 * **Business Rule**: Pada V1.0, tombol ini berfungsi sebagai UI Placeholder Trigger untuk konfirmasi aksi broadcast.
 
 ### FR-005: Booking B2B dengan Sistem Down Payment (DP)
-* **Deskripsi**: Agen B2B membuat pemesanan awal tiket rombongan, sistem otomatis menentukan harga per tiket berdasarkan Tier Pax (1-19, 20-49, 50+) lalu agen membayar DP.
+* **Deskripsi**: Agen B2B membuat pemesanan awal tiket rombongan, sistem otomatis menentukan persentase diskon tiket berdasarkan Tier Pax (20-49, 50-99, 100+) lalu agen membayar DP 30% atau Lunas.
 * **Trigger**: Agen menekan tombol 'Buat Booking Baru' pada portal B2B.
 * **Input Data**: Tanggal Kunjungan, Estimasi Pax.
-* **Proses/Behavior**: Hitung Harga Total (Pax * Harga Tier) -> Tagihkan DP -> Agen bayar DP -> Status menjadi `DP_PAID`.
+* **Proses/Behavior**: Hitung Harga Total setelah diskon tier -> Tagihkan DP (30%) -> Agen bayar DP -> Status menjadi `DP_PAID`.
 * **Output**: Bukti konfirmasi Booking berstatus DP_PAID dengan Sisa Tagihan.
-* **Business Rule**: Pelunasan sisa tagihan wajib dilakukan sebelum H-1 atau di hari-H sebelum cetak tiket. Komisi otomatis dihitung setelah lunas.
+* **Business Rule**: Pelunasan sisa tagihan wajib dilakukan sebelum H-1 atau di hari-H sebelum cetak tiket. Komisi tetap 10% otomatis ditambahkan ke saldo agen setelah status lunas.
 
 ## 6. User Stories & Acceptance Criteria
 
@@ -210,8 +210,8 @@ Arsitektur basis data Moobi Ticketing & CRM dirancang dengan menempatkan Nomor W
 | `nomor_whatsapp` | VARCHAR(20) | FOREIGN KEY | Agen pemesan (Ref: `members.nomor_whatsapp`) |
 | `visit_date` | DATE | NOT NULL | Tanggal kunjungan |
 | `total_pax` | INT | NOT NULL | Jumlah peserta/rombongan |
-| `total_amount` | DECIMAL(12,2) | NOT NULL | Harga * Pax (berdasarkan Tier) |
-| `dp_amount` | DECIMAL(12,2) | NOT NULL | Nominal DP yang dibayarkan |
+| `total_amount` | DECIMAL(12,2) | NOT NULL | Harga * Pax (setelah diskon Tier) |
+| `dp_amount` | DECIMAL(12,2) | NOT NULL | Nominal DP yang dibayarkan (min 30%) |
 | `status` | ENUM | DEFAULT 'PENDING' | 'PENDING', 'DP_PAID', 'FULLY_PAID', 'CANCELLED' |
 
 ### Tabel 7.6: `tier_pricings` (Master Data Harga Bertingkat B2B)
@@ -220,7 +220,7 @@ Arsitektur basis data Moobi Ticketing & CRM dirancang dengan menempatkan Nomor W
 | `tier_id` | INT | PRIMARY KEY, AUTO INC | ID unik tier harga |
 | `min_pax` | INT | NOT NULL | Batas bawah jumlah peserta |
 | `max_pax` | INT | NULL | Batas atas jumlah peserta (NULL = tak hingga) |
-| `price_per_ticket` | DECIMAL(10,2) | NOT NULL | Harga per tiket (Rp) |
+| `discount_percentage` | DECIMAL(5,2) | NOT NULL | Persentase diskon per tiket (%) |
 
 ### Tabel 7.7: `agent_commissions` (Riwayat Transaksi Saldo Komisi Agen)
 | Field Name | Data Type | Constraint | Description |

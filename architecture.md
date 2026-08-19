@@ -55,10 +55,10 @@ Berikut adalah daftar RESTful API yang harus disiapkan oleh Tim Backend untuk di
 ### H. Modul B2B Booking (Agen & Kasir)
 | Method | Endpoint | Deskripsi |
 | :--- | :--- | :--- |
-| `POST` | `/api/v1/b2b/booking` | Agen membuat *booking* (input jumlah *pax* & tanggal). Sistem otomatis menghitung harga dari tier. |
-| `POST` | `/api/v1/b2b/booking/:id/dp` | Pembayaran DP via Payment Gateway untuk mengunci status "Terkonfirmasi (DP)". |
+| `POST` | `/api/v1/b2b/booking` | Agen membuat *booking* (input jumlah *pax* & tanggal). Sistem otomatis menghitung diskon harga dari tier. |
+| `POST` | `/api/v1/b2b/booking/:id/dp` | Pembayaran DP wajib 30% via Payment Gateway untuk mengunci status "Terkonfirmasi (DP)". |
 | `PUT` | `/api/v1/b2b/booking/:id/pax` | Agen meng-*update* jumlah pax final sebelum hari-H. |
-| `POST` | `/api/v1/b2b/booking/:id/pay-full` | Pelunasan tagihan. Saat sukses, cetak tiket dan berikan komisi ke agen. |
+| `POST` | `/api/v1/b2b/booking/:id/pay-full` | Pelunasan tagihan. Saat sukses, cetak tiket dan berikan komisi 10% ke agen. |
 
 ### I. Modul Komisi & Tier (Role: BD)
 | Method | Endpoint | Deskripsi |

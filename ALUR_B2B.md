@@ -2,22 +2,22 @@
 
 1. Agen mengajukan booking (tanggal kunjungan + jumlah pax) lewat sistem
 2. Sistem otomatis hitung harga dari tabel tier default (berdasarkan jumlah pax) — tidak ada proses approval BD
-3. Sistem tampilkan total tagihan, agen bayar DP untuk mengunci booking
-4. Booking berstatus "Terkonfirmasi (DP)", data otomatis masuk ke sistem kasir
-5. Sebelum hari-H, agen konfirmasi jumlah pax final (kalau berubah, tagihan disesuaikan otomatis)
+3. Sistem tampilkan total tagihan, agen memlih antara bayar DP (30%) dahulu untuk mengunci booking atau sekalian melunasi pembayaran
+4. Booking berstatus "Terkonfirmasi (DP) 30%" / "Lunas", data otomatis masuk ke sistem kasir
+5. Sebelum hari-H, agen konfirmasi jumlah pax final (jika berubah, tagihan disesuaikan otomatis)
 6. Agen melunasi sisa pembayaran sebelum/saat hari-H
 7. Setelah status berubah jadi "Lunas", kasir cetak tiket rombongan & aktivasi kartu membership
-8. Sistem hitung komisi otomatis (total transaksi × persen komisi) masuk ke saldo komisi agen
+8. Sistem otomatis memotong komisi dari total transaksi (total transaksi × 10%) masuk ke saldo komisi agen
 9. Laporan kunjungan & saldo komisi tersimpan otomatis, bisa diakses BD maupun agen
 10. Tiap periode (misal akhir bulan), BD verifikasi & cairkan komisi terkumpul ke agen (transfer manual, status diubah "sudah dibayar" di sistem)
 
 ## TABEL TIER DEFAULT
 
-| Tier   | Minimal Pax | Maksimal Pax  | Harga per Tiket |
-| ------ | ----------- | ------------- | --------------- |
-| Tier 1 | 1           | 19            | Rp 25.000       |
-| Tier 2 | 20          | 49            | Rp 20.000       |
-| Tier 3 | 50          | ~ (tak terbatas)| Rp 17.500       |
+| Tier   | Minimal Pembelian (pax) | Diskon  |
+| ------ | ----------------------- | ------- |
+| Tier 1 | 20-49 pax               | 5%      |
+| Tier 2 | 50-99 pax               | 10%     |
+| Tier 3 | 100+ pax                | 15%     |
 
 ## UPDATE DETAIL PER PERAN
 

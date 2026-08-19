@@ -11,8 +11,8 @@ export class TierPricing {
   @Column({ type: 'int', nullable: true })
   max_pax?: number | null; // Null means infinity / unlimited
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
-  price_per_ticket!: number;
+  @Column({ type: 'decimal', precision: 5, scale: 2 })
+  discount_percentage!: number;
 
   @CreateDateColumn()
   created_at!: Date;

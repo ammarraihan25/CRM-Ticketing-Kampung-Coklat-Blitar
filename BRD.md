@@ -69,8 +69,8 @@ d. **Pemeriksaan Pintu Masuk Lambat**: Validasi tiket masuk di pintu gerbang uta
 * Integrasi Pintu Masuk Utama via Turnstile Gate Relay Middleware Controller.
 * Modul Digital Guest Book (Form Web Ringan + WA OTP Fast Registration + Input Data Domisili untuk Pengunjung Pengajian & Event Hall).
 * Modul CRM Membership Engine (Database WhatsApp PK, Field Domisili, Klasifikasi Tipe Member: Reguler [PR], Pengajian [PP], Tour [PT], Skema Benefit Diskon Tiket & Free Ticket).
-* **Modul B2B Booking Agen**: Sistem pemesanan tiket agen B2B dengan harga berjenjang (Tier Pricing) dan pembayaran Down Payment (DP) & Pelunasan.
-* **Modul Komisi Tunai**: Sistem otomatisasi komisi untuk Agen Tour [PT] berdasarkan transaksi, dan fitur pencairan komisi (Withdrawal) yang diverifikasi oleh role Business Development (BD).
+* **Modul B2B Booking Agen**: Sistem pemesanan tiket agen B2B dengan aturan wajib Down Payment (DP) 30% atau Lunas, serta skema harga diskon tiering (Persentase diskon per pax).
+* **Modul Komisi Tunai**: Sistem otomatisasi komisi tetap 10% untuk Agen Tour [PT] berdasarkan transaksi, dan fitur pencairan komisi (Withdrawal) yang diverifikasi oleh role Business Development (BD).
 * Antarmuka Dashboard Membership dengan **Tombol Blast WA (UI Button Placeholder)** untuk memicu aksi broadcast promosi berdasarkan segmen Tipe Member dan Domisili.
 * Dashboard Keuangan Real-time, Laporan Kasir per Shift & Rekapitulasi GTV Harian.
 * Development Full-Stack Sistem Siap Produksi dalam durasi 1 Bulan.
