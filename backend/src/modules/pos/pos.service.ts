@@ -18,7 +18,7 @@ export class PosService {
     @InjectRepository(Ticket)
     private readonly ticketRepository: Repository<Ticket>,
     private readonly waGatewayService: WaGatewayService, // Inject WA Service
-  ) {}
+  ) { }
 
   async checkout(dto: CheckoutPosDto) {
     const { nomor_whatsapp, cashier_id, payment_method, items } = dto;
@@ -118,6 +118,22 @@ export class PosService {
     return {
       status: 'PENDING_OR_FAILED',
       message: `Status transaksi saat ini: ${transaction_status}`,
+    };
+  }
+
+  // Method simulasi generate QRIS
+  async generateQrisPayload(pos_trx_id: string, amount: number) {
+    // String data QRIS
+    const qrisString = `00020101021226680016ID.CO.TELKOM.WWW01189360091100000000005204581253033605405${amount}5802ID5913KAMPUNGCOKLAT6006BLITAR6304ABCD`;
+
+    // URL yang menghasilkan gambar QR Code asli dari string QRIS di atas
+    const qrisImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qrisString)}`;
+
+    return {
+      pos_trx_id,
+      amount,
+      qris_string: qrisString,
+      qris_image_url: qrisImageUrl, // Buka URL ini di browser!
     };
   }
 }

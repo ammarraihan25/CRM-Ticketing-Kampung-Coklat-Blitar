@@ -16,4 +16,9 @@ export class PosController {
   async handleWebhook(@Body() dto: PaymentWebhookDto) {
     return this.posService.handlePaymentWebhook(dto);
   }
+
+  @Post('qris/generate')
+  async generateQris(@Body() body: { pos_trx_id: string; amount: number }) {
+    return this.posService.generateQrisPayload(body.pos_trx_id, body.amount);
+  }
 }
