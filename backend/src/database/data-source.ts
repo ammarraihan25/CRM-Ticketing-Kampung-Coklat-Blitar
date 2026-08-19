@@ -13,7 +13,10 @@ export const dataSourceOptions: DataSourceOptions & SeederOptions = {
   username: process.env.DB_USER || 'postgres',
   password: process.env.DB_PASSWORD || '',
   database: process.env.DB_NAME || 'kampung_coklat',
-  entities: [join(__dirname, 'entities', '*.entity{.ts,.js}')],
+  entities: [
+    join(__dirname, 'entities', '*.entity{.ts,.js}'),
+    join(__dirname, '..', 'crm', 'entities', '*.entity{.ts,.js}'),
+  ],
   migrations: [join(__dirname, 'migrations', '*{.ts,.js}')],
   seeds: [join(__dirname, 'seeds', '*.seeder{.ts,.js}')],
   synchronize: false, // DO NOT USE TRUE IN PRODUCTION! Use migrations instead.

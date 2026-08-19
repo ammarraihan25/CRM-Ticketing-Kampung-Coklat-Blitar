@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { PosController } from './pos.controller';
 import { PosService } from './pos.service';
 import { PosTransaction } from '../../database/entities/pos-transaction.entity';
@@ -13,6 +12,6 @@ import { WaGatewayModule } from '../wa-gateway/wa-gateway.module';
     WaGatewayModule, // Inject WA Gateway Module
   ],
   controllers: [PosController],
-  providers: [PosService],
+  providers: [PosService]
 })
 export class PosModule {}
