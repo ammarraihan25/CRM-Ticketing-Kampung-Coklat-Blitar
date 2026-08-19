@@ -42,10 +42,30 @@ npm install
 ```
 
 **3. Konfigurasi Database:**
-Pastikan layanan PostgreSQL Anda sudah berjalan. Buat database baru bernama `kampung_coklat` (atau sesuai konfigurasi). 
-Jika Anda perlu mengubah *username* atau *password* default, Anda bisa mengubahnya sementara di file `src/app.module.ts`. *(Catatan: Ke depannya kita akan menggunakan file `.env` untuk manajemen konfigurasi yang lebih aman).*
+Pastikan layanan PostgreSQL Anda sudah berjalan dan buat database bernama `kampung_coklat`.
+Ganti nama file `.env.example` menjadi `.env` (atau _copy_ isinya) di dalam folder `backend/`, lalu isi *credentials* database Anda. Contoh isi `.env`:
+```env
+DB_HOST=localhost
+DB_PORT=5432
+DB_USER=postgres
+DB_PASSWORD=password_postgres_anda
+DB_NAME=kampung_coklat
+```
 
-**4. Jalankan Server Backend (Mode Development):**
+**4. Migrasi Database:**
+Kita menggunakan sistem Migrasi dari TypeORM untuk mempermudah sinkronisasi struktur tabel antar anggota tim. Jangan mengubah skema secara manual di pgAdmin!
+- Menjalankan migrasi terbaru: `npm run migration:run`
+- Membuat migrasi baru setelah mengedit *entity*: `npm run migration:generate src/database/migrations/NamaPerubahan`
+
+**5. Seeder Database:**
+Untuk mengisi data awal / *dummy* ke database, jalankan perintah:
+```bash
+npm run seed:run
+```
+*Tips Membut Data Seeder Baru:*
+Anda bisa menambahkan file seeder baru berformat `nama.seeder.ts` di dalam folder `src/database/seeds/`. Di dalam file tersebut, panggil `dataSource.getRepository()` lalu gunakan fungsi `insert()`.
+
+**6. Jalankan Server Backend (Mode Development):**
 ```bash
 npm run start:dev
 ```
@@ -90,8 +110,17 @@ CRM-Ticketing-Kampung-Coklat-Blitar/
 │   ├── package.json
 │   └── ...
 ├── .gitignore          # Konfigurasi ignore file utama
+├── architecture.md     # Arsitektur sistem, struktur folder & daftar API
+├── BRD.md              # Business Requirements Document (Kebutuhan Bisnis)
+├── PRD.md              # Product Requirements Document (Kebutuhan Fitur Sistem)
 └── README.md           # Panduan instalasi (File ini)
 ```
+
+## 📚 Dokumentasi Proyek
+Untuk memahami alur bisnis, fitur, dan arsitektur kode secara lebih mendalam, seluruh anggota tim wajib membaca dokumen berikut:
+1. **[Business Requirements Document (BRD)](./BRD.md)** - Panduan objektif bisnis, ruang lingkup (Scope), dan User Journey.
+2. **[Product Requirements Document (PRD)](./PRD.md)** - Detail spesifikasi fitur sistem, kebutuhan fungsional (FR), dan User Stories.
+3. **[Architecture & Conventions](./architecture.md)** - Daftar Endpoint API, penjelasan detail struktur folder, serta aturan main (Branching Git, Format Commit, dll) yang **harus dipatuhi**.
 
 ## 📝 Catatan Tambahan
 - Pastikan untuk selalu membuat *branch* baru saat mengerjakan fitur baru (`git checkout -b nama-fitur`).
