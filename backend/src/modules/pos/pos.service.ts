@@ -6,6 +6,7 @@ import { Member, TipeMember, MemberTier } from '../../database/entities/member.e
 import { Ticket, StatusTiket } from '../../database/entities/ticket.entity';
 import { CheckoutPosDto } from './dto/checkout-pos.dto';
 import { PaymentWebhookDto } from './dto/payment-webhook.dto';
+import { WaGatewayService } from '../wa-gateway/wa-gateway.service';
 
 @Injectable()
 export class PosService {
@@ -16,12 +17,13 @@ export class PosService {
     private readonly memberRepository: Repository<Member>,
     @InjectRepository(Ticket)
     private readonly ticketRepository: Repository<Ticket>,
-  ) { }
+    private readonly waGatewayService: WaGatewayService, // Inject WA Service
+  ) {}
 
   async checkout(dto: CheckoutPosDto) {
     const { nomor_whatsapp, cashier_id, payment_method, items } = dto;
 
-    // 1. Validasi & Auto-Register Member jika belum terdaftar
+    // 1. Auto-Register Member
     let member = await this.memberRepository.findOne({ where: { nomor_whatsapp } });
     if (!member) {
       member = this.memberRepository.create({
@@ -33,10 +35,10 @@ export class PosService {
       await this.memberRepository.save(member);
     }
 
-    // 2. Hitung Total Pembayaran
+    // 2. Total Amount
     const total_amount = items.reduce((acc, item) => acc + item.harga * item.qty, 0);
 
-    // 3. Simpan Transaksi POS Header
+    // 3. Save Transaksi Header
     const posTrx = this.posTransactionRepository.create({
       nomor_whatsapp,
       cashier_id,
@@ -46,14 +48,13 @@ export class PosService {
     });
     const savedTrx = await this.posTransactionRepository.save(posTrx);
 
-    // 4. Loop Penerbitan Tiket (Per Item & Qty)
+    // 4. Issue Tickets
     const ticketsIssued: Ticket[] = [];
     const validUntil = new Date();
-    validUntil.setHours(23, 59, 59, 999); // Berlaku sampai akhir hari ini
+    validUntil.setHours(23, 59, 59, 999);
 
     for (const item of items) {
       for (let i = 0; i < item.qty; i++) {
-        // Generate Unique Code Ticket (Format: KC-YYYY-XXXX)
         const randomCode = Math.random().toString(36).substring(2, 7).toUpperCase();
         const ticketCode = `KC-${new Date().getFullYear()}-${randomCode}`;
 
@@ -70,8 +71,9 @@ export class PosService {
       }
     }
 
-    // 5. Mocking WhatsApp Gateway Integration (E-Ticket Delivery)
-    this.sendWhatsAppNotification(nomor_whatsapp, ticketsIssued);
+    // 5. Panggil WA Gateway Service Modular
+    const ticketCodes = ticketsIssued.map((t) => t.ticket_code);
+    this.waGatewayService.sendTicketNotification(nomor_whatsapp, ticketCodes);
 
     return {
       status: 'SUCCESS',
@@ -90,25 +92,9 @@ export class PosService {
     };
   }
 
-  private sendWhatsAppNotification(nomor_whatsapp: string, tickets: Ticket[]) {
-    const ticketList = tickets.map((t, idx) => `${idx + 1}. ${t.ticket_code}`).join('\n');
-    const message =
-      `\n[WA GATEWAY MOCK]\n` +
-      `========================================\n` +
-      `Mengirim E-Ticket ke WhatsApp: ${nomor_whatsapp}\n` +
-      `----------------------------------------\n` +
-      `Terima kasih telah berkunjung ke Kampung Coklat Blitar!\n` +
-      `Berikut adalah E-Ticket Anda:\n${ticketList}\n` +
-      `Tunjukkan QR Code ini pada Turnstile Gate di pintu masuk.\n` +
-      `========================================\n`;
-
-    console.log(message);
-  }
-
   async handlePaymentWebhook(dto: PaymentWebhookDto) {
     const { pos_trx_id, transaction_status } = dto;
 
-    // 1. Cari transaksi berdasarkan ID
     const transaction = await this.posTransactionRepository.findOne({
       where: { pos_trx_id },
     });
@@ -117,7 +103,6 @@ export class PosService {
       throw new BadRequestException('Transaksi tidak ditemukan');
     }
 
-    // 2. Cek status dari Payment Gateway (settlement / capture = Lunas)
     if (transaction_status === 'settlement' || transaction_status === 'capture') {
       transaction.payment_status = PaymentStatus.PAID;
       await this.posTransactionRepository.save(transaction);
@@ -136,4 +121,3 @@ export class PosService {
     };
   }
 }
-
