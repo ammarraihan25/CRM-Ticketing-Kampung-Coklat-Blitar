@@ -5,6 +5,7 @@ import { PosTransaction, PaymentStatus } from '../../database/entities/pos-trans
 import { Member, TipeMember, MemberTier } from '../../database/entities/member.entity';
 import { Ticket, StatusTiket } from '../../database/entities/ticket.entity';
 import { CheckoutPosDto } from './dto/checkout-pos.dto';
+import { PaymentWebhookDto } from './dto/payment-webhook.dto';
 
 @Injectable()
 export class PosService {
@@ -15,7 +16,7 @@ export class PosService {
     private readonly memberRepository: Repository<Member>,
     @InjectRepository(Ticket)
     private readonly ticketRepository: Repository<Ticket>,
-  ) {}
+  ) { }
 
   async checkout(dto: CheckoutPosDto) {
     const { nomor_whatsapp, cashier_id, payment_method, items } = dto;
@@ -103,4 +104,36 @@ export class PosService {
 
     console.log(message);
   }
+
+  async handlePaymentWebhook(dto: PaymentWebhookDto) {
+    const { pos_trx_id, transaction_status } = dto;
+
+    // 1. Cari transaksi berdasarkan ID
+    const transaction = await this.posTransactionRepository.findOne({
+      where: { pos_trx_id },
+    });
+
+    if (!transaction) {
+      throw new BadRequestException('Transaksi tidak ditemukan');
+    }
+
+    // 2. Cek status dari Payment Gateway (settlement / capture = Lunas)
+    if (transaction_status === 'settlement' || transaction_status === 'capture') {
+      transaction.payment_status = PaymentStatus.PAID;
+      await this.posTransactionRepository.save(transaction);
+
+      console.log(`[PAYMENT WEBHOOK] Transaksi ${pos_trx_id} berhasil di-update menjadi PAID`);
+
+      return {
+        status: 'SUCCESS',
+        message: 'Status pembayaran berhasil diperbarui',
+      };
+    }
+
+    return {
+      status: 'PENDING_OR_FAILED',
+      message: `Status transaksi saat ini: ${transaction_status}`,
+    };
+  }
 }
+

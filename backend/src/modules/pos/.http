@@ -1,14 +1,25 @@
-curl -X POST http://localhost:3000/pos/checkout \
-  -H "Content-Type: application/json" \
-  -d '{
-    "nomor_whatsapp": "628123456789",
-    "cashier_id": "KASIR-01",
-    "payment_method": "CASH",
-    "items": [
-      {
-        "paket_id": "PAKET-REGULER",
-        "harga": 20000,
-        "qty": 2
-      }
-    ]
-  }'
+### 1. POS Checkout API
+POST http://localhost:3000/pos/checkout
+Content-Type: application/json
+
+{
+  "nomor_whatsapp": "628123456789",
+  "cashier_id": "KASIR-01",
+  "payment_method": "CASH",
+  "items": [
+    {
+      "paket_id": "PAKET-REGULER",
+      "harga": 20000,
+      "qty": 2
+    }
+  ]
+}
+
+### 2. Webhook Payment Gateway API
+POST http://localhost:3000/pos/webhook/payment
+Content-Type: application/json
+
+{
+  "pos_trx_id": "b82f53cc-49e5-400c-a921-5e13b47555df",
+  "transaction_status": "settlement"
+}
