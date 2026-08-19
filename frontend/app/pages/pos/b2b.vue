@@ -1,325 +1,1296 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 definePageMeta({
   layout: 'pos'
 })
 
+// -- WAHANA & ENTRY TICKETS IMAGES --
+import imgKolamDewasa from '~/assets/assets_POS/POS/wahana/kolam_renang_dewasa_idr.10k_freeterusan.jpg'
+import imgKereta from '~/assets/assets_POS/POS/wahana/kereta_si_choco_idr.15k.jpg'
+import imgAnimalFeeding from '~/assets/assets_POS/POS/wahana/Animal-Feeding_idr.2k.jpg'
+import imgAnimalToys from '~/assets/assets_POS/POS/wahana/animal_toys_idr.15k_freeterusan.png'
+import imgAtv from '~/assets/assets_POS/POS/wahana/atv_idr.25k.jpg'
+import imgBomBomCar from '~/assets/assets_POS/POS/wahana/bom-bom-car_idr.15k_freeterusan.png'
+import imgFlyingFox from '~/assets/assets_POS/POS/wahana/flying-fox_idr.20k.jpg'
+import imgGolfCar from '~/assets/assets_POS/POS/wahana/golf_car_idr.25k.jpg'
+import imgIstanaBalon from '~/assets/assets_POS/POS/wahana/Istana_Balon_idr.10k_freeterusan.png'
+import imgKarausel from '~/assets/assets_POS/POS/wahana/Karausel_idr.15k.png'
+import imgKeretaLokomotif from '~/assets/assets_POS/POS/wahana/kereta_lokomotif_idr.15k_freeterusan.jpg'
+import imgKeretaMonorel from '~/assets/assets_POS/POS/wahana/kereta_monorel_idr.15k_free-terusan.png'
+import imgKolamPemancingan from '~/assets/assets_POS/POS/wahana/kolam_pemancingan_idr.gratis.png'
+import imgKolamRenangAnak from '~/assets/assets_POS/POS/wahana/kolam_renang_anak_idr.10k_freeterusan.png'
+import imgKursiPijat from '~/assets/assets_POS/POS/wahana/Kursi-Pijat_15menit.jpg'
+import imgMiniGolf from '~/assets/assets_POS/POS/wahana/Mini-Golf_idr.15k_freeterusan.jpg'
+import imgMiniJeep from '~/assets/assets_POS/POS/wahana/mini_jeep_idr.25k.jpg'
+import imgMiniSwinger from '~/assets/assets_POS/POS/wahana/mini_swinger_idr.15k.png'
+import imgPanahan from '~/assets/assets_POS/POS/wahana/panahan_idr.15k_freeterusan.jpg'
+import imgPancinganAnak from '~/assets/assets_POS/POS/wahana/pancingan_anak_idr.10k_freeterusan.jpg'
+import imgPerahuCeria from '~/assets/assets_POS/POS/wahana/Perahu_ceria_idr.10k_freeterusan.jpg'
+import imgPerahuDayung from '~/assets/assets_POS/POS/wahana/Perahu_dayung_idr.15k_freeterusan.jpg'
+import imgPlayground from '~/assets/assets_POS/POS/wahana/Playground_B_idr.15k_freeterusan.jpg'
+import imgSepedaListrik from '~/assets/assets_POS/POS/wahana/sepeda_listrik_idr.35k.png'
+import imgSepedaUdara from '~/assets/assets_POS/POS/wahana/sepeda_udara_idr.20k.jpg'
+import imgTerapiIkan from '~/assets/assets_POS/POS/wahana/terapi_ikan_idr.5k_freeterusan.jpg'
+import imgTrampolin from '~/assets/assets_POS/POS/wahana/Trampolin_idr.10k_freeterusan.jpg'
+
+// -- EDUKASI IMAGES --
+import paket_tk from '~/assets/assets_POS/POS/paket_edukasi/FLYER-PAKET-TK-PAUD.png'
+import paket_sd from '~/assets/assets_POS/POS/paket_edukasi/FLYER-PAKET-SD.png'
+import paket_smp from '~/assets/assets_POS/POS/paket_edukasi/FLYER-PAKET-SMP.png'
+import paket_sma from '~/assets/assets_POS/POS/paket_edukasi/FLYER-PAKET-SMA-UNIV-1.png'
+
+// -- SEWA TEMPAT IMAGES --
+import bale_coklat from '~/assets/assets_POS/POS/sewa_tempat/bale_coklat.jpg'
+import coklat_caffe from '~/assets/assets_POS/POS/sewa_tempat/coklat_caffe.jpg'
+import coklat_garden from '~/assets/assets_POS/POS/sewa_tempat/coklat_garden.jpg'
+import joglo_jatimarto from '~/assets/assets_POS/POS/sewa_tempat/joglo_jatimarto.jpg'
+import kampung_coklat_hall from '~/assets/assets_POS/POS/sewa_tempat/kampung_coklat_hall.jpg'
+import pbk from '~/assets/assets_POS/POS/sewa_tempat/private_business_keep(PBK).png'
+import ruang_pertemuan from '~/assets/assets_POS/POS/sewa_tempat/ruang_pertemuan_R1.jpeg'
+import taman_edel from '~/assets/assets_POS/POS/sewa_tempat/taman_edel.png'
+import theobromine_hall from '~/assets/assets_POS/POS/sewa_tempat/theobromine_hall.jpg'
+import trinitario_hall from '~/assets/assets_POS/POS/sewa_tempat/trinitario_hall.jpg'
+import wisma_criollo from '~/assets/assets_POS/POS/sewa_tempat/wisma_criollo.jpg'
+
+const entryTickets = [
+  { id: 'reg', name: 'Tiket Reguler', label: '[PROMO] WEEKDAY', price: 20000, desc: 'Akses masuk area wisata Kampung Coklat. Menikmati indahnya kebun kakao dan edukasi dasar.', image: imgKolamDewasa },
+  { id: 'ter', name: 'Tiket Terusan', label: 'ALL ACCESS', price: 75000, desc: 'Akses masuk bebas + 5 Wahana Pilihan sepuasnya untuk pengalaman liburan tanpa batas.', image: imgKereta }
+]
+
+const wahanaTickets = [
+  { id: 'animal-feeding', name: 'Animal Feeding', label: 'IDR. 2K / Orang', price: 2000, desc: 'Bermain sambil belajar dan berinteraksi langsung dengan hewan-hewan lucu.', image: imgAnimalFeeding },
+  { id: 'animal-toys', name: 'Animal Toys', label: 'IDR. 15K / Orang', subLabel: 'Free Untuk Tiket Terusan', price: 15000, desc: 'Mainan hewan tunggang yang seru untuk anak-anak mengelilingi area.', image: imgAnimalToys },
+  { id: 'atv', name: 'ATV Ride', label: 'IDR. 25K / Orang', price: 25000, desc: 'Pacu adrenalin Anda di lintasan ATV Kampung Coklat yang menantang.', image: imgAtv },
+  { id: 'bom-bom-car', name: 'Bom Bom Car', label: 'IDR. 15K / Orang', subLabel: 'Free Untuk Tiket Terusan', price: 15000, desc: 'Serunya tabrakan aman dan menyenangkan di arena bom bom car kami.', image: imgBomBomCar },
+  { id: 'flying-fox', name: 'Flying Fox', label: 'IDR. 20K / Orang', price: 20000, desc: 'Meluncur bebas melintasi rindangnya kebun kakao dari ketinggian.', image: imgFlyingFox },
+  { id: 'golf-car', name: 'Golf Car', label: 'IDR. 25K / Orang', price: 25000, desc: 'Berkeliling area wisata yang luas dengan nyaman tanpa perlu lelah berjalan.', image: imgGolfCar },
+  { id: 'istana-balon', name: 'Istana Balon', label: 'IDR. 10K / Orang', subLabel: 'Free Untuk Tiket Terusan', price: 10000, desc: 'Arena melompat bebas yang sangat disukai balita dan anak-anak.', image: imgIstanaBalon },
+  { id: 'karausel', name: 'Karausel', label: 'IDR. 15K / Orang', price: 15000, desc: 'Wahana komidi putar klasik dengan lampu-lampu indah yang selalu digemari.', image: imgKarausel },
+  { id: 'kereta-lokomotif', name: 'Kereta Lokomotif', label: 'IDR. 15K / Orang', subLabel: 'Free Untuk Tiket Terusan', price: 15000, desc: 'Keliling area wisata bersama keluarga dengan kereta lokomotif santai.', image: imgKeretaLokomotif },
+  { id: 'kereta-monorel', name: 'Kereta Monorel', label: 'IDR. 15K / Orang', subLabel: 'Free Untuk Tiket Terusan', price: 15000, desc: 'Melihat pemandangan Kampung Coklat dari atas rel monorel kami.', image: imgKeretaMonorel },
+  { id: 'kolam-pemancingan', name: 'Kolam Pemancingan', label: 'GRATIS', price: 0, desc: 'Bersantai sejenak sambil memancing ikan di kolam yang asri dan sejuk.', image: imgKolamPemancingan },
+  { id: 'kolam-renang-anak', name: 'Kolam Renang Anak', label: 'IDR. 10K / Orang', subLabel: 'Free Untuk Tiket Terusan', price: 10000, desc: 'Berenang dan bermain air aman di kolam khusus yang didesain untuk anak-anak.', image: imgKolamRenangAnak },
+  { id: 'kursi-pijat', name: 'Kursi Pijat', label: 'IDR. 15K / 15 Menit', price: 15000, desc: 'Istirahatkan tubuh Anda dengan pijatan refleksi 15 menit setelah berkeliling.', image: imgKursiPijat },
+  { id: 'mini-golf', name: 'Mini Golf', label: 'IDR. 15K / Orang', subLabel: 'Free Untuk Tiket Terusan', price: 15000, desc: 'Coba ketangkasan dan fokus Anda dalam memasukkan bola di area mini golf.', image: imgMiniGolf },
+  { id: 'mini-jeep', name: 'Mini Jeep', label: 'IDR. 25K / Orang', price: 25000, desc: 'Biarkan si kecil mengemudikan jeep mininya sendiri melintasi trek aman.', image: imgMiniJeep },
+  { id: 'mini-swinger', name: 'Mini Swinger', label: 'IDR. 15K / Orang', price: 15000, desc: 'Ayunan berputar yang dirancang khusus untuk memberikan keseruan aman.', image: imgMiniSwinger },
+  { id: 'panahan', name: 'Panahan', label: 'IDR. 15K / Orang', subLabel: 'Free Untuk Tiket Terusan', price: 15000, desc: 'Latih konsentrasi dan ketepatan membidik target di area panahan kami.', image: imgPanahan },
+  { id: 'pancingan-anak', name: 'Pancingan Anak', label: 'IDR. 10K / Orang', subLabel: 'Free Untuk Tiket Terusan', price: 10000, desc: 'Permainan memancing magnet yang seru dan melatih kesabaran anak.', image: imgPancinganAnak },
+  { id: 'perahu-ceria', name: 'Perahu Ceria', label: 'IDR. 10K / Orang', subLabel: 'Free Untuk Tiket Terusan', price: 10000, desc: 'Mendayung perahu kecil khusus anak-anak dengan gembira di kolam aman.', image: imgPerahuCeria },
+  { id: 'perahu-dayung', name: 'Perahu Dayung', label: 'IDR. 15K / Orang', subLabel: 'Free Untuk Tiket Terusan', price: 15000, desc: 'Nikmati suasana kolam asri dan romantis dengan mendayung perahu bersama.', image: imgPerahuDayung },
+  { id: 'playground', name: 'Playground', label: 'IDR. 15K / Orang', subLabel: 'Free Untuk Tiket Terusan', price: 15000, desc: 'Arena bermain anak yang luas, dilengkapi dengan perosotan dan ayunan interaktif.', image: imgPlayground },
+  { id: 'sepeda-listrik', name: 'Sepeda Listrik', label: 'IDR. 35K / Orang', price: 35000, desc: 'Eksplorasi area wisata lebih jauh dengan santai menggunakan sepeda listrik.', image: imgSepedaListrik },
+  { id: 'sepeda-udara', name: 'Sepeda Udara', label: 'IDR. 20K / Orang', price: 20000, desc: 'Sensasi unik mengayuh sepeda di atas tali gantung dengan pemandangan menakjubkan.', image: imgSepedaUdara },
+  { id: 'terapi-ikan', name: 'Terapi Ikan', label: 'IDR. 5K / Orang', subLabel: 'Free Untuk Tiket Terusan', price: 5000, desc: 'Rasakan geli dan relaksasi dari pijatan halus ribuan ikan terapi di kolam kami.', image: imgTerapiIkan },
+  { id: 'trampolin', name: 'Trampolin', label: 'IDR. 10K / Orang', subLabel: 'Free Untuk Tiket Terusan', price: 10000, desc: 'Melompat bebas dan tinggi untuk menyalurkan energi si kecil di wahana trampolin.', image: imgTrampolin }
+]
+
+const edukasiTickets = [
+  { id: 'edu_1', name: 'Paket Edukasi TK / PAUD', label: 'Wisata Edukasi', price: 35000, desc: `<div class="desc-article"><strong>Paket Reguler:</strong><ul><li>Pembelajaran Mendalam: Rp 38.000/pax</li><li>Kokurikuler (Binatang/Tumbuhan): Rp 39.000/pax</li><li>Fun Cooking: Rp 35.000/pax</li></ul><strong>Paket Kemah Ceria Prasiaga:</strong><ul><li>Kemah Ceria 1: Rp 50.000 | 2: Rp 37.000 | 3: Rp 32.000</li></ul><strong>Paket Outbound:</strong><ul><li>Criollo Fun & Edu (P1-P3): Rp 47.000 - Rp 97.000</li><li>Thea Fun Outbound (P1-P5): Rp 103.000 - Rp 152.000</li></ul></div>`, image: paket_tk },
+  { id: 'edu_2', name: 'Paket Edukasi SD', label: 'Wisata Edukasi', price: 32000, desc: `<div class="desc-article"><strong>Paket Reguler:</strong><ul><li>Santripreneur: Rp 32.000/pax</li><li>Industri Coklat: Rp 35.000/pax</li><li>Pembelajaran Mendalam: Rp 38.000/pax</li><li>Fun Cooking: Rp 35.000/pax</li></ul><strong>Paket Outbound:</strong><ul><li>Criollo Fun & Edu (P1-P3): Rp 47.000 - Rp 97.000</li><li>Thea Fun Outbound (P1-P5): Rp 103.000 - Rp 152.000</li></ul></div>`, image: paket_sd },
+  { id: 'edu_3', name: 'Paket Edukasi SMP', label: 'Wisata Edukasi', price: 32000, desc: `<div class="desc-article"><strong>Paket Reguler:</strong><ul><li>Santripreneur: Rp 32.000/pax | Industri Coklat: Rp 35.000/pax</li><li>Kewirausahaan: Rp 37.000/pax | Fun Cooking: Rp 35.000/pax</li><li>Pembelajaran Mendalam: Rp 40.000/pax</li></ul><strong>Paket LDKS:</strong><ul><li>Paket A: Rp 185.000 | Paket B: Rp 135.000 | Paket C: Rp 55.000</li></ul><strong>Paket Outbound:</strong><ul><li>Criollo (P1-P3): Rp 47.000 - Rp 97.000</li><li>Thea (P1-P5): Rp 103.000 - Rp 152.000</li></ul></div>`, image: paket_smp },
+  { id: 'edu_4', name: 'Paket Edukasi SMA / Mahasiswa', label: 'Wisata Edukasi', price: 32000, desc: `<div class="desc-article"><strong>Paket Reguler:</strong><ul><li>Santripreneur: Rp 32.000/pax | Industri Coklat: Rp 35.000/pax</li><li>Kewirausahaan: Rp 37.000/pax | KC Berdampak: Rp 37.000/pax</li><li>Pembelajaran Mendalam: Rp 50.000/pax</li></ul><strong>Paket LDKS:</strong><ul><li>Paket A: Rp 185.000 | Paket B: Rp 135.000 | Paket C: Rp 55.000</li></ul><strong>Paket Outbound:</strong><ul><li>Criollo (P1-P3): Rp 47.000 - Rp 97.000</li><li>Thea (P1-P5): Rp 103.000 - Rp 152.000</li></ul></div>`, image: paket_sma }
+]
+
+const hallTickets = [
+  { id: 'sewa_1', name: 'Bale Coklat', label: 'Sewa Tempat', price: 500000, desc: 'Area semi-outdoor yang luas, cocok untuk gathering komunitas atau acara santai keluarga besar.', image: bale_coklat },
+  { id: 'sewa_2', name: 'Coklat Caffe', label: 'Sewa Tempat', price: 300000, desc: 'Kafe bernuansa alam untuk acara bersantai atau kumpul komunitas.', image: coklat_caffe },
+  { id: 'sewa_3', name: 'Coklat Garden', label: 'Sewa Tempat', price: 400000, desc: 'Area taman terbuka yang hijau, ideal untuk pesta kebun atau acara outdoor.', image: coklat_garden },
+  { id: 'sewa_4', name: 'Joglo Jatimarto', label: 'Sewa Tempat', price: 750000, desc: 'Pendopo tradisional bernuansa klasik Jawa untuk acara keluarga atau pertemuan.', image: joglo_jatimarto },
+  { id: 'sewa_5', name: 'Kampung Coklat Hall', label: 'Sewa Tempat', price: 1500000, desc: 'Ruangan indoor eksklusif untuk acara besar, pernikahan, atau seminar perusahaan.', image: kampung_coklat_hall },
+  { id: 'sewa_6', name: 'Private Business Keep (PBK)', label: 'Sewa Tempat', price: 1000000, desc: 'Ruangan privat eksklusif untuk pertemuan bisnis tingkat eksekutif.', image: pbk },
+  { id: 'sewa_7', name: 'Ruang Pertemuan R1', label: 'Sewa Tempat', price: 500000, desc: 'Ruang rapat berkapasitas sedang dengan fasilitas meeting lengkap.', image: ruang_pertemuan },
+  { id: 'sewa_8', name: 'Taman Edel', label: 'Sewa Tempat', price: 350000, desc: 'Taman asri nan sejuk untuk acara komunitas atau bersantai bersama keluarga.', image: taman_edel },
+  { id: 'sewa_9', name: 'Theobromine Hall', label: 'Sewa Tempat', price: 1200000, desc: 'Hall menengah untuk acara resepsi, seminar, atau pertemuan perusahaan.', image: theobromine_hall },
+  { id: 'sewa_10', name: 'Trinitario Hall', label: 'Sewa Tempat', price: 2000000, desc: 'Hall eksklusif berkapasitas besar dengan desain interior modern dan elegan.', image: trinitario_hall },
+  { id: 'sewa_11', name: 'Wisma Criollo', label: 'Sewa Tempat', price: 850000, desc: 'Gedung pertemuan eksklusif bernuansa hangat untuk acara privat atau korporat.', image: wisma_criollo }
+]
+
+const cart = ref<any[]>([])
+
+const bookingData = ref({
+  instansi: '',
+  alamatInstansi: '',
+  kategori: '',
+  estimasiPeserta: '',
+  nama: '',
+  telepon: '',
+  tanggal: new Date().toISOString().split('T')[0],
+  isMember: false,
+  memberId: ''
+})
+
+const bookingType = ref('rombongan')
+const selectedCategory = ref('tiket') 
+const bulkQty = ref(1)
+
+const totalPax = computed(() => {
+  return cart.value.reduce((sum, item) => sum + item.qty, 0)
+})
+
+const discountPercent = computed(() => {
+  if (bookingData.value.isMember) return 20; // 20% discount for members
+  const pax = totalPax.value;
+  if (pax >= 100) return 15;
+  if (pax >= 50) return 10;
+  if (pax >= 20) return 5;
+  return 0;
+})
+
+const paymentMethod = ref('cash')
+const cashReceived = ref(0)
 const showPaymentModal = ref(false)
-const paymentMethod = ref('transfer')
+const showSuccessModal = ref(false)
+const qrCodeUrl = ref('')
+
+const memberStatus = ref('idle')
+const checkMemberId = () => {
+  if (bookingData.value.memberId === 'KC-12345') {
+    memberStatus.value = 'valid'
+  } else {
+    memberStatus.value = 'invalid'
+  }
+}
+
+const allProducts = computed(() => {
+  if (selectedCategory.value === 'tiket') return entryTickets
+  if (selectedCategory.value === 'wahana') return wahanaTickets
+  if (selectedCategory.value === 'edukasi') return edukasiTickets
+  if (selectedCategory.value === 'sewa-tempat') return hallTickets
+  return []
+})
+
+const addToCart = (product: any) => {
+  const existing = cart.value.find(item => item.id === product.id)
+  if (existing) {
+    existing.qty += 1
+  } else {
+    cart.value.push({ ...product, qty: 1 })
+  }
+}
+
+const increaseItem = (item: any) => { item.qty++ }
+const decreaseItem = (item: any) => { 
+  if(item.qty > 1) item.qty-- 
+  else removeFromCart(item.id)
+}
+const removeFromCart = (id: string) => {
+  cart.value = cart.value.filter(item => item.id !== id)
+}
+
+const subtotal = computed(() => {
+  return cart.value.reduce((sum, item) => sum + (item.price * item.qty), 0)
+})
+
+const discountAmount = computed(() => {
+  return (subtotal.value * discountPercent.value) / 100
+})
+
+const grandTotal = computed(() => {
+  return subtotal.value - discountAmount.value
+})
+
+const changeAmount = computed(() => {
+  return Math.max(0, cashReceived.value - grandTotal.value)
+})
+
+const addCash = (amount: number) => {
+  cashReceived.value += amount
+}
+
+const setCashExact = () => {
+  cashReceived.value = grandTotal.value
+}
+
+const processCheckout = () => {
+  if (!bookingData.value.telepon || !bookingData.value.nama) {
+    alert('Nomor Telepon dan Nama Lengkap wajib diisi sebelum checkout!');
+    return;
+  }
+  if (cart.value.length === 0) {
+    alert('Keranjang kosong!')
+    return
+  }
+  showPaymentModal.value = true
+}
+
+const processPayment = () => {
+   if (paymentMethod.value === 'cash' && cashReceived.value < grandTotal.value) {
+     alert('Uang yang diterima kurang!')
+     return
+   }
+   showPaymentModal.value = false
+   showSuccessModal.value = true
+}
+
+const generateQRCode = () => {
+  // Generate a random mock QR code string
+  const str = Math.random().toString(36).substring(2, 15)
+  qrCodeUrl.value = `https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=KC-${str}`
+}
+
+const finishTransaction = () => {
+   cart.value = []
+   bookingData.value = { telepon: '', nama: '', tanggal: new Date().toISOString().split('T')[0], alamatInstansi: '', instansi: '', kategori: '', estimasiPeserta: '', isMember: false }
+   cashReceived.value = 0
+   showSuccessModal.value = false
+}
 </script>
 
 <template>
-  <div class="pos-container">
-    <div class="products-section">
-      <div class="section-header">
-        <h2>Tiket Rombongan (B2B)</h2>
-      </div>
+  <div class="pos-wrapper">
+    <!-- LEFT PANE: Form -->
+    <div class="pos-form-pane">
+      <h2 class="pane-title">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2c1a13" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        Data Pemesanan B2B
+      </h2>
       
-      <div class="b2b-form card">
-        <h3>Informasi Rombongan</h3>
-        <div class="form-group">
-          <label>Nama Instansi / Agen</label>
-          <input type="text" class="input" placeholder="Masukkan nama instansi..." />
-        </div>
-        <div class="form-group">
-          <label>Pimpinan Rombongan</label>
-          <input type="text" class="input" placeholder="Nama pimpinan..." />
-        </div>
-        <div class="form-group">
-          <label>Jumlah Tiket</label>
-          <input type="number" class="input" placeholder="0" min="20" />
-        </div>
-        <div class="form-group">
-          <label>Tipe Tiket</label>
-          <select class="input">
-            <option>Tiket Reguler (Diskon B2B)</option>
-            <option>Paket Terusan (Diskon B2B)</option>
-            <option>Paket Edukasi Spesial</option>
-          </select>
-        </div>
-        <button class="btn-secondary">Hitung Harga Khusus</button>
-      </div>
-    </div>
-    
-    <div class="cart-section">
-      <div class="cart-header">
-        <h2>Keranjang B2B</h2>
-        <button class="btn-link text-error">Batal</button>
-      </div>
-      
-      <div class="cart-items">
-        <div class="cart-item">
-          <div class="item-details">
-            <h4>Tiket Reguler B2B (Instansi)</h4>
-            <p>Rp 15.000 / tiket (Diskon 25%)</p>
+      <!-- Member Check -->
+      <div class="member-check-box" style="margin-bottom: 20px;">
+        <label class="member-checkbox-label">
+          <input type="checkbox" v-model="bookingData.isMember" @change="memberStatus = 'idle'" />
+          <strong>Saya adalah Member Kampung Coklat</strong>
+        </label>
+        <div v-if="bookingData.isMember" class="member-input-area">
+          <label style="font-size: 11px; font-weight: 800; color: #7f8c8d; text-transform: uppercase; letter-spacing: 1px; display: block; margin-bottom: 8px;">Masukkan ID Member</label>
+          <div class="member-input-row">
+            <input type="text" v-model="bookingData.memberId" placeholder="Contoh: KC-12345" class="member-input" />
+            <button class="btn-cek-id" @click="checkMemberId">Cek ID</button>
           </div>
-          <div class="item-qty">
-            <span>50 Tiket</span>
+          <div v-if="memberStatus === 'valid'" class="member-status success">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Member terdaftar
+          </div>
+          <div v-if="memberStatus === 'invalid'" class="member-status error">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" style="margin-right:4px;"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>
+            Member tidak ditemukan
           </div>
         </div>
       </div>
-      
-      <div class="cart-summary">
-        <div class="summary-row">
-          <span>Subtotal (50 x Rp 20.000)</span>
-          <span>Rp 1.000.000</span>
+
+      <!-- SECTION 1 (ONLY FOR ROMBONGAN) -->
+      <div class="form-section-box" style="margin-bottom: 20px;">
+        <div class="section-title">
+          <span class="icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"></path><circle cx="7" cy="17" r="2"></circle><path d="M9 17h6"></path><circle cx="17" cy="17" r="2"></circle></svg>
+          </span> DATA ROMBONGAN
         </div>
-        <div class="summary-row">
-          <span>Diskon B2B (25%)</span>
-          <span class="text-error">- Rp 250.000</span>
+        <div class="booking-form-grid-1">
+          <div class="form-group">
+            <label>Nama Instansi / Rombongan <span class="req">*</span></label>
+            <input type="text" v-model="bookingData.instansi" placeholder="Contoh: SDN 1 Blitar" />
+          </div>
+          <div class="form-group">
+            <label>Alamat Instansi</label>
+            <input type="text" v-model="bookingData.alamatInstansi" placeholder="Contoh: Jl. Merdeka No 1" />
+          </div>
+          <div class="form-group">
+            <label>Kategori Rombongan</label>
+            <input type="text" v-model="bookingData.kategori" placeholder="Sekolah, Umum, dsb" />
+          </div>
+          <div class="form-group">
+            <label>Estimasi Peserta (Pax)</label>
+            <div class="input-with-suffix">
+              <input type="number" v-model="bookingData.estimasiPeserta" placeholder="50" />
+              <span class="suffix">Pax</span>
+            </div>
+          </div>
         </div>
-        <div class="summary-row total">
-          <span>Total</span>
-          <span>Rp 750.000</span>
+      </div>
+
+      <!-- SECTION 2 (ALWAYS SHOWN) -->
+      <div class="form-section-box" style="margin-bottom: 0;">
+        <div class="section-title">
+          <span class="icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          </span> DATA PERWAKILAN & JADWAL
         </div>
-        <button class="btn-primary btn-block" @click="showPaymentModal = true">Proses Tagihan B2B</button>
+        <div class="booking-form-grid-1">
+          <div class="form-group">
+            <label>Nama Penanggung Jawab <span class="req">*</span></label>
+            <input type="text" v-model="bookingData.nama" placeholder="Nama Lengkap" />
+          </div>
+          <div class="form-group">
+            <label>No. WhatsApp / Telepon <span class="req">*</span></label>
+            <input type="tel" v-model="bookingData.telepon" placeholder="0812..." />
+          </div>
+          <div class="form-group">
+            <label>Tanggal Kunjungan <span class="req">*</span></label>
+            <input type="date" v-model="bookingData.tanggal" />
+          </div>
+        </div>
+
       </div>
     </div>
 
-    <!-- Payment Modal B2B -->
+    <!-- MIDDLE PANE: Catalog -->
+    <div class="pos-catalog-pane">
+      <div class="step-2-products" style="display: flex; flex-direction: column; flex: 1; min-height: 0; height: 100%;">
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <h1 style="font-size: 32px; font-weight: 800; color: #2c1a13; margin: 0;">Pilih Produk</h1>
+        </div>
+        
+        <!-- Minimalist Category Tabs -->
+        <div style="display: flex; gap: 30px; margin-bottom: 30px; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px;">
+          <span style="cursor: pointer; font-size: 16px; font-weight: 600;" :style="selectedCategory === 'tiket' ? 'color: #f29727; border-bottom: 2px solid #f29727; padding-bottom: 10px; margin-bottom: -11px;' : 'color: #aaa;'" @click="selectedCategory = 'tiket'">Tiket Masuk</span>
+          <span style="cursor: pointer; font-size: 16px; font-weight: 600;" :style="selectedCategory === 'wahana' ? 'color: #f29727; border-bottom: 2px solid #f29727; padding-bottom: 10px; margin-bottom: -11px;' : 'color: #aaa;'" @click="selectedCategory = 'wahana'">Wahana</span>
+          <span style="cursor: pointer; font-size: 16px; font-weight: 600;" :style="selectedCategory === 'edukasi' ? 'color: #f29727; border-bottom: 2px solid #f29727; padding-bottom: 10px; margin-bottom: -11px;' : 'color: #aaa;'" @click="selectedCategory = 'edukasi'">Paket Edukasi</span>
+          <span style="cursor: pointer; font-size: 16px; font-weight: 600;" :style="selectedCategory === 'sewa-tempat' ? 'color: #f29727; border-bottom: 2px solid #f29727; padding-bottom: 10px; margin-bottom: -11px;' : 'color: #aaa;'" @click="selectedCategory = 'sewa-tempat'">Sewa Tempat</span>
+        </div>
+
+        <!-- Product List -->
+        <div class="product-list-wrapper" style="overflow-y: auto; flex: 1; min-height: 0; padding-bottom: 20px; padding-right: 10px;">
+          <div class="product-list" style="display: flex; flex-direction: column; gap: 20px;">
+            <div class="elegant-card" v-for="product in allProducts" :key="product.id">
+              
+              <div :class="['card-image-wrapper', selectedCategory === 'edukasi' ? 'edukasi-image-wrapper' : '']">
+                <img :src="product.image" :alt="product.name" :class="['card-image', selectedCategory === 'edukasi' ? 'edukasi-image' : '']" />
+              </div>
+              
+              <div class="card-content">
+                <div class="card-price-label">
+                  <span v-if="product.label && selectedCategory !== 'wahana'">{{ product.label }}</span>
+                  <span v-if="selectedCategory === 'wahana'">IDR. {{ product.price / 1000 }}K / ORANG</span>
+                </div>
+                <h3 class="card-title">{{ product.name }}</h3>
+                <div class="card-divider"></div>
+                <div class="card-desc" v-html="product.desc"></div>
+                
+                <div class="card-footer">
+                  <div class="card-price" v-if="selectedCategory !== 'wahana'">
+                    <span class="price-currency">Rp</span> {{ product.price.toLocaleString('id-ID') }}
+                  </div>
+                  <div v-else></div> <!-- spacer for flex layout if price is on top -->
+                  <button class="btn-outline-primary" @click="addToCart(product)">+ Tambahkan</button>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Pane: Cart -->
+    <div class="pos-cart-pane" style="background: #ffffff; border-left: 1px solid #f0f0f0;">
+      <div style="padding: 30px; display: flex; flex-direction: column; height: 100%;">
+        <h1 style="font-size: 32px; font-weight: 800; color: #2c1a13; margin: 0 0 30px 0;">Keranjang</h1>
+
+        <!-- Cart Items with Quantities -->
+        <div style="flex: 1; overflow-y: auto; padding-right: 10px;">
+          <div v-if="cart.length === 0" style="color: #aaa; font-size: 14px; text-align: center; padding: 40px 0;">
+            Belum ada pesanan.
+          </div>
+          
+          <div v-for="item in cart" :key="item.id" class="cart-item-row">
+            <div class="cart-item-details">
+              <div class="cart-item-name">{{ item.name }}</div>
+              <div class="cart-item-price">Rp {{ item.price.toLocaleString('id-ID') }}</div>
+            </div>
+            <div class="cart-item-qty-control">
+              <button @click="decreaseItem(item)">-</button>
+              <span>{{ item.qty }}</span>
+              <button @click="increaseItem(item)">+</button>
+            </div>
+            <div class="cart-item-subtotal">
+              Rp {{ (item.price * item.qty).toLocaleString('id-ID') }}
+            </div>
+          </div>
+        </div>
+
+        <div style="border-bottom: 1px dotted #dcdcdc; margin: 20px 0;"></div>
+
+        <!-- B2B Tier Discount Info (Simplified) -->
+        <div v-if="discountPercent > 0" style="display: flex; justify-content: space-between; color: #2e7d32; font-size: 14px; margin-bottom: 10px; background: #e8f5e9; padding: 8px; border-radius: 4px;">
+          <span>Diskon Diterapkan ({{ discountPercent }}%)</span>
+          <span>- Rp {{ discountAmount.toLocaleString('id-ID') }}</span>
+        </div>
+
+        <h3 style="text-align: right; font-size: 22px; font-weight: 800; color: #2c1a13; margin: 0 0 20px 0;">
+          Total: Rp {{ grandTotal.toLocaleString('id-ID') }}
+        </h3>
+
+        <button @click="processCheckout" :disabled="cart.length === 0" style="background: #27ae60; color: #ffffff; border: none; padding: 16px; font-size: 16px; font-weight: bold; border-radius: 6px; width: 100%; cursor: pointer; transition: background 0.2s;">
+          Checkout
+        </button>
+      </div>
+    </div>
+
+    <!-- Payment Modal -->
     <div class="modal-overlay" v-if="showPaymentModal">
-      <div class="modal-card">
+      <div class="modal-card payment-modal">
         <div class="modal-header">
           <h2>Pembayaran B2B</h2>
           <button class="close-btn" @click="showPaymentModal = false">×</button>
         </div>
         <div class="modal-body">
-          <p>Tagihan untuk rombongan <strong>Instansi</strong> sejumlah <strong>Rp 750.000</strong>.</p>
-          <div class="payment-methods">
-            <button class="payment-btn" :class="{active: paymentMethod === 'transfer'}" @click="paymentMethod = 'transfer'">Transfer Bank</button>
-            <button class="payment-btn" :class="{active: paymentMethod === 'cash'}" @click="paymentMethod = 'cash'">Tunai</button>
+          <div class="pay-amount-display">
+            TOTAL TAGIHAN: <br/> 
+            <strong style="color: #f29727;">Rp {{ grandTotal.toLocaleString('id-ID') }}</strong>
           </div>
           
-          <div v-if="paymentMethod === 'transfer'" class="qris-display">
-             <p>Silakan transfer ke rekening:</p>
-             <h3>BCA 1234567890</h3>
-             <p>a.n Kampung Coklat</p>
+          <div class="payment-tabs">
+            <button :class="{active: paymentMethod === 'cash'}" @click="paymentMethod = 'cash'">TUNAI (CASH)</button>
+            <button :class="{active: paymentMethod === 'transfer'}" @click="paymentMethod = 'transfer'">TRANSFER / QRIS</button>
           </div>
 
-          <div v-if="paymentMethod === 'cash'" class="cash-input">
-            <label>Uang Diterima (Rp)</label>
-            <input type="number" class="input input-lg" placeholder="0" />
+          <!-- Cash Section -->
+          <div v-if="paymentMethod === 'cash'" class="cash-section">
+            <label>Nominal Diterima (Rp)</label>
+            <div class="cash-input-row">
+              <input type="number" v-model="cashReceived" class="large-input" />
+              <button class="btn-exact" @click="setCashExact">UANG PAS</button>
+            </div>
+            <div class="quick-cash-btns">
+              <button @click="addCash(50000)">+50k</button>
+              <button @click="addCash(100000)">+100k</button>
+              <button @click="addCash(500000)">+500k</button>
+              <button @click="addCash(1000000)">+1Jt</button>
+              <button @click="addCash(5000000)">+5Jt</button>
+            </div>
+
+            <div class="change-display" :class="{'has-change': changeAmount > 0}">
+              KEMBALIAN: <strong>Rp {{ changeAmount.toLocaleString('id-ID') }}</strong>
+            </div>
           </div>
+
+          <!-- Transfer Section -->
+          <div v-if="paymentMethod === 'transfer'" class="transfer-section">
+             <div class="qris-box">
+                <div class="qr-placeholder">
+                  ( QRIS CODE )
+                </div>
+                <p>Transfer Bank:<br/><strong>BCA 1234567890</strong> a.n Kampung Coklat</p>
+             </div>
+          </div>
+
         </div>
         <div class="modal-footer">
-          <button class="btn-primary btn-block">Cetak Invoice & Selesaikan</button>
+          <button class="btn-checkout" @click="processPayment">BAYAR & CETAK STRUK</button>
         </div>
       </div>
     </div>
+
+    <!-- Success Modal -->
+    <div class="modal-overlay" v-if="showSuccessModal">
+      <div class="modal-card success-modal">
+        <div class="success-icon">✅</div>
+        <h2>Transaksi Berhasil!</h2>
+        <button class="btn-checkout" @click="finishTransaction">Transaksi Baru</button>
+      </div>
+    </div>
+
   </div>
 </template>
 
 <style scoped>
-.pos-container {
+/* Main POS Wrapper Layout */
+.pos-wrapper {
   display: flex;
-  height: 100%;
+  height: calc(100vh - 60px); /* Adjust based on pos layout header height */
+  background-color: #f4f4f4;
+  font-family: 'Inter', sans-serif;
+  overflow: hidden;
 }
 
-.products-section {
-  flex: 2;
-  padding: var(--spacing-lg);
-  border-right: 1px solid var(--color-border);
+/* Full Width Form Pane */
+.pos-full-pane {
+  flex: 1;
+  background-color: #ffffff;
+  padding: 40px;
   overflow-y: auto;
-  background-color: var(--color-surface);
 }
 
-.section-header {
-  margin-bottom: var(--spacing-lg);
+/* Full Width Form Pane */
+.pos-full-pane {
+  flex: 1;
+  background-color: #ffffff;
+  padding: 40px;
+  overflow-y: auto;
 }
 
-.b2b-form {
-  max-width: 600px;
+/* Landing Page Category Cards */
+.category-landing-container {
+  max-width: 1100px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 0 20px;
 }
 
-.b2b-form h3 {
-  margin-bottom: var(--spacing-md);
-  font-size: var(--text-headline-sm);
+.text-center {
+  text-align: center;
 }
 
-.form-group {
-  margin-bottom: var(--spacing-md);
+.category-header {
+  margin-bottom: 50px;
+}
+
+.hero-title-main {
+  font-size: 38px;
+  font-weight: 800;
+  color: #2c1a13;
+  margin: 0 0 15px 0;
+  text-transform: capitalize;
+}
+
+.hero-subtitle-main {
+  font-size: 16px;
+  color: #6b5a54;
+  margin: 0;
+  font-weight: 400;
+}
+
+.category-card {
+  background: #ffffff;
+  border-radius: 20px;
+  padding: 40px 30px;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  box-shadow: 0 10px 40px rgba(44, 26, 19, 0.05);
+  border: 1px solid transparent;
+}
+
+.category-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 50px rgba(44, 26, 19, 0.1);
+  border-color: #f29727;
+}
+
+.category-icon-wrapper {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-blob {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  width: 45px;
+  height: 45px;
+  background-color: #fae8d4;
+  border-radius: 50%;
+  z-index: 0;
+}
+
+.category-icon {
+  position: relative;
+  z-index: 1;
+  color: #f29727;
+}
+
+.category-card h4 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #2c1a13;
+  margin: 0 0 10px 0;
+  line-height: 1.3;
+}
+
+.category-card p {
+  font-size: 13px;
+  color: #8c7b75;
+  margin: 0;
+  line-height: 1.6;
+  max-width: 90%;
+}
+
+/* Left Pane */
+.pos-catalog-pane {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 15px;
+  overflow: hidden;
+}
+
+.b2b-form-card {
+  background: #fff;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+  margin-bottom: 15px;
+}
+
+.form-title {
+  margin: 0 0 10px 0;
+  font-size: 16px;
+  color: #2c1a13;
+  border-bottom: 2px solid #f29727;
+  padding-bottom: 5px;
+  display: inline-block;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: var(--spacing-xs);
-  font-weight: 500;
-  color: var(--color-primary);
-  font-size: var(--text-label-md);
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 4px;
 }
 
-.cart-section {
+.form-group input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 13px;
+  background: #fafafa;
+}
+
+/* Controls */
+.catalog-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #fff;
+  padding: 10px 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  margin-bottom: 15px;
+}
+
+.category-tabs {
+  display: flex;
+  gap: 10px;
+}
+
+.cat-btn {
+  background: #f0f0f0;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  color: #555;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cat-btn.active {
+  background: #2c1a13;
+  color: #f29727;
+}
+
+.bulk-qty-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #fffcf8;
+  border: 1px solid #f29727;
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+
+.bulk-qty-box span { font-weight: bold; font-size: 13px; color: #2c1a13; }
+
+.qty-stepper {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.qty-stepper button {
+  background: #eee;
+  border: none;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.qty-stepper input {
+  width: 50px;
+  text-align: center;
+  border: none;
+  font-weight: bold;
+  outline: none;
+}
+
+.quick-qty button {
+  background: #f29727;
+  color: #fff;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 4px;
+  margin-left: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/* Booking Form Step 1 - B2B Nested Layout */
+.pos-wrapper { display: flex; height: calc(100vh - 60px); background-color: #f0f2f5; font-family: 'Inter', sans-serif; overflow: hidden; }
+.pos-form-pane { width: 360px; min-width: 360px; background: #f8f9fa; padding: 25px; overflow-y: auto; border-right: 1px solid #e5e7eb; box-shadow: 2px 0 10px rgba(0,0,0,0.02); display: flex; flex-direction: column; z-index: 5; }
+.pos-catalog-pane { flex: 1; display: flex; flex-direction: column; padding: 30px; overflow: hidden; background: transparent; }
+.pos-cart-pane { width: 360px; min-width: 360px; background: #ffffff; border-left: 1px solid #e5e7eb; box-shadow: -4px 0 15px rgba(0,0,0,0.04); display: flex; flex-direction: column; z-index: 5; }
+.pane-title { font-size: 18px; font-weight: 800; color: #2c1a13; margin: 0 0 25px 0; display: flex; align-items: center; gap: 8px; }
+.step-1-form-b2b { max-width: 1000px; margin: 0 auto; padding: 20px; }
+.form-section-box { background: #ffffff; border-radius: 12px; padding: 20px; border: 1px solid #e5e7eb; box-shadow: 0 2px 8px rgba(0,0,0,0.02); margin-bottom: 20px; }
+.section-title { font-size: 13px; font-weight: 800; color: #2c1a13; text-transform: uppercase; margin-bottom: 16px; border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; display: flex; align-items: center; gap: 8px; letter-spacing: 0.5px; }
+
+.booking-form-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+.booking-form-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.booking-form-grid-1 { display: flex; flex-direction: column; gap: 20px; }
+
+.form-group { display: flex; flex-direction: column; gap: 8px; }
+.form-group label { display: block; font-size: 11px; font-weight: 800; color: #7f8c8d; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0; }
+.form-group label .req { color: #e74c3c; }
+
+.form-group input, .form-group select, .form-group textarea { width: 100%; padding: 14px 16px; border: 1.5px solid #e5e7eb; border-radius: 10px; font-size: 14px; background: #f9fafb; outline: none; transition: all 0.2s ease; color: #111827; font-weight: 500; }
+.form-group input::placeholder, .form-group textarea::placeholder { color: #9ca3af; font-weight: 400; }
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: #f29727; background: #ffffff; box-shadow: 0 0 0 4px rgba(242, 151, 39, 0.15); }
+
+.input-with-suffix {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-with-suffix input {
+  padding-right: 50px;
+}
+
+.input-with-suffix .suffix {
+  position: absolute;
+  right: 15px;
+  color: #888;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.member-checkbox {
+  background: #fffcf8;
+  border: 1px solid #fae5cb;
+  padding: 15px;
+  border-radius: 8px;
+}
+.member-checkbox label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  color: #2c1a13;
+}
+.member-checkbox input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+}
+.btn-primary-full {
+  width: 100%;
+  background: #2c1a13;
+  color: #fff;
+  padding: 16px;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.btn-primary-full:hover { background: #3d241a; }
+
+/* New Cart Layout */
+.cart-item-row {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  background: #fdfdfd;
+  border: 1px solid #f0f0f0;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.cart-item-details { flex: 1; }
+.cart-item-name { font-weight: 700; color: #333; margin-bottom: 4px; }
+.cart-item-price { font-size: 13px; color: #888; }
+
+.cart-item-qty-control {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.cart-item-qty-control button {
+  background: #f8f9fa;
+  border: none;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  font-weight: bold;
+  color: #555;
+}
+.cart-item-qty-control button:hover { background: #e9ecef; }
+.cart-item-qty-control span {
+  width: 30px;
+  text-align: center;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.cart-item-subtotal {
+  font-weight: 800;
+  color: #2c1a13;
+  min-width: 90px;
+  text-align: right;
+}
+
+/* Beautiful Grid Layout */
+.beautiful-grid {
   flex: 1;
-  background-color: var(--color-neutral);
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 20px;
+  overflow-y: auto;
+  padding-right: 5px;
+  padding-bottom: 20px;
+}
+
+.beautiful-grid-card {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+  cursor: pointer;
+  position: relative;
+  transition: transform 0.2s, box-shadow 0.2s;
   display: flex;
   flex-direction: column;
+  border: 1px solid #fcfaf8;
+}
+
+.beautiful-grid-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+}
+
+.beautiful-grid-card:active {
+  transform: scale(0.98);
+}
+
+.card-image-box {
+  height: 150px;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.card-image-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s;
+}
+
+.beautiful-grid-card:hover .card-image-box img {
+  transform: scale(1.05);
+}
+
+.card-ribbon {
+  position: absolute;
+  top: 10px;
+  left: -5px;
+  background: #f29727;
+  color: #fff;
+  font-size: 10px;
+  font-weight: bold;
+  padding: 4px 10px;
+  border-radius: 0 4px 4px 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  z-index: 10;
+}
+
+.add-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(44, 26, 19, 0.7);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 16px;
+  opacity: 0;
+  transition: opacity 0.2s;
+  z-index: 20;
+}
+
+.beautiful-grid-card:hover .add-overlay {
+  opacity: 1;
+}
+
+.add-text {
+  background: #f29727;
+  padding: 8px 16px;
+  border-radius: 20px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+}
+
+.card-info-box {
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+  background: #fff;
+}
+
+.card-info-box .title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #2c1a13;
+  margin: 0 0 10px 0;
+  line-height: 1.3;
+}
+
+.card-info-box .price {
+  color: #27ae60;
+  font-weight: 800;
+  font-size: 16px;
+  align-self: flex-end;
+}
+
+/* Elegant Card for Wahana & Edukasi */
+.product-list-wrapper {
+  overflow-y: auto;
+  padding-bottom: 20px;
+}
+
+.elegant-card {
+  display: flex;
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid #f0f0f0;
+  padding: 12px;
+  gap: 15px;
+}
+.elegant-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(44,26,19,0.1);
+  border-color: #fce4ce;
+}
+
+.card-image-wrapper {
+  width: 180px;
+  height: 120px;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+.elegant-card:hover .card-image { transform: scale(1.05); }
+
+.edukasi-image-wrapper {
+  width: 220px;
+  height: auto;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+.edukasi-image {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+.elegant-card:hover .edukasi-image { transform: scale(1.02); }
+
+.card-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.card-price-label {
+  color: #4a2c1d;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.card-title {
+  font-size: 18px;
+  color: #2c1a13;
+  font-weight: bold;
+  font-family: 'Georgia', serif;
+  margin: 0;
+}
+
+.card-divider {
+  height: 2px;
+  width: 40px;
+  background-color: #e0e0e0;
+  margin: 8px 0;
+}
+
+.card-desc {
+  color: #666;
+  font-size: 13px;
+  line-height: 1.4;
+  margin: 0 0 12px 0;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+}
+
+.card-price {
+  font-size: 18px;
+  font-weight: bold;
+  color: #2c1a13;
+}
+.price-currency { font-size: 15px; color: #888; }
+
+.btn-outline-primary {
+  background: transparent;
+  border: 1px solid #2c1a13;
+  color: #2c1a13;
+  padding: 6px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-outline-primary:hover {
+  background: #2c1a13;
+  color: #fff;
+}
+
+/* Right Pane */
+.pos-cart-pane {
+  width: 350px;
+  min-width: 350px;
+  max-width: 350px;
+  flex: none;
+  background: #fff;
+  border-left: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  box-shadow: -4px 0 15px rgba(0,0,0,0.03);
 }
 
 .cart-header {
-  padding: var(--spacing-md);
-  border-bottom: 1px solid var(--color-border);
+  padding: 20px;
+  background: #2c1a13;
+  color: #fff;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
-
-.text-error {
-  color: var(--color-error);
-}
+.cart-header h2 { margin: 0; font-size: 18px; }
+.btn-clear { background: none; border: 1px solid #f29727; color: #f29727; padding: 4px 10px; border-radius: 4px; cursor: pointer; }
 
 .cart-items {
   flex: 1;
   overflow-y: auto;
-  padding: var(--spacing-md);
+  padding: 15px;
+  background: #fdfbf7;
+}
+
+.empty-cart {
+  text-align: center;
+  color: #999;
+  margin-top: 50px;
+  font-style: italic;
 }
 
 .cart-item {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 10px;
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: center;
-  padding-bottom: var(--spacing-sm);
-  border-bottom: 1px solid var(--color-border);
-  margin-bottom: var(--spacing-sm);
 }
 
-.item-details h4 {
-  font-size: var(--text-label-md);
-  margin: 0;
-}
+.cart-item-info { flex: 2; }
+.cart-item-info h4 { margin: 0 0 4px 0; font-size: 13px; color: #333; }
+.cart-item-price { font-size: 12px; color: #888; }
 
-.item-details p {
-  color: var(--color-muted);
-  font-size: var(--text-body-sm);
-  margin: 0;
-}
-
-.item-qty {
+.cart-item-controls {
   display: flex;
   align-items: center;
-  gap: var(--spacing-sm);
-  font-weight: 500;
+  gap: 8px;
+  flex: 1;
+  justify-content: center;
 }
+.qty-btn { width: 28px; height: 28px; border: none; background: #eee; border-radius: 4px; cursor: pointer; font-weight: bold; }
+.qty-val { font-weight: bold; font-size: 14px; width: 30px; text-align: center; }
+
+.cart-item-sub { flex: 1.5; text-align: right; font-weight: 700; color: #2c1a13; font-size: 14px; }
 
 .cart-summary {
-  padding: var(--spacing-md);
-  border-top: 1px solid var(--color-border);
-  background-color: var(--color-surface);
+  padding: 20px;
+  background: #fff;
+  border-top: 2px solid #eee;
 }
 
-.summary-row {
+.summary-line {
   display: flex;
   justify-content: space-between;
-  margin-bottom: var(--spacing-sm);
-  font-size: var(--text-body-md);
+  margin-bottom: 10px;
+  font-size: 14px;
+  color: #555;
 }
 
-.summary-row.total {
-  font-size: var(--text-headline-sm);
-  font-weight: 700;
-  color: var(--color-primary);
-  margin-bottom: var(--spacing-md);
-}
-
-.btn-block {
-  width: 100%;
-}
-
-/* Modal Styles */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.5);
+.discount-control {
   display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
-  z-index: 1000;
+  margin-bottom: 10px;
+  font-size: 14px;
+}
+
+.disc-options button {
+  background: #eee;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin-left: 5px;
+  cursor: pointer;
+}
+.disc-options button.active {
+  background: #f29727;
+  color: #fff;
+  font-weight: bold;
+}
+
+.text-error { color: #d32f2f; font-weight: 600; }
+
+.summary-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 15px 0;
+  padding-top: 15px;
+  border-top: 2px dashed #ccc;
+  font-size: 18px;
+  font-weight: 900;
+  color: #2c1a13;
+}
+.total-val { color: #f29727; font-size: 24px; }
+
+.btn-checkout {
+  width: 100%;
+  background: #f29727;
+  color: #fff;
+  border: none;
+  padding: 16px;
+  font-size: 18px;
+  font-weight: 900;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.btn-checkout:disabled { background: #ccc; cursor: not-allowed; }
+.btn-checkout:hover:not(:disabled) { background: #e08920; }
+
+/* Modals */
+.modal-overlay {
+  position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.6);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 2000;
 }
 
 .modal-card {
-  background: var(--color-neutral);
-  width: 400px;
-  border-radius: var(--rounded-md);
+  background: #fff;
+  border-radius: 12px;
+  width: 500px;
   overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.3);
 }
 
 .modal-header {
-  background: var(--color-primary);
-  color: var(--color-neutral);
-  padding: var(--spacing-md);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  background: #2c1a13; color: #fff;
+  padding: 15px 20px; display: flex; justify-content: space-between; align-items: center;
+}
+.modal-header h2 { margin: 0; font-size: 18px; }
+.close-btn { background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; }
+
+.modal-body { padding: 20px; }
+
+.pay-amount-display {
+  text-align: center; font-size: 16px; font-weight: 600; color: #555;
+  background: #fdfbf7; padding: 20px; border-radius: 8px; border: 1px solid #f5dfc6;
+  margin-bottom: 20px;
+}
+.pay-amount-display strong { font-size: 28px; display: block; margin-top: 10px; }
+
+.payment-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+.payment-tabs button {
+  flex: 1; padding: 12px; font-weight: bold; border-radius: 6px; border: 1px solid #ccc;
+  background: #eee; cursor: pointer; color: #555;
+}
+.payment-tabs button.active {
+  background: #2c1a13; color: #f29727; border-color: #2c1a13;
 }
 
-.modal-header h2 {
-  color: var(--color-neutral);
-  margin: 0;
-  font-size: var(--text-headline-sm);
-}
+.cash-section label { display: block; font-weight: 600; margin-bottom: 8px; color: #333; }
+.cash-input-row { display: flex; gap: 10px; margin-bottom: 10px; }
+.large-input { flex: 1; padding: 15px; font-size: 20px; font-weight: bold; border-radius: 8px; border: 2px solid #f29727; }
+.btn-exact { background: #e8f5e9; color: #2e7d32; border: 1px solid #81c784; font-weight: bold; padding: 0 20px; border-radius: 8px; cursor: pointer; }
 
-.close-btn {
-  background: none;
-  border: none;
-  color: var(--color-neutral);
-  font-size: 24px;
-  cursor: pointer;
-}
+.quick-cash-btns { display: flex; gap: 8px; margin-bottom: 20px; }
+.quick-cash-btns button { flex: 1; padding: 10px 0; background: #fafafa; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; font-weight: 600; }
 
-.modal-body {
-  padding: var(--spacing-md);
-}
+.change-display { text-align: center; padding: 15px; font-size: 18px; background: #eee; border-radius: 8px; color: #888; }
+.change-display.has-change { background: #e8f5e9; color: #2e7d32; font-size: 22px; }
 
-.payment-methods {
-  display: flex;
-  gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-md);
-  margin-top: var(--spacing-md);
-}
+.transfer-section { text-align: center; }
+.qr-placeholder { width: 200px; height: 200px; background-image: repeating-conic-gradient(#000 0% 25%, #fff 0% 50%); background-size: 20px 20px; background-position: center; margin: 0 auto 20px auto; border: 5px solid #fff; box-shadow: 0 0 10px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; font-weight: bold; background-color: #fff; color: #fff;}
 
-.payment-btn {
-  flex: 1;
-  padding: 12px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--rounded-sm);
-  cursor: pointer;
-  font-size: var(--text-label-md);
-  transition: all 0.2s;
-}
+.modal-footer { padding: 20px; background: #fdfbf7; border-top: 1px solid #eee; }
 
-.payment-btn.active {
-  background: var(--color-secondary);
-  color: var(--color-primary);
-  font-weight: bold;
-  border-color: var(--color-secondary);
-}
+:deep(.desc-article strong) { display: block; margin-top: 10px; margin-bottom: 4px; color: #333; font-size: 11px; }
+:deep(.desc-article ul) { margin: 0; padding-left: 15px; list-style-type: disc; }
+:deep(.desc-article li) { margin-bottom: 2px; color: #666; font-size: 11px; }
 
-.cash-input label {
-  display: block;
-  margin-bottom: var(--spacing-xs);
-}
+.member-check-box { background: #fffdf5; border: 1px solid #fce4ce; padding: 15px; border-radius: 10px; margin-bottom: 20px; box-sizing: border-box; width: 100%; }
+.member-checkbox-label { display: flex; align-items: center; gap: 10px; cursor: pointer; color: #2c1a13; font-size: 14px; }
+.member-checkbox-label input { width: 18px; height: 18px; accent-color: #f29727; cursor: pointer; }
+.member-input-area { margin-top: 15px; padding-top: 15px; border-top: 1px dashed #fce4ce; }
+.member-input-row { display: flex; gap: 10px; margin-bottom: 10px; align-items: stretch; width: 100%; box-sizing: border-box; }
+.member-input { flex: 1; min-width: 0; padding: 10px 14px; border: 1.5px solid #e5e7eb; border-radius: 8px; font-size: 14px; outline: none; box-sizing: border-box; }
+.member-input:focus { border-color: #f29727; }
+.btn-cek-id { background: #2c1a13; color: #fff; border: none; padding: 0 20px; font-weight: bold; border-radius: 8px; cursor: pointer; font-size: 13px; white-space: nowrap; display: flex; align-items: center; justify-content: center; }
+.btn-cek-id:hover { background: #3d241a; }
+.member-status { font-size: 13px; font-weight: 700; display: flex; align-items: center; }
+.member-status.success { color: #2e7d32; }
+.member-status.error { color: #d32f2f; }
 
-.qris-display {
-  text-align: center;
-  padding: var(--spacing-md);
-  background: var(--color-surface);
-  border-radius: var(--rounded-sm);
-  border: 1px solid var(--color-border);
-}
-
-.qris-display h3 {
-  color: var(--color-primary);
-  font-size: var(--text-headline-sm);
-  margin: var(--spacing-sm) 0;
-}
-
-.modal-footer {
-  padding: var(--spacing-md);
-  border-top: 1px solid var(--color-border);
-}
 </style>
