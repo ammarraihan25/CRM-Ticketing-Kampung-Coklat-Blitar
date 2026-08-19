@@ -7,6 +7,8 @@ import { GateModule } from './modules/gate/gate.module';
 import { MemberModule } from './modules/member/member.module';
 import { PosModule } from './modules/pos/pos.module';
 import { VoucherModule } from './modules/voucher/voucher.module';
+import { CrmModule } from './crm/crm.module';
+import { ReportsModule } from './reports/reports.module';
 import { dataSourceOptions } from './database/data-source';
 
 @Module({
@@ -17,6 +19,8 @@ import { dataSourceOptions } from './database/data-source';
     MemberModule,
     PosModule,
     VoucherModule,
+    CrmModule,
+    ReportsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

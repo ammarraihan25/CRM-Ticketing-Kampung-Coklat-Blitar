@@ -1,0 +1,16 @@
+### CRM Members
+GET http://localhost:3000/crm/members
+Accept: application/json
+
+###
+GET http://localhost:3000/crm/members?tier=Silver&tipe_member=PR
+Accept: application/json
+
+### CRM Blast WA
+POST http://localhost:3000/crm/blast
+Content-Type: application/json
+
+{
+  "target_tier": "Gold",
+  "pesan_promo": "Promo spesial Gold Member: diskon 20% tiket weekend!"
+}
