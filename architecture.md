@@ -52,6 +52,21 @@ Berikut adalah daftar RESTful API yang harus disiapkan oleh Tim Backend untuk di
 | `GET` | `/api/v1/reports/gtv` | Laporan Gross Transaction Value (GTV) harian/bulanan. |
 | `GET` | `/api/v1/reports/demographics` | Statistik pengelompokan berdasarkan *domisili* dan *tipe_member*. |
 
+### H. Modul B2B Booking (Agen & Kasir)
+| Method | Endpoint | Deskripsi |
+| :--- | :--- | :--- |
+| `POST` | `/api/v1/b2b/booking` | Agen membuat *booking* (input jumlah *pax* & tanggal). Sistem otomatis menghitung harga dari tier. |
+| `POST` | `/api/v1/b2b/booking/:id/dp` | Pembayaran DP via Payment Gateway untuk mengunci status "Terkonfirmasi (DP)". |
+| `PUT` | `/api/v1/b2b/booking/:id/pax` | Agen meng-*update* jumlah pax final sebelum hari-H. |
+| `POST` | `/api/v1/b2b/booking/:id/pay-full` | Pelunasan tagihan. Saat sukses, cetak tiket dan berikan komisi ke agen. |
+
+### I. Modul Komisi & Tier (Role: BD)
+| Method | Endpoint | Deskripsi |
+| :--- | :--- | :--- |
+| `GET` | `/api/v1/commissions/balance` | Melihat saldo komisi agen. |
+| `POST` | `/api/v1/commissions/withdraw` | BD memverifikasi dan menyetujui pencairan komisi ke agen. |
+| `PUT` | `/api/v1/tier-pricing` | BD mengubah tabel harga tier default. |
+
 ---
 
 ## 2. Struktur Direktori Proyek
@@ -65,6 +80,7 @@ backend/
 │   ├── config/          # Konfigurasi env, database (TypeORM), dan konstanta sistem.
 │   ├── common/          # Modul yang dipakai global: filters (Error handling), guards (JWT Role), decorators.
 │   ├── database/        # Definisi Entities PostgreSQL dan file Migrations.
+│   │                    # -> Entities: members, tickets, vouchers, pos_transactions, bookings, tier_pricings, agent_commissions
 │   ├── modules/         # Modul-modul fitur utama (Business Logic):
 │   │   ├── auth/        # Controller & Service untuk Login & OTP
 │   │   ├── member/      # Controller & Service untuk CRM Membership (WA PK, Domisili, Tipe Member)

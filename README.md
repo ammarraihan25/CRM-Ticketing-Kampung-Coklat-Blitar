@@ -113,6 +113,7 @@ CRM-Ticketing-Kampung-Coklat-Blitar/
 ├── architecture.md     # Arsitektur sistem, struktur folder & daftar API
 ├── BRD.md              # Business Requirements Document (Kebutuhan Bisnis)
 ├── PRD.md              # Product Requirements Document (Kebutuhan Fitur Sistem)
+├── ALUR_B2B.md         # Panduan Alur Sistem Booking B2B & Komisi
 └── README.md           # Panduan instalasi (File ini)
 ```
 
@@ -120,7 +121,8 @@ CRM-Ticketing-Kampung-Coklat-Blitar/
 Untuk memahami alur bisnis, fitur, dan arsitektur kode secara lebih mendalam, seluruh anggota tim wajib membaca dokumen berikut:
 1. **[Business Requirements Document (BRD)](./BRD.md)** - Panduan objektif bisnis, ruang lingkup (Scope), dan User Journey.
 2. **[Product Requirements Document (PRD)](./PRD.md)** - Detail spesifikasi fitur sistem, kebutuhan fungsional (FR), dan User Stories.
-3. **[Architecture & Conventions](./architecture.md)** - Daftar Endpoint API, penjelasan detail struktur folder, serta aturan main (Branching Git, Format Commit, dll) yang **harus dipatuhi**.
+3. **[Panduan Alur B2B (ALUR_B2B.md)](./ALUR_B2B.md)** - Penjelasan alur fitur Booking DP, Master Tier Pricing, dan Pencairan Komisi Agen.
+4. **[Architecture & Conventions](./architecture.md)** - Daftar Endpoint API, penjelasan detail struktur folder, serta aturan main (Branching Git, Format Commit, dll) yang **harus dipatuhi**.
 
 ## 📝 Catatan Tambahan
 - Pastikan untuk selalu membuat *branch* baru saat mengerjakan fitur baru (`git checkout -b nama-fitur`).
