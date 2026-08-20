@@ -3,7 +3,7 @@
     <div class="card-header">
       <div>
         <h3 class="card-title">Penjualan Tiket per Kategori</h3>
-        <span class="card-subtitle">Komposisi penjualan tiket reguler, rombongan, terusan & paket edukasi</span>
+        <span class="card-subtitle">Komposisi penjualan tiket reguler, rombongan, terusan &amp; paket edukasi</span>
       </div>
       <span class="badge-total">{{ totalTicketsSold.toLocaleString('id-ID') }} Tiket Total</span>
     </div>
@@ -98,40 +98,42 @@ const formatRupiah = (val: number): string => {
 
 <style scoped>
 .ticket-breakdown-card {
-  background-color: var(--color-neutral, #ffffff);
-  border: 1px solid var(--color-border, #e5e7eb);
-  border-radius: var(--rounded-md, 8px);
-  padding: 18px 20px;
-  box-shadow: 0 1px 3px rgba(44, 26, 19, 0.04);
+  background-color: #FFFDF9;
+  border: 1.5px solid #EFE4D6;
+  border-radius: 22px;
+  padding: 20px 22px;
+  box-shadow: 0 4px 14px rgba(61, 34, 20, 0.04);
 }
 
 .card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 14px;
+  margin-bottom: 16px;
 }
 
 .card-title {
+  font-family: 'Cinzel', serif;
   font-size: 16px;
-  font-weight: 700;
-  color: var(--color-primary, #2c1a13);
+  font-weight: 800;
+  color: #2C1A13;
   margin: 0;
 }
 
 .card-subtitle {
   font-size: 12px;
-  color: var(--color-muted, #6b5a52);
+  color: #7A5034;
+  margin-top: 2px;
 }
 
 .badge-total {
-  font-size: 12px;
-  font-weight: 600;
-  background-color: rgba(242, 151, 39, 0.12);
-  color: #b45309;
-  padding: 4px 10px;
+  font-size: 11.5px;
+  font-weight: 800;
+  background-color: #FAF3E8;
+  color: #B45309;
+  padding: 4px 12px;
   border-radius: 20px;
-  border: 1px solid rgba(242, 151, 39, 0.25);
+  border: 1px solid #EADBCC;
 }
 
 .table-responsive {
@@ -141,29 +143,38 @@ const formatRupiah = (val: number): string => {
 .breakdown-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13.5px;
+  font-size: 13px;
 }
 
 .breakdown-table th {
-  background-color: #faf8f5;
-  color: var(--color-muted, #6b5a52);
-  font-weight: 600;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--color-border, #e5e7eb);
+  background-color: #FAF3E8;
+  color: #7A5034;
+  font-weight: 700;
+  padding: 10px 14px;
+  border-bottom: 1.5px solid #EADBCC;
   text-align: left;
+  font-size: 11.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.breakdown-table th:first-child {
+  border-radius: 10px 0 0 10px;
+}
+
+.breakdown-table th:last-child {
+  border-radius: 0 10px 10px 0;
 }
 
 .breakdown-table td {
-  padding: 12px;
-  border-bottom: 1px solid #f3f4f6;
-  color: var(--color-primary, #2c1a13);
+  padding: 12px 14px;
+  border-bottom: 1px solid #F0E5D8;
+  color: #2C1A13;
+  vertical-align: middle;
 }
 
-.breakdown-table tr:hover td {
-  background-color: #fdfbf7;
+.cell-category {
+  min-width: 180px;
 }
 
 .ticket-type-box {
@@ -175,38 +186,39 @@ const formatRupiah = (val: number): string => {
 .color-indicator {
   width: 10px;
   height: 10px;
-  border-radius: 3px;
+  border-radius: 50%;
   flex-shrink: 0;
 }
 
 .category-name {
-  font-weight: 600;
-  color: var(--color-primary, #2c1a13);
+  font-weight: 800;
+  color: #2C1A13;
 }
 
 .category-desc {
   font-size: 11px;
-  color: var(--color-muted, #6b5a52);
+  color: #8C6D58;
 }
 
 .cell-price {
-  color: #4b5563;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px;
+  color: #5A2E17;
+  font-weight: 600;
 }
 
-.text-right {
-  text-align: right;
-}
-
-.font-medium {
-  font-weight: 500;
-}
-
-.font-bold {
+.cell-qty {
   font-weight: 700;
 }
 
-.text-amber {
-  color: #b45309;
+.cell-gtv {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  color: #2C1A13;
+}
+
+.cell-progress {
+  min-width: 130px;
 }
 
 .progress-wrapper {
@@ -218,7 +230,7 @@ const formatRupiah = (val: number): string => {
 .progress-bar-bg {
   flex: 1;
   height: 7px;
-  background-color: #f1f1f1;
+  background-color: #EDE2D4;
   border-radius: 10px;
   overflow: hidden;
 }
@@ -230,17 +242,41 @@ const formatRupiah = (val: number): string => {
 }
 
 .percentage-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--color-muted, #6b5a52);
-  width: 32px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #7A5034;
+  min-width: 32px;
   text-align: right;
 }
 
 .total-row td {
-  background-color: #f9f8f6;
-  border-top: 2px solid var(--color-border, #e5e7eb);
+  background-color: #FAF3E8;
+  border-top: 1.5px solid #D6BFA8;
   border-bottom: none;
-  padding: 12px;
+  font-size: 13px;
+}
+
+.total-row td:first-child {
+  border-radius: 10px 0 0 10px;
+}
+
+.total-row td:last-child {
+  border-radius: 0 10px 10px 0;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.font-bold {
+  font-weight: 800;
+}
+
+.font-medium {
+  font-weight: 600;
+}
+
+.text-amber {
+  color: #B45309;
 }
 </style>

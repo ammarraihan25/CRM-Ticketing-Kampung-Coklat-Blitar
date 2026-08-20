@@ -1,14 +1,11 @@
 <template>
   <div class="shift-card-elevated">
-    <!-- Top Luxury Accent Bar -->
-    <div class="shift-top-bar"></div>
-
     <!-- Header Section -->
     <div class="shift-header">
       <div class="shift-title-group">
         <div class="shift-icon-squircle">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-            <rect x="2" y="4" width="20" height="16" rx="2" />
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+            <rect x="2" y="4" width="20" height="16" rx="3" />
             <line x1="2" y1="10" x2="22" y2="10" />
           </svg>
         </div>
@@ -30,7 +27,7 @@
       </div>
     </div>
 
-    <!-- 4 Key Shift Metrics (Distinctive 2x2 Grid) -->
+    <!-- 4 Key Shift Metrics (2x2 Rounded Grid) -->
     <div class="shift-metrics-grid">
       <!-- 1. Kasir Bertugas -->
       <div class="metric-box box-cashier">
@@ -69,7 +66,7 @@
           <span class="box-label">Penerimaan Kas</span>
         </div>
         <div class="box-main-val text-amber-bold">{{ formatRupiah(shiftData.cashReceived) }}</div>
-        <div class="box-sub-val">Digital / Non-Tunai: {{ formatRupiah(shiftData.nonCashReceived) }}</div>
+        <div class="box-sub-val">Digital: {{ formatRupiah(shiftData.nonCashReceived) }}</div>
       </div>
     </div>
 
@@ -88,7 +85,7 @@
       <div class="reconcile-right">
         <span class="var-title">Selisih Kas:</span>
         <span class="var-value" :class="shiftData.variance === 0 ? 'var-zero' : 'var-diff'">
-          {{ shiftData.variance === 0 ? 'Rp 0 (Cocok/Balanced)' : formatRupiah(shiftData.variance) }}
+          {{ shiftData.variance === 0 ? 'Rp 0 (Cocok)' : formatRupiah(shiftData.variance) }}
         </span>
       </div>
     </div>
@@ -101,7 +98,7 @@
         :title="isReadOnly ? 'Hanya dapat melihat detail (Read-Only Owner)' : 'Lihat rincian transaksi kasir'"
         @click="$emit('view-details', shiftData)"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
           <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
           <circle cx="12" cy="12" r="3" />
         </svg>
@@ -115,7 +112,7 @@
         :disabled="shiftData.isClosed"
         @click="$emit('close-shift', shiftData)"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
           <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
           <path d="M7 11V7a5 5 0 0 1 10 0v4" />
         </svg>
@@ -123,7 +120,7 @@
       </button>
 
       <div v-else class="owner-lock-badge">
-        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
           <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
           <path d="M7 11V7a5 5 0 0 1 10 0v4" />
         </svg>
@@ -187,33 +184,24 @@ const formatRupiah = (value: number) => {
 
 <style scoped>
 .shift-card-elevated {
-  background: linear-gradient(180deg, #FFFFFF 0%, #FFFDF9 100%);
-  border: 1.5px solid rgba(217, 119, 6, 0.35);
-  border-radius: 18px;
-  padding: 20px 22px;
+  background: #FFFDF9;
+  border: 1.5px solid #EFE4D6;
+  border-radius: 22px;
+  padding: 22px 24px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: 0 6px 24px -4px rgba(44, 26, 19, 0.08), 0 0 0 1px rgba(242, 151, 39, 0.08);
+  box-shadow: 0 4px 14px rgba(61, 34, 20, 0.04);
   position: relative;
   overflow: hidden;
-  transition: all 0.28s ease;
+  transition: all 0.25s ease;
   height: 100%;
 }
 
 .shift-card-elevated:hover {
   transform: translateY(-3px);
-  box-shadow: 0 12px 32px -4px rgba(180, 83, 9, 0.16);
-  border-color: #F29727;
-}
-
-.shift-top-bar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3.5px;
-  background: linear-gradient(90deg, #D97706 0%, #F59E0B 50%, #2C1A13 100%);
+  box-shadow: 0 12px 24px rgba(61, 34, 20, 0.08);
+  border-color: #D97706;
 }
 
 .shift-header {
@@ -231,16 +219,14 @@ const formatRupiah = (value: number) => {
 }
 
 .shift-icon-squircle {
-  width: 40px;
-  height: 40px;
-  background: linear-gradient(135deg, #2C1A13 0%, #4A2E22 100%);
-  border: 1.5px solid rgba(242, 151, 39, 0.5);
-  border-radius: 12px;
+  width: 44px;
+  height: 44px;
+  background: #3D2214;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #F29727;
-  box-shadow: 0 4px 12px rgba(44, 26, 19, 0.2);
+  color: #F59E0B;
 }
 
 .shift-title-meta {
@@ -253,99 +239,80 @@ const formatRupiah = (value: number) => {
   display: flex;
   align-items: center;
   gap: 8px;
-  flex-wrap: wrap;
 }
 
 .shift-title {
+  font-family: 'Cinzel', serif;
   font-size: 16px;
   font-weight: 800;
   color: #2C1A13;
   margin: 0;
-  letter-spacing: -0.3px;
 }
 
 .terminal-badge {
-  background: rgba(242, 151, 39, 0.14);
-  color: #B45309;
-  border: 1px solid rgba(242, 151, 39, 0.35);
   font-size: 10.5px;
   font-weight: 800;
-  padding: 2px 7px;
-  border-radius: 6px;
-  text-transform: uppercase;
+  background: #FAF3E8;
+  color: #B45309;
+  padding: 2.5px 8px;
+  border-radius: 10px;
+  border: 1px solid #EADBCC;
 }
 
 .shift-subtitle {
   font-size: 12px;
-  color: #78655C;
+  color: #7A5034;
 }
 
 .status-pill-live {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 11px;
-  font-weight: 800;
-  padding: 4px 10px;
+  padding: 4px 12px;
   border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 800;
 }
 
 .status-active {
-  background: #ECFDF5;
-  color: #047857;
-  border: 1px solid #A7F3D0;
+  background: #D1FAE5;
+  color: #065F46;
 }
 
 .status-closed {
-  background: #F3F4F6;
-  color: #4B5563;
-  border: 1px solid #D1D5DB;
+  background: #FEE2E2;
+  color: #991B1B;
 }
 
 .live-dot-pulse {
   width: 6px;
   height: 6px;
-  background: #10B981;
   border-radius: 50%;
-  box-shadow: 0 0 6px #10B981;
-  animation: pulse-dot 1.5s infinite;
+  background: currentColor;
 }
 
-@keyframes pulse-dot {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(0.85); }
-}
-
-/* 4 Metrics Grid */
+/* 4 Key Metrics Grid */
 .shift-metrics-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-  margin-bottom: 14px;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
 .metric-box {
-  background: #FFFDF9;
-  border: 1px solid #F2ECE4;
-  border-radius: 12px;
-  padding: 10px 12px;
+  background: #FAF3E8;
+  border: 1px solid #EFE4D6;
+  border-radius: 16px;
+  padding: 12px 14px;
   display: flex;
   flex-direction: column;
-  gap: 2px;
-  transition: all 0.2s ease;
-}
-
-.metric-box:hover {
-  background: #FFFFFF;
-  border-color: #F29727;
-  box-shadow: 0 4px 12px rgba(44, 26, 19, 0.05);
+  gap: 3px;
 }
 
 .box-icon-label {
   display: flex;
   align-items: center;
   gap: 6px;
-  margin-bottom: 2px;
 }
 
 .box-icon {
@@ -355,56 +322,62 @@ const formatRupiah = (value: number) => {
 .box-label {
   font-size: 10.5px;
   font-weight: 700;
-  color: #8C786E;
+  color: #8C6D58;
   text-transform: uppercase;
-  letter-spacing: 0.3px;
 }
 
 .box-main-val {
-  font-size: 13.5px;
+  font-size: 14.5px;
   font-weight: 800;
-  color: #1C0E08;
+  color: #2C1A13;
 }
-
-.text-cocoa-bold { color: #2C1A13; }
-.text-amber-bold { color: #D97706; }
 
 .box-sub-val {
   font-size: 11px;
-  color: #8C786E;
+  color: #7A5034;
+}
+
+.text-cocoa-bold {
+  color: #3D2214;
+}
+
+.text-amber-bold {
+  color: #B45309;
 }
 
 /* Reconciliation Banner */
 .reconciliation-banner {
+  border-radius: 14px;
+  padding: 12px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 14px;
-  border-radius: 10px;
+  gap: 12px;
   margin-bottom: 16px;
-  gap: 10px;
-  flex-wrap: wrap;
 }
 
 .banner-balanced {
-  background: #F0FDF4;
-  border: 1px solid #BBF7D0;
-}
-
-.banner-pending {
-  background: #FFFBEB;
-  border: 1px solid #FDE68A;
+  background: #ECFDF5;
+  border: 1px solid #A7F3D0;
+  color: #065F46;
 }
 
 .banner-discrepancy {
   background: #FEF2F2;
   border: 1px solid #FECACA;
+  color: #991B1B;
+}
+
+.banner-pending {
+  background: #FFFBEB;
+  border: 1px solid #FDE68A;
+  color: #92400E;
 }
 
 .reconcile-left {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .reconcile-status-icon {
@@ -418,106 +391,115 @@ const formatRupiah = (value: number) => {
 }
 
 .reconcile-title {
-  font-size: 10.5px;
+  font-size: 11.5px;
   font-weight: 800;
-  color: #166534;
-  text-transform: uppercase;
 }
 
 .reconcile-detail {
-  font-size: 11.5px;
-  color: #374151;
+  font-size: 11px;
+  opacity: 0.9;
 }
 
 .reconcile-right {
   display: flex;
-  align-items: center;
-  gap: 6px;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
 }
 
 .var-title {
-  font-size: 11px;
-  font-weight: 600;
-  color: #6B7280;
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 
 .var-value {
-  font-size: 12px;
-  font-weight: 800;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12.5px;
+  font-weight: 900;
 }
 
-.var-zero { color: #15803D; }
-.var-diff { color: #DC2626; }
+.var-zero {
+  color: #059669;
+}
 
-/* Footer Action Buttons */
+.var-diff {
+  color: #DC2626;
+}
+
+/* Footer Actions */
 .shift-footer-actions {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
-  padding-top: 10px;
-  border-top: 1px solid #F3EFEA;
+  justify-content: space-between;
+  gap: 10px;
 }
 
 .btn-shift-secondary {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 14px;
+  background: #FFFFFF;
+  border: 1.5px solid #EADBCC;
+  color: #5A2E17;
+  padding: 8px 16px;
+  border-radius: 12px;
   font-size: 12px;
-  font-weight: 700;
-  font-family: inherit;
-  background: #F5F3EF;
-  color: #44403C;
-  border: 1px solid #E6E1DA;
-  border-radius: 8px;
+  font-weight: 800;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .btn-shift-secondary:hover {
-  background: #EAE6DF;
-  color: #2C1A13;
+  background: #FAF3E8;
+  border-color: #D97706;
 }
 
 .btn-shift-primary {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 16px;
-  font-size: 12px;
-  font-weight: 700;
-  font-family: inherit;
-  background: linear-gradient(135deg, #2C1A13 0%, #4A2E22 100%);
+  background: linear-gradient(135deg, #D97706 0%, #B45309 100%);
   color: #FFFFFF;
-  border: 1px solid #F29727;
-  border-radius: 8px;
+  border: none;
+  padding: 9px 18px;
+  border-radius: 12px;
+  font-size: 12.5px;
+  font-weight: 800;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(44, 26, 19, 0.25);
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.25);
   transition: all 0.2s ease;
 }
 
 .btn-shift-primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, #4A2E22 0%, #5E3B2D 100%);
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(44, 26, 19, 0.35);
 }
 
 .btn-shift-primary:disabled {
-  opacity: 0.5;
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
 .owner-lock-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
   font-size: 11.5px;
   font-weight: 700;
-  color: #B45309;
-  background: #FFFBEB;
-  border: 1px solid #FDE68A;
-  padding: 6px 12px;
-  border-radius: 8px;
+  color: #92400E;
+  background: #FEF3C7;
+  padding: 8px 14px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+@media (max-width: 600px) {
+  .shift-metrics-grid {
+    grid-template-columns: 1fr;
+  }
+  .shift-footer-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 </style>

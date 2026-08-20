@@ -3,22 +3,6 @@
     <!-- Header Section -->
     <header class="reports-header">
       <div class="header-left">
-        <div class="header-badge-row">
-          <div class="brand-mini-chip">
-            <img :src="logoImg" alt="Kampung Coklat" class="mini-chip-img" />
-            <span>Kampung Coklat Blitar</span>
-          </div>
-          <div class="badge-tag">
-            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-              <polyline points="14 2 14 8 20 8" />
-              <line x1="16" y1="13" x2="8" y2="13" />
-              <line x1="16" y1="17" x2="8" y2="17" />
-              <polyline points="10 9 9 9 8 9" />
-            </svg>
-            <span>Pusat Laporan & Evaluasi Bisnis</span>
-          </div>
-        </div>
         <h1 class="page-title">Reports & Data Analytics</h1>
         <p class="page-subtitle">
           Data historis transaksi, verifikasi tiket pintu, database CRM, dan demografi pengunjung Kampung Coklat.
@@ -738,48 +722,44 @@ onMounted(() => {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Outfit:wght@500;600;700;800;900&family=Jost:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap');
+
 .reports-container {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  max-width: 1320px;
+  gap: 22px;
+  max-width: 1380px;
   width: 100%;
-  margin: 0 auto;
+  font-family: 'Jost', sans-serif;
 }
 
 /* Header */
 .reports-header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
-}
-
-.badge-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background-color: rgba(242, 151, 39, 0.15);
-  color: #B45309;
-  font-size: 11.5px;
-  font-weight: 600;
-  padding: 3px 10px;
-  border-radius: 20px;
-  margin-bottom: 4px;
+  min-height: 75px;
+  padding: 6px 0 10px 0;
+  position: relative;
 }
 
 .page-title {
+  font-family: 'Cinzel', serif;
   font-size: 26px;
-  font-weight: 700;
-  color: var(--color-primary, #2C1A13);
-  margin: 0;
+  font-weight: 900;
+  color: #2C1A13;
+  margin: 0 0 4px 0;
+  letter-spacing: 0.3px;
 }
 
 .page-subtitle {
-  font-size: 13px;
-  color: #6B5A52;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #6E442B;
   margin: 0;
+  line-height: 1.4;
 }
 
 .header-actions {

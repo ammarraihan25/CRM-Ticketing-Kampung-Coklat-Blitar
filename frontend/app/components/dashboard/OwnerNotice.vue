@@ -3,16 +3,16 @@
     <div class="banner-left">
       <div class="role-icon-box">
         <!-- Crown / Key / Shield icon based on role -->
-        <svg v-if="activeRole === 'owner'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="role-icon">
+        <svg v-if="activeRole === 'owner'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="role-icon">
           <path d="m2 4 3 12h14l3-12-6 7-4-7-4 7-6-7zm3 16h14" />
         </svg>
-        <svg v-else-if="activeRole === 'manager'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="role-icon">
+        <svg v-else-if="activeRole === 'manager'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="role-icon">
           <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
           <circle cx="9" cy="7" r="4" />
           <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
           <path d="M16 3.13a4 4 0 0 1 0 7.75" />
         </svg>
-        <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="role-icon">
+        <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="role-icon">
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
         </svg>
       </div>
@@ -21,7 +21,7 @@
         <div class="role-title-row">
           <span class="role-badge">{{ roleLabel }}</span>
           <span class="view-mode-tag" :class="isReadOnly ? 'tag-readonly' : 'tag-editable'">
-            {{ isReadOnly ? 'Read-Only Executive View' : 'Full Operational Access' }}
+            {{ isReadOnly ? '● Read-Only Executive View' : '● Full Operational Access' }}
           </span>
         </div>
         <p class="role-description">
@@ -60,11 +60,11 @@
         </button>
         <button 
           type="button"
-          class="switch-btn switch-owner" 
+          class="switch-btn" 
           :class="{ active: activeRole === 'owner' }"
           @click="selectRole('owner')"
         >
-          Owner (Read-Only)
+          Owner
         </button>
       </div>
     </div>
@@ -75,95 +75,57 @@
 import { computed } from 'vue'
 import { useAuth, type UserRole } from '~/composables/useAuth'
 
-interface Props {
-  modelValue?: UserRole
-}
+const { currentRole, setRole, isReadOnly } = useAuth()
 
-const props = defineProps<Props>()
-
-const emit = defineEmits<{
-  (e: 'update:modelValue', role: UserRole): void
-}>()
-
-const { currentRole, loginAs } = useAuth()
-
-const activeRole = computed(() => props.modelValue || currentRole.value)
-const isReadOnly = computed(() => activeRole.value === 'owner')
+const activeRole = computed(() => currentRole.value)
 
 const roleLabel = computed(() => {
   switch (activeRole.value) {
-    case 'owner': return 'Role: Owner / Komisaris'
-    case 'manager': return 'Role: Operational Manager'
-    case 'admin': default: return 'Role: Super Admin'
+    case 'owner': return '👑 Mode Eksekutif: Owner'
+    case 'manager': return '📋 Mode Operasional: Manager'
+    default: return '⚡ Mode Penuh: Administrator'
   }
 })
 
 const selectRole = (role: UserRole) => {
-  loginAs(role)
-  emit('update:modelValue', role)
+  setRole(role)
 }
 </script>
 
 <style scoped>
 .role-access-banner {
-  background-color: var(--color-neutral, #ffffff);
-  border: 1px solid var(--color-border, #e5e7eb);
-  border-radius: var(--rounded-md, 8px);
-  padding: 14px 18px;
+  background: #FFFDF9;
+  border: 1.5px solid #EFE4D6;
+  border-radius: 20px;
+  padding: 16px 20px;
   display: flex;
-  align-items: center;
   justify-content: space-between;
+  align-items: center;
   gap: 16px;
-  margin-bottom: 20px;
-  transition: all 0.25s ease;
-}
-
-.role-access-banner.role-owner {
-  background: linear-gradient(135deg, #fffdf8 0%, #fff6e5 100%);
-  border-color: #f59e0b;
-  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.12);
-}
-
-.role-access-banner.role-manager {
-  background: linear-gradient(135deg, #fafafa 0%, #f0f4f8 100%);
-  border-color: #3b82f6;
-}
-
-.role-access-banner.role-admin {
-  background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%);
-  border-color: var(--color-primary-20, #c9b3a8);
+  box-shadow: 0 4px 14px rgba(61, 34, 20, 0.04);
+  transition: all 0.2s ease;
 }
 
 .banner-left {
   display: flex;
   align-items: center;
   gap: 14px;
+  flex: 1;
 }
 
 .role-icon-box {
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
 }
 
-.role-owner .role-icon-box {
-  background-color: rgba(245, 158, 11, 0.15);
-  color: #b45309;
-}
-
-.role-manager .role-icon-box {
-  background-color: rgba(59, 130, 246, 0.15);
-  color: #1d4ed8;
-}
-
-.role-admin .role-icon-box {
-  background-color: rgba(44, 26, 19, 0.1);
-  color: var(--color-primary, #2c1a13);
-}
+.role-admin .role-icon-box { background: #FEF3C7; color: #B45309; }
+.role-manager .role-icon-box { background: #EDE9FE; color: #5B21B6; }
+.role-owner .role-icon-box { background: #FEF08A; color: #854D0E; }
 
 .role-icon {
   width: 22px;
@@ -173,47 +135,44 @@ const selectRole = (role: UserRole) => {
 .banner-text {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
 }
 
 .role-title-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 .role-badge {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--color-primary, #2c1a13);
+  font-size: 13px;
+  font-weight: 800;
+  color: #2C1A13;
 }
 
 .view-mode-tag {
-  font-size: 11px;
-  font-weight: 600;
-  padding: 2px 8px;
+  font-size: 10.5px;
+  font-weight: 800;
+  padding: 2.5px 8px;
   border-radius: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
 }
 
 .tag-readonly {
-  background-color: #fef3c7;
-  color: #92400e;
-  border: 1px solid #fde68a;
+  background: #FEF3C7;
+  color: #92400E;
 }
 
 .tag-editable {
-  background-color: #e0f2fe;
-  color: #0369a1;
-  border: 1px solid #bae6fd;
+  background: #D1FAE5;
+  color: #065F46;
 }
 
 .role-description {
   font-size: 12.5px;
-  color: var(--color-muted, #6b5a52);
+  color: #6E442B;
   margin: 0;
-  line-height: 1.4;
+  line-height: 1.45;
 }
 
 .role-switcher {
@@ -225,69 +184,53 @@ const selectRole = (role: UserRole) => {
 }
 
 .switcher-label {
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--color-muted, #6b5a52);
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #8C6D58;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
 }
 
 .switcher-buttons {
-  display: inline-flex;
-  background-color: #f3f4f6;
+  display: flex;
+  background: #FAF3E8;
+  border: 1px solid #EFE4D6;
   padding: 3px;
-  border-radius: 6px;
-  gap: 2px;
+  border-radius: 14px;
+  gap: 3px;
 }
 
 .switch-btn {
-  padding: 5px 12px;
-  font-size: 12px;
-  font-weight: 500;
-  font-family: inherit;
-  border: none;
   background: transparent;
-  color: #4b5563;
-  border-radius: 4px;
+  border: none;
+  padding: 5px 12px;
+  border-radius: 10px;
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #7A5034;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .switch-btn:hover {
-  color: #111827;
+  color: #2C1A13;
 }
 
 .switch-btn.active {
-  background-color: #ffffff;
-  color: var(--color-primary, #2c1a13);
-  font-weight: 600;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background: #3D2214;
+  color: #FAF5EE;
+  box-shadow: 0 2px 6px rgba(61, 34, 20, 0.2);
 }
 
-.switch-btn.switch-owner.active {
-  background-color: #f59e0b;
-  color: #ffffff;
-}
-
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .role-access-banner {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: stretch;
   }
-  
   .role-switcher {
-    align-items: flex-start;
-    width: 100%;
+    align-items: stretch;
   }
-
   .switcher-buttons {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .switch-btn {
-    flex: 1;
-    text-align: center;
+    justify-content: center;
   }
 }
 </style>
