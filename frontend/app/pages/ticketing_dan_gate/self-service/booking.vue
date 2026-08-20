@@ -71,16 +71,33 @@ const memberId = ref('')
 const isMemberVerified = ref(false)
 const isCustomerDataComplete = ref(false)
 
+const formErrorMessage = ref('')
+
 const verifyMember = () => {
-  if (memberId.value.trim().length >= 5) {
+  formErrorMessage.value = ''
+  if (String(memberId.value || '').trim().length >= 5) {
     isMemberVerified.value = true
     // Simulate auto-fill from member database
     customerName.value = 'Budi Santoso'
     customerPhone.value = '081234567890'
     customerAddress.value = 'Jl. Merdeka No. 10, Blitar'
   } else {
-    alert('Masukkan ID Member yang valid (min. 5 karakter).')
+    formErrorMessage.value = 'Masukkan ID Member yang valid (min. 5 karakter).'
   }
+}
+
+const saveBookingData = () => {
+  formErrorMessage.value = ''
+  
+  const phone = String(customerPhone.value || '').trim()
+  const name = String(customerName.value || '').trim()
+  
+  if (phone.length === 0) { formErrorMessage.value = 'Nomor telepon harus diisi.'; return; }
+  if (name.length === 0) { formErrorMessage.value = 'Nama lengkap harus diisi.'; return; }
+  if (!selectedDate.value) { formErrorMessage.value = 'Tanggal kunjungan harus dipilih.'; return; }
+  
+  isCustomerDataComplete.value = true
+  isDateConfirmed.value = true
 }
 
 const submitCustomerData = () => {
@@ -324,31 +341,40 @@ const closeTicketModal = () => {
               </div>
             </div>
 
-            <button class="btn-primary" @click="() => { 
-                if (customerPhone.trim().length < 10) { alert('Nomor telepon tidak valid.'); return; }
-                if (customerName.trim().length < 3) { alert('Nama lengkap harus diisi.'); return; }
-                if (!selectedDate) { alert('Tanggal kunjungan harus dipilih.'); return; }
-                isCustomerDataComplete = true; isDateConfirmed = true; 
-              }" 
+            <div v-if="formErrorMessage" style="background: #fee2e2; color: #b91c1c; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: 600; text-align: center; margin-top: 10px;">
+              {{ formErrorMessage }}
+            </div>
+            <button class="btn-primary" @click="saveBookingData" 
               style="width: 100%; padding: 16px; border-radius: 8px; font-weight: 600; font-size: 16px; margin-top: 10px;">
               Simpan & Lanjutkan Transaksi
             </button>
           </div>
           
           <!-- Summary View when Data is Complete -->
-          <div v-else style="background: #fdfbf7; border-left: 4px solid #f29727; padding: 20px; border-radius: 6px; display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 15px;">
-            <div>
-              <div style="font-weight: 700; color: #2c1a13; font-size: 16px; margin-bottom: 8px;">
-                {{ customerName }} 
-                <span v-if="isMemberVerified" style="background: #f29727; color: white; font-size: 11px; padding: 2px 6px; border-radius: 4px; margin-left: 5px;">MEMBER</span>
+          <div v-else class="summary-card">
+            <div class="summary-content">
+              <div class="summary-header">
+                <div class="summary-name">{{ customerName }} <span v-if="isMemberVerified" class="member-badge">MEMBER</span></div>
+                <button class="btn-edit-form" @click="() => { isCustomerDataComplete = false; isDateConfirmed = false; }">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"></path><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path></svg>
+                  Ubah Data
+                </button>
               </div>
-              <div style="font-size: 13px; color: #666; margin-bottom: 4px;">📞 {{ customerPhone }}</div>
-              <div v-if="customerAddress" style="font-size: 13px; color: #666; margin-bottom: 8px;">📍 {{ customerAddress }}</div>
-              <div style="font-size: 13px; color: #2c1a13; font-weight: 600; background: #fae8d4; padding: 4px 8px; border-radius: 4px; display: inline-block; margin-top: 5px;">
-                📅 Kunjungan: {{ formatDate(selectedDate) }}
+              <div class="summary-details">
+                <div class="detail-item">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                  <span>{{ customerPhone }}</span>
+                </div>
+                <div class="detail-item" v-if="customerAddress">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6b7280" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                  <span>{{ customerAddress }}</span>
+                </div>
+                <div class="detail-item detail-date">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#f29727" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                  <span>Kunjungan: <strong>{{ formatDate(selectedDate) }}</strong></span>
+                </div>
               </div>
             </div>
-            <button class="btn-outline-primary" @click="() => { isCustomerDataComplete = false; isDateConfirmed = false; }" style="padding: 8px 15px; font-size: 13px; border-radius: 6px;">Ubah Form</button>
           </div>
         </div>
 
@@ -536,91 +562,184 @@ const closeTicketModal = () => {
       </div>
     </div>
 
-    <!-- Payment Modal (QRIS) -->
+    <!-- Payment Modal (2-Column Layout) -->
     <div class="modal-overlay" v-if="showPaymentModal">
-      <div class="modal-card">
-        <div class="modal-header">
-          <h2>Pembayaran (QRIS)</h2>
-          <button class="close-btn" @click="showPaymentModal = false">×</button>
-        </div>
-        <div class="modal-body text-center" v-if="!paymentSuccess">
-          <p class="payment-subtitle">Selesaikan pembayaran Anda segera</p>
-          <div class="total-box">Rp {{ getCartTotal().toLocaleString('id-ID') }}</div>
-          
-          <div class="qris-box">
-             <div class="qris-placeholder">
-               <div style="width:200px; height:200px; background:#fff; padding:10px; border:2px solid #000; display:inline-block;">
-                 <div style="width:100%; height:100%; background:repeating-conic-gradient(#000 0% 25%, #fff 0% 50%) 50% / 20px 20px;"></div>
-               </div>
-             </div>
+      <div class="payment-modal-container">
+        
+        <div class="pm-layout">
+          <!-- Left Column: Payment Methods -->
+          <div class="pm-left-panel">
+            <div class="pm-section-header">
+              <div class="pm-icon-circle bg-green">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+              </div>
+              <h2>Metode Pembayaran</h2>
+            </div>
+            
+            <div class="pm-methods-container">
+              <!-- TRANSFER -->
+              <label class="pm-method-card" :class="{'active': paymentMethod === 'transfer'}">
+                <div class="pm-method-header">
+                  <div class="pm-method-info">
+                    <span class="pm-method-title">Transfer Bank / Virtual Account</span>
+                    <span class="pm-method-desc">Verifikasi otomatis melalui mutasi</span>
+                  </div>
+                  <input type="radio" v-model="paymentMethod" value="transfer" checked name="paymethod" class="pm-radio-custom" />
+                </div>
+                <div class="pm-method-body" v-if="paymentMethod === 'transfer'">
+                  <div class="pm-bank-list">
+                    <label class="pm-bank-option">
+                      <div class="pm-bank-name"><div class="bank-logo bca">BCA</div> BCA</div>
+                      <input type="radio" name="bank" checked class="pm-radio-custom" />
+                    </label>
+                    <label class="pm-bank-option">
+                      <div class="pm-bank-name"><div class="bank-logo mandiri">MDR</div> Mandiri</div>
+                      <input type="radio" name="bank" class="pm-radio-custom" />
+                    </label>
+                    <label class="pm-bank-option">
+                      <div class="pm-bank-name"><div class="bank-logo bni">BNI</div> BNI</div>
+                      <input type="radio" name="bank" class="pm-radio-custom" />
+                    </label>
+                    <label class="pm-bank-option">
+                      <div class="pm-bank-name"><div class="bank-logo bri">BRI</div> BRI</div>
+                      <input type="radio" name="bank" class="pm-radio-custom" />
+                    </label>
+                  </div>
+                </div>
+              </label>
+
+              <!-- QRIS -->
+              <label class="pm-method-card" :class="{'active': paymentMethod === 'qris'}">
+                <div class="pm-method-header">
+                  <div class="pm-method-info">
+                    <span class="pm-method-title">QRIS</span>
+                    <span class="pm-method-desc">Bayar menggunakan E-Wallet / Mobile Banking</span>
+                  </div>
+                  <input type="radio" v-model="paymentMethod" value="qris" name="paymethod" class="pm-radio-custom" />
+                </div>
+                <div class="pm-method-body" v-if="paymentMethod === 'qris'">
+                  <div class="pm-qris-box">
+                    <div class="pm-qr-placeholder">
+                      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#5c3d2e" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><rect x="7" y="7" width="3" height="3"></rect><rect x="14" y="7" width="3" height="3"></rect><rect x="7" y="14" width="3" height="3"></rect><rect x="14" y="14" width="3" height="3"></rect></svg>
+                    </div>
+                    <p>Silakan scan QRIS di atas.</p>
+                  </div>
+                </div>
+              </label>
+
+              <!-- DEBIT/KREDIT -->
+              <label class="pm-method-card" :class="{'active': paymentMethod === 'debit'}">
+                <div class="pm-method-header">
+                  <div class="pm-method-info">
+                    <span class="pm-method-title">Kartu Debit / Kredit (EDC)</span>
+                    <span class="pm-method-desc">Gesek kartu pada mesin EDC Kasir</span>
+                  </div>
+                  <input type="radio" v-model="paymentMethod" value="debit" name="paymethod" class="pm-radio-custom" />
+                </div>
+                <div class="pm-method-body" v-if="paymentMethod === 'debit'">
+                  <div class="pm-input-group">
+                    <label>Nomor Referensi EDC (Opsional)</label>
+                    <input type="text" class="pm-input" placeholder="Contoh: 123456" />
+                  </div>
+                </div>
+              </label>
+            </div>
+
+            <button class="pm-btn-primary" @click="processPayment">BAYAR & CETAK STRUK</button>
+            <button class="pm-btn-secondary" @click="showPaymentModal = false">Batal</button>
           </div>
-          <p class="help-text">Gunakan aplikasi M-Banking atau E-Wallet untuk memindai kode QRIS.</p>
-          <button class="btn-primary btn-block" @click="processPayment">Saya Sudah Bayar</button>
+
+          <!-- Right Column: Order Summary -->
+          <div class="pm-right-panel">
+            <div class="pm-section-header">
+              <div class="pm-icon-circle bg-green">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              </div>
+              <h2>Detail Pesanan</h2>
+            </div>
+            
+            <div class="pm-order-items">
+              <div v-for="item in cart" :key="item.id || item.packageId || item.name" class="pm-order-item">
+                <div class="pm-item-row">
+                  <span class="pm-item-name">{{ item.name }}</span>
+                  <span class="pm-item-price">Rp {{ (item.price * item.qty).toLocaleString('id-ID') }}</span>
+                </div>
+                <div class="pm-item-qty-row">
+                  <span class="pm-item-qty">{{ item.qty }}x</span> <span class="pm-item-unit">@ Rp {{ item.price.toLocaleString('id-ID') }}</span>
+                </div>
+              </div>
+
+              <!-- Discount for B2B -->
+              <div v-if="typeof discountPercent !== 'undefined' && discountPercent > 0" class="pm-order-item pm-discount-item">
+                <div class="pm-item-row">
+                  <span class="pm-item-name">Diskon ({{ discountPercent }}%)</span>
+                  <span class="pm-item-price">- Rp {{ discountAmount.toLocaleString('id-ID') }}</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="pm-order-footer">
+              <div class="pm-total-box">
+                <div class="pm-total-row">
+                  <span class="pm-total-label">Total Tagihan</span>
+                  <span class="pm-total-value">Rp {{ getCartTotal().toLocaleString('id-ID') }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="modal-body text-center" v-else>
-          <div class="success-icon">✅</div>
-          <h1 class="text-success">Pembayaran Berhasil!</h1>
-          <p>E-Ticket Anda sedang diproses dan dikirimkan. Terima kasih!</p>
-        </div>
+
       </div>
     </div>
-    <!-- E-Ticket Modal -->
-    <div class="modal-overlay" v-if="showTicketModal" @click.self="closeTicketModal">
-      <div class="ticket-card elegant-shadow">
+
+    <!-- Ticket/Success Modal -->
+    <div class="modal-overlay" v-if="showTicketModal">
+      <div class="ticket-modal-container">
+        
         <div class="ticket-header">
-          <div style="font-weight: bold; font-size: 20px; letter-spacing: 1px;">KAMPUNG COKLAT</div>
-          <div style="font-size: 12px; opacity: 0.8;">E-TICKET RESMI</div>
+          <div class="ticket-success-check">
+             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          </div>
+          <h2>Pembayaran Berhasil!</h2>
+          <p>Terima kasih, berikut adalah E-Tiket Anda</p>
         </div>
-        
+
         <div class="ticket-body">
-          <div class="ticket-status">
-            <span>✅ LUNAS</span>
+          <div class="ticket-qr-section">
+            <img :src="'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=TIX-' + Math.floor(Math.random() * 1000000000)" alt="QR Code" class="ticket-qr-image" />
+            <p class="ticket-scan-instruction">Scan QR Code ini di Gate Masuk</p>
           </div>
           
-          <div class="ticket-qr-container">
-             <div style="width:160px; height:160px; background:#fff; padding:10px; border:2px solid #000; display:inline-block; margin:0 auto; border-radius: 8px;">
-               <div style="width:100%; height:100%; background:repeating-conic-gradient(#000 0% 25%, #fff 0% 50%) 50% / 15px 15px;"></div>
-             </div>
-             <div class="ticket-id">{{ transactionId }}</div>
+          <div class="ticket-divider">
+            <div class="cutout-left"></div>
+            <div class="cutout-right"></div>
           </div>
-          
-          <div class="ticket-details">
-            <div class="detail-row">
-              <span class="detail-label">Nama</span>
-              <span class="detail-value">{{ customerName || 'Pengunjung' }}</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">No. Telepon</span>
-              <span class="detail-value">{{ customerPhone || '-' }}</span>
-            </div>
-            <div class="detail-row">
-              <span class="detail-label">Tanggal Kunjungan</span>
-              <span class="detail-value">{{ formatDate(selectedDate) }}</span>
-            </div>
-          </div>
-          
-          <div class="ticket-divider"></div>
-          
-          <div class="ticket-items">
-            <div class="detail-label" style="margin-bottom: 8px;">Ringkasan Pesanan:</div>
-            <div v-for="item in cart" :key="item.id" class="detail-row" style="margin-bottom: 4px;">
-              <span class="detail-value" style="font-size: 13px;">{{ item.qty }}x {{ item.name }}</span>
+
+          <div class="ticket-details-section">
+            <h3>Rincian Akses ({{ cart.reduce((acc, item) => acc + item.qty, 0) }} Item)</h3>
+            <div class="ticket-items-list">
+              <div v-for="item in cart" :key="item.id || item.packageId || item.name" class="ticket-item">
+                <div class="ticket-item-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#27ae60" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                </div>
+                <div class="ticket-item-info">
+                  <span class="ticket-item-name">{{ item.name }}</span>
+                  <span class="ticket-item-qty">{{ item.qty }}x Akses Penumpang/Peserta</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
         
-        <div class="ticket-footer">
-          Tunjukkan QR Code ini kepada petugas di pintu masuk.
-          <button class="btn-primary btn-block" style="margin-top: 15px; border-radius: 8px;" @click="closeTicketModal">Tutup & Kembali</button>
+        <div class="ticket-footer" style="display: flex; gap: 10px;">
+          <button type="button" class="pm-btn-secondary" onclick="window.print()" style="margin-top: 0; flex: 1; border: 2px solid #f59e0b; color: #f59e0b; font-weight: 800; padding: 16px; border-radius: 8px; text-transform: uppercase;">CETAK TIKET</button>
+          <button type="button" class="pm-btn-primary" @click="closeTicketModal" style="margin-top: 0; flex: 1;">SELESAI</button>
         </div>
-        
-        <!-- Ticket cutouts -->
-        <div class="cutout cutout-left"></div>
-        <div class="cutout cutout-right"></div>
+
       </div>
     </div>
   </div>
-</template>
+  </template>
 
 <style scoped>
 .self-service-page {
@@ -1472,5 +1591,219 @@ const closeTicketModal = () => {
   .card-desc { font-size: 11px; }
   .card-price { font-size: 14px; }
   .btn-outline-primary { padding: 4px 10px; font-size: 11px; }
+}
+
+/* Aesthetic Payment Modal Redesign */
+.modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 9999; backdrop-filter: blur(4px); }
+.payment-modal-container { background: transparent; width: 1050px; max-width: 95vw; height: 90vh; max-height: 750px; display: flex; animation: modalFadeIn 0.3s ease; }
+@keyframes modalFadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+.pm-layout { display: flex; flex: 1; gap: 20px; overflow: hidden; }
+.pm-left-panel, .pm-right-panel { background: #ffffff; border-radius: 12px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); display: flex; flex-direction: column; overflow-y: auto; }
+.pm-left-panel { flex: 6; }
+.pm-right-panel { flex: 4; }
+
+.pm-section-header { display: flex; align-items: center; gap: 12px; margin-bottom: 25px; }
+.pm-icon-circle { width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+.pm-icon-circle.bg-green { background: #27ae60; }
+.pm-section-header h2 { margin: 0; font-size: 20px; font-weight: 900; color: #5c3d2e; }
+
+.pm-methods-container { display: flex; flex-direction: column; gap: 12px; flex: 1; }
+.pm-method-card { display: block; border: 1px solid #eaeaea; border-radius: 8px; cursor: pointer; transition: all 0.2s ease; background: #fff; }
+.pm-method-card:hover { border-color: #d1d5db; }
+.pm-method-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px; }
+.pm-method-info { display: flex; flex-direction: column; gap: 4px; }
+.pm-method-title { font-weight: 800; color: #333; font-size: 15px; }
+.pm-method-desc { font-size: 12px; color: #999; }
+.pm-radio-custom { appearance: none; width: 22px; height: 22px; border: 2.5px solid #d1d5db; border-radius: 50%; outline: none; cursor: pointer; position: relative; margin: 0; }
+.pm-radio-custom:checked { border-color: #f59e0b; }
+.pm-radio-custom:checked::after { content: ''; position: absolute; top: 4px; left: 4px; width: 10px; height: 10px; background: #f59e0b; border-radius: 50%; }
+
+.pm-method-body { padding: 0 20px 20px 20px; border-top: 1px dashed #eee; margin-top: 5px; padding-top: 15px; }
+.pm-input-group label { display: block; font-size: 13px; color: #555; font-weight: 600; margin-bottom: 8px; }
+.pm-input { width: 100%; padding: 12px 15px; font-size: 16px; font-weight: bold; border: 1px solid #e2e8f0; border-radius: 8px; outline: none; transition: border 0.2s; box-sizing: border-box; }
+.pm-input:focus { border-color: #f59e0b; }
+.pm-change-info { margin-top: 15px; font-size: 15px; color: #2e7d32; background: #e8f5e9; padding: 12px; border-radius: 8px; border: 1px solid #c8e6c9; }
+
+.pm-bank-list { display: flex; flex-direction: column; gap: 8px; }
+.pm-bank-option { display: flex; justify-content: space-between; align-items: center; padding: 12px; border: 1px solid #eaeaea; border-radius: 8px; cursor: pointer; }
+.pm-bank-name { display: flex; align-items: center; gap: 12px; font-weight: 700; color: #333; }
+.bank-logo { font-size: 10px; font-weight: 900; color: #fff; padding: 3px 6px; border-radius: 4px; font-style: italic; }
+.bank-logo.bca { background: #0066AE; }
+.bank-logo.mandiri { background: #003D79; }
+.bank-logo.bni { background: #F15A23; }
+.bank-logo.bri { background: #00529C; }
+
+.pm-qris-box { text-align: center; color: #555; }
+.pm-qr-placeholder { width: 120px; height: 120px; margin: 0 auto 10px auto; background: repeating-conic-gradient(#000 0% 25%, #fff 0% 50%); background-size: 16px 16px; border: 4px solid #eaeaea; display: flex; align-items: center; justify-content: center; }
+
+.pm-btn-primary { width: 100%; background: #f59e0b; color: #fff; font-size: 16px; font-weight: 800; padding: 16px; border: none; border-radius: 8px; cursor: pointer; transition: 0.2s; margin-top: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
+.pm-btn-primary:hover { background: #d97706; transform: translateY(-2px); }
+.pm-btn-secondary { width: 100%; background: transparent; color: #888; font-size: 14px; font-weight: 600; padding: 12px; border: none; cursor: pointer; margin-top: 5px; }
+.pm-btn-secondary:hover { color: #333; }
+
+/* Order Summary */
+.pm-order-items { flex: 1; display: flex; flex-direction: column; gap: 15px; }
+.pm-order-item { border-bottom: 1px dashed #e5e7eb; padding-bottom: 15px; }
+.pm-order-item:last-child { border-bottom: none; }
+.pm-item-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
+.pm-item-name { font-weight: 700; color: #333; font-size: 14px; }
+.pm-item-price { font-weight: 700; color: #333; font-size: 14px; }
+.pm-item-qty-row { font-size: 13px; color: #999; font-weight: 500; }
+.pm-item-qty { font-weight: 800; color: #666; }
+.pm-discount-item .text-orange { color: #e65100; }
+
+.pm-order-footer { margin-top: auto; padding-top: 10px; }
+.pm-total-box { border: 1px dashed #ccc; border-radius: 8px; padding: 15px; background: #fdfdfd; }
+.pm-total-row { display: flex; justify-content: space-between; align-items: center; }
+.pm-total-label { font-size: 16px; font-weight: 800; color: #5c3d2e; }
+.pm-total-value { font-size: 20px; font-weight: 900; color: #333; }
+
+/* E-Ticket Modal Styles */
+.ticket-modal-container { background: #fff; width: 420px; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,0.2); animation: modalFadeIn 0.3s ease; position: relative; }
+.ticket-header { background: #27ae60; padding: 30px 20px 20px 20px; text-align: center; color: #fff; }
+.ticket-success-check { width: 64px; height: 64px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px auto; }
+.ticket-header h2 { margin: 0 0 5px 0; font-size: 22px; font-weight: 800; }
+.ticket-header p { margin: 0; font-size: 14px; opacity: 0.9; }
+
+.ticket-body { padding: 25px; background: #fff; }
+.ticket-qr-section { text-align: center; margin-bottom: 25px; }
+.ticket-qr-image { width: 160px; height: 160px; border: 4px solid #f4f6f8; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+.ticket-scan-instruction { font-size: 14px; font-weight: 700; color: #5c3d2e; margin-top: 12px; text-transform: uppercase; letter-spacing: 1px; }
+
+.ticket-divider { height: 0; border-top: 2px dashed #e2e8f0; position: relative; margin: 10px 0 25px 0; }
+.cutout-left, .cutout-right { width: 24px; height: 24px; background: rgba(0,0,0,0.5); border-radius: 50%; position: absolute; top: -12px; }
+.cutout-left { left: -37px; }
+.cutout-right { right: -37px; }
+
+.ticket-details-section h3 { margin: 0 0 15px 0; font-size: 15px; font-weight: 800; color: #5c3d2e; text-transform: uppercase; }
+.ticket-items-list { display: flex; flex-direction: column; gap: 12px; max-height: 200px; overflow-y: auto; }
+.ticket-item { display: flex; align-items: flex-start; gap: 12px; padding: 12px; background: #fdfdfd; border: 1px solid #eaeaea; border-radius: 8px; }
+.ticket-item-icon { margin-top: 2px; }
+.ticket-item-info { display: flex; flex-direction: column; gap: 4px; }
+.ticket-item-name { font-weight: 700; font-size: 14px; color: #333; }
+.ticket-item-qty { font-size: 12px; font-weight: 600; color: #7f8c8d; }
+
+.ticket-footer { padding: 0 25px 25px 25px; background: #fff; }
+@media print {
+  @page { margin: 0; }
+  html, body { margin: 0; padding: 0; background: #fff; color: #000; height: auto !important; min-height: auto !important; overflow: visible !important; }
+  body * { visibility: hidden !important; }
+  .ticket-modal-container, .ticket-modal-container * { visibility: visible !important; color: #000 !important; }
+  
+  /* Reset container for thermal printer (approx 80mm / 300px width) */
+  .ticket-modal-container { 
+    position: absolute; left: 0; top: 0; margin: 0; padding: 5px; 
+    border: none; box-shadow: none; width: 100%; max-width: 300px; 
+    height: auto; background: #fff; border-radius: 0; 
+  }
+  
+  /* Hide non-essential UI elements */
+  .ticket-footer, .pm-layout, .payment-modal-container, .ticket-success-check, .cutout-left, .cutout-right, .ticket-item-icon { display: none !important; }
+  
+  /* Compact Header */
+  .ticket-header { padding: 10px 0 5px 0 !important; background: transparent !important; color: #000 !important; text-align: center; }
+  .ticket-header h2 { font-size: 16px !important; margin: 0 0 2px 0 !important; color: #000 !important; }
+  .ticket-header p { font-size: 10px !important; margin: 0 !important; color: #000 !important; }
+
+  /* Compact Body */
+  .ticket-body { padding: 5px 0 !important; }
+  
+  /* Smaller QR Code */
+  .ticket-qr-section { margin-bottom: 10px !important; text-align: center; }
+  .ticket-qr-image { width: 120px !important; height: 120px !important; border: none !important; box-shadow: none !important; margin: 0 auto; display: block; }
+  .ticket-scan-instruction { font-size: 10px !important; margin-top: 5px !important; }
+
+  /* Divider */
+  .ticket-divider { border-top: 1px dashed #000 !important; margin: 8px 0 !important; }
+
+  /* Ticket Details */
+  .ticket-details-section h3 { font-size: 12px !important; margin: 0 0 5px 0 !important; text-align: center; }
+  .ticket-items-list { max-height: none !important; gap: 4px !important; }
+  
+  /* Compact Items */
+  .ticket-item { padding: 4px 0 !important; background: transparent !important; border: none !important; border-bottom: 1px dotted #ccc !important; border-radius: 0 !important; align-items: center; justify-content: center; text-align: center; }
+  .ticket-item:last-child { border-bottom: none !important; }
+  .ticket-item-info { width: 100%; align-items: center; gap: 2px !important; }
+  .ticket-item-name { font-size: 12px !important; }
+  .ticket-item-qty { font-size: 10px !important; }
+}
+
+/* Summary Card Styling */
+.summary-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+  margin-top: 10px;
+}
+.summary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px dashed #e5e7eb;
+}
+.summary-name {
+  font-weight: 800;
+  color: #1f2937;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.member-badge {
+  background: #f59e0b;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  letter-spacing: 0.5px;
+}
+.btn-edit-form {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: #f3f4f6;
+  color: #4b5563;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-edit-form:hover {
+  background: #e5e7eb;
+  color: #1f2937;
+}
+.summary-details {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.detail-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #4b5563;
+  font-size: 14px;
+  font-weight: 500;
+}
+.detail-date {
+  background: #fffbeb;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #fef3c7;
+  color: #92400e;
+  margin-top: 4px;
+  width: fit-content;
+}
+.detail-date strong {
+  font-weight: 700;
+  color: #b45309;
 }
 </style>
