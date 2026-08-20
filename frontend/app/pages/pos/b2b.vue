@@ -375,8 +375,8 @@ const finishTransaction = () => {
     </div>
 
     <!-- Right Pane: Cart -->
-    <div class="pos-cart-pane" style="background: #ffffff; border-left: 1px solid #f0f0f0;">
-      <div style="padding: 30px; display: flex; flex-direction: column; height: 100%;">
+    <div class="pos-cart-pane">
+      <div style="display: flex; flex-direction: column; height: 100%;">
         <h1 style="font-size: 32px; font-weight: 800; color: #2c1a13; margin: 0 0 30px 0;">Keranjang</h1>
 
         <!-- Cart Items with Quantities -->
@@ -875,10 +875,11 @@ const finishTransaction = () => {
 }
 
 /* Booking Form Step 1 - B2B Nested Layout */
-.pos-wrapper { display: flex; height: calc(100vh - 60px); background-color: #f0f2f5; font-family: 'Inter', sans-serif; overflow: hidden; }
-.pos-form-pane { width: 360px; min-width: 360px; background: #f8f9fa; padding: 25px; overflow-y: auto; border-right: 1px solid #e5e7eb; box-shadow: 2px 0 10px rgba(0,0,0,0.02); display: flex; flex-direction: column; z-index: 5; }
-.pos-catalog-pane { flex: 1; display: flex; flex-direction: column; padding: 30px; overflow: hidden; background: transparent; }
-.pos-cart-pane { width: 360px; min-width: 360px; background: #ffffff; border-left: 1px solid #e5e7eb; box-shadow: -4px 0 15px rgba(0,0,0,0.04); display: flex; flex-direction: column; z-index: 5; }
+/* Booking Form Step 1 - B2B Nested Layout */
+.pos-wrapper { display: flex; height: calc(100vh - 75px); background-color: transparent; overflow: hidden; gap: 24px; padding: 24px; }
+.pos-form-pane { width: 360px; min-width: 360px; background: #ffffff; padding: 25px; overflow-y: auto; border-radius: 24px; box-shadow: 0 4px 24px rgba(44, 26, 19, 0.04); display: flex; flex-direction: column; z-index: 5; }
+.pos-catalog-pane { flex: 1; display: flex; flex-direction: column; padding: 25px; overflow: hidden; background: #ffffff; border-radius: 24px; box-shadow: 0 4px 24px rgba(44, 26, 19, 0.04); }
+.pos-cart-pane { width: 360px; min-width: 360px; background: #ffffff; padding: 25px; overflow-y: auto; border-radius: 24px; box-shadow: 0 4px 24px rgba(44, 26, 19, 0.04); display: flex; flex-direction: column; z-index: 5; }
 .pane-title { font-size: 18px; font-weight: 800; color: #2c1a13; margin: 0 0 25px 0; display: flex; align-items: center; gap: 8px; }
 .step-1-form-b2b { max-width: 1000px; margin: 0 auto; padding: 20px; }
 .form-section-box { background: #ffffff; border-radius: 12px; padding: 20px; border: 1px solid #e5e7eb; box-shadow: 0 2px 8px rgba(0,0,0,0.02); margin-bottom: 20px; }

@@ -1,6 +1,5 @@
 <template>
   <div class="ticket-breakdown-card">
-    <div class="card-top-accent"></div>
 
     <!-- Header Section -->
     <div class="card-header-flex">
@@ -17,54 +16,52 @@
           <p class="card-subtitle">Volume transaksi real-time &amp; kontribusi omzet</p>
         </div>
       </div>
-      <span class="badge-total-sold">{{ totalTicketsSold.toLocaleString('id-ID') }} Tiket Terjual</span>
     </div>
 
-    <!-- 4 Aesthetic Horizontal Slates -->
-    <div class="ticket-slates-list">
-      <div 
-        v-for="(item, idx) in ticketItems" 
-        :key="item.id" 
-        class="ticket-slate-row"
-        :class="{ 'is-slate-lead': idx === 0 }"
-        :style="{ '--slate-color': item.color }"
-      >
-        <div class="slate-identity">
-          <div class="slate-name-group">
-            <div class="slate-title-line">
-              <span class="slate-name">{{ item.name }}</span>
-              <span v-if="idx === 0" class="top-tag">Terlaris</span>
-            </div>
+    <!-- Clean Table List -->
+    <div class="clean-table-container">
+      
+      <!-- Table Header -->
+      <div class="clean-table-header">
+        <div class="th-cell th-name">Kategori &amp; Akses</div>
+        <div class="th-cell th-porsi">Porsi Volume</div>
+        <div class="th-cell th-vol text-right">Volume</div>
+        <div class="th-cell th-omzet text-right">Total Omzet</div>
+        <div class="th-cell th-harga text-right">@ Harga</div>
+      </div>
+
+      <!-- Table Rows -->
+      <div class="ticket-slates-list">
+        <div 
+          v-for="(item, idx) in ticketItems" 
+          :key="item.id" 
+          class="ticket-slate-row"
+        >
+          <div class="td-cell td-name">
+            <span class="slate-name">{{ item.name }}</span>
             <span class="slate-desc">{{ item.description }}</span>
           </div>
-        </div>
 
-        <div class="slate-progress-col">
-          <div class="slate-progress-header">
-            <span class="progress-lbl">Porsi</span>
-            <span class="progress-pct-val" :style="{ color: item.color }">{{ item.percentage }}%</span>
+          <div class="td-cell td-porsi">
+            <div class="slate-track-bg">
+              <div 
+                class="slate-track-fill" 
+                :style="{ width: `${item.percentage * 1.8}%`, backgroundColor: item.color }"
+              ></div>
+            </div>
+            <span class="progress-pct-val">{{ item.percentage }}%</span>
           </div>
-          <div class="slate-track-bg">
-            <div 
-              class="slate-track-fill" 
-              :style="{ width: `${item.percentage * 1.8}%`, backgroundColor: item.color }"
-            ></div>
-          </div>
-        </div>
 
-        <div class="slate-metrics-group">
-          <div class="metric-block text-right">
-            <span class="metric-tiny-title">VOLUME</span>
+          <div class="td-cell td-vol text-right">
             <span class="metric-val-dark">{{ item.qty.toLocaleString('id-ID') }} <small>pax</small></span>
           </div>
 
-          <div class="metric-block text-right">
-            <span class="metric-tiny-title">TOTAL OMZET</span>
+          <div class="td-cell td-omzet text-right">
             <span class="metric-val-amber">{{ formatRupiah(item.totalGtv) }}</span>
           </div>
 
-          <div class="slate-price-pill">
-            <span>@ {{ formatRupiah(item.price) }}</span>
+          <div class="td-cell td-harga text-right">
+            <span class="slate-price-pill">{{ formatRupiah(item.price) }}</span>
           </div>
         </div>
       </div>
@@ -76,12 +73,10 @@
         <span class="ribbon-lbl">Total Volume:</span>
         <span class="ribbon-val">{{ totalTicketsSold.toLocaleString('id-ID') }} Pax</span>
       </div>
-      <span class="ribbon-dot">&bull;</span>
       <div class="ribbon-stat">
         <span class="ribbon-lbl">Total Pendapatan:</span>
         <span class="ribbon-val-gold">{{ formatRupiah(totalGtvAmount) }}</span>
       </div>
-      <span class="ribbon-dot">&bull;</span>
       <div class="ribbon-stat">
         <span class="ribbon-lbl">Rata-rata:</span>
         <span class="ribbon-val">{{ totalTicketsSold > 0 ? formatRupiah(Math.round(totalGtvAmount / totalTicketsSold)) : 'Rp 0' }} / tiket</span>
@@ -134,51 +129,33 @@ const formatRupiah = (val: number): string => {
   background: #FFFFFF;
   border: 1.5px solid #EFEAE2;
   border-radius: 20px;
-  padding: 20px 22px;
-  box-shadow: 0 10px 30px -4px rgba(44, 26, 19, 0.07), 0 2px 6px rgba(44, 26, 19, 0.03);
-  position: relative;
-  overflow: hidden;
-  height: 100%;
+  padding: 24px 28px;
+  box-shadow: 0 10px 30px -4px rgba(44, 26, 19, 0.04);
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 12px;
-  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  transition: all 0.3s ease;
-}
-
-.ticket-breakdown-card:hover {
-  box-shadow: 0 16px 36px -6px rgba(44, 26, 19, 0.12);
-  border-color: rgba(245, 158, 11, 0.4);
-}
-
-.card-top-accent {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #2C1A13 0%, #D97706 50%, #F59E0B 100%);
+  gap: 20px;
+  height: 100%;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
 }
 
 .card-header-flex {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
 }
 
 .header-left {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .header-icon-box {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: #FEF3C7;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: #FFFDF9;
+  border: 1px solid #EFEAE2;
   color: #D97706;
   display: flex;
   align-items: center;
@@ -189,140 +166,122 @@ const formatRupiah = (val: number): string => {
 .header-text {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
 
 .card-title {
-  font-size: 15.5px;
+  font-size: 16px;
   font-weight: 800;
-  color: #2C1A13;
+  color: #111111;
   margin: 0;
   letter-spacing: -0.2px;
 }
 
 .card-subtitle {
-  font-size: 11.5px;
-  color: #78655C;
-  margin: 0;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #111111;
+  margin: 2px 0 0 0;
+  line-height: 1.5;
 }
 
-.badge-total-sold {
+/* Table Architecture */
+.clean-table-container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.clean-table-header {
+  display: flex;
+  align-items: center;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #EAE2D8;
+  margin-bottom: 12px;
+}
+
+.th-cell {
   font-size: 11.5px;
   font-weight: 800;
-  background: #2C1A13;
-  color: #FBBF24;
-  padding: 4px 10px;
-  border-radius: 7px;
-  border: 1px solid #F59E0B;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
+  color: #111111;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .ticket-slates-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  flex: 1;
 }
 
 .ticket-slate-row {
-  background: #FFFDF9;
-  border: 1px solid #EFEAE2;
-  border-radius: 13px;
-  padding: 9px 12px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  transition: all 0.2s ease;
+  padding: 12px 0;
+  border-bottom: 1px solid #F5EFE6;
+  transition: background-color 0.2s ease;
+}
+
+.ticket-slate-row:last-child {
+  border-bottom: none;
 }
 
 .ticket-slate-row:hover {
-  background: #FFFFFF;
-  border-color: var(--slate-color, #F59E0B);
-  transform: translateX(3px);
-  box-shadow: 0 4px 14px rgba(44, 26, 19, 0.06);
-}
-
-.is-slate-lead {
   background: #FFFCF7;
-  border-color: #F59E0B;
+  border-radius: 8px;
+  padding-left: 8px;
+  padding-right: 8px;
+  margin-left: -8px;
+  margin-right: -8px;
 }
 
-.slate-identity {
+/* Grid Columns Strategy */
+.th-name, .td-name { flex: 2; min-width: 160px; padding-right: 12px; }
+.th-porsi, .td-porsi { flex: 1.5; min-width: 120px; padding-right: 12px; }
+.th-vol, .td-vol { flex: 1; min-width: 80px; }
+.th-omzet, .td-omzet { flex: 1.2; min-width: 100px; padding-left: 12px; }
+.th-harga, .td-harga { width: 90px; flex-shrink: 0; padding-left: 12px; }
+
+.td-cell {
   display: flex;
   align-items: center;
-  gap: 10px;
-  min-width: 180px;
-  flex: 1.1;
 }
 
-.slate-name-group {
-  display: flex;
+.text-right {
+  text-align: right;
+  justify-content: flex-end;
+}
+
+/* Content Styling */
+.td-name {
   flex-direction: column;
-  gap: 1px;
-  min-width: 0;
-}
-
-.slate-title-line {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+  align-items: flex-start;
+  gap: 2px;
 }
 
 .slate-name {
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 800;
-  color: #2C1A13;
-  white-space: nowrap;
-}
-
-.top-tag {
-  font-size: 9px;
-  font-weight: 800;
-  color: #B45309;
-  background: #FEF3C7;
-  border: 1px solid #FDE68A;
-  padding: 1px 5px;
-  border-radius: 4px;
+  color: #111111;
 }
 
 .slate-desc {
-  font-size: 10.5px;
-  color: #8C786E;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #111111;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 100%;
 }
 
-.slate-progress-col {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  width: 90px;
-  flex-shrink: 0;
-}
-
-.slate-progress-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 10px;
-}
-
-.progress-lbl {
-  color: #8C786E;
-  font-weight: 700;
-}
-
-.progress-pct-val {
-  font-weight: 800;
+.td-porsi {
+  gap: 10px;
 }
 
 .slate-track-bg {
-  width: 100%;
-  height: 5px;
-  background: #EFEAE2;
+  flex: 1;
+  height: 6px;
+  background: #F0EBE1;
   border-radius: 4px;
   overflow: hidden;
 }
@@ -330,39 +289,21 @@ const formatRupiah = (val: number): string => {
 .slate-track-fill {
   height: 100%;
   border-radius: 4px;
-  transition: width 0.4s ease;
+  transition: width 0.5s ease;
 }
 
-.slate-metrics-group {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  flex-shrink: 0;
-}
-
-.metric-block {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-
-.text-right {
+.progress-pct-val {
+  font-size: 11px;
+  font-weight: 800;
+  color: #5A4034;
+  width: 32px;
   text-align: right;
 }
 
-.metric-tiny-title {
-  font-size: 8.5px;
-  font-weight: 700;
-  color: #8C786E;
-  text-transform: uppercase;
-}
-
 .metric-val-dark {
-  font-size: 12.5px;
+  font-size: 13px;
   font-weight: 800;
-  color: #2C1A13;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
+  color: #111111;
 }
 
 .metric-val-dark small {
@@ -373,57 +314,55 @@ const formatRupiah = (val: number): string => {
 
 .metric-val-amber {
   font-size: 13px;
-  font-weight: 900;
+  font-weight: 800;
   color: #D97706;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
 }
 
 .slate-price-pill {
-  background: #FFFFFF;
-  border: 1px solid #E5DDD3;
-  border-radius: 6px;
-  padding: 3px 6px;
-  font-size: 10.5px;
+  font-size: 12px;
   font-weight: 700;
-  color: #5A4034;
-  white-space: nowrap;
+  color: #78655C;
+  background: #FFFDF9;
+  border: 1px solid #EAE2D8;
+  padding: 4px 8px;
+  border-radius: 6px;
+  display: inline-block;
 }
 
+/* Footer Ribbon */
 .ticket-footer-ribbon {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #FDFBF7;
-  border: 1px dashed #E2D9CE;
-  border-radius: 8px;
-  padding: 6px 12px;
+  background: #FFFCF7;
+  border-top: 1px solid #EAE2D8;
+  padding: 12px 16px;
+  border-radius: 0 0 16px 16px;
+  margin: 0 -28px -24px -28px;
 }
 
 .ribbon-stat {
   display: flex;
   align-items: baseline;
-  gap: 4px;
-  font-size: 11px;
+  gap: 6px;
 }
 
 .ribbon-lbl {
+  font-size: 11px;
   font-weight: 700;
-  color: #78655C;
+  color: #8C786E;
+  text-transform: uppercase;
 }
 
 .ribbon-val {
+  font-size: 12.5px;
   font-weight: 800;
-  color: #2C1A13;
+  color: #111111;
 }
 
 .ribbon-val-gold {
+  font-size: 13px;
   font-weight: 900;
   color: #D97706;
-}
-
-.ribbon-dot {
-  color: #D6CCC2;
-  font-size: 10px;
 }
 </style>

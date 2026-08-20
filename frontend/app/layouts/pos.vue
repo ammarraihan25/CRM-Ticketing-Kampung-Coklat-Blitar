@@ -16,7 +16,7 @@ import logoImg from '~/assets/assets_POS/KAMPUNGCOKLAT.png'
         <ul>
           <li class="section-title">MAIN MENU</li>
           <li>
-            <NuxtLink to="/pos/dashboard-kasir" exact-active-class="active">
+            <NuxtLink to="/pos" exact-active-class="active">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="menu-icon"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
               Dashboard Kasir
             </NuxtLink>
@@ -96,15 +96,15 @@ import logoImg from '~/assets/assets_POS/KAMPUNGCOKLAT.png'
 .pos-layout {
   display: flex;
   height: 100vh;
-  background-color: #f4f4f4;
+  background-color: #F8F5F0;
   overflow: hidden;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-/* Sidebar Styling based on admin.vue / gate image */
+/* Sidebar Styling based on admin.vue */
 .pos-sidebar {
-  width: 240px;
-  background-color: #2c1a13; /* Dark brown */
+  width: 260px;
+  background-color: #23130C; /* Dark brown */
   color: #ffffff;
   padding: 30px 20px;
   display: flex;
@@ -125,24 +125,25 @@ import logoImg from '~/assets/assets_POS/KAMPUNGCOKLAT.png'
   width: 100%;
   display: flex;
   justify-content: center;
+  margin-bottom: 8px;
 }
 
 .sidebar-logo {
-  height: 65px;
+  width: 140px;
   object-fit: contain;
   display: block;
 }
 
 .badge-subtitle {
-  background: rgba(242, 151, 39, 0.15);
-  color: #f29727;
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 11px;
+  background: #422918;
+  color: #F59E0B;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 11.5px;
   font-weight: 800;
-  letter-spacing: 1.5px;
+  letter-spacing: 0.5px;
   text-transform: uppercase;
-  border: 1px solid rgba(242, 151, 39, 0.2);
+  border: none;
   width: 100%;
   text-align: center;
 }
@@ -157,41 +158,43 @@ import logoImg from '~/assets/assets_POS/KAMPUNGCOKLAT.png'
 }
 
 .sidebar-nav .section-title {
-  color: #8c7b75;
+  color: #8C786E;
   font-size: 11px;
-  font-weight: 700;
+  font-weight: 800;
   text-transform: uppercase;
-  margin-top: 15px;
-  margin-bottom: 12px;
-  letter-spacing: 1.5px;
+  margin-top: 20px;
+  margin-bottom: 8px;
+  letter-spacing: 1px;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 .sidebar-nav .section-title::after {
   content: "";
   flex: 1;
   height: 1px;
-  background: rgba(255,255,255,0.05);
+  background: #422918;
 }
 
 .sidebar-nav ul li a {
-  color: #e0d5d1;
+  color: #E6D5C3;
   text-decoration: none;
-  font-size: 14.5px;
-  padding: 14px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  padding: 12px 16px;
   display: flex;
   align-items: center;
-  gap: 12px;
-  border-radius: 8px;
-  transition: all 0.25s ease;
+  gap: 14px;
+  border-radius: 12px;
+  transition: all 0.2s ease;
   position: relative;
   overflow: hidden;
 }
 
 .menu-icon {
-  opacity: 0.7;
-  transition: opacity 0.25s, transform 0.25s;
+  color: #A89382;
+  transition: color 0.2s ease;
+  flex-shrink: 0;
 }
 
 .sidebar-nav ul li a:hover {
@@ -205,25 +208,17 @@ import logoImg from '~/assets/assets_POS/KAMPUNGCOKLAT.png'
 }
 
 .sidebar-nav ul li a.active {
-  background-color: rgba(242, 151, 39, 0.1);
-  color: #f29727;
+  background-color: #3D2214;
+  color: #FFFFFF;
   font-weight: 600;
 }
 
 .sidebar-nav ul li a.active::before {
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
-  bottom: 0;
-  width: 4px;
-  background-color: #f29727;
-  border-radius: 0 4px 4px 0;
+  display: none;
 }
 
 .sidebar-nav ul li a.active .menu-icon {
-  opacity: 1;
-  color: #f29727;
+  color: #F59E0B;
 }
 
 /* Main Area */
