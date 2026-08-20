@@ -14,6 +14,7 @@
 | :--- | :--- | :--- |
 | 18 Agustus 2026 | 1.0 | Initial Release — Product Requirements Document (PRD) Digitalisasi Tiket & CRM Membership Kampung Coklat Blitar |
 | 18 Agustus 2026 | 1.3 | Direct Visual Diagram Embedding — Penyajian Gambar Visual DFD Level 0 & Level 1 Murni Tanpa Tautan Link External |
+| 19 Agustus 2026 | 1.4 | B2B & Commission Flow Update — Menambahkan sistem Booking B2B (Down Payment), harga berjenjang (Tier Pricing), Komisi Uang Tunai, dan Role BD (Business Development) |
 
 ### 1.2 Approvals
 | PIC Role | Nama | Signature | Date |
@@ -35,7 +36,7 @@
 | **Delivery Milestone** | Minggu 1: Interactive Prototype Demo \| Bulan 1 (4 Minggu): Full-Stack Production System |
 | **Jangka Waktu Sprint** | 1 Minggu Front-End Prototype Demo + 4 Minggu Full-Stack Development (Total 5 Minggu) |
 | **Core Identifier** | Nomor WhatsApp (`nomor_whatsapp`) sebagai Primary Key Unik & Kota/Kabupaten (`domisili`) |
-| **Benefit Model** | Voucher Diskon Tiket (%) & Free Ticket Promo (Tanpa Skema Tiering / Poin) |
+| **Benefit Model** | Voucher Diskon Tiket, Free Ticket Promo, dan Komisi Uang Tunai Khusus B2B (PT) |
 
 ### 2.2 Product Vision & Goals
 Produk Moobi Ticketing & CRM dirancang untuk menyelesaikan dua isu krusial di Kampung Coklat Blitar: kebocoran kas akibat tiket kertas manual dan lenyapnya profil pengunjung. Produk ini menargetkan 4 indikator keberhasilan utama (Product Goals):
@@ -51,6 +52,8 @@ Produk Moobi Ticketing & CRM dirancang untuk menyelesaikan dua isu krusial di Ka
 | **Kasir POS (Frontliner)** | Transaksi cepat < 3 detik, pendaftaran member otomatis saat checkout, rekonsiliasi kasir instan. | Harus menghitung karcis kertas manual, rentan selisih kas tunai di penutupan shift. | Layar POS sentuh lebar (tablet), tombol paket tiket besar, otomatis kirim e-ticket WA. |
 | **Jamaah Pengajian (PP)** | Masuk area acara cepat, mendaftar member mudah di HP, dapat voucher diskon tiket / free ticket. | Sama sekali tidak terdata, tidak pernah mendapat info promo kunjungan berikutnya. | Scan QR Banner -> Form WA + Domisili singkat -> OTP WA -> Terima Voucher WA. |
 | **Pengunjung Reguler (PR)** | Beli tiket tanpa antre panjang, e-ticket aman di HP, masuk gate tinggal scan. | Karcis kertas sering hilang/basah, antre pemeriksaan visual di gate utama. | Dynamic QR E-Ticket di HP, scan di Web Scanner Gate terbuka < 2 detik. |
+| **Agen Tour B2B (PT)** | Membuat booking dengan harga sesuai tier pax, bisa DP, dan dapat komisi tunai. | Harga tiket rombongan kaku, booking manual via chat/telepon, tidak ada tracking komisi. | Web portal booking B2B dengan auto-tier pricing dan dashboard saldo komisi. |
+| **Business Development (BD)** | Mengatur tabel harga tier, persentase komisi agen, dan mencairkan (withdraw) komisi. | Pusing menghitung komisi manual per agen, sering salah hitung. | Halaman admin BD untuk master data tier dan verifikasi pencairan saldo agen. |
 | **Tim Marketing** | Memfilter member berdasar Domisili (Blitar/Kediri/dll) & Tipe Member (PR/PP/PT), memicu promo. | Tidak ada database pengunjung, marketing mandul tanpa kontak audiens. | Dashboard CRM visual, filter domisili, tabel member, Tombol Blast WA UI. |
 | **Management / Owner** | Melihat real-time GTV penjualan tiket, grafik demografi domisili, dan kontrol kasir. | Laporan rekap kertas manual datang terlambat di akhir hari. | Owner Mobile Dashboard (read-only), laporan pendapatan otomatis per shift. |
 
@@ -81,6 +84,9 @@ Produk Moobi Ticketing & CRM dirancang untuk menyelesaikan dua isu krusial di Ka
 | **FEAT-21** | Integrasi | WhatsApp Gateway | Koneksi ke official WhatsApp API Gateway untuk OTP & pesan e-ticket/voucher. | Must Have | Kanal komunikasi WA. |
 | **FEAT-22** | Integrasi | Payment Gateway QRIS | Koneksi ke PG Midtrans/Xendit/BRI untuk penerbitan QRIS dinamis di POS. | Must Have | Pembayaran cashless. |
 | **FEAT-23** | Integrasi | Web Scanner Module | Aplikasi pemindai QR berbasis web responsive untuk petugas verifikator pintu masuk. | Must Have | Verifikasi tiket pintu. |
+| **FEAT-24** | B2B Portal | DP Booking Engine | Agen bisa melakukan booking tiket berdasarkan tanggal & pax dengan pembayaran Down Payment (DP) wajib 30% atau Lunas. | Must Have | Terbentuk status booking DP. |
+| **FEAT-25** | CRM Loyalty | Cash Commission System | Sistem hitung otomatis & dompet saldo komisi agen tetap 10% dari total transaksi. | Must Have | Saldo komisi agen bertambah. |
+| **FEAT-26** | Admin BD | Commission Withdrawal | Fitur approval pencairan komisi oleh BD. | Must Have | Saldo komisi cair ke agen. |
 
 ## 5. Functional Requirements (FR)
 
@@ -115,6 +121,14 @@ Produk Moobi Ticketing & CRM dirancang untuk menyelesaikan dua isu krusial di Ka
 * **Proses/Behavior**: Sistem menampilkan list member terfilter. Saat Marketing mengklik **Tombol 'Blast WA'**, UI memicu Modal Pop-up Konfirmasi Trigger Broadcast.
 * **Output**: Modal Pop-up 'Konfirmasi Kirim Pesan Promo ke X Member Tipe Y Domisili Z'.
 * **Business Rule**: Pada V1.0, tombol ini berfungsi sebagai UI Placeholder Trigger untuk konfirmasi aksi broadcast.
+
+### FR-005: Booking B2B dengan Sistem Down Payment (DP)
+* **Deskripsi**: Agen B2B membuat pemesanan awal tiket rombongan, sistem otomatis menentukan persentase diskon tiket berdasarkan Tier Pax (20-49, 50-99, 100+) lalu agen membayar DP 30% atau Lunas.
+* **Trigger**: Agen menekan tombol 'Buat Booking Baru' pada portal B2B.
+* **Input Data**: Tanggal Kunjungan, Estimasi Pax.
+* **Proses/Behavior**: Hitung Harga Total setelah diskon tier -> Tagihkan DP (30%) -> Agen bayar DP -> Status menjadi `DP_PAID`.
+* **Output**: Bukti konfirmasi Booking berstatus DP_PAID dengan Sisa Tagihan.
+* **Business Rule**: Pelunasan sisa tagihan wajib dilakukan sebelum H-1 atau di hari-H sebelum cetak tiket. Komisi tetap 10% otomatis ditambahkan ke saldo agen setelah status lunas.
 
 ## 6. User Stories & Acceptance Criteria
 
@@ -188,6 +202,34 @@ Arsitektur basis data Moobi Ticketing & CRM dirancang dengan menempatkan Nomor W
 | `total_amount` | DECIMAL(12,2) | NOT NULL | Total nominal transaksi tiket setelah diskon (Rp) |
 | `payment_method` | ENUM | NOT NULL | 'CASH', 'QRIS', 'DEBIT', 'TRANSFER' |
 | `payment_status` | ENUM | DEFAULT 'PAID' | 'PAID', 'REFUNDED', 'VOID' |
+
+### Tabel 7.5: `bookings` (Data Pemesanan DP Agen B2B)
+| Field Name | Data Type | Constraint | Description |
+| :--- | :--- | :--- | :--- |
+| `booking_id` | UUID | PRIMARY KEY | ID unik booking B2B |
+| `nomor_whatsapp` | VARCHAR(20) | FOREIGN KEY | Agen pemesan (Ref: `members.nomor_whatsapp`) |
+| `visit_date` | DATE | NOT NULL | Tanggal kunjungan |
+| `total_pax` | INT | NOT NULL | Jumlah peserta/rombongan |
+| `total_amount` | DECIMAL(12,2) | NOT NULL | Harga * Pax (setelah diskon Tier) |
+| `dp_amount` | DECIMAL(12,2) | NOT NULL | Nominal DP yang dibayarkan (min 30%) |
+| `status` | ENUM | DEFAULT 'PENDING' | 'PENDING', 'DP_PAID', 'FULLY_PAID', 'CANCELLED' |
+
+### Tabel 7.6: `tier_pricings` (Master Data Harga Bertingkat B2B)
+| Field Name | Data Type | Constraint | Description |
+| :--- | :--- | :--- | :--- |
+| `tier_id` | INT | PRIMARY KEY, AUTO INC | ID unik tier harga |
+| `min_pax` | INT | NOT NULL | Batas bawah jumlah peserta |
+| `max_pax` | INT | NULL | Batas atas jumlah peserta (NULL = tak hingga) |
+| `discount_percentage` | DECIMAL(5,2) | NOT NULL | Persentase diskon per tiket (%) |
+
+### Tabel 7.7: `agent_commissions` (Riwayat Transaksi Saldo Komisi Agen)
+| Field Name | Data Type | Constraint | Description |
+| :--- | :--- | :--- | :--- |
+| `trx_id` | UUID | PRIMARY KEY | ID mutasi komisi |
+| `nomor_whatsapp` | VARCHAR(20) | FOREIGN KEY | Agen penerima (Ref: `members.nomor_whatsapp`) |
+| `trx_type` | ENUM | NOT NULL | 'CREDIT' (Komisi masuk), 'DEBIT' (Pencairan/Withdrawal) |
+| `amount` | DECIMAL(12,2) | NOT NULL | Nominal mutasi (Rp) |
+| `status` | ENUM | DEFAULT 'PENDING' | 'PENDING', 'APPROVED', 'REJECTED' (Khusus Withdrawal oleh BD) |
 
 ## 8. System Architecture & Data Flow Diagram (DFD)
 

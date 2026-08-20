@@ -58,6 +58,36 @@ body {
   line-height: 1.6;
 }
 
+/* Modern Sleek Scrollbar (Eliminates bulky vintage browser scrollbars) */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(44, 26, 19, 0.2) transparent;
+}
+
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(44, 26, 19, 0.2);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #F29727;
+}
+
+::-webkit-scrollbar-button {
+  display: none !important;
+  width: 0;
+  height: 0;
+}
+
 h1, h2, h3, h4, h5, h6 {
   color: var(--color-primary);
   font-weight: 700;

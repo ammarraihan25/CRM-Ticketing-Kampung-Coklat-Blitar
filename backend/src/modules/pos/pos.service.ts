@@ -5,6 +5,9 @@ import { PosTransaction, PaymentStatus } from '../../database/entities/pos-trans
 import { Member, TipeMember, MemberTier } from '../../database/entities/member.entity';
 import { Ticket, StatusTiket } from '../../database/entities/ticket.entity';
 import { CheckoutPosDto } from './dto/checkout-pos.dto';
+import { PaymentWebhookDto } from './dto/payment-webhook.dto';
+import { WaGatewayService } from '../wa-gateway/wa-gateway.service';
+import { CrmService } from '../../crm/crm.service';
 
 @Injectable()
 export class PosService {
@@ -15,12 +18,14 @@ export class PosService {
     private readonly memberRepository: Repository<Member>,
     @InjectRepository(Ticket)
     private readonly ticketRepository: Repository<Ticket>,
+    private readonly waGatewayService: WaGatewayService,
+    private readonly crmService: CrmService,
   ) {}
 
   async checkout(dto: CheckoutPosDto) {
     const { nomor_whatsapp, cashier_id, payment_method, items } = dto;
 
-    // 1. Validasi & Auto-Register Member jika belum terdaftar
+    // 1. Auto-Register Member
     let member = await this.memberRepository.findOne({ where: { nomor_whatsapp } });
     if (!member) {
       member = this.memberRepository.create({
@@ -32,10 +37,10 @@ export class PosService {
       await this.memberRepository.save(member);
     }
 
-    // 2. Hitung Total Pembayaran
+    // 2. Total Amount
     const total_amount = items.reduce((acc, item) => acc + item.harga * item.qty, 0);
 
-    // 3. Simpan Transaksi POS Header
+    // 3. Save Transaksi Header
     const posTrx = this.posTransactionRepository.create({
       nomor_whatsapp,
       cashier_id,
@@ -45,14 +50,13 @@ export class PosService {
     });
     const savedTrx = await this.posTransactionRepository.save(posTrx);
 
-    // 4. Loop Penerbitan Tiket (Per Item & Qty)
+    // 4. Issue Tickets
     const ticketsIssued: Ticket[] = [];
     const validUntil = new Date();
-    validUntil.setHours(23, 59, 59, 999); // Berlaku sampai akhir hari ini
+    validUntil.setHours(23, 59, 59, 999);
 
     for (const item of items) {
       for (let i = 0; i < item.qty; i++) {
-        // Generate Unique Code Ticket (Format: KC-YYYY-XXXX)
         const randomCode = Math.random().toString(36).substring(2, 7).toUpperCase();
         const ticketCode = `KC-${new Date().getFullYear()}-${randomCode}`;
 
@@ -69,8 +73,12 @@ export class PosService {
       }
     }
 
-    // 5. Mocking WhatsApp Gateway Integration (E-Ticket Delivery)
-    this.sendWhatsAppNotification(nomor_whatsapp, ticketsIssued);
+    // 5. Proses loyalty points & tier upgrade
+    await this.crmService.processLoyaltyAfterPaidTransaction(savedTrx.pos_trx_id);
+
+    // 6. Panggil WA Gateway Service Modular
+    const ticketCodes = ticketsIssued.map((t) => t.ticket_code);
+    this.waGatewayService.sendTicketNotification(nomor_whatsapp, ticketCodes);
 
     return {
       status: 'SUCCESS',
@@ -89,18 +97,50 @@ export class PosService {
     };
   }
 
-  private sendWhatsAppNotification(nomor_whatsapp: string, tickets: Ticket[]) {
-    const ticketList = tickets.map((t, idx) => `${idx + 1}. ${t.ticket_code}`).join('\n');
-    const message =
-      `\n[WA GATEWAY MOCK]\n` +
-      `========================================\n` +
-      `Mengirim E-Ticket ke WhatsApp: ${nomor_whatsapp}\n` +
-      `----------------------------------------\n` +
-      `Terima kasih telah berkunjung ke Kampung Coklat Blitar!\n` +
-      `Berikut adalah E-Ticket Anda:\n${ticketList}\n` +
-      `Tunjukkan QR Code ini pada Turnstile Gate di pintu masuk.\n` +
-      `========================================\n`;
+  async handlePaymentWebhook(dto: PaymentWebhookDto) {
+    const { pos_trx_id, transaction_status } = dto;
 
-    console.log(message);
+    const transaction = await this.posTransactionRepository.findOne({
+      where: { pos_trx_id },
+    });
+
+    if (!transaction) {
+      throw new BadRequestException('Transaksi tidak ditemukan');
+    }
+
+    if (transaction_status === 'settlement' || transaction_status === 'capture') {
+      transaction.payment_status = PaymentStatus.PAID;
+      await this.posTransactionRepository.save(transaction);
+
+      await this.crmService.processLoyaltyAfterPaidTransaction(pos_trx_id);
+
+      console.log(`[PAYMENT WEBHOOK] Transaksi ${pos_trx_id} berhasil di-update menjadi PAID`);
+
+      return {
+        status: 'SUCCESS',
+        message: 'Status pembayaran berhasil diperbarui',
+      };
+    }
+
+    return {
+      status: 'PENDING_OR_FAILED',
+      message: `Status transaksi saat ini: ${transaction_status}`,
+    };
+  }
+
+  // Method simulasi generate QRIS
+  async generateQrisPayload(pos_trx_id: string, amount: number) {
+    // String data QRIS
+    const qrisString = `00020101021226680016ID.CO.TELKOM.WWW01189360091100000000005204581253033605405${amount}5802ID5913KAMPUNGCOKLAT6006BLITAR6304ABCD`;
+
+    // URL yang menghasilkan gambar QR Code asli dari string QRIS di atas
+    const qrisImageUrl = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${encodeURIComponent(qrisString)}`;
+
+    return {
+      pos_trx_id,
+      amount,
+      qris_string: qrisString,
+      qris_image_url: qrisImageUrl, // Buka URL ini di browser!
+    };
   }
 }

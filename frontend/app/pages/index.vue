@@ -96,6 +96,10 @@
   </div>
 </template>
 
+<script setup lang="ts">
+// Index navigation hub
+</script>
+
 <style scoped>
 .landing-wrapper {
   background-color: #f5f2eb; /* Earthy cream background */
