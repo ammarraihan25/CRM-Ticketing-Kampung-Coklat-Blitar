@@ -1117,13 +1117,6 @@ function getTypeClass(type?: string) {
 .crm-page {
   min-height: 100%;
   padding: 34px 42px 50px;
-  background:
-    radial-gradient(
-      circle at top right,
-      rgba(225, 190, 155, 0.16),
-      transparent 32%
-    ),
-    #f7f5f2;
   color: #302019;
   font-size: 17px;
 }
@@ -1367,18 +1360,19 @@ function getTypeClass(type?: string) {
 
 .members-card {
   overflow: hidden;
-  border: 1px solid #e6dfd9;
-  border-radius: 18px;
-  background: white;
-  box-shadow: 0 10px 30px rgba(48, 32, 23, 0.055);
 }
 
 .members-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 16px;
   padding: 23px 25px;
-  border-bottom: 1px solid #eee8e3;
+  border: 1px solid #e6dfd9;
+  border-radius: 18px;
+  background: white;
+  box-shadow: 0 10px 30px rgba(48, 32, 23, 0.055);
 }
 
 .members-header h2 {
@@ -1527,6 +1521,10 @@ function getTypeClass(type?: string) {
 
 .table-container {
   overflow-x: auto;
+  border: 1px solid #e6dfd9;
+  border-radius: 18px 18px 0 0;
+  background: white;
+  box-shadow: 0 10px 30px rgba(48, 32, 23, 0.055);
 }
 
 table {
@@ -1726,6 +1724,10 @@ input[type="checkbox"] {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border: 1px solid #e6dfd9;
+  border-top: 0;
+  border-radius: 0 0 18px 18px;
+  background: white;
   padding: 17px 25px;
   color: #8f857e;
   font-size: 14px;
