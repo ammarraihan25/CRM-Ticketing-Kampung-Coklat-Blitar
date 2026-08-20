@@ -84,6 +84,17 @@
             <p>Pemindaian barcode/QR akses area</p>
           </div>
         </NuxtLink>
+
+        <!-- CRM -->
+        <NuxtLink to="/crm" class="module-card">
+          <div class="module-icon" style="background: #fdf2f8; color: #db2777; border: 1px solid #fbcfe8;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          </div>
+          <div class="module-info">
+            <h3>Manajemen Pelanggan (CRM)</h3>
+            <p>Kelola data member, promo, & broadcast pesan</p>
+          </div>
+        </NuxtLink>
       </div>
 
       <!-- Quick Admin Links -->

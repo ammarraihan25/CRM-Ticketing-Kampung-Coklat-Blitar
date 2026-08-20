@@ -1,36 +1,35 @@
 <template>
   <div class="reports-container">
-    <!-- Header Section -->
-    <header class="reports-header">
-      <div class="header-left">
-        <h1 class="page-title">Reports & Data Analytics</h1>
-        <p class="page-subtitle">
+    <!-- 1. FLAT EXECUTIVE HEADER (Seamless) -->
+    <header class="executive-command-header">
+      <!-- Left: Clean Title & Subtitle -->
+      <div class="brand-text-wrapper">
+        <h1 class="header-main-title">Reports & Data Analytics</h1>
+        <div class="header-meta-clean-line">
           Data historis transaksi, verifikasi tiket pintu, database CRM, dan demografi pengunjung Kampung Coklat.
-        </p>
+        </div>
       </div>
 
-      <!-- Cute & Aesthetic Export Actions -->
-      <div class="header-actions">
+      <!-- Right: Clean Dropdown & Controls -->
+      <div class="controls-hero-col">
         <button 
           type="button" 
-          class="btn-export-cute btn-cute-excel"
+          class="btn-download-report"
           title="Unduh Lembar Kerja Excel"
           @click="openExportModal('excel')"
         >
-          <span class="btn-cute-emoji">📊</span>
-          <span class="btn-cute-text">Export Excel</span>
-          <span class="btn-cute-tag">.xlsx</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="8" y1="13" x2="16" y2="13"></line><line x1="8" y1="17" x2="16" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Export Excel
         </button>
 
         <button 
           type="button" 
-          class="btn-export-cute btn-cute-pdf"
+          class="btn-download-report"
           title="Unduh Dokumen Laporan PDF"
           @click="openExportModal('pdf')"
         >
-          <span class="btn-cute-emoji">📄</span>
-          <span class="btn-cute-text">Export PDF Laporan</span>
-          <span class="sparkle-spark">✨</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          Export PDF Laporan
         </button>
       </div>
     </header>
@@ -45,7 +44,6 @@
         :class="{ active: activeTab === tab.id }"
         @click="activeTab = tab.id"
       >
-        <span class="tab-icon">{{ tab.icon }}</span>
         <span>{{ tab.label }}</span>
       </button>
     </div>
@@ -412,7 +410,6 @@
       <div class="modal-card">
         <div class="modal-header">
           <div class="modal-head-title">
-            <span class="modal-icon-badge">{{ exportFormat === 'pdf' ? '📄' : '📊' }}</span>
             <div>
               <h3>{{ exportFormat === 'pdf' ? 'Unduh Laporan Format PDF' : 'Unduh Rekap Laporan Excel (.xlsx)' }}</h3>
               <p class="modal-sub">Dokumen siap cetak dengan logo resmi & struktur data terekonsiliasi.</p>
@@ -492,10 +489,10 @@ const ticketSearchQuery = ref('')
 const memberSegmentFilter = ref('ALL')
 
 const reportTabs = [
-  { id: 'revenue' as TabType, label: 'Revenue Report (GTV)', icon: '💰' },
-  { id: 'tickets' as TabType, label: 'Ticket & Gate Report', icon: '🎟️' },
-  { id: 'members' as TabType, label: 'Member / CRM Report', icon: '👥' },
-  { id: 'demographics' as TabType, label: 'Demographic Report', icon: '📍' }
+  { id: 'revenue' as TabType, label: 'Revenue Report (GTV)' },
+  { id: 'tickets' as TabType, label: 'Ticket & Gate Report' },
+  { id: 'members' as TabType, label: 'Member / CRM Report' },
+  { id: 'demographics' as TabType, label: 'Demographic Report' }
 ]
 
 // =========================================================================
@@ -733,96 +730,65 @@ onMounted(() => {
   font-family: 'Jost', sans-serif;
 }
 
-/* Header */
-.reports-header {
+.executive-command-header {
+  background: transparent;
+  padding: 10px 0 24px 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  gap: 20px;
   flex-wrap: wrap;
-  min-height: 75px;
-  padding: 6px 0 10px 0;
-  position: relative;
 }
 
-.page-title {
-  font-family: 'Cinzel', serif;
-  font-size: 26px;
+.brand-text-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.header-main-title {
+  font-size: 34px;
   font-weight: 900;
-  color: #2C1A13;
-  margin: 0 0 4px 0;
-  letter-spacing: 0.3px;
-}
-
-.page-subtitle {
-  font-size: 13.5px;
-  font-weight: 600;
-  color: #6E442B;
+  color: #1F120B;
   margin: 0;
-  line-height: 1.4;
+  letter-spacing: -0.8px;
 }
 
-.header-actions {
+.header-meta-clean-line {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #8C786E;
+}
+
+.controls-hero-col {
   display: flex;
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
 }
 
-/* Cute & Aesthetic Export Buttons */
-.btn-export-cute {
+.btn-download-report {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 7px 14px;
-  border-radius: 20px;
-  font-family: 'Jost', sans-serif;
-  font-size: 12.5px;
-  font-weight: 700;
+  gap: 8px;
+  background: #FFFFFF;
+  border: 1px solid #E2D9CE;
+  color: #1F120B;
+  padding: 0 16px;
+  height: 42px;
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  font-family: inherit;
   cursor: pointer;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-  border: 1.5px solid transparent;
-  height: 38px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  transition: all 0.2s ease;
 }
 
-.btn-cute-excel {
-  background: #F0FDF4;
-  color: #15803D;
-  border-color: #BBF7D0;
-  box-shadow: 0 2px 6px rgba(22, 101, 52, 0.08);
-}
-
-.btn-cute-excel:hover {
-  background: #DCFCE7;
-  border-color: #86EFAC;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(22, 101, 52, 0.15);
-}
-
-.btn-cute-tag {
-  font-size: 10px;
-  background: #DCFCE7;
-  color: #166534;
-  padding: 1px 6px;
-  border-radius: 6px;
-  font-weight: 800;
-}
-
-.btn-cute-pdf {
-  background: linear-gradient(135deg, #2C1A13 0%, #4A2E22 100%);
-  color: #FFFFFF;
-  border-color: #F29727;
-  box-shadow: 0 2px 8px rgba(44, 26, 19, 0.2);
-}
-
-.btn-cute-pdf:hover {
-  background: linear-gradient(135deg, #4A2E22 0%, #633E2E 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 14px rgba(242, 151, 39, 0.3);
-}
-
-.sparkle-spark {
-  font-size: 11px;
+.btn-download-report:hover {
+  background: #FFFDF9;
+  border-color: #D97706;
+  color: #D97706;
 }
 
 /* Tab Navigation */
