@@ -56,7 +56,7 @@
               </div>
             </div>
 
-            <!-- 2. Reports & Data Analytics (SWAPPED TO TOP) -->
+            <!-- 2. Reports & Data Analytics -->
             <div class="nav-item-wrap">
               <NuxtLink 
                 to="/reports" 
@@ -79,7 +79,7 @@
               </div>
             </div>
 
-            <!-- 3. Katalog Wahana & Tiket (SWAPPED BELOW REPORTS) -->
+            <!-- 3. Katalog Wahana & Tiket -->
             <div class="nav-item-wrap">
               <NuxtLink 
                 to="/admin/config/tickets-rides" 
@@ -148,21 +148,14 @@
         <!-- Bottom Deep Cocoa Section with Clean Admin Illustration Icon -->
         <div class="sidebar-cocoa-bottom">
           <div class="user-profile-btn" @click="showUserMenu = !showUserMenu" title="Menu Akun & Keluar">
-            <!-- Clean Aesthetic Vector Admin Illustration Disc -->
             <div class="user-avatar-disc">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" class="admin-vector-svg">
-                <!-- Soft Warm Background -->
                 <circle cx="40" cy="40" r="38" fill="#FAF5EE"/>
-                <!-- Neck & Shoulders -->
                 <path d="M18 72 C18 56 30 52 40 52 C50 52 62 56 62 72 Z" fill="#3D2214"/>
-                <!-- Tie/Collar Accent -->
                 <polygon points="40,54 44,68 40,72 36,68" fill="#D97706"/>
                 <polygon points="35,52 40,57 45,52 40,51" fill="#FFFFFF"/>
-                <!-- Head -->
                 <ellipse cx="40" cy="35" rx="15" ry="17" fill="#F8D3B4"/>
-                <!-- Styled Hair -->
                 <path d="M25 32 C25 20 32 15 45 15 C54 15 56 22 55 28 C50 25 42 24 35 27 C30 29 27 31 25 32 Z" fill="#2C1A13"/>
-                <!-- Eyes & Friendly Smile -->
                 <circle cx="34" cy="34" r="1.8" fill="#2C1A13"/>
                 <circle cx="46" cy="34" r="1.8" fill="#2C1A13"/>
                 <path d="M36 41 Q40 45 44 41" stroke="#2C1A13" stroke-width="1.8" fill="none" stroke-linecap="round"/>
@@ -227,13 +220,8 @@ const showUserMenu = ref(false)
 .admin-layout {
   display: flex;
   min-height: 100vh;
-  background-color: #FAF5EE;
-  background-image: url('~/assets/assets_admin/bg-center.png');
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: cover;
-  background-attachment: fixed;
-  font-family: 'Jost', sans-serif;
+  background-color: #F8F5F0;
+  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   overflow-x: hidden;
   position: relative;
 }
@@ -255,7 +243,7 @@ const showUserMenu = ref(false)
 .sidebar-curved-wrapper {
   width: 100%;
   height: 100%;
-  background: #3D2214; /* Deep Roasted Cocoa Outer Frame */
+  background: #3D2214;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -263,7 +251,6 @@ const showUserMenu = ref(false)
   box-shadow: 4px 0 20px rgba(44, 26, 19, 0.15);
 }
 
-/* Top/Middle Cream Body with Organic Curved Cutout */
 .sidebar-cream-body {
   flex: 1;
   background: #FAF5EE;
@@ -278,7 +265,6 @@ const showUserMenu = ref(false)
   box-shadow: 0 4px 14px rgba(61, 34, 20, 0.12);
 }
 
-/* Full Brand Logo without Container */
 .sidebar-brand-link {
   display: flex;
   align-items: center;
@@ -300,7 +286,6 @@ const showUserMenu = ref(false)
   transform: scale(1.06);
 }
 
-/* Nav Icons List */
 .sidebar-nav-list {
   display: flex;
   flex-direction: column;
@@ -335,9 +320,8 @@ const showUserMenu = ref(false)
   transform: translateY(-1px);
 }
 
-/* Active Nav Button: Warm Brown Rounded Squircle */
 .nav-link-btn.active {
-  background: #7E4122; /* Warm Amber Cocoa matching reference */
+  background: #7E4122;
   color: #FFFFFF;
   box-shadow: 0 6px 14px rgba(126, 65, 34, 0.35);
   transform: scale(1.05);
@@ -347,7 +331,6 @@ const showUserMenu = ref(false)
   color: #FFFFFF;
 }
 
-/* Tooltip Hint on Hover (Clean & Clear) */
 .nav-tooltip {
   position: absolute;
   left: 60px;
@@ -387,7 +370,6 @@ const showUserMenu = ref(false)
   left: 68px;
 }
 
-/* Bottom Deep Cocoa Section with Clean Admin Illustration */
 .sidebar-cocoa-bottom {
   background: #3D2214;
   padding: 16px 8px 18px 8px;
@@ -464,7 +446,6 @@ const showUserMenu = ref(false)
   color: #F59E0B;
 }
 
-/* Aesthetic User Popover Menu */
 .user-menu-popover {
   position: absolute;
   left: 88px;

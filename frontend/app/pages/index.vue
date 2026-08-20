@@ -1,6 +1,8 @@
 <template>
   <div class="landing-wrapper">
     <div class="landing-container">
+      <div class="hub-header-accent"></div>
+      
       <div class="logo-container">
         <!-- Ikon Logo -->
         <div class="logo-circle">
@@ -17,97 +19,97 @@
       <p class="landing-desc">Silakan pilih modul aplikasi yang ingin Anda akses di bawah ini:</p>
       
       <div class="module-grid">
-        <!-- Portal Masuk -->
-        <NuxtLink to="/login" class="module-card">
-          <div class="module-icon" style="background: #fdf3eb; color: #d35400; border: 1px solid #fce4ce;">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+        <!-- Dashboard Utama -->
+        <NuxtLink to="/dashboard" class="module-card card-hero">
+          <div class="module-icon icon-hero">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
           </div>
           <div class="module-info">
-            <h3>Portal Masuk (4 Role)</h3>
-            <p>Login portal untuk admin, kasir, dan staf</p>
+            <h3 class="text-hero">Dashboard Utama</h3>
+            <p class="sub-hero">Executive &amp; Financial Overview</p>
           </div>
         </NuxtLink>
 
-        <!-- Dashboard Utama -->
-        <NuxtLink to="/dashboard" class="module-card">
-          <div class="module-icon" style="background: #fffdf5; color: #f29727; border: 1px solid #fce4ce;">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>
+        <!-- Portal Masuk -->
+        <NuxtLink to="/login" class="module-card">
+          <div class="module-icon" style="background: #2C1A13; color: #FFFFFF; border: 1px solid #1F120B;">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
           </div>
           <div class="module-info">
-            <h3>Dashboard Utama</h3>
-            <p>Ringkasan penjualan dan statistik tiket</p>
+            <h3>Portal Masuk (Login)</h3>
+            <p>Akses 4 Role Pengguna</p>
           </div>
         </NuxtLink>
 
         <!-- POS Kasir -->
         <NuxtLink to="/pos" class="module-card">
-          <div class="module-icon" style="background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe;">
+          <div class="module-icon" style="background: #eff6ff; color: #1D4ED8; border: 1px solid #bfdbfe;">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
           </div>
           <div class="module-info">
-            <h3>Point of Sale (POS)</h3>
-            <p>Sistem kasir tiket, wahana, & fasilitas</p>
+            <h3>POS Kasir Tiket</h3>
+            <p>Sistem kasir tiket loket masuk</p>
           </div>
         </NuxtLink>
         
         <!-- Self Service -->
         <NuxtLink to="/ticketing_dan_gate/self-service" class="module-card">
-          <div class="module-icon" style="background: #eefcf1; color: #166534; border: 1px solid #dcfce7;">
+          <div class="module-icon" style="background: #ECFDF5; color: #047857; border: 1px solid #A7F3D0;">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
           </div>
           <div class="module-info">
-            <h3>Kios Self-Service</h3>
+            <h3>Kios Self Service</h3>
             <p>Pembelian tiket mandiri oleh pengunjung</p>
           </div>
         </NuxtLink>
         
         <!-- Guestbook -->
         <NuxtLink to="/guestbook" class="module-card">
-          <div class="module-icon" style="background: #fdf4ff; color: #9333ea; border: 1px solid #f3e8ff;">
+          <div class="module-icon" style="background: #F5F3FF; color: #6D28D9; border: 1px solid #DDD6FE;">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
           </div>
           <div class="module-info">
-            <h3>Guestbook Digital</h3>
-            <p>Buku tamu digital & registrasi kunjungan</p>
+            <h3>Buku Tamu Digital</h3>
+            <p>Registrasi CRM &amp; Kupon Promo</p>
           </div>
         </NuxtLink>
         
         <!-- Gate -->
         <NuxtLink to="/gate" class="module-card">
-          <div class="module-icon" style="background: #fffbeb; color: #d97706; border: 1px solid #fef3c7;">
+          <div class="module-icon" style="background: #FFFBEB; color: #B45309; border: 1px solid #FDE68A;">
             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
           </div>
           <div class="module-info">
             <h3>Turnstile Gate</h3>
-            <p>Pemindaian barcode/QR untuk akses area</p>
+            <p>Pemindaian barcode/QR akses area</p>
           </div>
         </NuxtLink>
       </div>
 
       <!-- Quick Admin Links -->
       <div class="admin-links">
-        <NuxtLink to="/reports">Reports & Analytics</NuxtLink>
+        <NuxtLink to="/reports">Laporan &amp; Analitik CRM</NuxtLink>
         <span class="dot">&bull;</span>
-        <NuxtLink to="/admin/config/tickets-rides">Tarif & Wahana</NuxtLink>
+        <NuxtLink to="/admin/config/tickets-rides">Konfigurasi Tarif</NuxtLink>
         <span class="dot">&bull;</span>
-        <NuxtLink to="/admin/config/roles">RBAC Roles</NuxtLink>
+        <NuxtLink to="/admin/config/roles">RBAC Role Kasir</NuxtLink>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-// Index navigation hub
+// Navigation Hub
 </script>
 
 <style scoped>
 .landing-wrapper {
-  background-color: #f5f2eb; /* Earthy cream background */
+  background-color: #F8F5F0; /* Earthy cream background */
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Inter', sans-serif;
+  font-family: 'Jost', 'Inter', sans-serif;
   padding: 40px 20px;
 }
 
@@ -119,19 +121,31 @@
   max-width: 900px;
   width: 100%;
   text-align: center;
-  border: 1px solid #fce4ce;
+  border: 1.5px solid rgba(232, 224, 215, 0.9);
+  position: relative;
+  overflow: hidden;
+}
+
+.hub-header-accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #F29727 0%, #D97706 50%, #2C1A13 100%);
 }
 
 .logo-container {
   display: flex;
   justify-content: center;
   margin-bottom: 24px;
+  margin-top: 10px;
 }
 
 .logo-circle {
   width: 80px;
   height: 80px;
-  background-color: #f29727; /* Kampung Coklat Orange */
+  background: linear-gradient(135deg, #F29727 0%, #D97706 100%);
   border-radius: 24px;
   display: flex;
   align-items: center;
@@ -177,21 +191,42 @@
   display: flex;
   align-items: center;
   gap: 20px;
-  background: #fffdf5;
-  border: 1px solid #fce4ce;
+  background: #ffffff;
+  border: 1px solid #EAE2D8;
   padding: 24px;
   border-radius: 16px;
   text-decoration: none;
   text-align: left;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
 }
 
 .module-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 12px 24px rgba(242, 151, 39, 0.1);
+  box-shadow: 0 12px 24px rgba(44, 26, 19, 0.12);
   border-color: #f29727;
-  background: #ffffff;
+}
+
+/* Premium Dashboard Card Styling */
+.card-hero {
+  background: linear-gradient(135deg, #F29727 0%, #D97706 100%);
+  border: none;
+}
+.card-hero:hover {
+  box-shadow: 0 12px 28px rgba(217, 119, 6, 0.4);
+  border-color: transparent;
+}
+.icon-hero {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+.text-hero {
+  color: #1F120B !important;
+}
+.sub-hero {
+  color: #3D2214 !important;
 }
 
 .module-icon {
@@ -221,24 +256,24 @@
 .admin-links {
   margin-top: 30px;
   padding-top: 20px;
-  border-top: 1px solid #f3efea;
+  border-top: 1px dashed #EAE2D8;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 16px;
   font-size: 13px;
-  color: #6b5a52;
+  color: #78655C;
 }
 
 .admin-links a {
-  color: #6b5a52;
+  color: #78655C;
   text-decoration: none;
-  font-weight: 500;
+  font-weight: 700;
   transition: color 0.2s;
 }
 
 .admin-links a:hover {
-  color: #2c1a13;
+  color: #D97706;
   text-decoration: underline;
 }
 
