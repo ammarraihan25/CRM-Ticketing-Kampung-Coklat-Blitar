@@ -310,7 +310,10 @@ function closeMemberDetail() {
 ========================================================= */
 
 function openBlast() {
-  if (!selected.value.length) return
+  if (!selected.value.length) {
+    window.alert('Pilih minimal satu member terlebih dahulu.')
+    return
+  }
 
   showBlastModal.value = true
 }
@@ -460,7 +463,6 @@ function getTypeClass(type?: string) {
 
       <button
         class="blast-main-button"
-        :disabled="!selected.length"
         @click="openBlast"
       >
         <span>📣</span>
@@ -1102,7 +1104,7 @@ function getTypeClass(type?: string) {
 
     <!-- BLAST MODAL -->
 
-    <CrmBlastConfirmModal
+    <CrmBlastConfirmModul
       :show="showBlastModal"
       :target-ids="selected"
       :members="members"
