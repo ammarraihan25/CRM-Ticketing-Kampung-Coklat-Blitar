@@ -203,7 +203,7 @@ const { user, currentRole } = useAuth()
   display: flex;
   min-height: 100vh;
   background-color: #F8F5F0;
-  font-family: 'Jost', sans-serif;
+  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   overflow-x: hidden;
   position: relative;
 }

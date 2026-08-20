@@ -1,60 +1,94 @@
 <template>
   <div class="ticket-breakdown-card">
-    <div class="card-header">
-      <div>
-        <h3 class="card-title">Penjualan Tiket per Kategori</h3>
-        <span class="card-subtitle">Komposisi penjualan tiket reguler, rombongan, terusan & paket edukasi</span>
+    <div class="card-top-accent"></div>
+
+    <!-- Header Section -->
+    <div class="card-header-flex">
+      <div class="header-left">
+        <div class="header-icon-box">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <rect x="3" y="6" width="18" height="12" rx="2"/>
+            <line x1="3" y1="11" x2="21" y2="11"/>
+            <line x1="8" y1="6" x2="8" y2="18"/>
+          </svg>
+        </div>
+        <div class="header-text">
+          <h3 class="card-title">Penjualan Tiket per Kategori</h3>
+          <p class="card-subtitle">Volume transaksi real-time &amp; kontribusi omzet</p>
+        </div>
       </div>
-      <span class="badge-total">{{ totalTicketsSold.toLocaleString('id-ID') }} Tiket Total</span>
+      <span class="badge-total-sold">{{ totalTicketsSold.toLocaleString('id-ID') }} Tiket Terjual</span>
     </div>
 
-    <div class="table-responsive">
-      <table class="breakdown-table">
-        <thead>
-          <tr>
-            <th>Kategori Tiket</th>
-            <th>Harga Satuan</th>
-            <th class="text-right">Qty Terjual</th>
-            <th class="text-right">Total Pendapatan (GTV)</th>
-            <th style="width: 140px;">Porsi Penjualan</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="item in ticketItems" :key="item.id">
-            <td class="cell-category">
-              <div class="ticket-type-box">
-                <span class="color-indicator" :style="{ backgroundColor: item.color }"></span>
-                <div>
-                  <div class="category-name">{{ item.name }}</div>
-                  <div class="category-desc">{{ item.description }}</div>
-                </div>
-              </div>
-            </td>
-            <td class="cell-price">{{ formatRupiah(item.price) }}</td>
-            <td class="cell-qty text-right font-medium">{{ item.qty.toLocaleString('id-ID') }}</td>
-            <td class="cell-gtv text-right font-bold">{{ formatRupiah(item.totalGtv) }}</td>
-            <td class="cell-progress">
-              <div class="progress-wrapper">
-                <div class="progress-bar-bg">
-                  <div 
-                    class="progress-bar-fill" 
-                    :style="{ width: `${item.percentage}%`, backgroundColor: item.color }"
-                  ></div>
-                </div>
-                <span class="percentage-label">{{ item.percentage }}%</span>
-              </div>
-            </td>
-          </tr>
-        </tbody>
-        <tfoot>
-          <tr class="total-row">
-            <td colspan="2" class="font-bold">Total Keseluruhan</td>
-            <td class="text-right font-bold">{{ totalTicketsSold.toLocaleString('id-ID') }}</td>
-            <td class="text-right font-bold text-amber">{{ formatRupiah(totalGtvAmount) }}</td>
-            <td class="text-right font-bold">100%</td>
-          </tr>
-        </tfoot>
-      </table>
+    <!-- 4 Aesthetic Horizontal Slates (Uncrowded & Spacious) -->
+    <div class="ticket-slates-list">
+      <div 
+        v-for="(item, idx) in ticketItems" 
+        :key="item.id" 
+        class="ticket-slate-row"
+        :class="{ 'is-slate-lead': idx === 0 }"
+        :style="{ '--slate-color': item.color }"
+      >
+        <!-- Left: Clean Category Title & Description (No Icons) -->
+        <div class="slate-identity">
+          <div class="slate-name-group">
+            <div class="slate-title-line">
+              <span class="slate-name">{{ item.name }}</span>
+              <span v-if="idx === 0" class="top-tag">Terlaris</span>
+            </div>
+            <span class="slate-desc">{{ item.description }}</span>
+          </div>
+        </div>
+
+        <!-- Middle: Proportion Progress Bar -->
+        <div class="slate-progress-col">
+          <div class="slate-progress-header">
+            <span class="progress-lbl">Porsi</span>
+            <span class="progress-pct-val" :style="{ color: item.color }">{{ item.percentage }}%</span>
+          </div>
+          <div class="slate-track-bg">
+            <div 
+              class="slate-track-fill" 
+              :style="{ width: `${item.percentage * 1.8}%`, backgroundColor: item.color }"
+            ></div>
+          </div>
+        </div>
+
+        <!-- Right: Volume, Total Omzet & Unit Tariff -->
+        <div class="slate-metrics-group">
+          <div class="metric-block text-right">
+            <span class="metric-tiny-title">VOLUME</span>
+            <span class="metric-val-dark">{{ item.qty.toLocaleString('id-ID') }} <small>pax</small></span>
+          </div>
+
+          <div class="metric-block text-right">
+            <span class="metric-tiny-title">TOTAL OMZET</span>
+            <span class="metric-val-amber">{{ formatRupiah(item.totalGtv) }}</span>
+          </div>
+
+          <div class="slate-price-pill">
+            <span>@ {{ formatRupiah(item.price) }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Summary Ribbon -->
+    <div class="ticket-footer-ribbon">
+      <div class="ribbon-stat">
+        <span class="ribbon-lbl">Total Volume:</span>
+        <span class="ribbon-val">{{ totalTicketsSold.toLocaleString('id-ID') }} Pax</span>
+      </div>
+      <span class="ribbon-dot">&bull;</span>
+      <div class="ribbon-stat">
+        <span class="ribbon-lbl">Total Pendapatan:</span>
+        <span class="ribbon-val-gold">{{ formatRupiah(totalGtvAmount) }}</span>
+      </div>
+      <span class="ribbon-dot">&bull;</span>
+      <div class="ribbon-stat">
+        <span class="ribbon-lbl">Rata-rata:</span>
+        <span class="ribbon-val">{{ totalTicketsSold > 0 ? formatRupiah(Math.round(totalGtvAmount / totalTicketsSold)) : 'Rp 0' }} / tiket</span>
+      </div>
     </div>
   </div>
 </template>
@@ -64,6 +98,7 @@ import { computed } from 'vue'
 
 export interface TicketCategoryItem {
   id: string
+  code?: string
   name: string
   description: string
   price: number
@@ -71,6 +106,7 @@ export interface TicketCategoryItem {
   totalGtv: number
   percentage: number
   color: string
+  bgLight?: string
 }
 
 interface Props {
@@ -98,149 +134,314 @@ const formatRupiah = (val: number): string => {
 
 <style scoped>
 .ticket-breakdown-card {
-  background-color: var(--color-neutral, #ffffff);
-  border: 1px solid var(--color-border, #e5e7eb);
-  border-radius: var(--rounded-md, 8px);
-  padding: 18px 20px;
-  box-shadow: 0 1px 3px rgba(44, 26, 19, 0.04);
+  background: #FFFFFF;
+  border: 1.5px solid #EFEAE2;
+  border-radius: 20px;
+  padding: 20px 22px;
+  box-shadow: 0 10px 30px -4px rgba(44, 26, 19, 0.07), 0 2px 6px rgba(44, 26, 19, 0.03);
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 12px;
+  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  transition: all 0.3s ease;
 }
 
-.card-header {
+.ticket-breakdown-card:hover {
+  box-shadow: 0 16px 36px -6px rgba(44, 26, 19, 0.12);
+  border-color: rgba(245, 158, 11, 0.4);
+}
+
+.card-top-accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #2C1A13 0%, #D97706 50%, #F59E0B 100%);
+}
+
+.card-header-flex {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 14px;
+  gap: 12px;
 }
 
-.card-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: var(--color-primary, #2c1a13);
-  margin: 0;
-}
-
-.card-subtitle {
-  font-size: 12px;
-  color: var(--color-muted, #6b5a52);
-}
-
-.badge-total {
-  font-size: 12px;
-  font-weight: 600;
-  background-color: rgba(242, 151, 39, 0.12);
-  color: #b45309;
-  padding: 4px 10px;
-  border-radius: 20px;
-  border: 1px solid rgba(242, 151, 39, 0.25);
-}
-
-.table-responsive {
-  overflow-x: auto;
-}
-
-.breakdown-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13.5px;
-}
-
-.breakdown-table th {
-  background-color: #faf8f5;
-  color: var(--color-muted, #6b5a52);
-  font-weight: 600;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding: 10px 12px;
-  border-bottom: 1px solid var(--color-border, #e5e7eb);
-  text-align: left;
-}
-
-.breakdown-table td {
-  padding: 12px;
-  border-bottom: 1px solid #f3f4f6;
-  color: var(--color-primary, #2c1a13);
-}
-
-.breakdown-table tr:hover td {
-  background-color: #fdfbf7;
-}
-
-.ticket-type-box {
+.header-left {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.color-indicator {
-  width: 10px;
-  height: 10px;
-  border-radius: 3px;
+.header-icon-box {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #FEF3C7;
+  color: #D97706;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   flex-shrink: 0;
 }
 
-.category-name {
-  font-weight: 600;
-  color: var(--color-primary, #2c1a13);
+.header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
-.category-desc {
-  font-size: 11px;
-  color: var(--color-muted, #6b5a52);
+.card-title {
+  font-size: 15.5px;
+  font-weight: 800;
+  color: #2C1A13;
+  margin: 0;
+  letter-spacing: -0.2px;
 }
 
-.cell-price {
-  color: #4b5563;
+.card-subtitle {
+  font-size: 11.5px;
+  color: #78655C;
+  margin: 0;
+}
+
+.badge-total-sold {
+  font-size: 11.5px;
+  font-weight: 800;
+  background: #2C1A13;
+  color: #FBBF24;
+  padding: 4px 10px;
+  border-radius: 7px;
+  border: 1px solid #F59E0B;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Horizontal Slates */
+.ticket-slates-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  flex: 1;
+}
+
+.ticket-slate-row {
+  background: #FFFDF9;
+  border: 1px solid #EFEAE2;
+  border-radius: 13px;
+  padding: 9px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  transition: all 0.2s ease;
+}
+
+.ticket-slate-row:hover {
+  background: #FFFFFF;
+  border-color: var(--slate-color, #F59E0B);
+  transform: translateX(3px);
+  box-shadow: 0 4px 14px rgba(44, 26, 19, 0.06);
+}
+
+.is-slate-lead {
+  background: #FFFCF7;
+  border-color: #F59E0B;
+}
+
+.slate-identity {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 180px;
+  flex: 1.1;
+}
+
+.slate-icon-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid;
+  flex-shrink: 0;
+}
+
+.slate-name-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.slate-title-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.slate-name {
+  font-size: 13px;
+  font-weight: 800;
+  color: #2C1A13;
+  white-space: nowrap;
+}
+
+.top-tag {
+  font-size: 9px;
+  font-weight: 800;
+  color: #B45309;
+  background: #FEF3C7;
+  border: 1px solid #FDE68A;
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+
+.slate-desc {
+  font-size: 10.5px;
+  color: #8C786E;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Middle Progress */
+.slate-progress-col {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 90px;
+  flex-shrink: 0;
+}
+
+.slate-progress-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10px;
+}
+
+.progress-lbl {
+  color: #8C786E;
+  font-weight: 700;
+}
+
+.progress-pct-val {
+  font-weight: 800;
+}
+
+.slate-track-bg {
+  width: 100%;
+  height: 5px;
+  background: #EFEAE2;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.slate-track-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+/* Right Metrics */
+.slate-metrics-group {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.metric-block {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
 }
 
 .text-right {
   text-align: right;
 }
 
-.font-medium {
-  font-weight: 500;
-}
-
-.font-bold {
+.metric-tiny-title {
+  font-size: 8.5px;
   font-weight: 700;
+  color: #8C786E;
+  text-transform: uppercase;
 }
 
-.text-amber {
-  color: #b45309;
+.metric-val-dark {
+  font-size: 12.5px;
+  font-weight: 800;
+  color: #2C1A13;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
-.progress-wrapper {
+.metric-val-dark small {
+  font-size: 10px;
+  color: #8C786E;
+  font-weight: 600;
+}
+
+.metric-val-amber {
+  font-size: 13px;
+  font-weight: 900;
+  color: #D97706;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.slate-price-pill {
+  background: #FFFFFF;
+  border: 1px solid #E5DDD3;
+  border-radius: 6px;
+  padding: 3px 6px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #5A4034;
+  white-space: nowrap;
+}
+
+/* Footer Ribbon */
+.ticket-footer-ribbon {
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: space-between;
+  background: #FDFBF7;
+  border: 1px dashed #E2D9CE;
+  border-radius: 8px;
+  padding: 6px 12px;
 }
 
-.progress-bar-bg {
-  flex: 1;
-  height: 7px;
-  background-color: #f1f1f1;
-  border-radius: 10px;
-  overflow: hidden;
+.ribbon-stat {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-size: 11px;
 }
 
-.progress-bar-fill {
-  height: 100%;
-  border-radius: 10px;
-  transition: width 0.4s ease;
+.ribbon-lbl {
+  font-weight: 700;
+  color: #78655C;
 }
 
-.percentage-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--color-muted, #6b5a52);
-  width: 32px;
-  text-align: right;
+.ribbon-val {
+  font-weight: 800;
+  color: #2C1A13;
 }
 
-.total-row td {
-  background-color: #f9f8f6;
-  border-top: 2px solid var(--color-border, #e5e7eb);
-  border-bottom: none;
-  padding: 12px;
+.ribbon-val-gold {
+  font-weight: 900;
+  color: #D97706;
+}
+
+.ribbon-dot {
+  color: #D6CCC2;
+  font-size: 10px;
 }
 </style>

@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800&display=swap');
 
 :root {
   /* Colors */
@@ -14,8 +14,8 @@
   --color-muted: #6B5A52;
   --color-error: #C2412D;
 
-  /* Typography */
-  --font-family: 'Jost', sans-serif;
+  /* Typography (Formal Enterprise Corporate) */
+  --font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   
   /* Font Sizes */
   --text-headline-display: 60px;
