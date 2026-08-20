@@ -20,7 +20,7 @@
       <span class="badge-total-sold">{{ totalTicketsSold.toLocaleString('id-ID') }} Tiket Terjual</span>
     </div>
 
-    <!-- 4 Aesthetic Horizontal Slates (Uncrowded & Spacious) -->
+    <!-- 4 Aesthetic Horizontal Slates -->
     <div class="ticket-slates-list">
       <div 
         v-for="(item, idx) in ticketItems" 
@@ -29,7 +29,6 @@
         :class="{ 'is-slate-lead': idx === 0 }"
         :style="{ '--slate-color': item.color }"
       >
-        <!-- Left: Clean Category Title & Description (No Icons) -->
         <div class="slate-identity">
           <div class="slate-name-group">
             <div class="slate-title-line">
@@ -40,7 +39,6 @@
           </div>
         </div>
 
-        <!-- Middle: Proportion Progress Bar -->
         <div class="slate-progress-col">
           <div class="slate-progress-header">
             <span class="progress-lbl">Porsi</span>
@@ -54,7 +52,6 @@
           </div>
         </div>
 
-        <!-- Right: Volume, Total Omzet & Unit Tariff -->
         <div class="slate-metrics-group">
           <div class="metric-block text-right">
             <span class="metric-tiny-title">VOLUME</span>
@@ -221,7 +218,6 @@ const formatRupiah = (val: number): string => {
   white-space: nowrap;
 }
 
-/* Horizontal Slates */
 .ticket-slates-list {
   display: flex;
   flex-direction: column;
@@ -259,17 +255,6 @@ const formatRupiah = (val: number): string => {
   gap: 10px;
   min-width: 180px;
   flex: 1.1;
-}
-
-.slate-icon-avatar {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid;
-  flex-shrink: 0;
 }
 
 .slate-name-group {
@@ -310,7 +295,6 @@ const formatRupiah = (val: number): string => {
   text-overflow: ellipsis;
 }
 
-/* Middle Progress */
 .slate-progress-col {
   display: flex;
   flex-direction: column;
@@ -349,7 +333,6 @@ const formatRupiah = (val: number): string => {
   transition: width 0.4s ease;
 }
 
-/* Right Metrics */
 .slate-metrics-group {
   display: flex;
   align-items: center;
@@ -407,7 +390,6 @@ const formatRupiah = (val: number): string => {
   white-space: nowrap;
 }
 
-/* Footer Ribbon */
 .ticket-footer-ribbon {
   display: flex;
   align-items: center;

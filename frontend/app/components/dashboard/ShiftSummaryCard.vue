@@ -1,8 +1,5 @@
 <template>
   <div class="shift-card-elevated">
-    <!-- Top Luxury Accent Bar -->
-    <div class="shift-top-bar"></div>
-
     <!-- Header Section -->
     <div class="shift-header">
       <div class="shift-title-group">
@@ -20,7 +17,7 @@
         </div>
       </div>
 
-      <!-- Segmented Terminal Selector Pills (Semua, Loket Utama, Wahana 1, Wahana 2, Wahana 3) -->
+      <!-- Segmented Terminal Selector Pills -->
       <div class="shift-segmented-pills" v-if="shiftsList && shiftsList.length > 1">
         <button 
           v-for="s in shiftsList" 
@@ -46,7 +43,7 @@
       </div>
     </div>
 
-    <!-- Cashier Profile Header Passcard with Distinct Operational Badges -->
+    <!-- Cashier Profile Header Passcard -->
     <div class="cashier-profile-card">
       <div class="cashier-avatar-col">
         <div class="avatar-circle" :class="{ 'avatar-all': activeShift.id === 'ALL' }">
@@ -63,7 +60,6 @@
           <div class="cashier-name-row">
             <span class="cashier-name">{{ activeShift.cashierName }}</span>
             <span class="cashier-id-tag">{{ activeShift.cashierId }}</span>
-            <!-- Clear Operational Scope Badge -->
             <span v-if="activeShift.id === 'ALL'" class="scope-badge badge-all">4 Loket Aktif (100% Omzet)</span>
             <span v-else-if="activeShift.id === 'LOKET-UTAMA'" class="scope-badge badge-main">Tiket Masuk Reguler (67.7% Omzet)</span>
             <span v-else-if="activeShift.id === 'LOKET-WAHANA-1'" class="scope-badge badge-wahana">Cooking Class &amp; Edukasi (14.2% Omzet)</span>
@@ -90,9 +86,9 @@
       </div>
     </div>
 
-    <!-- Split Flow Financial Bento Cards with Clear Proportion Differences -->
+    <!-- Split Flow Financial Bento Cards -->
     <div class="shift-money-split-grid">
-      <!-- 1. Kas Fisik (Tunai) -->
+      <!-- 1. Kas Fisik -->
       <div class="money-flow-box box-cash">
         <div class="flow-box-top">
           <div class="flow-title-wrap">
@@ -104,7 +100,6 @@
             </div>
             <span class="flow-label">Kas Fisik (Uang Tunai Laci)</span>
           </div>
-          <!-- Clear Difference Pill Badge -->
           <span class="flow-diff-pill pill-amber">
             {{ Math.round((activeShift.cashReceived / (activeShift.cashReceived + activeShift.nonCashReceived)) * 100) }}% Tunai
           </span>
@@ -119,7 +114,7 @@
         <span class="flow-subtext">{{ activeShift.id === 'ALL' ? 'Akumulasi uang fisik laci Loket Utama & Wahana' : 'Uang tunai fisik laci kasir terhitung' }}</span>
       </div>
 
-      <!-- 2. Kas Digital / EDC -->
+      <!-- 2. Kas Digital -->
       <div class="money-flow-box box-digital">
         <div class="flow-box-top">
           <div class="flow-title-wrap">
@@ -131,7 +126,6 @@
             </div>
             <span class="flow-label">Non-Tunai (QRIS &amp; EDC)</span>
           </div>
-          <!-- Clear Difference Pill Badge -->
           <span class="flow-diff-pill pill-blue">
             {{ Math.round((activeShift.nonCashReceived / (activeShift.cashReceived + activeShift.nonCashReceived)) * 100) }}% Digital
           </span>
@@ -147,7 +141,7 @@
       </div>
     </div>
 
-    <!-- Total Gross Takings Banner with Clear Difference Comparison -->
+    <!-- Total Gross Takings Banner -->
     <div class="shift-gross-bar">
       <div class="gross-left">
         <span class="gross-label">Total Omzet Kasir:</span>
@@ -160,7 +154,7 @@
       </div>
     </div>
 
-    <!-- Reconciliation Status Alert Banner with Clear Balanced Badge -->
+    <!-- Reconciliation Status Alert Banner -->
     <div class="reconciliation-banner" :class="`banner-${activeShift.reconciliationStatus}`">
       <div class="reconcile-left">
         <span class="reconcile-shield-icon">
@@ -183,7 +177,33 @@
       </div>
     </div>
 
+    <!-- Action Buttons (Diambil dari kode teman Anda & digabungkan) -->
+    <div class="shift-footer-actions">
+      <button 
+        type="button" 
+        class="btn-shift-secondary"
+        @click="$emit('view-details', activeShift)"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+          <circle cx="12" cy="12" r="3" />
+        </svg>
+        <span>Audit Log Transaksi</span>
+      </button>
 
+      <button 
+        type="button" 
+        class="btn-shift-primary"
+        :disabled="activeShift.isClosed"
+        @click="$emit('close-shift', activeShift)"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+          <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+        </svg>
+        <span>{{ activeShift.isClosed ? 'Shift Telah Ditutup' : 'Tutup & Rekonsiliasi Shift' }}</span>
+      </button>
+    </div>
   </div>
 </template>
 
@@ -216,7 +236,7 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-
+const emit = defineEmits(['view-details', 'close-shift'])
 const selectedShiftId = ref('ALL')
 
 watch(() => props.shiftData, (newVal) => {
@@ -334,7 +354,6 @@ const formatRupiah = (val: number): string => {
   display: flex;
   align-items: center;
   gap: 8px;
-  flex-wrap: wrap;
 }
 
 .shift-title {
@@ -342,15 +361,13 @@ const formatRupiah = (val: number): string => {
   font-weight: 800;
   color: #2C1A13;
   margin: 0;
-  letter-spacing: -0.3px;
 }
 
 .shift-subtitle {
   font-size: 12px;
-  color: #78655C;
+  color: #7A5034;
 }
 
-/* Segmented Terminal Selector Pills */
 .shift-segmented-pills {
   display: flex;
   align-items: center;
@@ -395,7 +412,6 @@ const formatRupiah = (val: number): string => {
   box-shadow: 0 2px 6px rgba(44, 26, 19, 0.18);
 }
 
-/* Status Pill */
 .status-pill-live {
   display: inline-flex;
   align-items: center;
@@ -408,9 +424,8 @@ const formatRupiah = (val: number): string => {
 }
 
 .status-active {
-  background: #ECFDF5;
-  color: #047857;
-  border: 1px solid #A7F3D0;
+  background: #D1FAE5;
+  color: #065F46;
 }
 
 .status-closed {
@@ -427,7 +442,6 @@ const formatRupiah = (val: number): string => {
   box-shadow: 0 0 6px #10B981;
 }
 
-/* Cashier Profile Header Passcard */
 .cashier-profile-card {
   background: #FFFDF9;
   border: 1.5px solid #EFEAE2;
@@ -554,7 +568,6 @@ const formatRupiah = (val: number): string => {
   background: #EFE8DF;
 }
 
-/* Split Flow Financial Bento Cards */
 .shift-money-split-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -657,7 +670,6 @@ const formatRupiah = (val: number): string => {
   color: #8C786E;
 }
 
-/* Total Gross Takings Banner */
 .shift-gross-bar {
   display: flex;
   align-items: center;
@@ -695,7 +707,6 @@ const formatRupiah = (val: number): string => {
   color: #2C1A13;
 }
 
-/* Reconciliation Banner */
 .reconciliation-banner {
   display: flex;
   align-items: center;
@@ -714,12 +725,13 @@ const formatRupiah = (val: number): string => {
 .banner-deficit, .banner-surplus {
   background: #FEF2F2;
   border: 1px solid #FECACA;
+  color: #991B1B;
 }
 
 .reconcile-left {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .reconcile-shield-icon {
@@ -774,5 +786,67 @@ const formatRupiah = (val: number): string => {
   background: #FEE2E2;
   color: #B91C1C;
   border: 1px solid #FCA5A5;
+}
+
+/* Footer Actions */
+.shift-footer-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.btn-shift-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #FFFFFF;
+  border: 1.5px solid #EADBCC;
+  color: #5A2E17;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-shift-secondary:hover {
+  background: #FAF3E8;
+  border-color: #D97706;
+}
+
+.btn-shift-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: linear-gradient(135deg, #D97706 0%, #B45309 100%);
+  color: #FFFFFF;
+  border: none;
+  padding: 9px 18px;
+  border-radius: 12px;
+  font-size: 12.5px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.25);
+  transition: all 0.2s ease;
+}
+
+.btn-shift-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+  transform: translateY(-1px);
+}
+
+.btn-shift-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+  .shift-footer-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
 }
 </style>

@@ -2,11 +2,9 @@
 
 import type { Member } from '~/composables/useCrmApi'
 
-
 definePageMeta({
   layout: 'admin'
 })
-
 
 const route = useRoute()
 
@@ -14,13 +12,11 @@ const {
   getMemberById
 } = useCrmApi()
 
+const member = ref<Member | null>(null)
 
-const member =
-  ref<Member | null>(null)
+const isLoading = ref(true)
 
-const isLoading =
-  ref(true)
-
+const showMessage = ref(false)
 
 onMounted(async () => {
 
@@ -30,6 +26,13 @@ onMounted(async () => {
       await getMemberById(
         Number(route.params.id)
       )
+
+  } catch (error) {
+
+    console.error(
+      'Gagal memuat detail member:',
+      error
+    )
 
   } finally {
 
@@ -45,8 +48,7 @@ function getInitial(name: string) {
   return (
     name
       ?.charAt(0)
-      ?.toUpperCase()
-    || '?'
+      ?.toUpperCase() || '?'
   )
 
 }
@@ -54,12 +56,15 @@ function getInitial(name: string) {
 
 function getMemberClass(tipe: string) {
 
-  return (
-    tipe
-      ?.toLowerCase()
-      .replace(/\s+/g, '-')
-      || 'member-reguler'
-  )
+  if (tipe === 'Member Pengajian') {
+    return 'pengajian'
+  }
+
+  if (tipe === 'Member Tour') {
+    return 'tour'
+  }
+
+  return 'reguler'
 
 }
 
@@ -70,41 +75,53 @@ function getMemberClass(tipe: string) {
 
   <div class="detail-page">
 
+    <!-- ================================================= -->
+    <!-- TOP -->
+    <!-- ================================================= -->
 
-    <!-- BACK -->
+    <div class="detail-top">
 
-    <NuxtLink
-      to="/crm"
-      class="back-link"
-    >
-      ← Kembali ke Data Member
-    </NuxtLink>
-
-
-    <!-- LOADING -->
-
-    <div
-      v-if="isLoading"
-      class="loading-card"
-    >
-
-      <div class="loader"></div>
-
-      <span>
-        Memuat data member...
-      </span>
+      <NuxtLink
+        to="/crm"
+        class="back-link"
+      >
+        ←
+        <span>
+          Back to Member Directory
+        </span>
+      </NuxtLink>
 
     </div>
 
 
+    <!-- ================================================= -->
+    <!-- LOADING -->
+    <!-- ================================================= -->
+
+    <div
+      v-if="isLoading"
+      class="loading-state"
+    >
+
+      <div class="loader"></div>
+
+      <strong>
+        Memuat detail member...
+      </strong>
+
+    </div>
+
+
+    <!-- ================================================= -->
     <!-- NOT FOUND -->
+    <!-- ================================================= -->
 
     <div
       v-else-if="!member"
       class="not-found"
     >
 
-      <div>
+      <div class="not-found-icon">
         👥
       </div>
 
@@ -113,40 +130,38 @@ function getMemberClass(tipe: string) {
       </strong>
 
       <span>
-        Data member yang kamu cari
-        tidak tersedia.
+        Data member yang kamu cari tidak tersedia.
       </span>
+
+      <NuxtLink to="/crm">
+        Kembali ke Member Directory
+      </NuxtLink>
 
     </div>
 
 
+    <!-- ================================================= -->
     <!-- DETAIL -->
+    <!-- ================================================= -->
 
     <template v-else>
 
-
-      <!-- PROFILE HEADER -->
-
-      <section class="profile-card">
-
-        <div class="profile-avatar">
-
-          {{
-            getInitial(
-              member.nama
-            )
-          }}
-
-        </div>
+      <div class="profile-layout">
 
 
-        <div class="profile-info">
+        <!-- ============================================= -->
+        <!-- LEFT PROFILE -->
+        <!-- ============================================= -->
 
-          <div class="profile-name-row">
+        <aside class="profile-card">
 
-            <h1>
-              {{ member.nama }}
-            </h1>
+          <div class="profile-top">
+
+            <div class="avatar-large">
+
+              {{ getInitial(member.nama) }}
+
+            </div>
 
             <span
               class="member-badge"
@@ -156,142 +171,343 @@ function getMemberClass(tipe: string) {
                 )
               "
             >
-
               {{ member.tipeMember }}
-
             </span>
 
           </div>
 
-          <p>
+
+          <h1>
+            {{ member.nama }}
+          </h1>
+
+          <p class="member-number">
             Member #{{ member.id }}
           </p>
 
-        </div>
 
-      </section>
-
-
-      <!-- INFORMATION -->
-
-      <section class="info-card">
-
-        <div class="section-title">
-
-          <div>
-            <h2>
-              Informasi Member
-            </h2>
-
-            <p>
-              Informasi dasar member Kampung Coklat.
-            </p>
-          </div>
-
-        </div>
+          <div class="profile-divider"></div>
 
 
-        <div class="info-grid">
+          <!-- WHATSAPP -->
 
-          <div class="info-item">
+          <div class="contact-item">
 
-            <span>
-              Nama Lengkap
-            </span>
+            <div class="contact-icon whatsapp">
+              ◉
+            </div>
 
-            <strong>
-              {{ member.nama }}
-            </strong>
+            <div>
+
+              <span>
+                WhatsApp
+              </span>
+
+              <strong>
+                {{ member.whatsapp || '-' }}
+              </strong>
+
+            </div>
 
           </div>
 
 
-          <div class="info-item">
+          <!-- DOMISILI -->
 
-            <span>
-              No. WhatsApp
-            </span>
+          <div class="contact-item">
 
-            <strong>
-              {{ member.whatsapp }}
-            </strong>
+            <div class="contact-icon location">
+              ●
+            </div>
 
-          </div>
+            <div>
 
+              <span>
+                Domisili
+              </span>
 
-          <div class="info-item">
+              <strong>
+                {{ member.domisili || '-' }}
+              </strong>
 
-            <span>
-              Domisili
-            </span>
-
-            <strong>
-              {{ member.domisili || '-' }}
-            </strong>
+            </div>
 
           </div>
 
 
-          <div class="info-item">
+          <!-- MEMBER TYPE -->
 
-            <span>
-              Tipe Member
-            </span>
+          <div class="contact-item">
 
-            <strong>
-              {{ member.tipeMember }}
-            </strong>
+            <div class="contact-icon member">
+              ◆
+            </div>
 
-          </div>
+            <div>
 
-        </div>
+              <span>
+                Membership
+              </span>
 
-      </section>
+              <strong>
+                {{ member.tipeMember }}
+              </strong>
 
-
-      <!-- BENEFIT -->
-
-      <section class="benefit-card">
-
-        <div class="section-title">
-
-          <div>
-
-            <h2>
-              Benefit Member
-            </h2>
-
-            <p>
-              Status voucher dan tiket yang dimiliki member.
-            </p>
+            </div>
 
           </div>
 
-        </div>
+
+          <button
+            class="send-message"
+            @click="showMessage = true"
+          >
+
+            ◈
+
+            Send WhatsApp
+
+          </button>
+
+        </aside>
 
 
-        <div class="benefit-empty">
+        <!-- ============================================= -->
+        <!-- RIGHT CONTENT -->
+        <!-- ============================================= -->
 
-          <div class="benefit-icon">
-            🎁
-          </div>
+        <main class="detail-content">
 
-          <strong>
-            Data benefit belum tersedia
-          </strong>
 
-          <span>
-            Informasi voucher diskon dan tiket gratis
-            akan ditampilkan setelah endpoint benefit
-            dari backend tersedia.
-          </span>
+          <!-- INFO -->
 
-        </div>
+          <section class="detail-card">
 
-      </section>
+            <div class="card-header">
 
+              <div>
+
+                <h2>
+                  Member Information
+                </h2>
+
+                <p>
+                  Informasi dasar membership.
+                </p>
+
+              </div>
+
+            </div>
+
+
+            <div class="information-grid">
+
+              <div class="information-item">
+
+                <span>
+                  Full Name
+                </span>
+
+                <strong>
+                  {{ member.nama }}
+                </strong>
+
+              </div>
+
+
+              <div class="information-item">
+
+                <span>
+                  WhatsApp
+                </span>
+
+                <strong>
+                  {{ member.whatsapp || '-' }}
+                </strong>
+
+              </div>
+
+
+              <div class="information-item">
+
+                <span>
+                  Domisili
+                </span>
+
+                <strong>
+                  {{ member.domisili || '-' }}
+                </strong>
+
+              </div>
+
+
+              <div class="information-item">
+
+                <span>
+                  Member Type
+                </span>
+
+                <strong>
+                  {{ member.tipeMember }}
+                </strong>
+
+              </div>
+
+            </div>
+
+          </section>
+
+
+          <!-- BENEFIT -->
+
+          <section class="detail-card">
+
+            <div class="card-header">
+
+              <div>
+
+                <h2>
+                  Active Benefits
+                </h2>
+
+                <p>
+                  Voucher dan benefit yang tersedia.
+                </p>
+
+              </div>
+
+              <button class="text-button">
+                View All
+              </button>
+
+            </div>
+
+
+            <div class="empty-benefit">
+
+              <div class="benefit-icon">
+                🎁
+              </div>
+
+              <div>
+
+                <strong>
+                  Belum ada data benefit
+                </strong>
+
+                <span>
+                  Data voucher dan benefit akan
+                  muncul ketika endpoint benefit
+                  tersedia dari backend.
+                </span>
+
+              </div>
+
+            </div>
+
+          </section>
+
+
+          <!-- ACTIVITY -->
+
+          <section class="detail-card">
+
+            <div class="card-header">
+
+              <div>
+
+                <h2>
+                  Member Activity
+                </h2>
+
+                <p>
+                  Riwayat aktivitas member.
+                </p>
+
+              </div>
+
+              <button class="more-button">
+                •••
+              </button>
+
+            </div>
+
+
+            <div class="activity-empty">
+
+              <div class="activity-icon">
+                ◷
+              </div>
+
+              <strong>
+                Belum ada riwayat aktivitas
+              </strong>
+
+              <span>
+                Riwayat kunjungan, tiket,
+                dan transaksi akan ditampilkan
+                di sini.
+              </span>
+
+            </div>
+
+          </section>
+
+
+        </main>
+
+      </div>
 
     </template>
+
+
+    <!-- ================================================= -->
+    <!-- SIMPLE MESSAGE MODAL -->
+    <!-- ================================================= -->
+
+    <div
+      v-if="showMessage && member"
+      class="message-overlay"
+      @click.self="showMessage = false"
+    >
+
+      <div class="message-modal">
+
+        <div class="modal-icon">
+          ◈
+        </div>
+
+        <h2>
+          Kirim WhatsApp
+        </h2>
+
+        <p>
+          Kirim pesan WhatsApp kepada
+          <strong>{{ member.nama }}</strong>.
+        </p>
+
+        <textarea
+          placeholder="Tulis pesan..."
+        ></textarea>
+
+        <div class="modal-actions">
+
+          <button
+            class="cancel"
+            @click="showMessage = false"
+          >
+            Batal
+          </button>
+
+          <button class="send">
+            Kirim WhatsApp
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
 
   </div>
 
@@ -302,90 +518,278 @@ function getMemberClass(tipe: string) {
 
 .detail-page {
 
+  --brown: #43271d;
+  --brown-dark: #321b14;
+  --orange: #f47b20;
+
   min-height: 100%;
 
-  padding: 30px;
+  box-sizing: border-box;
 
-  background: #f8f5f1;
+  padding:
+    30px
+    clamp(28px, 4vw, 64px);
+
+  background: #f7f5f3;
 
 }
 
 
-/* BACK */
+/* ================================================= */
+/* TOP */
+/* ================================================= */
+
+.detail-top {
+
+  margin-bottom: 22px;
+
+}
 
 .back-link {
 
   display: inline-flex;
 
-  margin-bottom: 18px;
+  align-items: center;
 
-  color: #72523c;
+  gap: 8px;
+
+  color: #776b63;
 
   font-size: 12px;
-
-  font-weight: 600;
+  font-weight: 700;
 
   text-decoration: none;
 
 }
 
 .back-link:hover {
+  color: var(--brown);
+}
 
-  color: #4b2e20;
+
+/* ================================================= */
+/* LAYOUT */
+/* ================================================= */
+
+.profile-layout {
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(260px, 320px)
+    minmax(0, 1fr);
+
+  align-items: start;
+
+  gap: 20px;
 
 }
 
 
+/* ================================================= */
 /* PROFILE */
+/* ================================================= */
 
 .profile-card {
 
-  display: flex;
+  position: sticky;
 
-  align-items: center;
+  top: 20px;
 
-  gap: 16px;
-
-  margin-bottom: 17px;
-
-  padding: 22px;
+  padding: 27px 24px;
 
   border:
-    1px solid #eee7df;
+    1px solid #e7e0db;
 
-  border-radius: 15px;
+  border-radius: 16px;
 
   background: white;
 
   box-shadow:
-    0 4px 15px
-    rgba(70,48,33,0.04);
+    0 8px 25px
+    rgba(53,35,27,.045);
+
+  text-align: center;
 
 }
 
-.profile-avatar {
+.profile-top {
 
-  width: 58px;
-  height: 58px;
+  position: relative;
+
+  display: inline-block;
+
+  margin-bottom: 13px;
+
+}
+
+.avatar-large {
+
+  width: 110px;
+  height: 110px;
 
   display: flex;
 
   align-items: center;
   justify-content: center;
 
-  border-radius: 16px;
+  border-radius: 50%;
 
-  background: #eadbcf;
+  background:
+    linear-gradient(
+      135deg,
+      #f0e1d7,
+      #e3c9b8
+    );
 
-  color: #5b3826;
+  color: var(--brown);
 
-  font-size: 22px;
+  font-size: 38px;
 
-  font-weight: 700;
+  font-weight: 800;
+
+  box-shadow:
+    0 8px 20px
+    rgba(67,39,29,.1);
 
 }
 
-.profile-info {
+.member-badge {
+
+  position: absolute;
+
+  right: -8px;
+  bottom: 0;
+
+  padding:
+    7px 11px;
+
+  border:
+    3px solid white;
+
+  border-radius: 20px;
+
+  font-size: 10px;
+
+  font-weight: 800;
+
+}
+
+.member-badge.pengajian {
+
+  background: #fff0df;
+  color: #a95e1d;
+
+}
+
+.member-badge.reguler {
+
+  background: #efedeb;
+  color: #665e58;
+
+}
+
+.member-badge.tour {
+
+  background: #e7f6ed;
+  color: #287b4e;
+
+}
+
+.profile-card h1 {
+
+  margin: 0;
+
+  color: #261a16;
+
+  font-size: 24px;
+
+  font-weight: 800;
+
+  letter-spacing: -.4px;
+
+}
+
+.member-number {
+
+  margin: 5px 0 0;
+
+  color: #9b918a;
+
+  font-size: 11px;
+
+}
+
+.profile-divider {
+
+  height: 1px;
+
+  margin:
+    24px 0 19px;
+
+  background: #eee9e5;
+
+}
+
+
+/* ================================================= */
+/* CONTACT */
+/* ================================================= */
+
+.contact-item {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 11px;
+
+  margin-bottom: 17px;
+
+  text-align: left;
+
+}
+
+.contact-icon {
+
+  width: 35px;
+  height: 35px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  font-size: 13px;
+
+}
+
+.contact-icon.whatsapp {
+
+  background: #e8f7ef;
+  color: #21945d;
+
+}
+
+.contact-icon.location {
+
+  background: #f1eee9;
+  color: #786a60;
+
+}
+
+.contact-icon.member {
+
+  background: #fff0df;
+  color: #c56a1d;
+
+}
+
+.contact-item div:last-child {
 
   display: flex;
 
@@ -395,144 +799,182 @@ function getMemberClass(tipe: string) {
 
 }
 
-.profile-name-row {
+.contact-item span {
+
+  color: #9a9089;
+
+  font-size: 10px;
+
+}
+
+.contact-item strong {
+
+  color: #382b25;
+
+  font-size: 12px;
+
+}
+
+.send-message {
+
+  width: 100%;
+
+  height: 42px;
 
   display: flex;
 
   align-items: center;
+  justify-content: center;
 
-  gap: 10px;
+  gap: 9px;
 
-}
-
-.profile-name-row h1 {
-
-  margin: 0;
-
-  color: #4b2e20;
-
-  font-size: 22px;
-
-}
-
-.profile-info p {
-
-  margin: 0;
-
-  color: #9a8e84;
-
-  font-size: 11px;
-
-}
-
-
-/* BADGE */
-
-.member-badge {
-
-  padding:
-    6px
-    10px;
-
-  border-radius: 20px;
-
-  font-size: 10px;
-
-  font-weight: 600;
-
-}
-
-.member-badge.member-pengajian {
-
-  background: #f3e7d9;
-
-  color: #80532f;
-
-}
-
-.member-badge.member-reguler {
-
-  background: #eeeae5;
-
-  color: #665d55;
-
-}
-
-.member-badge.member-tour {
-
-  background: #e5f0e8;
-
-  color: #427052;
-
-}
-
-
-/* CARD */
-
-.info-card,
-.benefit-card {
-
-  margin-bottom: 17px;
+  margin-top: 22px;
 
   border:
-    1px solid #eee7df;
+    1px solid #ddd4ce;
 
-  border-radius: 15px;
+  border-radius: 9px;
+
+  background: white;
+
+  color: #4c3930;
+
+  font-family: inherit;
+
+  font-size: 12px;
+  font-weight: 800;
+
+  cursor: pointer;
+
+  transition: .2s ease;
+
+}
+
+.send-message:hover {
+
+  background: #fff8f3;
+
+  border-color: #c9aa97;
+
+}
+
+
+/* ================================================= */
+/* CONTENT */
+/* ================================================= */
+
+.detail-content {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 18px;
+
+}
+
+.detail-card {
+
+  overflow: hidden;
+
+  border:
+    1px solid #e7e0db;
+
+  border-radius: 16px;
 
   background: white;
 
   box-shadow:
-    0 4px 15px
-    rgba(70,48,33,0.04);
+    0 7px 24px
+    rgba(53,35,27,.035);
 
 }
 
-.section-title {
+.card-header {
+
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
 
   padding:
-    19px
-    20px;
+    20px 22px;
 
   border-bottom:
-    1px solid #f0ebe6;
+    1px solid #eee9e5;
 
 }
 
-.section-title h2 {
+.card-header h2 {
 
   margin: 0;
 
-  color: #4b2e20;
+  color: #30221c;
 
-  font-size: 15px;
+  font-size: 16px;
+
+  font-weight: 800;
 
 }
 
-.section-title p {
+.card-header p {
 
   margin: 4px 0 0;
 
-  color: #9a8f86;
+  color: #9a9089;
 
   font-size: 11px;
 
 }
 
+.text-button {
 
-/* INFO */
+  border: none;
 
-.info-grid {
+  background: transparent;
+
+  color: #83766d;
+
+  font-family: inherit;
+
+  font-size: 11px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+}
+
+.more-button {
+
+  width: 31px;
+  height: 31px;
+
+  border: none;
+
+  border-radius: 50%;
+
+  background: #f8f6f4;
+
+  color: #786b63;
+
+}
+
+
+/* ================================================= */
+/* INFORMATION */
+/* ================================================= */
+
+.information-grid {
 
   display: grid;
 
   grid-template-columns:
-    repeat(4, 1fr);
-
-  gap: 0;
+    repeat(2, 1fr);
 
 }
 
-.info-item {
+.information-item {
 
   display: flex;
 
@@ -540,39 +982,110 @@ function getMemberClass(tipe: string) {
 
   gap: 6px;
 
-  padding: 18px 20px;
+  padding:
+    19px 22px;
+
+  border-bottom:
+    1px solid #f0ece9;
+
+}
+
+.information-item:nth-child(odd) {
 
   border-right:
-    1px solid #f0ebe6;
+    1px solid #f0ece9;
 
 }
 
-.info-item:last-child {
+.information-item span {
 
-  border-right: none;
-
-}
-
-.info-item span {
-
-  color: #a0968d;
+  color: #9c928b;
 
   font-size: 10px;
 
 }
 
-.info-item strong {
+.information-item strong {
 
-  color: #59483c;
+  color: #3b2c25;
+
+  font-size: 13px;
+
+}
+
+
+/* ================================================= */
+/* BENEFIT */
+/* ================================================= */
+
+.empty-benefit {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 14px;
+
+  padding: 25px 22px;
+
+}
+
+.benefit-icon {
+
+  width: 47px;
+  height: 47px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 13px;
+
+  background: #fff0df;
+
+  font-size: 20px;
+
+}
+
+.empty-benefit div:last-child {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 5px;
+
+}
+
+.empty-benefit strong {
+
+  color: #50382b;
 
   font-size: 12px;
 
 }
 
+.empty-benefit span {
 
-/* BENEFIT */
+  max-width: 500px;
 
-.benefit-empty {
+  color: #9c928b;
+
+  font-size: 10px;
+
+  line-height: 1.5;
+
+}
+
+
+/* ================================================= */
+/* ACTIVITY */
+/* ================================================= */
+
+.activity-empty {
 
   min-height: 210px;
 
@@ -581,93 +1094,99 @@ function getMemberClass(tipe: string) {
   flex-direction: column;
 
   align-items: center;
-
   justify-content: center;
 
   gap: 7px;
-
-  padding: 25px;
 
   text-align: center;
 
 }
 
-.benefit-icon {
+.activity-icon {
 
-  width: 54px;
-  height: 54px;
+  width: 50px;
+  height: 50px;
 
   display: flex;
 
   align-items: center;
   justify-content: center;
 
-  margin-bottom: 4px;
+  margin-bottom: 5px;
 
-  border-radius: 16px;
+  border-radius: 14px;
 
-  background: #f7ecd9;
+  background: #f5efea;
 
-  font-size: 22px;
+  color: #7a675b;
 
-}
-
-.benefit-empty strong {
-
-  color: #5b3826;
-
-  font-size: 13px;
+  font-size: 21px;
 
 }
 
-.benefit-empty span {
+.activity-empty strong {
 
-  max-width: 410px;
+  color: #52392c;
 
-  color: #a0968d;
+  font-size: 12px;
 
-  font-size: 11px;
+}
 
-  line-height: 1.6;
+.activity-empty span {
+
+  max-width: 380px;
+
+  color: #a09791;
+
+  font-size: 10px;
+
+  line-height: 1.5;
 
 }
 
 
+/* ================================================= */
 /* LOADING */
+/* ================================================= */
 
-.loading-card {
+.loading-state {
 
-  min-height: 300px;
+  min-height: 400px;
 
   display: flex;
 
   flex-direction: column;
 
   align-items: center;
-
   justify-content: center;
 
   gap: 10px;
 
-  color: #958a81;
+}
 
-  font-size: 12px;
+.loading-state strong {
+
+  color: var(--brown);
+
+  font-size: 13px;
 
 }
 
 .loader {
 
-  width: 27px;
-  height: 27px;
+  width: 31px;
+  height: 31px;
 
-  border: 3px solid #eadfd6;
+  border:
+    3px solid #eee6e0;
 
-  border-top-color: #65412b;
+  border-top-color:
+    var(--orange);
 
   border-radius: 50%;
 
   animation:
-    spin 0.8s linear infinite;
+    spin .75s linear infinite;
 
 }
 
@@ -680,11 +1199,13 @@ function getMemberClass(tipe: string) {
 }
 
 
+/* ================================================= */
 /* NOT FOUND */
+/* ================================================= */
 
 .not-found {
 
-  min-height: 300px;
+  min-height: 400px;
 
   display: flex;
 
@@ -693,37 +1214,33 @@ function getMemberClass(tipe: string) {
   align-items: center;
   justify-content: center;
 
-  gap: 7px;
-
-  color: #8f8379;
-
-  text-align: center;
+  gap: 8px;
 
 }
 
-.not-found > div {
+.not-found-icon {
 
-  width: 55px;
-  height: 55px;
+  width: 60px;
+  height: 60px;
 
   display: flex;
 
   align-items: center;
   justify-content: center;
 
-  margin-bottom: 5px;
+  margin-bottom: 7px;
 
-  border-radius: 15px;
+  border-radius: 16px;
 
-  background: #f5ede6;
+  background: #f5eee8;
 
-  font-size: 22px;
+  font-size: 24px;
 
 }
 
 .not-found strong {
 
-  color: #5b3826;
+  color: #52372b;
 
   font-size: 14px;
 
@@ -731,31 +1248,199 @@ function getMemberClass(tipe: string) {
 
 .not-found span {
 
+  color: #9a9089;
+
   font-size: 11px;
 
 }
 
+.not-found a {
 
+  margin-top: 7px;
+
+  color: #a45f2a;
+
+  font-size: 11px;
+  font-weight: 700;
+
+}
+
+
+/* ================================================= */
+/* MESSAGE MODAL */
+/* ================================================= */
+
+.message-overlay {
+
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 100;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  padding: 20px;
+
+  background:
+    rgba(32,24,20,.58);
+
+  backdrop-filter:
+    blur(5px);
+
+}
+
+.message-modal {
+
+  width: min(460px, 100%);
+
+  padding: 25px;
+
+  border-radius: 16px;
+
+  background: white;
+
+  box-shadow:
+    0 25px 60px
+    rgba(0,0,0,.2);
+
+}
+
+.modal-icon {
+
+  width: 42px;
+  height: 42px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 13px;
+
+  border-radius: 12px;
+
+  background: #fff0df;
+
+  color: #f47b20;
+
+}
+
+.message-modal h2 {
+
+  margin: 0;
+
+  color: #30221c;
+
+  font-size: 18px;
+
+}
+
+.message-modal p {
+
+  margin: 6px 0 17px;
+
+  color: #8d827b;
+
+  font-size: 12px;
+
+}
+
+.message-modal textarea {
+
+  width: 100%;
+
+  min-height: 130px;
+
+  box-sizing: border-box;
+
+  resize: vertical;
+
+  padding: 13px;
+
+  border:
+    1px solid #ddd5cf;
+
+  border-radius: 9px;
+
+  outline: none;
+
+  font-family: inherit;
+
+  font-size: 12px;
+
+}
+
+.modal-actions {
+
+  display: flex;
+
+  justify-content: flex-end;
+
+  gap: 9px;
+
+  margin-top: 15px;
+
+}
+
+.modal-actions button {
+
+  height: 38px;
+
+  padding: 0 14px;
+
+  border-radius: 8px;
+
+  font-family: inherit;
+
+  font-size: 11px;
+
+  font-weight: 800;
+
+  cursor: pointer;
+
+}
+
+.modal-actions .cancel {
+
+  border:
+    1px solid #ddd5cf;
+
+  background: white;
+
+  color: #665a52;
+
+}
+
+.modal-actions .send {
+
+  border: none;
+
+  background: var(--brown);
+
+  color: white;
+
+}
+
+
+/* ================================================= */
 /* RESPONSIVE */
+/* ================================================= */
 
 @media (max-width: 900px) {
 
-  .detail-page {
+  .profile-layout {
 
-    padding: 20px;
-
-  }
-
-  .info-grid {
-
-    grid-template-columns:
-      repeat(2, 1fr);
+    grid-template-columns: 1fr;
 
   }
 
-  .info-item:nth-child(2) {
+  .profile-card {
 
-    border-right: none;
+    position: static;
 
   }
 
@@ -764,37 +1449,18 @@ function getMemberClass(tipe: string) {
 @media (max-width: 600px) {
 
   .detail-page {
-
-    padding: 15px;
-
+    padding: 20px;
   }
 
-  .profile-name-row {
-
-    align-items: flex-start;
-
-    flex-direction: column;
-
-  }
-
-  .info-grid {
+  .information-grid {
 
     grid-template-columns: 1fr;
 
   }
 
-  .info-item {
+  .information-item:nth-child(odd) {
 
     border-right: none;
-
-    border-bottom:
-      1px solid #f0ebe6;
-
-  }
-
-  .info-item:last-child {
-
-    border-bottom: none;
 
   }
 

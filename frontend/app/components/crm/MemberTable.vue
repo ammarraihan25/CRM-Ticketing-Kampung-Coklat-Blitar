@@ -1,11 +1,17 @@
 <script setup lang="ts">
+
 import type { Member } from '~/composables/useCrmApi'
 
 const props = defineProps<{
+
   members: Member[]
+
   page: number
+
   perPage: number
+
   total: number
+
 }>()
 
 const selected = defineModel<number[]>('selected', {
@@ -13,19 +19,24 @@ const selected = defineModel<number[]>('selected', {
 })
 
 const emit = defineEmits<{
+
   (e: 'page-change', page: number): void
+
 }>()
 
 const totalPages = computed(() => {
+
   return Math.max(
     1,
     Math.ceil(
       props.total / props.perPage
     )
   )
+
 })
 
 const allSelected = computed(() => {
+
   return (
     props.members.length > 0 &&
     props.members.every(
@@ -33,41 +44,57 @@ const allSelected = computed(() => {
         selected.value.includes(member.id)
     )
   )
+
 })
 
 function toggleSelect(id: number) {
+
   if (selected.value.includes(id)) {
+
     selected.value =
       selected.value.filter(
         item => item !== id
       )
+
   } else {
+
     selected.value = [
       ...selected.value,
       id
     ]
+
   }
+
 }
 
 function toggleSelectAll() {
+
   if (allSelected.value) {
+
     selected.value = []
+
   } else {
+
     selected.value =
       props.members.map(
         member => member.id
       )
+
   }
+
 }
 
 function getInitial(name: string) {
+
   return (
     name?.charAt(0)?.toUpperCase() ||
     '?'
   )
+
 }
 
 function getBadgeClass(tipe: string) {
+
   if (tipe === 'Member Pengajian') {
     return 'pengajian'
   }
@@ -77,7 +104,11 @@ function getBadgeClass(tipe: string) {
   }
 
   return 'reguler'
+
 }
+
+
+
 </script>
 
 
@@ -87,30 +118,46 @@ function getBadgeClass(tipe: string) {
 
     <table class="member-table">
 
+      <!-- ================================================= -->
+      <!-- HEADER -->
+      <!-- ================================================= -->
+
       <thead>
 
         <tr>
 
-          <th class="check-column">
+          <th class="checkbox-column">
 
             <input
               type="checkbox"
               :checked="allSelected"
               @change="toggleSelectAll"
-            />
+            >
 
           </th>
 
-          <th>Member</th>
+          <th>
+            Member
+          </th>
 
-          <th>Tipe Member</th>
+          <th>
+            WhatsApp
+          </th>
 
-          <th>Domisili</th>
+          <th>
+            Domisili
+          </th>
 
-          <th>WhatsApp</th>
+          <th>
+            Tipe Member
+          </th>
+
+          <th>
+            Status
+          </th>
 
           <th class="action-column">
-            Aksi
+            Action
           </th>
 
         </tr>
@@ -118,16 +165,18 @@ function getBadgeClass(tipe: string) {
       </thead>
 
 
+      <!-- ================================================= -->
+      <!-- BODY -->
+      <!-- ================================================= -->
+
       <tbody>
 
         <!-- EMPTY -->
 
-        <tr
-          v-if="members.length === 0"
-        >
+        <tr v-if="members.length === 0">
 
           <td
-            colspan="6"
+            colspan="7"
             class="empty-cell"
           >
 
@@ -142,8 +191,8 @@ function getBadgeClass(tipe: string) {
               </strong>
 
               <span>
-                Data member akan muncul
-                setelah tersedia dari sistem.
+                Data member akan muncul setelah
+                tersedia dari sistem.
               </span>
 
             </div>
@@ -153,7 +202,7 @@ function getBadgeClass(tipe: string) {
         </tr>
 
 
-        <!-- DATA -->
+        <!-- MEMBER -->
 
         <tr
           v-for="member in members"
@@ -166,7 +215,7 @@ function getBadgeClass(tipe: string) {
 
           <!-- CHECK -->
 
-          <td class="check-column">
+          <td class="checkbox-column">
 
             <input
               type="checkbox"
@@ -176,7 +225,7 @@ function getBadgeClass(tipe: string) {
               @change="
                 toggleSelect(member.id)
               "
-            />
+            >
 
           </td>
 
@@ -188,17 +237,19 @@ function getBadgeClass(tipe: string) {
             <div class="member-profile">
 
               <div class="avatar">
+
                 {{ getInitial(member.nama) }}
+
               </div>
 
-              <div class="member-name">
+              <div class="member-info">
 
                 <strong>
                   {{ member.nama }}
                 </strong>
 
                 <span>
-                  ID Member #{{ member.id }}
+                  Member #{{ member.id }}
                 </span>
 
               </div>
@@ -208,7 +259,43 @@ function getBadgeClass(tipe: string) {
           </td>
 
 
-          <!-- TIPE -->
+          <!-- WHATSAPP -->
+
+          <td>
+
+            <div class="whatsapp">
+
+              <span class="whatsapp-icon">
+                ◉
+              </span>
+
+              <span>
+                {{ member.whatsapp || '-' }}
+              </span>
+
+            </div>
+
+          </td>
+
+
+          <!-- DOMISILI -->
+
+          <td>
+
+            <div class="domisili">
+
+              <span>
+                ●
+              </span>
+
+              {{ member.domisili || '-' }}
+
+            </div>
+
+          </td>
+
+
+          <!-- TYPE -->
 
           <td>
 
@@ -230,38 +317,17 @@ function getBadgeClass(tipe: string) {
           </td>
 
 
-          <!-- DOMISILI -->
+          <!-- STATUS -->
 
           <td>
 
-            <div class="location">
-              <span class="location-icon">
-                ●
-              </span>
+            <span class="status">
 
-              <span>
-                {{ member.domisili || '-' }}
-              </span>
-            </div>
+              <span class="status-dot"></span>
 
-          </td>
+              Active
 
-
-          <!-- WHATSAPP -->
-
-          <td>
-
-            <div class="phone">
-
-              <span class="phone-icon">
-                ◉
-              </span>
-
-              <span>
-                {{ member.whatsapp || '-' }}
-              </span>
-
-            </div>
+            </span>
 
           </td>
 
@@ -272,10 +338,15 @@ function getBadgeClass(tipe: string) {
 
             <NuxtLink
               :to="`/crm/${member.id}`"
-              class="detail-link"
+              class="view-button"
             >
-              Lihat Detail
-              <span>→</span>
+
+              View
+
+              <span>
+                →
+              </span>
+
             </NuxtLink>
 
           </td>
@@ -287,55 +358,75 @@ function getBadgeClass(tipe: string) {
     </table>
 
 
+    <!-- ================================================= -->
     <!-- PAGINATION -->
+    <!-- ================================================= -->
 
-    <div
-      v-if="totalPages > 1"
-      class="pagination"
-    >
+    <div class="pagination">
 
-      <button
-        class="pagination-button"
-        :disabled="page <= 1"
-        @click="
-          emit(
-            'page-change',
-            page - 1
-          )
-        "
-      >
-        ←
-      </button>
+      <span class="pagination-text">
 
-
-      <div class="page-info">
-
-        Halaman
+        Showing
 
         <strong>
-          {{ page }}
+          {{
+            members.length
+              ? ((page - 1) * perPage) + 1
+              : 0
+          }}
         </strong>
 
-        dari
-        {{ totalPages }}
+        to
+
+        <strong>
+          {{
+            Math.min(
+              page * perPage,
+              total
+            )
+          }}
+        </strong>
+
+        of
+
+        <strong>
+          {{ total }}
+        </strong>
+
+      </span>
+
+
+      <div class="pagination-buttons">
+
+        <button
+          :disabled="page <= 1"
+          @click="
+            emit(
+              'page-change',
+              page - 1
+            )
+          "
+        >
+          ← Prev
+        </button>
+
+        <div class="page-number">
+          {{ page }}
+        </div>
+
+        <button
+          :disabled="page >= totalPages"
+          @click="
+            emit(
+              'page-change',
+              page + 1
+            )
+          "
+        >
+          Next →
+        </button>
 
       </div>
-
-
-      <button
-        class="pagination-button"
-        :disabled="
-          page >= totalPages
-        "
-        @click="
-          emit(
-            'page-change',
-            page + 1
-          )
-        "
-      >
-        →
-      </button>
 
     </div>
 
@@ -347,393 +438,585 @@ function getBadgeClass(tipe: string) {
 <style scoped>
 
 .table-container {
+
   width: 100%;
 
   overflow-x: auto;
+
+  background: #fffdf9;
+
+  border: 1px solid #e5d2c3;
+
+  border-radius: 12px;
+
 }
 
 .member-table {
+
   width: 100%;
 
-  min-width: 950px;
+  min-width: 1100px;
 
   border-collapse: collapse;
+
 }
 
 
-/* =========================================
-   HEADER
-========================================= */
+/* ================================================= */
+/* HEADER */
+/* ================================================= */
 
 .member-table th {
-  padding:
-    13px 18px;
 
-  background: #fcfaf8;
+  padding:
+    17px 22px;
+
+  background: #3c241b;
 
   border-bottom:
-    1px solid #eee7df;
+    3px solid #f29727;
 
-  color: #998e85;
+  color: #fff7ed;
 
-  font-size: 9px;
-  font-weight: 700;
+  font-size: 13px;
+
+  font-weight: 800;
 
   text-align: left;
 
   text-transform: uppercase;
 
-  letter-spacing: 0.5px;
+  letter-spacing: .7px;
+
 }
 
 .member-table td {
+
   padding:
-    14px 18px;
+    18px 22px;
 
   border-bottom:
-    1px solid #f1ece7;
+    1px solid #eaded5;
 
-  color: #665a51;
+  color: #4e382e;
 
-  font-size: 11px;
+  font-size: 16px;
+
+  line-height: 1.45;
+
 }
 
 .member-table tbody tr {
-  transition: background 0.15s ease;
+
+  transition:
+    background .15s ease;
+
 }
 
 .member-table tbody tr:hover {
-  background: #fdfaf7;
+
+  background: #fff8f0;
+
 }
 
 .member-table tbody tr.selected {
-  background: #faf4ee;
+
+  background: #ffeddc;
+
 }
 
 .member-table tbody tr:last-child td {
+
   border-bottom: none;
+
 }
 
 
-/* =========================================
-   CHECKBOX
-========================================= */
+/* ================================================= */
+/* CHECKBOX */
+/* ================================================= */
 
-.check-column {
-  width: 42px;
+.checkbox-column {
+
+  width: 48px;
 
   text-align: center !important;
+
 }
 
 input[type="checkbox"] {
-  width: 15px;
-  height: 15px;
+
+  width: 19px;
+  height: 19px;
 
   margin: 0;
 
-  accent-color: #65412b;
+  accent-color:
+    #c96b1b;
 
   cursor: pointer;
+
 }
 
 
-/* =========================================
-   MEMBER
-========================================= */
+/* ================================================= */
+/* MEMBER */
+/* ================================================= */
 
 .member-profile {
-  display: flex;
-  align-items: center;
-
-  gap: 10px;
-}
-
-.avatar {
-  width: 37px;
-  height: 37px;
-
-  flex-shrink: 0;
 
   display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 10px;
-
-  background: #eadbcf;
-
-  color: #5b3826;
-
-  font-size: 12px;
-  font-weight: 700;
-}
-
-.member-name {
-  display: flex;
-  flex-direction: column;
-
-  gap: 3px;
-}
-
-.member-name strong {
-  color: #4b2e20;
-
-  font-size: 11px;
-  font-weight: 650;
-}
-
-.member-name span {
-  color: #aaa097;
-
-  font-size: 9px;
-}
-
-
-/* =========================================
-   TYPE BADGE
-========================================= */
-
-.type-badge {
-  display: inline-flex;
-  align-items: center;
-
-  gap: 6px;
-
-  padding:
-    6px 9px;
-
-  border-radius: 20px;
-
-  font-size: 9px;
-  font-weight: 600;
-
-  white-space: nowrap;
-}
-
-.badge-dot {
-  width: 5px;
-  height: 5px;
-
-  border-radius: 50%;
-
-  background: currentColor;
-}
-
-
-/* PENGAJIAN */
-
-.type-badge.pengajian {
-  background: #f3e7d9;
-  color: #80532f;
-}
-
-
-/* REGULER */
-
-.type-badge.reguler {
-  background: #efebe7;
-  color: #665d55;
-}
-
-
-/* TOUR */
-
-.type-badge.tour {
-  background: #e5f0e8;
-  color: #427052;
-}
-
-
-/* =========================================
-   LOCATION
-========================================= */
-
-.location {
-  display: flex;
-  align-items: center;
-
-  gap: 7px;
-
-  color: #766b62;
-}
-
-.location-icon {
-  font-size: 7px;
-
-  color: #a97853;
-}
-
-
-/* =========================================
-   PHONE
-========================================= */
-
-.phone {
-  display: flex;
-  align-items: center;
-
-  gap: 7px;
-
-  color: #6c6058;
-}
-
-.phone-icon {
-  font-size: 9px;
-
-  color: #6d9074;
-}
-
-
-/* =========================================
-   ACTION
-========================================= */
-
-.action-column {
-  text-align: right !important;
-}
-
-.detail-link {
-  display: inline-flex;
-  align-items: center;
-
-  gap: 5px;
-
-  padding:
-    7px 10px;
-
-  border:
-    1px solid #e3dad2;
-
-  border-radius: 7px;
-
-  background: white;
-
-  color: #65442f;
-
-  font-size: 9px;
-  font-weight: 600;
-
-  text-decoration: none;
-
-  transition: all 0.2s ease;
-}
-
-.detail-link:hover {
-  background: #f8f1eb;
-
-  border-color: #cdb8a6;
-}
-
-.detail-link span {
-  font-size: 12px;
-}
-
-
-/* =========================================
-   EMPTY
-========================================= */
-
-.empty-cell {
-  padding: 0 !important;
-}
-
-.empty-state {
-  min-height: 250px;
-
-  display: flex;
-  flex-direction: column;
 
   align-items: center;
-  justify-content: center;
-
-  gap: 6px;
-}
-
-.empty-icon {
-  width: 50px;
-  height: 50px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  margin-bottom: 6px;
-
-  border-radius: 14px;
-
-  background: #f5ede6;
-
-  font-size: 20px;
-}
-
-.empty-state strong {
-  color: #5b3826;
-
-  font-size: 12px;
-}
-
-.empty-state span {
-  color: #a0968d;
-
-  font-size: 10px;
-}
-
-
-/* =========================================
-   PAGINATION
-========================================= */
-
-.pagination {
-  display: flex;
-  align-items: center;
-  justify-content: center;
 
   gap: 12px;
 
-  padding: 14px;
-
-  border-top:
-    1px solid #f0ebe6;
 }
 
-.pagination-button {
-  width: 29px;
-  height: 29px;
+.avatar {
+
+  width: 46px;
+  height: 46px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      135deg,
+      #f3d7b8,
+      #d89b62
+    );
+
+  color: #4a291d;
+
+  font-size: 15px;
+
+  font-weight: 800;
+
+}
+
+.member-info {
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 4px;
+
+}
+
+.member-info strong {
+
+  color: #33251f;
+
+  font-size: 16px;
+
+  font-weight: 750;
+
+}
+
+.member-info span {
+
+  color: #806b5f;
+
+  font-size: 13px;
+
+}
+
+
+/* ================================================= */
+/* WHATSAPP */
+/* ================================================= */
+
+.whatsapp {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  color: #59473e;
+
+  font-size: 15px;
+
+  white-space: nowrap;
+
+}
+
+.whatsapp-icon {
+
+  width: 30px;
+  height: 30px;
 
   display: flex;
   align-items: center;
   justify-content: center;
 
+  border-radius: 50%;
+
+  background: #e9f7ef;
+
+  color: #20a66c;
+
+  font-size: 14px;
+
+}
+
+
+/* ================================================= */
+/* DOMISILI */
+/* ================================================= */
+
+.domisili {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  color: #59473e;
+
+  font-size: 15px;
+
+}
+
+.domisili > span {
+
+  font-size: 9px;
+
+  color: #c96b1b;
+
+}
+
+
+/* ================================================= */
+/* BADGE */
+/* ================================================= */
+
+.type-badge {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  padding:
+    7px 12px;
+
+  border-radius: 20px;
+
+  font-size: 13px;
+
+  font-weight: 750;
+
+  white-space: nowrap;
+
+}
+
+.badge-dot {
+
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background:
+    currentColor;
+
+}
+
+.type-badge.pengajian {
+
+  background: #fff0df;
+
+  color: #b56620;
+
+}
+
+.type-badge.reguler {
+
+  background: #f0eeec;
+
+  color: #665e59;
+
+}
+
+.type-badge.tour {
+
+  background: #e8f7ef;
+
+  color: #298052;
+
+}
+
+
+/* ================================================= */
+/* STATUS */
+/* ================================================= */
+
+.status {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+  color: #23945d;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+}
+
+.status-dot {
+
+  width: 8px;
+  height: 8px;
+
+  border-radius: 50%;
+
+  background: #22b86e;
+
+}
+
+
+/* ================================================= */
+/* ACTION */
+/* ================================================= */
+
+.action-column {
+
+  text-align: right !important;
+
+}
+
+.view-button {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 8px;
+
+  padding:
+    10px 14px;
+
   border:
-    1px solid #e4dbd3;
+    1px solid #d7bda9;
+
+  border-radius: 8px;
+
+  background: white;
+
+  color: #4c291d;
+
+  font-size: 14px;
+
+  font-weight: 700;
+
+  text-decoration: none;
+
+  transition: .2s ease;
+
+}
+
+.view-button:hover {
+
+  border-color: #c96b1b;
+
+  background: #fff0df;
+
+  transform: translateX(2px);
+
+}
+
+.view-button span {
+
+  font-size: 18px;
+
+}
+
+
+/* ================================================= */
+/* EMPTY */
+/* ================================================= */
+
+.empty-cell {
+
+  padding: 0 !important;
+
+}
+
+.empty-state {
+
+  min-height: 330px;
+
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 7px;
+
+}
+
+.empty-icon {
+
+  width: 58px;
+  height: 58px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  margin-bottom: 7px;
+
+  border-radius: 16px;
+
+  background: #f6eee8;
+
+  font-size: 23px;
+
+}
+
+.empty-state strong {
+
+  color: #57382b;
+
+  font-size: 16px;
+
+}
+
+.empty-state span {
+
+  color: #a49a94;
+
+  font-size: 14px;
+
+}
+
+
+/* ================================================= */
+/* PAGINATION */
+/* ================================================= */
+
+.pagination {
+
+  display: flex;
+
+  align-items: center;
+
+  justify-content: space-between;
+
+  gap: 20px;
+
+  padding:
+    18px 22px;
+
+  border-top:
+    1px solid #eee9e5;
+
+}
+
+.pagination-text {
+
+  color: #968c85;
+
+  font-size: 14px;
+
+}
+
+.pagination-text strong {
+
+  color: #5c4940;
+
+}
+
+.pagination-buttons {
+
+  display: flex;
+
+  align-items: center;
+
+  gap: 7px;
+
+}
+
+.pagination-buttons button {
+
+  height: 38px;
+
+  padding:
+    0 14px;
+
+  border:
+    1px solid #d7bda9;
 
   border-radius: 7px;
 
   background: white;
 
-  color: #684a38;
+  color: #4c291d;
+
+  font-family: inherit;
+
+  font-size: 14px;
+
+  font-weight: 700;
 
   cursor: pointer;
+
 }
 
-.pagination-button:hover:not(:disabled) {
-  background: #f8f2ed;
+.pagination-buttons button:hover:not(:disabled) {
+
+  background: #faf5f1;
+
 }
 
-.pagination-button:disabled {
-  opacity: 0.35;
+.pagination-buttons button:disabled {
+
+  opacity: .4;
 
   cursor: not-allowed;
+
 }
 
-.page-info {
-  color: #958a81;
+.page-number {
 
-  font-size: 10px;
-}
+  width: 38px;
+  height: 38px;
 
-.page-info strong {
-  color: #5b3826;
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 7px;
+
+  background: #3c241b;
+
+  color: white;
+
+  font-size: 14px;
+
+  font-weight: 800;
+
 }
 
 </style>

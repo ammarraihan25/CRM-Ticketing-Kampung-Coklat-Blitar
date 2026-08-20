@@ -1,112 +1,85 @@
 <template>
-  <div class="config-page">
-    <!-- Header -->
-    <header class="config-header">
+  <div class="katalog-page">
+    <!-- Header Section -->
+    <header class="katalog-header">
       <div class="header-left">
-        <div class="header-badge-row">
-          <div class="brand-mini-chip">
-            <img :src="logoImg" alt="Kampung Coklat" class="mini-chip-img" />
-            <span>Kampung Coklat Blitar</span>
-          </div>
-          <div class="badge-tag">
-            <span class="live-dot"></span>
-            <span>Konfigurasi Sistem Operasional</span>
-          </div>
-        </div>
         <h1 class="page-title">Pengaturan Tarif Tiket &amp; Wahana</h1>
         <p class="page-subtitle">
-          Kelola harga tiket masuk, paket edukasi, dan status operasional wahana rekreasi Kampung Coklat.
+          Kelola harga tiket masuk, paket edukasi, dan status operasional wahana rekreasi kawasan Kampung Coklat.
         </p>
-      </div>
-
-      <div class="header-actions">
-        <!-- Read-only protection for Manager / Owner -->
-        <button 
-          v-if="canManageConfig"
-          type="button" 
-          class="btn-primary"
-          @click="openAddRideModal"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-            <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
-          </svg>
-          <span>Tambah Wahana Baru</span>
-        </button>
-
-        <div v-else class="read-only-pill">
-          🔒 Mode Read-Only (Role: {{ user.roleTitle }})
-        </div>
       </div>
     </header>
 
-    <!-- Role Warning Banner if not Admin -->
+    <!-- Role Warning if not Admin -->
     <div v-if="!canManageConfig" class="role-warning-banner">
       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
         <line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
       </svg>
       <div>
-        <strong>Akses Terbatas:</strong> Anda sedang masuk sebagai <u>{{ user.roleTitle }}</u>. Anda dapat memantau katalog dan tarif wahana, namun perubahan harga dan status operasional hanya dapat dikelola oleh Super Admin.
+        <strong>Akses Terbatas:</strong> Anda sedang masuk sebagai <u>{{ user.roleTitle }}</u>. Pembaruan harga tiket dan status operasional dibatasi hanya untuk Super Admin.
       </div>
     </div>
 
     <!-- ========================================================================= -->
-    <!-- WIDGET 1: TARIF TIKET MASUK & PAKET KUNJUNGAN (Dedicated Frame)           -->
+    <!-- SECTION 1: TARIF TIKET MASUK & PAKET KUNJUNGAN (COMPACT & TIGHT LAYOUT)   -->
     <!-- ========================================================================= -->
-    <section class="section-widget-card">
-      <div class="widget-header-row">
-        <div class="widget-header-left">
-          <div class="widget-chip-title">
-            <span class="widget-icon">🎟️</span>
-            <h2 class="widget-title">Tarif Tiket Masuk &amp; Paket Kunjungan</h2>
+    <section class="section-widget-frame">
+      <div class="section-head-bar">
+        <div class="section-head-left">
+          <div class="section-title-badge">
+            <span class="sec-icon">🎟️</span>
+            <h2 class="sec-title">Tarif Tiket Masuk &amp; Paket Kunjungan</h2>
           </div>
-          <p class="widget-subtitle">Struktur harga tiket pada POS Kasir dan Digital Guestbook</p>
+          <p class="sec-subtitle">Struktur harga tiket resmi pada POS Kasir dan Digital Guestbook</p>
         </div>
       </div>
 
-      <div class="ticket-cards-grid">
-        <div v-for="ticket in ticketRates" :key="ticket.id" class="ticket-card-v2">
-          <!-- Top Photo Banner with status chip -->
-          <div class="ticket-banner-box">
-            <img :src="ticket.imageUrl" :alt="ticket.name" class="ticket-banner-img" />
-            <div class="ticket-category-tag">{{ ticket.tag }}</div>
-            <span class="ticket-status-pill" :class="ticket.isActive ? 'pill-active' : 'pill-inactive'">
+      <div class="ticket-rates-grid">
+        <div v-for="ticket in ticketRates" :key="ticket.id" class="ticket-rate-card">
+          <!-- Top Photo Banner -->
+          <div class="rate-banner-box">
+            <img :src="ticket.imageUrl" :alt="ticket.name" class="rate-banner-img" />
+            <div class="rate-category-badge">{{ ticket.tag }}</div>
+            <span class="rate-status-pill" :class="ticket.isActive ? 'pill-active' : 'pill-inactive'">
               ● {{ ticket.isActive ? 'Aktif' : 'Non-Aktif' }}
             </span>
           </div>
 
-          <!-- Body Content -->
-          <div class="ticket-card-body">
-            <h3 class="ticket-title">{{ ticket.name }}</h3>
-            <p class="ticket-desc">{{ ticket.description }}</p>
+          <!-- Body with Tight Spacing -->
+          <div class="rate-card-body">
+            <div class="rate-title-desc-wrap">
+              <h3 class="rate-name">{{ ticket.name }}</h3>
+              <p class="rate-desc">{{ ticket.description }}</p>
+            </div>
 
-            <!-- Center Price Box -->
-            <div class="ticket-price-box">
-              <span class="price-box-label">TARIF SAAT INI</span>
-              <div class="price-box-val">{{ formatRupiah(ticket.price) }}</div>
-              <span class="price-box-unit">per pax / pengunjung</span>
+            <!-- Price Box -->
+            <div class="rate-price-box">
+              <span class="price-lbl">TARIF SAAT INI</span>
+              <div class="price-num">{{ formatRupiah(ticket.price) }}</div>
+              <span class="price-sub">per pax / pengunjung</span>
             </div>
 
             <!-- Rules Checklist -->
-            <div class="ticket-rules-box">
-              <div class="ticket-rule-row">
-                <span class="check-icon">✓</span>
-                <span class="rule-text">{{ ticket.quotaRule }}</span>
+            <div class="rate-rules-box">
+              <div class="rule-item">
+                <span class="check-glyph">✓</span>
+                <span class="rule-txt">{{ ticket.quotaRule }}</span>
               </div>
-              <div class="ticket-rule-row">
-                <span class="check-icon">✓</span>
-                <span class="rule-text">{{ ticket.accessRule }}</span>
+              <div class="rule-item">
+                <span class="check-glyph">✓</span>
+                <span class="rule-txt">{{ ticket.accessRule }}</span>
               </div>
             </div>
 
             <!-- Action Button -->
             <button 
               type="button" 
-              class="btn-ticket-action"
+              class="btn-edit-rate"
               :disabled="!canManageConfig"
               @click="editTicketPrice(ticket)"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
                 <path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
               </svg>
               <span>{{ canManageConfig ? 'Ubah Tarif Tiket' : 'Lihat Ketentuan' }}</span>
@@ -117,95 +90,151 @@
     </section>
 
     <!-- ========================================================================= -->
-    <!-- WIDGET 2: KATALOG WAHANA & STATUS OPERASIONAL (Dedicated Frame)           -->
+    <!-- SECTION 2: KATALOG WAHANA & STATUS OPERASIONAL (1:1 REFERENCE DESIGN)     -->
     <!-- ========================================================================= -->
-    <section class="section-widget-card">
-      <div class="widget-header-row">
-        <div class="widget-header-left">
-          <div class="widget-chip-title">
-            <span class="widget-icon">🎡</span>
-            <h2 class="widget-title">Katalog Wahana &amp; Status Operasional</h2>
+    <section class="section-widget-frame">
+      <div class="section-head-bar">
+        <div class="section-head-left">
+          <div class="section-title-badge">
+            <span class="sec-icon">🎡</span>
+            <h2 class="sec-title">Katalog &amp; Status Operasional Wahana</h2>
           </div>
-          <p class="widget-subtitle">Total {{ ridesList.length }} wahana rekreasi terdaftar di kawasan Kampung Coklat</p>
-        </div>
-
-        <!-- Filter Dropdown -->
-        <div class="widget-header-right">
-          <select v-model="rideFilterCategory" class="filter-select-cute">
-            <option value="ALL">Semua Kategori Wahana</option>
-            <option value="terusan">Free Tiket Terusan</option>
-            <option value="paid">Tiket Satuan (Add-on)</option>
-            <option value="water">Wahana Air &amp; Kolam</option>
-          </select>
+          <p class="sec-subtitle">Kelola wahana rekreasi di kawasan Kampung Coklat</p>
         </div>
       </div>
 
-      <div class="rides-grid">
-        <div v-for="ride in filteredRides" :key="ride.id" class="ride-card-v2">
-          <!-- Ride Photo Banner -->
-          <div class="ride-photo-box">
+      <!-- Controls: Total count + View toggle + Category selector + Add button -->
+      <div class="katalog-control-bar">
+        <div class="total-wahana-pill">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          <span>Total {{ ridesList.length }} wahana terdaftar</span>
+        </div>
+
+        <div class="control-bar-right">
+          <!-- Category Select Pill -->
+          <div class="category-dropdown-wrapper">
+            <select v-model="rideFilterCategory" class="category-select-pill">
+              <option value="ALL">Semua Kategori Wahana</option>
+              <option value="terusan">Free Tiket Terusan</option>
+              <option value="paid">Tiket Satuan (Add-on)</option>
+              <option value="water">Wahana Air &amp; Kolam</option>
+            </select>
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="select-chevron">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </div>
+
+          <!-- Add Wahana Button -->
+          <button 
+            v-if="canManageConfig"
+            type="button" 
+            class="btn-add-wahana-pill"
+            @click="openAddRideModal"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+            </svg>
+            <span>Tambah Wahana Baru</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 4-Column Compact & Proportional Wahana Cards Grid -->
+      <div class="wahana-reference-grid">
+        <div 
+          v-for="ride in filteredRides" 
+          :key="ride.id" 
+          class="wahana-card-ref"
+        >
+          <!-- Top Photo Box with Ribbon, Floating Icon & Status -->
+          <div class="wahana-photo-box">
             <img 
               :src="ride.imageUrl" 
               :alt="ride.name"
-              class="ride-photo-img"
+              class="wahana-img"
               loading="lazy"
             />
-            <!-- Top-Left Ribbon -->
-            <div class="ride-ribbon-tag" :class="ride.isFreeTerusan ? 'ribbon-terusan' : 'ribbon-paid'">
-              {{ ride.isFreeTerusan ? '★ FREE TIKET TERUSAN' : 'TIKET TAMBAHAN' }}
+
+            <!-- Top-Left Category Tag Ribbon -->
+            <div class="wahana-top-ribbon" :class="ride.isFreeTerusan ? 'ribbon-terusan' : 'ribbon-paid'">
+              <span>{{ ride.isFreeTerusan ? '★ TERUSAN' : 'TIKET SATUAN' }}</span>
             </div>
-            <!-- Bottom-Right Status Tag -->
-            <span class="ride-status-badge" :class="`badge-${ride.status.toLowerCase()}`">
-              ● {{ ride.status }}
-            </span>
+
+            <!-- Top-Right Status Toggle Pill -->
+            <button 
+              type="button" 
+              class="wahana-status-pill"
+              :class="`status-${ride.status.toLowerCase()}`"
+              :disabled="!canManageConfig"
+              @click.stop="toggleRideStatus(ride)"
+              title="Klik untuk ubah status operasional"
+            >
+              <span class="status-dot"></span>
+              <span>{{ ride.status }}</span>
+            </button>
           </div>
 
-          <!-- Ride Card Body -->
-          <div class="ride-card-body">
-            <h3 class="ride-title">{{ ride.name }}</h3>
+          <!-- Card Content Body (Compact & Harmonious) -->
+          <div class="wahana-content-body">
+            <h3 class="wahana-title">{{ ride.name }}</h3>
 
-            <!-- Price and Capacity Row -->
-            <div class="ride-price-cap-row">
-              <span class="ride-price-text">{{ ride.price === 0 ? 'Gratis' : formatRupiah(ride.price) }}</span>
-              <span class="ride-capacity-text">Kapasitas: {{ ride.capacity }} Org</span>
+            <!-- Price & Capacity in a Single Symmetric Row -->
+            <div class="wahana-meta-line">
+              <span class="wahana-price-val">{{ ride.price === 0 ? 'Gratis (Terusan)' : formatRupiah(ride.price) }}</span>
+              <span class="wahana-capacity-tag">
+                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                </svg>
+                <span>{{ ride.capacity }} Org</span>
+              </span>
             </div>
 
-            <p class="ride-desc-text">{{ ride.description }}</p>
-
-            <!-- 2-Column Info Strip Box -->
-            <div class="ride-info-strip">
-              <div class="info-strip-col">
-                <span class="strip-lbl">Total Dimainkan Hari Ini</span>
-                <span class="strip-val">{{ ride.playedToday.toLocaleString('id-ID') }} Kali</span>
-              </div>
-              <div class="info-strip-col">
-                <span class="strip-lbl">Durasi Sesi</span>
-                <span class="strip-val">{{ ride.duration }}</span>
-              </div>
+            <!-- Compact Sub-Metric Strip -->
+            <div class="wahana-metrics-strip">
+              <span class="metric-item">
+                <span class="metric-lbl">Main:</span>
+                <strong class="metric-val">{{ ride.playedToday.toLocaleString('id-ID') }}x</strong>
+              </span>
+              <span class="metric-dot-sep">•</span>
+              <span class="metric-item">
+                <span class="metric-lbl">Durasi:</span>
+                <strong class="metric-val">{{ ride.duration }}</strong>
+              </span>
             </div>
 
-            <!-- 2 Action Buttons Row -->
-            <div class="ride-actions-row">
+            <!-- Sleek Action Buttons Bar -->
+            <div class="wahana-action-bar-compact">
               <button 
                 type="button" 
-                class="btn-ride-status"
-                :class="{ 'btn-status-maintenance': ride.status === 'MAINTENANCE' }"
+                class="btn-wahana-pill btn-pill-edit"
                 :disabled="!canManageConfig"
-                @click="toggleRideStatus(ride)"
+                @click.stop="editRide(ride)"
+                title="Edit data dan harga wahana"
               >
-                <span>{{ ride.status === 'BUKA' ? 'Set Maintenance' : 'Set BUKA' }}</span>
+                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                </svg>
+                <span>Edit</span>
               </button>
 
               <button 
                 type="button" 
-                class="btn-ride-edit"
+                class="btn-wahana-pill btn-pill-maint"
+                :class="{ 'is-maint-active': ride.status === 'MAINTENANCE' }"
                 :disabled="!canManageConfig"
-                @click="editRide(ride)"
+                @click.stop="toggleRideStatus(ride)"
+                :title="ride.status === 'MAINTENANCE' ? 'Kembalikan ke status Buka Operasional' : 'Ubah status ke Mode Maintenance'"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
                 </svg>
-                <span>Edit</span>
+                <span>{{ ride.status === 'MAINTENANCE' ? 'Set Buka' : 'Maintenance' }}</span>
               </button>
             </div>
           </div>
@@ -213,11 +242,47 @@
       </div>
     </section>
 
+    <!-- ========================================================================= -->
+    <!-- BOTTOM SAFETY BANNER                                                      -->
+    <!-- ========================================================================= -->
+    <section class="safety-banner-reference">
+      <div class="safety-banner-left">
+        <div class="safety-emblem-circle">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="leaf-icon">
+            <path d="M11 20A7 7 0 0 1 4 13C4 7 11 2 11 2s7 5 7 11a7 7 0 0 1-7 7Z"/>
+            <path d="M11 2v18"/>
+          </svg>
+        </div>
+        <div class="safety-banner-texts">
+          <h4 class="safety-title">Safety is our Priority</h4>
+          <p class="safety-desc">
+            Pastikan semua wahana dalam kondisi aman dan siap digunakan untuk kenyamanan pengunjung.
+          </p>
+        </div>
+      </div>
+
+      <div class="safety-banner-right-art">
+        <svg class="plantation-gazebo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 80" fill="none">
+          <path d="M140 10 L80 35 L90 75 L190 75 L200 35 Z" stroke="#D6BFA8" stroke-width="1.5" />
+          <path d="M140 10 L140 75" stroke="#D6BFA8" stroke-width="1.2" stroke-dasharray="2 2" />
+          <path d="M100 42 L180 42" stroke="#D6BFA8" stroke-width="1.2" />
+          <path d="M115 50 L115 75 M140 50 L140 75 M165 50 L165 75" stroke="#D6BFA8" stroke-width="1.2" />
+          <path d="M20 75 L260 75" stroke="#D6BFA8" stroke-width="1.5" />
+          <circle cx="50" cy="65" r="12" stroke="#E2D4C3" stroke-width="1.2" />
+          <circle cx="65" cy="60" r="10" stroke="#E2D4C3" stroke-width="1.2" />
+          <circle cx="225" cy="62" r="11" stroke="#E2D4C3" stroke-width="1.2" />
+        </svg>
+      </div>
+    </section>
+
     <!-- Modal Edit Harga Tiket -->
     <div v-if="showTicketModal" class="modal-backdrop" @click.self="showTicketModal = false">
       <div class="modal-card">
         <div class="modal-header">
-          <h3>Ubah Tarif: {{ selectedTicket?.name }}</h3>
+          <div class="modal-title-col">
+            <img :src="logoImg" alt="Kampung Coklat" class="modal-mini-logo" />
+            <h3>Ubah Tarif: {{ selectedTicket?.name }}</h3>
+          </div>
           <button class="btn-close" @click="showTicketModal = false">&times;</button>
         </div>
         <form @submit.prevent="saveTicketPrice">
@@ -242,7 +307,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn-secondary" @click="showTicketModal = false">Batal</button>
-            <button type="submit" class="btn-primary">Simpan Perubahan Tarif</button>
+            <button type="submit" class="btn-primary-modal">Simpan Perubahan Tarif</button>
           </div>
         </form>
       </div>
@@ -252,29 +317,42 @@
     <div v-if="showRideModal" class="modal-backdrop" @click.self="showRideModal = false">
       <div class="modal-card">
         <div class="modal-header">
-          <h3>{{ isEditingRide ? `Edit Wahana: ${rideForm.name}` : 'Tambah Wahana Rekreasi Baru' }}</h3>
+          <div class="modal-title-col">
+            <img :src="logoImg" alt="Kampung Coklat" class="modal-mini-logo" />
+            <h3>{{ isEditingRide ? `Edit Wahana: ${rideForm.name}` : 'Tambah Wahana Rekreasi Baru' }}</h3>
+          </div>
           <button class="btn-close" @click="showRideModal = false">&times;</button>
         </div>
         <form @submit.prevent="saveRide">
           <div class="modal-body">
             <div class="form-group">
-              <label>Nama Wahana</label>
+              <label>Nama Wahana Rekreasi</label>
               <input v-model="rideForm.name" type="text" class="input-control" required />
-            </div>
-
-            <div class="form-group">
-              <label>Harga Satuan (Rp) (0 = Gratis / Termasuk Terusan)</label>
-              <input v-model.number="rideForm.price" type="number" step="1000" class="input-control" required />
             </div>
 
             <div class="form-row">
               <div class="form-group">
-                <label>Kapasitas (Pax)</label>
-                <input v-model.number="rideForm.capacity" type="number" class="input-control" required />
+                <label>Tarif Satuan (Rp)</label>
+                <input v-model.number="rideForm.price" type="number" step="1000" class="input-control" required />
               </div>
               <div class="form-group">
+                <label>Kapasitas (Orang)</label>
+                <input v-model.number="rideForm.capacity" type="number" class="input-control" required />
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
                 <label>Durasi Sesi</label>
-                <input v-model="rideForm.duration" type="text" class="input-control" placeholder="15 Menit" required />
+                <input v-model="rideForm.duration" type="text" class="input-control" placeholder="10 Menit" required />
+              </div>
+              <div class="form-group">
+                <label>Status Operasional</label>
+                <select v-model="rideForm.status" class="filter-select full-width">
+                  <option value="BUKA">BUKA (Normal)</option>
+                  <option value="MAINTENANCE">MAINTENANCE (Servis)</option>
+                  <option value="TUTUP">TUTUP (Off)</option>
+                </select>
               </div>
             </div>
 
@@ -284,19 +362,10 @@
                 <span>Termasuk dalam Paket Tiket Terusan (Free Wahana)</span>
               </label>
             </div>
-
-            <div class="form-group">
-              <label>Status Operasional</label>
-              <select v-model="rideForm.status" class="filter-select full-width">
-                <option value="BUKA">BUKA (Operasional Normal)</option>
-                <option value="MAINTENANCE">MAINTENANCE (Sedang Servis)</option>
-                <option value="TUTUP">TUTUP (Off-season)</option>
-              </select>
-            </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn-secondary" @click="showRideModal = false">Batal</button>
-            <button type="submit" class="btn-primary">Simpan Wahana</button>
+            <button type="submit" class="btn-primary-modal">Simpan Wahana</button>
           </div>
         </form>
       </div>
@@ -324,11 +393,11 @@ import imgGolfCar from '~/assets/assets_POS/POS/wahana/golf_car_idr.25k.jpg'
 import imgSepedaListrik from '~/assets/assets_POS/POS/wahana/sepeda_listrik_idr.35k.png'
 import imgKarausel from '~/assets/assets_POS/POS/wahana/Karausel_idr.15k.png'
 
-// Import ticket banner photos
-import imgTamanEdel from '~/assets/assets_POS/POS/sewa_tempat/taman_edel.png'
-import imgHallBale from '~/assets/assets_POS/POS/sewa_tempat/bale_coklat.jpg'
-import imgKampungHall from '~/assets/assets_POS/POS/sewa_tempat/kampung_coklat_hall.jpg'
-import imgFlyerSD from '~/assets/assets_POS/POS/paket_edukasi/FLYER-PAKET-SD.png'
+// Import newly generated high-quality custom ticket illustrations
+import imgTicketReguler from '~/assets/tickets/ticket_reguler.jpg'
+import imgTicketTerusan from '~/assets/tickets/ticket_terusan.jpg'
+import imgPaketCilik from '~/assets/tickets/paket_cilik.jpg'
+import imgPaketMajlis from '~/assets/tickets/paket_majlis.jpg'
 
 definePageMeta({
   layout: 'admin'
@@ -336,12 +405,13 @@ definePageMeta({
 
 const { user, canManageConfig } = useAuth()
 
+const viewMode = ref<'grid' | 'list'>('grid')
 const rideFilterCategory = ref('ALL')
 const showTicketModal = ref(false)
 const showRideModal = ref(false)
 const isEditingRide = ref(false)
 
-// 1. Ticket Rates Data with Banner Photos
+// 1. Ticket Rates Data with Dedicated Custom Illustrations
 interface TicketRate {
   id: string
   name: string
@@ -357,8 +427,8 @@ interface TicketRate {
 const ticketRates = ref<TicketRate[]>([
   {
     id: 'reguler',
-    name: 'Tiket Masuk Reguler',
-    imageUrl: imgTamanEdel,
+    name: 'Tiket Masuk Reguler (PR)',
+    imageUrl: imgTicketReguler,
     tag: 'REGULER',
     price: 20000,
     description: 'Akses masuk kawasan wisata edukasi coklat, spot foto & galeri',
@@ -368,8 +438,8 @@ const ticketRates = ref<TicketRate[]>([
   },
   {
     id: 'terusan',
-    name: 'Tiket Terusan Wahana',
-    imageUrl: imgKarausel,
+    name: 'Tiket Masuk Terusan Edukasi (TE)',
+    imageUrl: imgTicketTerusan,
     tag: 'ALL-ACCESS',
     price: 35000,
     description: 'Tiket masuk + akses gratis 10+ wahana terusan terdaftar',
@@ -378,30 +448,54 @@ const ticketRates = ref<TicketRate[]>([
     isActive: true
   },
   {
-    id: 'rombongan',
-    name: 'Tiket Rombongan B2B',
-    imageUrl: imgKampungHall,
-    tag: 'GROUP B2B',
-    price: 18000,
-    description: 'Khusus instansi, bus pariwisata, dan travel agent (min. 30 pax)',
-    quotaRule: 'Minimal pembelian 30 tiket',
-    accessRule: 'Group Barcode + Free Driver Ticket',
-    isActive: true
-  },
-  {
     id: 'edukasi',
-    name: 'Paket Edukasi Sekolah',
-    imageUrl: imgFlyerSD,
+    name: 'Paket Rombongan Edukasi Cilik (TK/SD)',
+    imageUrl: imgPaketCilik,
     tag: 'EDUKASI',
     price: 50000,
     description: 'Panduan tutor kakao, praktek mencetak coklat, dan sertifikat',
-    quotaRule: 'TK/PAUD, SD, SMP, SMA & Universitas',
+    quotaRule: 'TK/PAUD, SD, SMP & SMA',
     accessRule: 'Hall Edukasi & Free Cooking Set',
+    isActive: true
+  },
+  {
+    id: 'rombongan',
+    name: 'Paket Rombongan Majlis & Umum (PP/PT)',
+    imageUrl: imgPaketMajlis,
+    tag: 'GROUP TOUR',
+    price: 18000,
+    description: 'Khusus instansi, majlis pengajian, bus wisata (min. 30 pax)',
+    quotaRule: 'Minimal pembelian 30 tiket',
+    accessRule: 'Group Barcode + Gazebo/Hall',
     isActive: true
   }
 ])
 
-// 2. Rides Catalog Data with Real Photos
+const selectedTicket = ref<TicketRate | null>(null)
+const ticketForm = reactive({
+  price: 20000,
+  description: '',
+  isActive: true
+})
+
+const editTicketPrice = (ticket: TicketRate) => {
+  selectedTicket.value = ticket
+  ticketForm.price = ticket.price
+  ticketForm.description = ticket.description
+  ticketForm.isActive = ticket.isActive
+  showTicketModal.value = true
+}
+
+const saveTicketPrice = () => {
+  if (selectedTicket.value) {
+    selectedTicket.value.price = ticketForm.price
+    selectedTicket.value.description = ticketForm.description
+    selectedTicket.value.isActive = ticketForm.isActive
+  }
+  showTicketModal.value = false
+}
+
+// 2. Rides Catalog Data
 interface RideItem {
   id: string
   name: string
@@ -452,7 +546,7 @@ const ridesList = ref<RideItem[]>([
     status: 'BUKA',
     capacity: 30,
     duration: '30 Menit',
-    description: 'Arena trampolin udara tematik kastil untuk anak balita & TK.',
+    description: 'Wahana playground balon elastis warna-warni untuk balita dan anak-anak.',
     playedToday: 350,
     category: 'terusan'
   },
@@ -465,47 +559,47 @@ const ridesList = ref<RideItem[]>([
     status: 'BUKA',
     capacity: 50,
     duration: 'Sepuasnya',
-    description: 'Kolam air jernih dengan perosotan ramah anak dan ember tumpah.',
+    description: 'Wahana air seru dengan seluncuran, ember tumpah, dan air mancur sejuk.',
     playedToday: 510,
     category: 'water'
   },
   {
     id: 'ride-5',
-    name: 'ATV Adventure Track',
+    name: 'ATV Safari Adventure',
     imageUrl: imgAtv,
     price: 25000,
     isFreeTerusan: false,
     status: 'BUKA',
     capacity: 8,
-    duration: '15 Menit',
-    description: 'Petualangan motor roda 4 melintasi rute tanah perkebunan kakao.',
-    playedToday: 180,
+    duration: '15 Menit (4 Lap)',
+    description: 'Trek tanah menantang mengitari perkebunan kakao alam terbuka.',
+    playedToday: 195,
     category: 'paid'
   },
   {
     id: 'ride-6',
-    name: 'Flying Fox Outbound',
+    name: 'Flying Fox Ekstrem 120M',
     imageUrl: imgFlyingFox,
     price: 20000,
     isFreeTerusan: false,
     status: 'BUKA',
-    capacity: 10,
-    duration: '1 Luncuran',
-    description: 'Sensasi meluncur di udara melintasi kanopi pohon coklat.',
-    playedToday: 240,
+    capacity: 4,
+    duration: '1 Kali Luncur',
+    description: 'Meluncur di atas kanopi kebun coklat dengan standar keamanan safety harness ganda.',
+    playedToday: 140,
     category: 'paid'
   },
   {
     id: 'ride-7',
-    name: 'Mini Golf 9 Hole',
+    name: 'Mini Golf 9 Holes',
     imageUrl: imgMiniGolf,
     price: 15000,
     isFreeTerusan: true,
     status: 'BUKA',
-    capacity: 18,
-    duration: '20 Menit',
-    description: 'Area ketangkasan stick golf keluarga dengan rintangan tematik.',
-    playedToday: 160,
+    capacity: 20,
+    duration: '45 Menit',
+    description: 'Padang golf mini dengan berbagai rintangan bukit dan terowongan coklat.',
+    playedToday: 110,
     category: 'terusan'
   },
   {
@@ -516,22 +610,22 @@ const ridesList = ref<RideItem[]>([
     isFreeTerusan: true,
     status: 'BUKA',
     capacity: 12,
-    duration: '15 Menit',
-    description: 'Mendayung santai di danau buatan dengan bebek kayuh keluarga.',
-    playedToday: 290,
+    duration: '20 Menit',
+    description: 'Menyusuri danau buatan dengan perahu kayuh angsa bersama keluarga.',
+    playedToday: 260,
     category: 'water'
   },
   {
     id: 'ride-9',
-    name: 'Playground Ceria Anak',
+    name: 'Playground Taman Kakao',
     imageUrl: imgPlayground,
     price: 15000,
     isFreeTerusan: true,
     status: 'BUKA',
     capacity: 40,
     duration: 'Sepuasnya',
-    description: 'Kompleks ayunan, perosotan, dan rumah pohon aman berkarpet.',
-    playedToday: 450,
+    description: 'Ayunan, perosotan, dan panjatan seru di bawah rindangnya pohon coklat.',
+    playedToday: 480,
     category: 'terusan'
   },
   {
@@ -541,98 +635,85 @@ const ridesList = ref<RideItem[]>([
     price: 5000,
     isFreeTerusan: true,
     status: 'BUKA',
-    capacity: 25,
-    duration: '15 Menit',
-    description: 'Relaksasi pijat alami kaki oleh ratusan ikan Garra Rufa.',
-    playedToday: 380,
-    category: 'terusan'
+    capacity: 35,
+    duration: '20 Menit',
+    description: 'Relaksasi alami dengan gigitan lembut ikan terapi pembersih kulit.',
+    playedToday: 620,
+    category: 'water'
   },
   {
     id: 'ride-11',
-    name: 'Golf Car Rental',
+    name: 'Golf Car Keliling Kebun',
     imageUrl: imgGolfCar,
     price: 25000,
     isFreeTerusan: false,
-    status: 'MAINTENANCE',
+    status: 'BUKA',
     capacity: 6,
-    duration: '30 Menit',
-    description: 'Mobil golf ramah lingkungan untuk rombongan keluarga lansia.',
-    playedToday: 0,
+    duration: '20 Menit',
+    description: 'Tur keliling area 5 hektar Kampung Coklat didampingi pengemudi ramah.',
+    playedToday: 85,
     category: 'paid'
   },
   {
     id: 'ride-12',
-    name: 'Sepeda Listrik Matic',
+    name: 'Sepeda Listrik Wisata',
     imageUrl: imgSepedaListrik,
     price: 35000,
     isFreeTerusan: false,
-    status: 'BUKA',
+    status: 'MAINTENANCE',
     capacity: 10,
     duration: '30 Menit',
-    description: 'E-bike modern untuk berkeliling area kampung dengan santai.',
-    playedToday: 95,
+    description: 'E-bike ramah lingkungan untuk eksplorasi mandiri jalur pedestrian kebun.',
+    playedToday: 45,
     category: 'paid'
   }
 ])
 
 const filteredRides = computed(() => {
   if (rideFilterCategory.value === 'ALL') return ridesList.value
-  if (rideFilterCategory.value === 'terusan') return ridesList.value.filter(r => r.isFreeTerusan)
-  if (rideFilterCategory.value === 'paid') return ridesList.value.filter(r => !r.isFreeTerusan)
-  if (rideFilterCategory.value === 'water') return ridesList.value.filter(r => r.category === 'water')
-  return ridesList.value
+  return ridesList.value.filter(r => r.category === rideFilterCategory.value)
 })
 
-// Modal Ticket Price State
-const selectedTicket = ref<TicketRate | null>(null)
-const ticketForm = reactive({
-  price: 20000,
-  description: '',
-  isActive: true
-})
-
-const editTicketPrice = (ticket: TicketRate) => {
-  selectedTicket.value = ticket
-  ticketForm.price = ticket.price
-  ticketForm.description = ticket.description
-  ticketForm.isActive = ticket.isActive
-  showTicketModal.value = true
+const getRideIcon = (name: string) => {
+  const n = name.toLowerCase()
+  if (n.includes('bom-bom') || n.includes('car')) return '🚗'
+  if (n.includes('kereta') || n.includes('monorel')) return '🚂'
+  if (n.includes('balon') || n.includes('istana')) return '🎈'
+  if (n.includes('kolam') || n.includes('waterboom') || n.includes('perahu') || n.includes('ikan')) return '🏊'
+  if (n.includes('atv')) return '🏎️'
+  if (n.includes('flying')) return '🧗'
+  if (n.includes('golf')) return '⛳'
+  if (n.includes('sepeda')) return '🚲'
+  return '🎡'
 }
 
-const saveTicketPrice = () => {
-  if (selectedTicket.value) {
-    selectedTicket.value.price = ticketForm.price
-    selectedTicket.value.description = ticketForm.description
-    selectedTicket.value.isActive = ticketForm.isActive
-    showTicketModal.value = false
-    alert(`[BERHASIL] Tarif ${selectedTicket.value.name} telah diperbarui ke ${formatRupiah(ticketForm.price)}!`)
-  }
-}
-
-// Modal Ride State
 const rideForm = reactive({
   id: '',
   name: '',
   price: 15000,
-  isFreeTerusan: true,
-  status: 'BUKA' as 'BUKA' | 'MAINTENANCE' | 'TUTUP',
-  capacity: 20,
+  capacity: 16,
   duration: '15 Menit',
-  description: '',
-  imageUrl: imgKarausel
+  isFreeTerusan: true,
+  status: 'BUKA' as 'BUKA' | 'MAINTENANCE' | 'TUTUP'
 })
+
+const toggleRideStatus = (ride: RideItem) => {
+  if (ride.status === 'MAINTENANCE') {
+    ride.status = 'BUKA'
+  } else {
+    ride.status = 'MAINTENANCE'
+  }
+}
 
 const openAddRideModal = () => {
   isEditingRide.value = false
   rideForm.id = `ride-${Date.now()}`
   rideForm.name = ''
   rideForm.price = 15000
-  rideForm.isFreeTerusan = true
-  rideForm.status = 'BUKA'
   rideForm.capacity = 20
   rideForm.duration = '15 Menit'
-  rideForm.description = ''
-  rideForm.imageUrl = imgKarausel
+  rideForm.isFreeTerusan = true
+  rideForm.status = 'BUKA'
   showRideModal.value = true
 }
 
@@ -641,47 +722,41 @@ const editRide = (ride: RideItem) => {
   rideForm.id = ride.id
   rideForm.name = ride.name
   rideForm.price = ride.price
-  rideForm.isFreeTerusan = ride.isFreeTerusan
-  rideForm.status = ride.status
   rideForm.capacity = ride.capacity
   rideForm.duration = ride.duration
-  rideForm.description = ride.description
-  rideForm.imageUrl = ride.imageUrl
+  rideForm.isFreeTerusan = ride.isFreeTerusan
+  rideForm.status = ride.status
   showRideModal.value = true
 }
 
 const saveRide = () => {
-  if (isEditingRide.value) {
-    const existing = ridesList.value.find(r => r.id === rideForm.id)
-    if (existing) {
-      existing.name = rideForm.name
-      existing.price = rideForm.price
-      existing.isFreeTerusan = rideForm.isFreeTerusan
-      existing.status = rideForm.status
-      existing.capacity = rideForm.capacity
-      existing.duration = rideForm.duration
+  const idx = ridesList.value.findIndex(r => r.id === rideForm.id)
+  if (idx !== -1) {
+    ridesList.value[idx] = {
+      ...ridesList.value[idx],
+      name: rideForm.name,
+      price: rideForm.price,
+      capacity: rideForm.capacity,
+      duration: rideForm.duration,
+      isFreeTerusan: rideForm.isFreeTerusan,
+      status: rideForm.status
     }
   } else {
     ridesList.value.unshift({
       id: rideForm.id,
       name: rideForm.name,
-      imageUrl: rideForm.imageUrl,
+      imageUrl: imgKarausel,
       price: rideForm.price,
-      isFreeTerusan: rideForm.isFreeTerusan,
-      status: rideForm.status,
       capacity: rideForm.capacity,
       duration: rideForm.duration,
-      description: rideForm.description || 'Wahana rekreasi Kampung Coklat',
+      isFreeTerusan: rideForm.isFreeTerusan,
+      status: rideForm.status,
+      description: 'Wahana rekreasi baru di kawasan Kampung Coklat.',
       playedToday: 0,
       category: rideForm.isFreeTerusan ? 'terusan' : 'paid'
     })
   }
   showRideModal.value = false
-  alert('[SUKSES] Konfigurasi data wahana berhasil disimpan!')
-}
-
-const toggleRideStatus = (ride: RideItem) => {
-  ride.status = ride.status === 'BUKA' ? 'MAINTENANCE' : 'BUKA'
 }
 
 const formatRupiah = (val: number): string => {
@@ -694,28 +769,40 @@ const formatRupiah = (val: number): string => {
 </script>
 
 <style scoped>
-.config-page {
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Outfit:wght@500;600;700;800;900&family=Jost:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap');
+
+/* ========================================================================= */
+/* PAGE ROOT CONTAINER                                                       */
+/* ========================================================================= */
+.katalog-page {
+  width: 100%;
+  max-width: 1380px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  max-width: 1320px;
-  width: 100%;
-  margin: 0 auto;
+  gap: 22px;
+  font-family: 'Jost', sans-serif;
 }
 
-/* Header */
-.config-header {
+/* ========================================================================= */
+/* HEADER BANNER WITH COCOA & CHOCOLATE ART                                  */
+/* ========================================================================= */
+.katalog-header {
+  background: transparent;
   display: flex;
-  align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
-  flex-wrap: wrap;
+  align-items: center;
+  position: relative;
+  min-height: 75px;
+  padding: 6px 0 10px 0;
 }
 
 .header-left {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  max-width: 680px;
+  position: relative;
+  z-index: 2;
 }
 
 .header-badge-row {
@@ -723,636 +810,861 @@ const formatRupiah = (val: number): string => {
   align-items: center;
   gap: 8px;
   margin-bottom: 2px;
-  flex-wrap: wrap;
 }
 
 .brand-mini-chip {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: #FFFFFF;
-  border: 1px solid rgba(242, 151, 39, 0.3);
+  background: #3D2214;
+  color: #FAF5EE;
+  padding: 4px 12px;
   border-radius: 20px;
-  padding: 2px 10px 2px 4px;
   font-size: 11.5px;
-  font-weight: 700;
-  color: #2C1A13;
-  box-shadow: 0 1px 4px rgba(44, 26, 19, 0.04);
+  font-weight: 800;
 }
 
 .mini-chip-img {
-  width: 18px;
-  height: 18px;
+  width: 14px;
+  height: 14px;
   object-fit: contain;
-  border-radius: 50%;
-  background: #FFF;
 }
 
 .badge-tag {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  background-color: rgba(242, 151, 39, 0.15);
+  gap: 5px;
+  background: #FAF3E8;
   color: #B45309;
-  font-size: 11.5px;
-  font-weight: 600;
-  padding: 3px 10px;
+  border: 1px solid #EADBCC;
+  padding: 4px 12px;
   border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 800;
 }
 
 .live-dot {
   width: 6px;
   height: 6px;
-  background-color: #10B981;
+  background: #10B981;
   border-radius: 50%;
   box-shadow: 0 0 6px #10B981;
-  animation: pulse-green 1.5s infinite;
 }
 
 .page-title {
+  font-family: 'Cinzel', serif;
   font-size: 26px;
-  font-weight: 700;
-  color: var(--color-primary, #2C1A13);
+  font-weight: 900;
+  color: #2C1A13;
   margin: 0;
-  letter-spacing: -0.4px;
+  letter-spacing: 0.3px;
 }
 
 .page-subtitle {
-  font-size: 13px;
-  color: #6B5A52;
-  margin: 0;
-}
-
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.read-only-pill {
-  background-color: #FEF3C7;
-  color: #92400E;
-  border: 1px solid #FDE68A;
-  font-size: 12px;
+  font-size: 13.5px;
   font-weight: 600;
-  padding: 6px 14px;
-  border-radius: 6px;
+  color: #6E442B;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Header Right Cocoa & Chocolate Decorative Graphic */
+.header-cocoa-decor {
+  position: absolute;
+  right: 0;
+  top: -15px;
+  bottom: -15px;
+  width: 280px;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.9;
+}
+
+.botanical-leaves-bg {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+}
+
+.chocolate-pieces-art {
+  position: absolute;
+  right: 10px;
+  top: 0;
+  width: 140px;
+  height: 100px;
+}
+
+.choc-svg {
+  width: 100%;
+  height: 100%;
 }
 
 .role-warning-banner {
-  background-color: #FFFBEB;
-  border: 1px solid #FDE68A;
-  color: #92400E;
-  padding: 12px 16px;
-  border-radius: 8px;
   display: flex;
   align-items: center;
   gap: 12px;
+  background: #FEF3C7;
+  border: 1.5px solid #F59E0B;
+  color: #92400E;
+  padding: 12px 16px;
+  border-radius: 14px;
   font-size: 13px;
+  font-weight: 700;
 }
 
 /* ========================================================================= */
-/* DEDICATED SECTION WIDGET CARD (No Old Numbering)                          */
+/* SECTION WIDGET FRAME (TARIF TIKET & KATALOG WAHANA)                       */
 /* ========================================================================= */
-.section-widget-card {
-  background: #FFFFFF;
-  border: 1px solid #EAE5DF;
-  border-radius: 16px;
-  padding: 22px 24px 26px 24px;
+.section-widget-frame {
+  background: #FFFDF9;
+  border: 1.5px solid #EFE4D6;
+  border-radius: 24px;
+  padding: 20px 22px 22px 22px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
-  box-shadow: 0 2px 12px rgba(44, 26, 19, 0.04);
-}
-
-.widget-header-row {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
   gap: 16px;
-  flex-wrap: wrap;
-  border-bottom: 1px solid #F3EFEA;
-  padding-bottom: 14px;
+  box-shadow: 0 4px 16px rgba(61, 34, 20, 0.04);
 }
 
-.widget-header-left {
+.section-head-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1.5px solid #F0E5D8;
+  padding-bottom: 12px;
+}
+
+.section-head-left {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 2px;
 }
 
-.widget-chip-title {
+.section-title-badge {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.widget-icon {
+.sec-icon {
   font-size: 18px;
 }
 
-.widget-title {
-  font-size: 18px;
-  font-weight: 800;
+.sec-title {
+  font-family: 'Cinzel', serif;
+  font-size: 17px;
+  font-weight: 900;
   color: #2C1A13;
   margin: 0;
-  letter-spacing: -0.3px;
 }
 
-.widget-subtitle {
-  font-size: 12.5px;
-  color: #6B5A52;
+.sec-subtitle {
+  font-size: 12px;
+  color: #7A5034;
   margin: 0;
-}
-
-.filter-select-cute {
-  padding: 7px 14px;
-  border-radius: 20px;
-  border: 1px solid #E5E7EB;
-  background: #FAF8F5;
-  font-family: inherit;
-  font-size: 12.5px;
-  font-weight: 600;
-  color: #2C1A13;
-  cursor: pointer;
-  outline: none;
-  transition: all 0.2s ease;
-}
-
-.filter-select-cute:focus {
-  border-color: #F29727;
-  background: #FFFFFF;
 }
 
 /* ========================================================================= */
-/* TICKET CARDS GRID (Reference 1 Concept)                                  */
+/* 1. TARIF TIKET MASUK CARDS GRID (COMPACT & TIGHT LAYOUT)                  */
 /* ========================================================================= */
-.ticket-cards-grid {
+.ticket-rates-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
 }
 
-.ticket-card-v2 {
-  background: #FFFDF9;
-  border: 1px solid #EAE5DF;
-  border-radius: 14px;
+.ticket-rate-card {
+  background: #FFFFFF;
+  border: 1.5px solid #EFE4D6;
+  border-radius: 18px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: 0 2px 8px rgba(44, 26, 19, 0.04);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 2px 8px rgba(61, 34, 20, 0.03);
+  transition: all 0.25s ease;
 }
 
-.ticket-card-v2:hover {
+.ticket-rate-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(44, 26, 19, 0.08);
-  border-color: #F29727;
+  border-color: #D97706;
+  box-shadow: 0 8px 20px rgba(61, 34, 20, 0.08);
 }
 
-/* Top Banner Image */
-.ticket-banner-box {
-  width: 100%;
-  height: 125px;
+.rate-banner-box {
+  height: 110px;
   position: relative;
   overflow: hidden;
-  background: #EAE5DF;
 }
 
-.ticket-banner-img {
+.rate-banner-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.3s ease;
 }
 
-.ticket-card-v2:hover .ticket-banner-img {
-  transform: scale(1.05);
-}
-
-.ticket-category-tag {
+.rate-category-badge {
   position: absolute;
-  top: 10px;
-  left: 10px;
-  background: rgba(44, 26, 19, 0.85);
-  backdrop-filter: blur(4px);
-  color: #F29727;
-  font-size: 9.5px;
-  font-weight: 800;
-  letter-spacing: 0.6px;
-  padding: 3px 8px;
+  top: 8px;
+  left: 8px;
+  background: #3D2214;
+  color: #FAF5EE;
+  padding: 2.5px 7px;
   border-radius: 6px;
-  border: 1px solid rgba(242, 151, 39, 0.4);
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
 }
 
-.ticket-status-pill {
+.rate-status-pill {
   position: absolute;
   bottom: 8px;
   right: 8px;
-  font-size: 10px;
-  font-weight: 700;
-  padding: 2px 8px;
-  border-radius: 12px;
-  backdrop-filter: blur(4px);
+  padding: 2.5px 8px;
+  border-radius: 10px;
+  font-size: 9.5px;
+  font-weight: 800;
 }
 
-.pill-active {
-  background: rgba(16, 185, 129, 0.9);
-  color: #FFFFFF;
-}
+.pill-active { background: #D1FAE5; color: #065F46; }
+.pill-inactive { background: #FEE2E2; color: #991B1B; }
 
-.pill-inactive {
-  background: rgba(239, 68, 68, 0.9);
-  color: #FFFFFF;
-}
-
-/* Ticket Body */
-.ticket-card-body {
-  padding: 14px 14px 16px 14px;
+.rate-card-body {
+  padding: 12px 14px 14px 14px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  flex: 1;
   justify-content: space-between;
+  flex: 1;
+  gap: 8px;
 }
 
-.ticket-title {
-  font-size: 15px;
+.rate-title-desc-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.rate-name {
+  font-family: 'Cinzel', serif;
+  font-size: 14.5px;
   font-weight: 800;
   color: #2C1A13;
   margin: 0;
   line-height: 1.25;
 }
 
-.ticket-desc {
-  font-size: 11.5px;
-  color: #6B5A52;
+.rate-desc {
+  font-size: 11px;
+  color: #6E442B;
   margin: 0;
   line-height: 1.35;
-  min-height: 32px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-/* Center Price Box */
-.ticket-price-box {
-  background: #FFF8EE;
-  border: 1px solid #FFE0B2;
-  border-radius: 10px;
+.rate-price-box {
+  background: #FAF3E8;
+  border: 1px solid #EFE4D6;
+  border-radius: 12px;
   padding: 8px 10px;
   text-align: center;
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
 }
 
-.price-box-label {
+.price-lbl {
   font-size: 9px;
   font-weight: 800;
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
-  color: #B45309;
+  color: #8C6D58;
 }
 
-.price-box-val {
-  font-size: 20px;
-  font-weight: 800;
+.price-num {
+  font-family: 'Outfit', sans-serif;
+  font-size: 18px;
+  font-weight: 900;
   color: #2C1A13;
-  letter-spacing: -0.5px;
+  line-height: 1.1;
+  margin: 1px 0;
 }
 
-.price-box-unit {
+.price-sub {
+  font-size: 9.5px;
+  color: #7A5034;
+}
+
+.rate-rules-box {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.rule-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
   font-size: 10.5px;
-  color: #78350F;
+  color: #5A2E17;
   font-weight: 600;
 }
 
-/* Rules Checklist */
-.ticket-rules-box {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 4px 0;
-}
-
-.ticket-rule-row {
-  display: flex;
-  align-items: flex-start;
-  gap: 6px;
-  font-size: 11.5px;
-  color: #374151;
-  line-height: 1.3;
-}
-
-.check-icon {
+.check-glyph {
   color: #10B981;
-  font-weight: 800;
-  font-size: 12px;
+  font-weight: 900;
 }
 
-/* Action Button */
-.btn-ticket-action {
-  width: 100%;
+.btn-edit-rate {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  background: #2C1A13;
-  color: #FFFFFF;
+  gap: 5px;
+  background: #3D2214;
+  color: #FAF5EE;
   border: none;
-  border-radius: 8px;
-  padding: 9px 12px;
-  font-family: inherit;
-  font-size: 12px;
-  font-weight: 700;
+  padding: 7px 12px;
+  border-radius: 10px;
+  font-size: 11.5px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.btn-edit-rate:hover:not(:disabled) {
+  background: #D97706;
+}
+
+/* ========================================================================= */
+/* 2. CONTROL BAR (WAHANA SECTION)                                           */
+/* ========================================================================= */
+.katalog-control-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.total-wahana-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #FAF3E8;
+  border: 1px solid #EFE4D6;
+  color: #5A2E17;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 12.5px;
+  font-weight: 800;
+  box-shadow: 0 2px 6px rgba(61, 34, 20, 0.03);
+}
+
+.control-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.view-mode-toggle {
+  display: flex;
+  background: #FAF3E8;
+  border: 1px solid #EFE4D6;
+  border-radius: 16px;
+  padding: 3px;
+  gap: 2px;
+}
+
+.btn-mode-pill {
+  background: transparent;
+  border: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #7A5034;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.btn-ticket-action:hover:not(:disabled) {
-  background: #4A2E22;
+.btn-mode-pill:hover {
+  color: #2C1A13;
+}
+
+.btn-mode-pill.active {
+  background: #3D2214;
+  color: #FAF5EE;
+  box-shadow: 0 2px 8px rgba(61, 34, 20, 0.2);
+}
+
+.category-dropdown-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.category-select-pill {
+  appearance: none;
+  background: #FAF3E8;
+  border: 1px solid #EFE4D6;
+  color: #2C1A13;
+  padding: 8px 32px 8px 16px;
+  border-radius: 20px;
+  font-size: 12.5px;
+  font-weight: 800;
+  cursor: pointer;
+  outline: none;
+  box-shadow: 0 2px 6px rgba(61, 34, 20, 0.03);
+  transition: border-color 0.2s ease;
+}
+
+.category-select-pill:focus {
+  border-color: #D97706;
+}
+
+.select-chevron {
+  position: absolute;
+  right: 12px;
+  pointer-events: none;
+  color: #7A5034;
+}
+
+.btn-add-wahana-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #3D2214;
+  color: #FAF5EE;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 12.5px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(61, 34, 20, 0.2);
+  transition: all 0.2s ease;
+}
+
+.btn-add-wahana-pill:hover {
+  background: #D97706;
   transform: translateY(-1px);
-  box-shadow: 0 3px 10px rgba(44, 26, 19, 0.2);
 }
 
 /* ========================================================================= */
-/* RIDES CATALOG GRID (Reference 2 Concept)                                  */
+/* WAHANA CARDS GRID (COMPACT & PROPORTIONAL 4-COLUMN)                       */
 /* ========================================================================= */
-.rides-grid {
+.wahana-reference-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
+  gap: 14px;
 }
 
-.ride-card-v2 {
+.wahana-card-ref {
   background: #FFFFFF;
-  border: 1px solid #EAE5DF;
-  border-radius: 14px;
-  overflow: hidden;
+  border: 1.5px solid #EFE4D6;
+  border-radius: 18px;
+  padding: 10px 10px 12px 10px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: 0 2px 8px rgba(44, 26, 19, 0.04);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  box-shadow: 0 3px 12px rgba(61, 34, 20, 0.04);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
 }
 
-.ride-card-v2:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 24px rgba(44, 26, 19, 0.08);
-  border-color: #F29727;
+.wahana-card-ref:hover {
+  transform: translateY(-4px);
+  border-color: #D97706;
+  box-shadow: 0 10px 22px rgba(61, 34, 20, 0.08);
 }
 
-/* Ride Photo Banner */
-.ride-photo-box {
+/* Top Photo Box */
+.wahana-photo-box {
   width: 100%;
-  height: 140px;
+  height: 126px;
+  border-radius: 13px;
   position: relative;
   overflow: hidden;
-  background: #2C1A13;
 }
 
-.ride-photo-img {
+.wahana-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.35s ease;
 }
 
-.ride-card-v2:hover .ride-photo-img {
+.wahana-card-ref:hover .wahana-img {
+  transform: scale(1.05);
+}
+
+/* Top-Left Ribbon */
+.wahana-top-ribbon {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(250, 243, 232, 0.95);
+  backdrop-filter: blur(4px);
+  color: #B45309;
+  border: 1px solid #EADBCC;
+  padding: 2px 7px;
+  border-radius: 6px;
+  font-size: 9px;
+  font-weight: 800;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+}
+
+/* Top-Right Status Pill */
+.wahana-status-pill {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border: none;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-size: 9.5px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  transition: transform 0.15s ease;
+}
+
+.wahana-status-pill:hover {
   transform: scale(1.06);
 }
 
-.ride-ribbon-tag {
+.status-buka {
+  background: #D1FAE5;
+  color: #065F46;
+}
+
+.status-maintenance {
+  background: #FEF3C7;
+  color: #92400E;
+}
+
+.status-tutup {
+  background: #FEE2E2;
+  color: #991B1B;
+}
+
+.status-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+/* Floating Circular Icon Overlapping Bottom-Left */
+.wahana-floating-icon-circle {
+  width: 32px;
+  height: 32px;
+  background: #3D2214;
+  border: 2px solid #FFFFFF;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: absolute;
-  top: 10px;
-  left: 0;
-  font-size: 9.5px;
-  font-weight: 800;
-  letter-spacing: 0.5px;
-  padding: 3px 10px 3px 8px;
-  border-radius: 0 6px 6px 0;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.25);
+  left: 10px;
+  bottom: -8px;
+  box-shadow: 0 3px 6px rgba(61, 34, 20, 0.25);
+  font-size: 14px;
+  z-index: 2;
 }
 
-.ribbon-terusan {
-  background: #D97706;
-  color: #FFFFFF;
-}
-
-.ribbon-paid {
-  background: #2C1A13;
-  color: #F29727;
-  border: 1px solid rgba(242, 151, 39, 0.4);
-}
-
-.ride-status-badge {
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
-  font-size: 10.5px;
-  font-weight: 800;
-  padding: 3px 8px;
-  border-radius: 12px;
-  backdrop-filter: blur(6px);
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-}
-
-.badge-buka {
-  background: rgba(255, 255, 255, 0.92);
-  color: #059669;
-  border: 1px solid #10B981;
-}
-
-.badge-maintenance {
-  background: rgba(255, 255, 255, 0.92);
-  color: #D97706;
-  border: 1px solid #F59E0B;
-}
-
-.badge-tutup {
-  background: rgba(255, 255, 255, 0.92);
-  color: #DC2626;
-  border: 1px solid #EF4444;
-}
-
-/* Ride Card Body */
-.ride-card-body {
-  padding: 14px 14px 16px 14px;
+/* Content Body */
+.wahana-content-body {
+  padding: 14px 2px 0 2px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  flex: 1;
-  justify-content: space-between;
+  gap: 5px;
 }
 
-.ride-title {
-  font-size: 15px;
+.wahana-title {
+  font-family: 'Cinzel', serif;
+  font-size: 13.5px;
   font-weight: 800;
   color: #2C1A13;
   margin: 0;
   line-height: 1.25;
+  min-height: 34px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-.ride-price-cap-row {
+.wahana-meta-line {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
-}
-
-.ride-price-text {
-  font-size: 15px;
-  font-weight: 800;
-  color: #B45309;
-}
-
-.ride-capacity-text {
-  font-size: 11px;
-  color: #6B5A52;
-  font-weight: 600;
-}
-
-.ride-desc-text {
-  font-size: 11.5px;
-  color: #6B5A52;
-  margin: 0;
-  line-height: 1.35;
-  min-height: 32px;
-}
-
-/* 2-Column Info Strip Box */
-.ride-info-strip {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  background: #FAF8F5;
-  border: 1px solid #EAE5DF;
-  border-radius: 8px;
-  padding: 6px 8px;
   gap: 6px;
+  margin-top: 1px;
 }
 
-.info-strip-col {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
+.wahana-price-val {
+  font-family: 'Outfit', sans-serif;
+  font-size: 14.5px;
+  font-weight: 900;
+  color: #C2410C;
 }
 
-.strip-lbl {
-  font-size: 9.5px;
-  color: #6B5A52;
-}
-
-.strip-val {
-  font-size: 11.5px;
-  font-weight: 700;
-  color: #2C1A13;
-}
-
-/* 2 Action Buttons */
-.ride-actions-row {
-  display: flex;
-  gap: 8px;
-  margin-top: 4px;
-}
-
-.btn-ride-status {
-  flex: 1;
-  background: #2C1A13;
-  color: #FFFFFF;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 10px;
-  font-family: inherit;
-  font-size: 11.5px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-}
-
-.btn-ride-status:hover:not(:disabled) {
-  background: #4A2E22;
-}
-
-.btn-status-maintenance {
-  background: #D97706;
-}
-
-.btn-status-maintenance:hover:not(:disabled) {
-  background: #B45309;
-}
-
-.btn-ride-edit {
-  background: #F29727;
-  color: #2C1A13;
-  border: none;
-  border-radius: 8px;
-  padding: 8px 14px;
-  font-family: inherit;
-  font-size: 11.5px;
-  font-weight: 800;
+.wahana-capacity-tag {
   display: inline-flex;
   align-items: center;
   gap: 4px;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: #7A5034;
+  background: #FAF3E8;
+  padding: 2px 6px;
+  border-radius: 6px;
+  border: 1px solid #EADBCC;
+}
+
+/* Compact Metrics Strip */
+.wahana-metrics-strip {
+  background: #FAF5EE;
+  border: 1px solid #EFE4D6;
+  border-radius: 8px;
+  padding: 5px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10.5px;
+  color: #6E442B;
+  margin-top: 2px;
+}
+
+.metric-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.metric-lbl {
+  font-size: 9.5px;
+  color: #8C6D58;
+  font-weight: 600;
+}
+
+.metric-val {
+  font-family: 'Outfit', sans-serif;
+  font-size: 11px;
+  font-weight: 800;
+  color: #2C1A13;
+}
+
+.metric-dot-sep {
+  color: #C4AA8F;
+  font-size: 10px;
+}
+
+/* Sleek Action Buttons Bar */
+.wahana-action-bar-compact {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.btn-wahana-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 8px;
+  border-radius: 9px;
+  font-size: 11px;
+  font-weight: 800;
   cursor: pointer;
   transition: all 0.2s ease;
+  border: 1px solid transparent;
 }
 
-.btn-ride-edit:hover:not(:disabled) {
-  background: #FFB04D;
-  transform: translateY(-1px);
+.btn-pill-edit {
+  background: #FAF3E8;
+  border-color: #EADBCC;
+  color: #3D2214;
 }
 
-/* Modals */
+.btn-pill-edit:hover:not(:disabled) {
+  background: #3D2214;
+  color: #FAF5EE;
+  border-color: #3D2214;
+}
+
+.btn-pill-maint {
+  background: #FFFBEB;
+  border-color: #FDE68A;
+  color: #B45309;
+}
+
+.btn-pill-maint:hover:not(:disabled) {
+  background: #F59E0B;
+  color: #FFFFFF;
+  border-color: #F59E0B;
+}
+
+.btn-pill-maint.is-maint-active {
+  background: #ECFDF5;
+  border-color: #A7F3D0;
+  color: #065F46;
+}
+
+.btn-pill-maint.is-maint-active:hover:not(:disabled) {
+  background: #10B981;
+  color: #FFFFFF;
+  border-color: #10B981;
+}
+
+/* ========================================================================= */
+/* BOTTOM SAFETY BANNER (Heritage Manor Gazebo Line Art)                     */
+/* ========================================================================= */
+.safety-banner-reference {
+  background: #FAF3E8;
+  border: 1.5px solid #EADBCC;
+  border-radius: 22px;
+  padding: 18px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(61, 34, 20, 0.03);
+}
+
+.safety-banner-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: 680px;
+  position: relative;
+  z-index: 2;
+}
+
+.safety-emblem-circle {
+  width: 48px;
+  height: 48px;
+  background: #3D2214;
+  color: #FAF5EE;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 10px rgba(61, 34, 20, 0.15);
+}
+
+.leaf-icon {
+  color: #F59E0B;
+}
+
+.safety-title {
+  font-family: 'Cinzel', serif;
+  font-size: 15.5px;
+  font-weight: 900;
+  color: #2C1A13;
+  margin: 0 0 2px 0;
+}
+
+.safety-desc {
+  font-size: 12px;
+  color: #6E442B;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.safety-banner-right-art {
+  width: 240px;
+  height: 70px;
+  position: relative;
+  z-index: 1;
+}
+
+.plantation-gazebo-svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* ========================================================================= */
+/* MODAL STYLING                                                             */
+/* ========================================================================= */
 .modal-backdrop {
   position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(36, 20, 13, 0.65);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
-  padding: 16px;
+  padding: 20px;
 }
 
 .modal-card {
-  background: #FFFFFF;
-  border-radius: 12px;
+  background: #FFFDF9;
+  border: 2px solid #8B5738;
+  border-radius: 20px;
   width: 100%;
-  max-width: 480px;
-  overflow: hidden;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+  max-width: 520px;
+  padding: 22px 24px;
+  box-shadow: 0 20px 50px rgba(44, 26, 19, 0.35);
 }
 
 .modal-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  padding: 16px 20px;
-  border-bottom: 1px solid #E5E7EB;
+  align-items: center;
+  border-bottom: 1.5px solid #EFE4D6;
+  padding-bottom: 12px;
+  margin-bottom: 14px;
+}
+
+.modal-title-col {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal-mini-logo {
+  max-height: 24px;
 }
 
 .modal-header h3 {
-  margin: 0;
+  font-family: 'Cinzel', serif;
   font-size: 16px;
-  font-weight: 700;
-  color: var(--color-primary, #2C1A13);
+  font-weight: 800;
+  color: #2C1A13;
+  margin: 0;
 }
 
 .btn-close {
   background: transparent;
   border: none;
   font-size: 24px;
+  color: #8C6D58;
   cursor: pointer;
-  color: #6B7280;
 }
 
 .modal-body {
-  padding: 16px 20px;
   display: flex;
   flex-direction: column;
+  gap: 12px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
 
@@ -1363,44 +1675,92 @@ const formatRupiah = (val: number): string => {
 }
 
 .form-group label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--color-primary, #2C1A13);
+  font-size: 11px;
+  font-weight: 700;
+  color: #5A3A28;
+  text-transform: uppercase;
 }
 
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-}
-
-.input-control, .textarea-control, .filter-select {
-  padding: 8px 10px;
-  border: 1px solid #E5E7EB;
-  border-radius: 6px;
-  font-family: inherit;
+.input-control, .filter-select, .textarea-control {
+  border: 1.5px solid #C4AA8F;
+  background: #FFFFFF;
+  border-radius: 8px;
+  padding: 7px 11px;
   font-size: 13px;
+  color: #2C1A13;
+  outline: none;
+  font-family: inherit;
+}
+
+.input-control:focus, .filter-select:focus, .textarea-control:focus {
+  border-color: #D97706;
+}
+
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: #2C1A13;
+  cursor: pointer;
 }
 
 .modal-footer {
+  margin-top: 18px;
   display: flex;
   justify-content: flex-end;
-  gap: 8px;
-  border-top: 1px solid #E5E7EB;
-  padding: 12px 20px;
+  gap: 10px;
 }
 
-@media (max-width: 1280px) {
-  .ticket-cards-grid,
-  .rides-grid {
+.btn-secondary {
+  background: #FAF3E8;
+  border: 1.5px solid #C4AA8F;
+  color: #5A3A28;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.btn-primary-modal {
+  background: linear-gradient(135deg, #D97706 0%, #B45309 100%);
+  color: #FFFFFF;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 10px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+/* ========================================================================= */
+/* RESPONSIVE (< 1200px & < 768px)                                           */
+/* ========================================================================= */
+@media (max-width: 1200px) {
+  .ticket-rates-grid, .wahana-reference-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 640px) {
-  .ticket-cards-grid,
-  .rides-grid {
+@media (max-width: 768px) {
+  .ticket-rates-grid, .wahana-reference-grid {
     grid-template-columns: 1fr;
+  }
+  .header-cocoa-decor {
+    display: none;
+  }
+  .katalog-control-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .control-bar-right {
+    flex-wrap: wrap;
+  }
+  .safety-banner-reference {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .safety-banner-right-art {
+    display: none;
   }
 }
 </style>

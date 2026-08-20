@@ -32,8 +32,7 @@
         <svg v-else-if="icon === 'user-plus' || icon === 'user-check'" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
           <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
           <circle cx="9" cy="7" r="4" />
-          <line x1="19" y1="8" x2="19" y2="14" />
-          <line x1="22" y1="11" x2="16" y2="11" />
+          <polyline points="16 11 18 13 22 9" />
         </svg>
       </div>
 
@@ -208,7 +207,6 @@ const sparkPath = computed(() => {
 /* Top Row */
 .card-top-row {
   display: flex;
-  align-items: center;
   justify-content: space-between;
   position: relative;
   z-index: 3;
@@ -270,7 +268,6 @@ const sparkPath = computed(() => {
 .pop-tag-pill {
   font-size: 10px;
   font-weight: 800;
-  letter-spacing: 0.8px;
   text-transform: uppercase;
   color: #8C786E;
   background: #FFFFFF;
@@ -422,5 +419,3 @@ const sparkPath = computed(() => {
   .pop-number.long-num { font-size: 17px; }
 }
 </style>
-
-

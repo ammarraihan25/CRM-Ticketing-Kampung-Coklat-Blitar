@@ -1,5 +1,5 @@
 <template>
-  <div class="dashboard-container" @click="handleGlobalClick">
+  <div class="dashboard-container">
     <!-- =====================================================================
          1. ULTRA-LUXURY EXECUTIVE COMMAND BANNER & HORIZONTAL PERIOD SLIDER
          ===================================================================== -->
@@ -109,10 +109,9 @@
               <span v-if="selectedPeriod === 'custom'" class="custom-active-dot"></span>
             </button>
 
-            <!-- Small, Compact, Floating Calendar Window (Beside / Below Button in Empty Space) -->
+            <!-- Small, Compact, Floating Calendar Window -->
             <transition name="popover-fade">
               <div v-if="showCustomDateModal" class="mini-calendar-floating-card">
-                <!-- Mini Header -->
                 <div class="mini-card-header">
                   <div class="mini-card-title-row">
                     <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2.2">
@@ -126,7 +125,6 @@
                   <button type="button" class="btn-mini-close" @click="showCustomDateModal = false">&times;</button>
                 </div>
 
-                <!-- Mini Inputs -->
                 <div class="mini-card-body">
                   <div class="mini-date-row">
                     <span class="mini-label">Dari:</span>
@@ -138,7 +136,6 @@
                   </div>
                 </div>
 
-                <!-- Mini Actions -->
                 <div class="mini-card-footer">
                   <button type="button" class="btn-mini-cancel" @click="showCustomDateModal = false">Batal</button>
                   <button type="button" class="btn-mini-apply" @click="applyCustomDateRange">Terapkan</button>
@@ -147,7 +144,7 @@
             </transition>
           </div>
 
-          <!-- Dedicated Quick Refresh Button (Matching 44x44px Squircle) -->
+          <!-- Dedicated Quick Refresh Button -->
           <button 
             type="button" 
             class="btn-header-refresh-icon"
@@ -163,9 +160,10 @@
       </div>
     </header>
 
-    <!-- =====================================================================
-         2. 4 TOP KPI CARDS GRID (Bento Pill Structure)
-         ===================================================================== -->
+    <!-- Role Notice / Switcher Banner -->
+    <OwnerNotice />
+
+    <!-- 4 KPI Cards Grid (GTV, Tiket Terjual, Pengunjung Gate In, Member Baru) -->
     <section class="kpi-cards-grid-4">
       <!-- 1. Total GTV -->
       <KpiCard
@@ -176,7 +174,7 @@
         tag="REALTIME"
         trend-value="+14.4%"
         :comparison="currentMetrics.gtvComparison"
-        subtitle="Gross Transaction Value kotor"
+        subtitle="Gross Transaction Value"
       />
 
       <!-- 2. Total Tiket Terjual -->
@@ -187,7 +185,7 @@
         icon="ticket"
         trend-value="+15.0%"
         :comparison="currentMetrics.ticketsComparison"
-        subtitle="Reguler, Rombongan & Paket"
+        subtitle="Reguler, Rombongan &amp; Paket"
       />
 
       <!-- 3. Total Pengunjung (Gate In) -->
@@ -198,7 +196,7 @@
         icon="users"
         trend-value="+12.8%"
         :comparison="currentMetrics.visitorsComparison"
-        subtitle="Scan barcode valid di turnstile"
+        subtitle="Scan barcode turnstile"
       />
 
       <!-- 4. Member Baru Terdaftar -->
@@ -210,15 +208,12 @@
         tag="ACQUISITION"
         trend-value="+22.0%"
         :comparison="currentMetrics.newMembersComparison"
-        subtitle="Dari Guestbook PP & Kasir PR"
+        subtitle="Guestbook PP &amp; POS Kasir"
       />
     </section>
 
-    <!-- =====================================================================
-         3. FULL-WIDTH: Tren Pendapatan & Tiket (1 Kolom Penuh)
-         ===================================================================== -->
+    <!-- Charts Section: GTV Trend -->
     <section class="trend-full-section">
-      <!-- GTV & Revenue Trend Chart (Ultra-Smooth Bezier Gradient Spline) -->
       <div class="bento-card main-chart-elevated">
         <div class="bento-card-header">
           <div class="header-title-group">
@@ -278,7 +273,7 @@
           <canvas ref="revenueChartCanvas"></canvas>
         </div>
 
-        <!-- 3-Column Highlight Cards Strip (Formal Minimal SVG Icons) -->
+        <!-- 3-Column Highlight Cards Strip -->
         <div class="chart-highlight-strip">
           <div class="highlight-bento-box">
             <div class="highlight-icon-circle bg-amber-soft">
@@ -320,11 +315,9 @@
       </div>
     </section>
 
-    <!-- =====================================================================
-         4. 2-COLUMN GRID: Segmentasi Member CRM & Penjualan Tiket per Kategori
-         ===================================================================== -->
+    <!-- Member Segmentation & Ticket Sales Grid -->
     <section class="crm-ticket-grid">
-      <!-- Member Segmentation Concentric Radial Rings Card (Original CRM Data & Colors - Rich Bento) -->
+      <!-- Member Segmentation Concentric Radial Rings Card -->
       <div class="bento-card radial-rings-card-elevated">
         <div class="bento-card-header">
           <div class="header-title-group">
@@ -347,9 +340,7 @@
           </span>
         </div>
 
-        <!-- 2-Column Body: Left Rich Segment Rows & Right Concentric Radial Rings with Metric Container -->
         <div class="radial-gauge-flex-body">
-          <!-- Left Column: Rich Items List with Sub-metrics and Progress Tracks -->
           <div class="radial-legend-list">
             <div 
               v-for="seg in memberSegments" 
@@ -371,7 +362,6 @@
                 </div>
               </div>
 
-              <!-- Progress Track Fill -->
               <div class="legend-track-bg">
                 <div 
                   class="legend-track-fill" 
@@ -379,7 +369,6 @@
                 ></div>
               </div>
 
-              <!-- Sub-metric detail row for solid fullness -->
               <div class="legend-card-subinfo">
                 <span class="subinfo-item">Vol: <strong>{{ seg.count.toLocaleString('id-ID') }} Member</strong></span>
                 <span class="subinfo-sep">&bull;</span>
@@ -388,29 +377,14 @@
             </div>
           </div>
 
-          <!-- Right Column: Multi-Ring Concentric SVG Chart & Total Member Metric Capsule -->
           <div class="radial-rings-chart-container">
             <svg viewBox="0 0 200 200" class="concentric-rings-svg">
               <g v-for="(seg, idx) in memberSegments" :key="seg.code">
                 <!-- Track Background Circle -->
-                <circle 
-                  cx="100" 
-                  cy="100" 
-                  :r="78 - idx * 22" 
-                  class="ring-track" 
-                  stroke-width="12" 
-                  fill="none" 
-                />
+                <circle cx="100" cy="100" :r="78 - idx * 22" class="ring-track" stroke-width="12" fill="none" />
                 <!-- Active Progress Arc -->
                 <circle 
-                  cx="100" 
-                  cy="100" 
-                  :r="78 - idx * 22" 
-                  class="ring-active" 
-                  :stroke="seg.color" 
-                  stroke-width="12" 
-                  fill="none" 
-                  stroke-linecap="round"
+                  cx="100" cy="100" :r="78 - idx * 22" class="ring-active" :stroke="seg.color" stroke-width="12" fill="none" stroke-linecap="round"
                   :stroke-dasharray="2 * Math.PI * (78 - idx * 22)"
                   :stroke-dashoffset="2 * Math.PI * (78 - idx * 22) * (1 - seg.percentage / 100)"
                   transform="rotate(-90 100 100)"
@@ -418,7 +392,6 @@
               </g>
             </svg>
 
-            <!-- Total Member Metric Display Placed Below Circular Rings -->
             <div class="rings-bottom-metric">
               <div class="rings-bottom-total-row">
                 <span class="bottom-total-label">Total Member:</span>
@@ -432,16 +405,10 @@
           </div>
         </div>
 
-        <!-- CRM Multi-Metric Insight Matrix (3 Solid Bento Capsules) -->
         <div class="crm-insight-matrix-3">
           <div class="crm-matrix-card">
             <div class="matrix-card-header">
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-                <circle cx="9" cy="7" r="4"/>
-                <line x1="19" y1="8" x2="19" y2="14"/>
-                <line x1="22" y1="11" x2="16" y2="11"/>
-              </svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
               <span>Member Baru</span>
             </div>
             <div class="matrix-card-body">
@@ -449,14 +416,9 @@
               <span class="matrix-sub-pct text-green">+18.4%</span>
             </div>
           </div>
-
           <div class="crm-matrix-card">
             <div class="matrix-card-header">
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                <polyline points="23 4 23 10 17 10"/>
-                <polyline points="1 20 1 14 7 14"/>
-                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/>
-              </svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
               <span>Retensi Repeat</span>
             </div>
             <div class="matrix-card-body">
@@ -464,13 +426,9 @@
               <span class="matrix-sub-badge">Tinggi</span>
             </div>
           </div>
-
           <div class="crm-matrix-card">
             <div class="matrix-card-header">
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                <rect x="2" y="5" width="20" height="14" rx="2"/>
-                <line x1="2" y1="10" x2="22" y2="10"/>
-              </svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
               <span>Rata-rata Transaksi</span>
             </div>
             <div class="matrix-card-body">
@@ -480,7 +438,6 @@
           </div>
         </div>
 
-        <!-- Quick Link to CRM Reports -->
         <div class="crm-card-footer">
           <NuxtLink to="/reports" class="btn-see-more">
             <span>Buka Direktori WhatsApp Member</span>
@@ -489,24 +446,14 @@
         </div>
       </div>
 
-      <!-- Ticket Sales Breakdown Table Component -->
       <div class="ticket-sales-col">
         <TicketSalesTable :ticket-items="currentTicketBreakdown" />
       </div>
     </section>
 
-    <!-- =====================================================================
-         5. FULL-WIDTH: Demografi Asal Pengunjung (1 Kolom Penuh)
-         ===================================================================== -->
-    <!-- =====================================================================
-         5. FULL-WIDTH: Demografi & Sebaran Asal Pengunjung (Luxury Geospatial Hub)
-         ===================================================================== -->
-    <!-- =====================================================================
-         5. FULL-WIDTH: Demografi Asal Pengunjung (Peta Sebaran Interaktif)
-         ===================================================================== -->
+    <!-- Demografi Asal Pengunjung -->
     <section class="demographic-full-section">
       <div class="bento-card demographic-card-luxury">
-        <!-- 1. Header with Title, Live Badge, and Aggregate Summary -->
         <div class="bento-card-header demo-header-wrap">
           <div class="header-title-group">
             <div class="title-with-badge">
@@ -528,7 +475,6 @@
             </span>
           </div>
 
-          <!-- Top Right Aggregate Summary Pill -->
           <div class="demo-top-summary-pills">
             <div class="summary-pill-item">
               <span class="pill-dot dot-gold"></span>
@@ -541,7 +487,6 @@
           </div>
         </div>
 
-        <!-- 2. Full-Width Interactive Geographic Map Canvas -->
         <div 
           class="demographic-map-area demographic-map-luxury"
           :class="{ 'is-panning': isMapDragging }"
@@ -554,7 +499,6 @@
           @touchmove.passive="doMapTouch"
           @touchend="stopMapPan"
         >
-          <!-- Floating Zoom, Pan & Recenter Controls -->
           <div class="map-controls-floating">
             <div class="coords-indicator">
               <span class="pulse-gold-dot"></span>
@@ -574,113 +518,36 @@
             </div>
           </div>
 
-          <!-- Pannable & Zoomable Map Container -->
-          <div 
-            class="map-pan-zoom-container"
-            :style="{ transform: `translate(${mapPanX}px, ${mapPanY}px) scale(${mapZoom})` }"
-          >
-            <!-- Distance Concentric Radar Guides -->
+          <div class="map-pan-zoom-container" :style="{ transform: `translate(${mapPanX}px, ${mapPanY}px) scale(${mapZoom})` }">
             <div class="radar-ring ring-center-core"></div>
             <div class="radar-ring ring-10km"></div>
             <div class="radar-ring ring-30km"></div>
             <div class="radar-ring ring-60km"></div>
             <div class="radar-ring ring-120km"></div>
 
-            <!-- Stylized East Java Topographic & Route Overlay SVG (ViewBox 1000 x 500) -->
-            <svg 
-              class="map-vector-canvas" 
-              :class="{ 'has-active-hover': activeHoverCity !== null }"
-              xmlns="http://www.w3.org/2000/svg" 
-              viewBox="0 0 1000 500" 
-              preserveAspectRatio="none" 
-              fill="none"
-            >
-              <!-- Laser Routes from Each City into Central Epicenter (450, 270) -->
-              <!-- 1. Kota Blitar -> Center (Gold) -->
-              <path 
-                d="M 450 170 L 450 270" 
-                stroke="#D97706" 
-                stroke-width="3" 
-                stroke-linecap="round"
-                stroke-dasharray="6 4" 
-                class="laser-route-path"
-                :class="{ 'laser-active': activeHoverCity === 'blitar-kota' }"
-              />
-              <!-- 2. Kab. Blitar -> Center (Amber) -->
-              <path 
-                d="M 620 360 Q 535 340 450 270" 
-                stroke="#F59E0B" 
-                stroke-width="2.8" 
-                stroke-linecap="round"
-                stroke-dasharray="8 6" 
-                class="laser-route-path"
-                :class="{ 'laser-active': activeHoverCity === 'blitar-kab' }"
-              />
-              <!-- 3. Kediri Raya -> Center (Blue) -->
-              <path 
-                d="M 240 110 Q 330 180 450 270" 
-                stroke="#2563EB" 
-                stroke-width="2.5" 
-                stroke-linecap="round"
-                stroke-dasharray="8 6" 
-                class="laser-route-path"
-                :class="{ 'laser-active': activeHoverCity === 'kediri' }"
-              />
-              <!-- 4. Tulungagung -> Center (Green) -->
-              <path 
-                d="M 180 350 Q 300 330 450 270" 
-                stroke="#059669" 
-                stroke-width="2.5" 
-                stroke-linecap="round"
-                stroke-dasharray="8 6" 
-                class="laser-route-path"
-                :class="{ 'laser-active': activeHoverCity === 'tulungagung' }"
-              />
-              <!-- 5. Malang & Surabaya -> Center (Purple) -->
-              <path 
-                d="M 800 130 Q 640 185 450 270" 
-                stroke="#7C3AED" 
-                stroke-width="2.5" 
-                stroke-linecap="round"
-                stroke-dasharray="8 6" 
-                class="laser-route-path"
-                :class="{ 'laser-active': activeHoverCity === 'malang-sby' }"
-              />
-
-              <!-- Topographic Curves & Terrain Guides -->
+            <svg class="map-vector-canvas" :class="{ 'has-active-hover': activeHoverCity !== null }" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 500" preserveAspectRatio="none" fill="none">
+              <path d="M 450 170 L 450 270" stroke="#D97706" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 4" class="laser-route-path" :class="{ 'laser-active': activeHoverCity === 'blitar-kota' }" />
+              <path d="M 620 360 Q 535 340 450 270" stroke="#F59E0B" stroke-width="2.8" stroke-linecap="round" stroke-dasharray="8 6" class="laser-route-path" :class="{ 'laser-active': activeHoverCity === 'blitar-kab' }" />
+              <path d="M 240 110 Q 330 180 450 270" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="8 6" class="laser-route-path" :class="{ 'laser-active': activeHoverCity === 'kediri' }" />
+              <path d="M 180 350 Q 300 330 450 270" stroke="#059669" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="8 6" class="laser-route-path" :class="{ 'laser-active': activeHoverCity === 'tulungagung' }" />
+              <path d="M 800 130 Q 640 185 450 270" stroke="#7C3AED" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="8 6" class="laser-route-path" :class="{ 'laser-active': activeHoverCity === 'malang-sby' }" />
               <path d="M40,240 Q200,180 400,220 T750,210 T950,250" stroke="#E5DDD3" stroke-width="1.5" stroke-dasharray="6 6"/>
               <path d="M80,350 Q260,300 450,330 T820,360" stroke="#E5DDD3" stroke-width="1.5" stroke-dasharray="6 6"/>
               <path d="M320,70 Q420,170 470,280 T520,460" stroke="#E5DDD3" stroke-width="1.5" stroke-dasharray="6 6"/>
               <path d="M140,110 Q280,220 430,260 T680,370" stroke="#DCD3C7" stroke-width="1.2"/>
             </svg>
 
-            <!-- Central Epicenter: Kampung Coklat Blitar (Well Spaced at Center) -->
             <div class="map-epicenter-marker">
               <span class="epicenter-pulse-ring"></span>
               <span class="epicenter-core-dot"></span>
               <div class="epicenter-badge">
-                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="#FBBF24" stroke="currentColor" stroke-width="1.5" class="epicenter-svg-icon">
-                  <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
-                  <circle cx="12" cy="9" r="2.5" fill="#2C1A13"/>
-                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="#FBBF24" stroke="currentColor" stroke-width="1.5" class="epicenter-svg-icon"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5" fill="#2C1A13"/></svg>
                 <span class="epicenter-title">KAMPUNG COKLAT</span>
                 <span class="epicenter-tag">EPISENTRUM</span>
               </div>
             </div>
 
-            <!-- 5 Distinct, Non-Overlapping Interactive Floating City Pins -->
-            <div 
-              v-for="city in originCitiesList"
-              :key="city.id"
-              class="map-pin-marker"
-              :class="[
-                `pin-${city.id}`,
-                { 'is-hovered': activeHoverCity === city.id }
-              ]"
-              :style="city.position"
-              @mouseenter="activeHoverCity = city.id"
-              @mouseleave="activeHoverCity = null"
-            >
+            <div v-for="city in originCitiesList" :key="city.id" class="map-pin-marker" :class="[`pin-${city.id}`, { 'is-hovered': activeHoverCity === city.id }]" :style="city.position" @mouseenter="activeHoverCity = city.id" @mouseleave="activeHoverCity = null">
               <span class="pin-beacon" :class="city.dotClass"></span>
               <div class="pin-card-bubble" :class="city.badgeClass">
                 <span class="pin-glyph-dot" :class="city.dotClass"></span>
@@ -693,27 +560,14 @@
           </div>
         </div>
 
-        <!-- 3. Bottom 5 Detailed Origin City Bento Metric Cards -->
         <div class="demo-bottom-cities-grid">
-          <div 
-            v-for="(city, idx) in originCitiesList" 
-            :key="city.id" 
-            class="city-metric-slate"
-            :class="[
-              { 'is-lead-city': idx === 0 },
-              { 'is-hover-highlight': activeHoverCity === city.id }
-            ]"
-            @mouseenter="activeHoverCity = city.id"
-            @mouseleave="activeHoverCity = null"
-          >
+          <div v-for="(city, idx) in originCitiesList" :key="city.id" class="city-metric-slate" :class="[{ 'is-lead-city': idx === 0 }, { 'is-hover-highlight': activeHoverCity === city.id }]" @mouseenter="activeHoverCity = city.id" @mouseleave="activeHoverCity = null">
             <div class="slate-top-row">
               <div class="slate-rank-wrap">
                 <span class="slate-rank-badge" :class="{ 'badge-crown': idx === 0 }">#{{ idx + 1 }}</span>
                 <span class="slate-city-name">{{ city.name }}</span>
               </div>
-              <span class="slate-pct-pill" :style="{ backgroundColor: `${city.color}18`, color: city.color, borderColor: `${city.color}40` }">
-                {{ city.percentage }}%
-              </span>
+              <span class="slate-pct-pill" :style="{ backgroundColor: `${city.color}18`, color: city.color, borderColor: `${city.color}40` }">{{ city.percentage }}%</span>
             </div>
 
             <div class="slate-metrics-row">
@@ -727,25 +581,18 @@
               </div>
             </div>
 
-            <!-- Proportion fill line -->
             <div class="slate-track-line">
               <div class="slate-fill-line" :style="{ width: `${city.percentage * 2}%`, backgroundColor: city.color }"></div>
             </div>
-
             <div class="slate-bottom-sub">
               <span>{{ city.character }}</span>
             </div>
           </div>
         </div>
 
-        <!-- 4. Executive Geospatial Strategic Takeaway Footer -->
         <div class="demographic-footer-luxury">
           <div class="insight-icon-box">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2.2">
-              <circle cx="12" cy="12" r="10"/>
-              <line x1="12" y1="16" x2="12" y2="12"/>
-              <line x1="12" y1="8" x2="12.01" y2="8"/>
-            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
           </div>
           <div class="insight-text-group">
             <span class="insight-main-title">Insight Strategis Geospasial:</span>
@@ -757,19 +604,13 @@
       </div>
     </section>
 
-    <!-- =====================================================================
-         5. OPERATIONS GRID: Payment Methods & POS Shift Summary
-         ===================================================================== -->
+    <!-- Operations Grid -->
     <section class="operations-grid">
-      <!-- Payment Methods Summary (Matching Screenshot Layout) -->
       <div class="bento-card payment-card">
         <div class="bento-card-header">
           <div class="header-title-left">
             <div class="header-icon-squircle">
-              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"/>
-                <line x1="1" y1="10" x2="23" y2="10"/>
-              </svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
             </div>
             <div class="header-text-group">
               <h3 class="bento-card-title">Ringkasan Metode Pembayaran</h3>
@@ -779,23 +620,12 @@
           <span class="badge-total-pill">{{ formatRupiah(totalPaymentAmount) }}</span>
         </div>
 
-        <!-- Top Multi-Channel Distribution Proportion Strip with Legend -->
         <div class="payment-distribution-wrap">
           <div class="payment-distribution-bar">
-            <div 
-              v-for="pay in currentPaymentMethods" 
-              :key="pay.id"
-              class="dist-segment"
-              :style="{ width: `${pay.percentage}%`, backgroundColor: pay.color }"
-              :title="`${pay.name}: ${pay.percentage}%`"
-            ></div>
+            <div v-for="pay in currentPaymentMethods" :key="pay.id" class="dist-segment" :style="{ width: `${pay.percentage}%`, backgroundColor: pay.color }" :title="`${pay.name}: ${pay.percentage}%`"></div>
           </div>
           <div class="payment-legend-row">
-            <div 
-              v-for="pay in currentPaymentMethods" 
-              :key="pay.id" 
-              class="legend-item"
-            >
+            <div v-for="pay in currentPaymentMethods" :key="pay.id" class="legend-item">
               <span class="legend-dot" :style="{ backgroundColor: pay.color }"></span>
               <span class="legend-name">{{ pay.name }}:</span>
               <span class="legend-pct" :style="{ color: pay.color }">{{ pay.percentage }}%</span>
@@ -803,33 +633,16 @@
           </div>
         </div>
 
-        <!-- 4 Distinct Outlined Payment Channel Cards (Spacious & Zero Overlap) -->
         <div class="payment-slates-stack">
-          <div 
-            v-for="(pay, idx) in currentPaymentMethods" 
-            :key="pay.id" 
-            class="pay-channel-slate"
-            :class="{ 'is-lead-pay': idx === 0 }"
-            :style="{ '--pay-brand': pay.color, '--pay-tint': pay.bgLight }"
-          >
-            <!-- Top Line: Icon + Title + Amount + Share Badge -->
+          <div v-for="(pay, idx) in currentPaymentMethods" :key="pay.id" class="pay-channel-slate" :class="{ 'is-lead-pay': idx === 0 }" :style="{ '--pay-brand': pay.color, '--pay-tint': pay.bgLight }">
             <div class="pay-card-main-row">
               <div class="pay-slate-left">
                 <div class="pay-brand-squircle" :style="{ backgroundColor: pay.bgLight, color: pay.color }">
-                  <svg v-if="pay.id === 'qris'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="pay-svg">
-                    <rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect x="14" y="14" width="7" height="7" /><rect x="3" y="14" width="7" height="7" />
-                  </svg>
-                  <svg v-else-if="pay.id === 'cash'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="pay-svg">
-                    <rect x="2" y="6" width="20" height="12" rx="2" /><circle cx="12" cy="12" r="2" /><path d="M6 12h.01M18 12h.01" />
-                  </svg>
-                  <svg v-else-if="pay.id === 'debit'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="pay-svg">
-                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2" /><line x1="1" y1="10" x2="23" y2="10" />
-                  </svg>
-                  <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="pay-svg">
-                    <path d="M17 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z" /><polyline points="15 3 15 7 9 7" />
-                  </svg>
+                  <svg v-if="pay.id === 'qris'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="pay-svg"><rect x="3" y="3" width="7" height="7" /><rect x="14" y="3" width="7" height="7" /><rect x="14" y="14" width="7" height="7" /><rect x="3" y="14" width="7" height="7" /></svg>
+                  <svg v-else-if="pay.id === 'cash'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="pay-svg"><rect x="2" y="6" width="20" height="12" rx="2" /><circle cx="12" cy="12" r="2" /><path d="M6 12h.01M18 12h.01" /></svg>
+                  <svg v-else-if="pay.id === 'debit'" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="pay-svg"><rect x="1" y="4" width="22" height="16" rx="2" ry="2" /><line x1="1" y1="10" x2="23" y2="10" /></svg>
+                  <svg v-else xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="pay-svg"><path d="M17 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z" /><polyline points="15 3 15 7 9 7" /></svg>
                 </div>
-
                 <div class="pay-slate-title-group">
                   <div class="pay-title-badge-row">
                     <span class="pay-channel-title">{{ pay.name }}</span>
@@ -838,42 +651,79 @@
                   <span class="pay-tx-sub">{{ pay.transactions.toLocaleString('id-ID') }} Transaksi</span>
                 </div>
               </div>
-
               <div class="pay-slate-right">
                 <span class="pay-slate-amount">{{ formatRupiah(pay.amount) }}</span>
-                <span class="pay-slate-share" :style="{ backgroundColor: pay.bgLight, color: pay.color, borderColor: pay.color }">
-                  {{ pay.percentage }}% Porsi
-                </span>
+                <span class="pay-slate-share" :style="{ backgroundColor: pay.bgLight, color: pay.color, borderColor: pay.color }">{{ pay.percentage }}% Porsi</span>
               </div>
             </div>
-
-            <!-- Bottom Line: Clean Full-Width Progress Track (Never Overlaps) -->
             <div class="pay-mini-track">
               <div class="pay-mini-fill" :style="{ width: `${pay.percentage}%`, backgroundColor: pay.color }"></div>
             </div>
           </div>
         </div>
 
-        <!-- Payment Settlement Verification Banner -->
         <div class="payment-settlement-strip">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="settle-icon">
-            <polyline points="20 6 9 17 4 12"/>
-          </svg>
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="settle-icon"><polyline points="20 6 9 17 4 12"/></svg>
           <span>Semua transaksi telah terekonsiliasi &amp; tersinkronisasi otomatis dengan perbankan.</span>
         </div>
       </div>
 
-      <!-- Cashier / Shift Summary Component -->
       <div class="shift-wrapper">
         <ShiftSummaryCard 
           :shift-data="currentShiftData" 
           :shifts-list="allShiftList"
+          :is-read-only="currentRole === 'owner'"
+          @view-details="handleViewShiftLog"
+          @close-shift="handleCloseShift"
         />
       </div>
     </section>
 
-
-
+    <!-- Shift Log Modal Dialog -->
+    <div v-if="showShiftModal" class="modal-backdrop" @click.self="showShiftModal = false">
+      <div class="modal-card">
+        <div class="modal-header">
+          <div class="modal-title-group">
+            <span class="modal-kicker">Audit Rekonsiliasi Kasir</span>
+            <h3>Log Shift: {{ currentShiftData.shiftName }}</h3>
+          </div>
+          <button class="btn-close" @click="showShiftModal = false">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="modal-info-row">
+            <span class="info-label">Kasir POS</span>
+            <span class="info-val">{{ currentShiftData.cashierName }} ({{ currentShiftData.cashierId }})</span>
+          </div>
+          <div class="modal-info-row">
+            <span class="info-label">Terminal / Lokasi</span>
+            <span class="info-val">{{ currentShiftData.terminalName }}</span>
+          </div>
+          <div class="modal-info-row">
+            <span class="info-label">Waktu Operasional</span>
+            <span class="info-val">{{ currentShiftData.date }}, {{ currentShiftData.startTime }} WIB - {{ currentShiftData.endTime }} WIB</span>
+          </div>
+          <div class="modal-info-row">
+            <span class="info-label">Total Tiket Terjual</span>
+            <span class="info-val">{{ currentShiftData.totalTicketsSold }} Tiket</span>
+          </div>
+          <div class="modal-info-row">
+            <span class="info-label">Total Kas Fisik Diterima</span>
+            <span class="info-val">{{ formatRupiah(currentShiftData.cashReceived) }}</span>
+          </div>
+          <div class="modal-info-row">
+            <span class="info-label">Total Non-Tunai / QRIS</span>
+            <span class="info-val">{{ formatRupiah(currentShiftData.nonCashReceived) }}</span>
+          </div>
+          <div class="alert-info-box">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span><strong>Catatan Sistem:</strong> {{ currentShiftData.reconciliationNotes }}</span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-action-secondary" @click="showShiftModal = false">Tutup Laporan</button>
+        </div>
+      </div>
+    </div>
 
   </div>
 </template>
@@ -885,8 +735,11 @@ import logoImg from '~/assets/assets_POS/KAMPUNGCOKLAT.png'
 
 // Subcomponents
 import KpiCard from '~/components/dashboard/KpiCard.vue'
-import TicketSalesTable from '~/components/dashboard/TicketSalesTable.vue'
-import ShiftSummaryCard from '~/components/dashboard/ShiftSummaryCard.vue'
+import OwnerNotice from '~/components/dashboard/OwnerNotice.vue'
+import TicketSalesTable, { type TicketCategoryItem } from '~/components/dashboard/TicketSalesTable.vue'
+import ShiftSummaryCard, { type ShiftInfo } from '~/components/dashboard/ShiftSummaryCard.vue'
+
+import { useAuth, type UserRole } from '~/composables/useAuth'
 
 // Register Chart.js modules
 Chart.register(...registerables)
@@ -897,7 +750,7 @@ definePageMeta({
 })
 
 // Current Role
-const currentRole = ref<'admin' | 'owner'>('admin')
+const { currentRole } = useAuth()
 
 // CRM Segment Hover State
 const activeHoverSegment = ref<string | null>(null)
@@ -999,89 +852,15 @@ interface OriginCityData {
 const activeHoverCity = ref<string | null>(null)
 
 const originCitiesList = computed<OriginCityData[]>(() => [
-  {
-    id: 'blitar-kota',
-    name: 'Kota Blitar',
-    region: 'Pusat Kota & Wisatawan Lokal',
-    pax: 940,
-    percentage: 38.4,
-    gtv: 18800000,
-    character: 'Wisatawan Keluarga & Repeat Member',
-    color: '#D97706',
-    dotClass: 'dot-gold',
-    badgeClass: 'bubble-gold',
-    travelTime: '< 15 Menit',
-    position: { top: '34%', left: '45%' }
-  },
-  {
-    id: 'blitar-kab',
-    name: 'Kab. Blitar',
-    region: 'Wlingi, Kanigoro & Sekitar',
-    pax: 580,
-    percentage: 23.7,
-    gtv: 11600000,
-    character: 'Keluarga, Anak & Santri Akhir Pekan',
-    color: '#F59E0B',
-    dotClass: 'dot-amber',
-    badgeClass: 'bubble-amber',
-    travelTime: '20 - 40 Menit',
-    position: { top: '72%', left: '62%' }
-  },
-  {
-    id: 'kediri',
-    name: 'Kediri Raya',
-    region: 'Koridor Mataraman Utara',
-    pax: 390,
-    percentage: 15.9,
-    gtv: 7800000,
-    character: 'Wisata Edukasi & Rombongan Komunitas',
-    color: '#2563EB',
-    dotClass: 'dot-blue',
-    badgeClass: 'bubble-blue',
-    travelTime: '45 - 60 Menit',
-    position: { top: '22%', left: '24%' }
-  },
-  {
-    id: 'tulungagung',
-    name: 'Tulungagung & Trenggalek',
-    region: 'Koridor Jalur Lintas Selatan (JLS)',
-    pax: 290,
-    percentage: 11.8,
-    gtv: 5800000,
-    character: 'Paket Terusan Wahana Edukasi Coklat',
-    color: '#059669',
-    dotClass: 'dot-green',
-    badgeClass: 'bubble-green',
-    travelTime: '45 - 60 Menit',
-    position: { top: '70%', left: '18%' }
-  },
-  {
-    id: 'malang-sby',
-    name: 'Malang & Surabaya',
-    region: 'Regional Jawa Timur & Tol Trans-Jawa',
-    pax: 250,
-    percentage: 10.2,
-    gtv: 5000000,
-    character: 'Rombongan Bus Study Tour & Biro Wisata',
-    color: '#7C3AED',
-    dotClass: 'dot-purple',
-    badgeClass: 'bubble-purple',
-    travelTime: '90 - 150 Menit',
-    position: { top: '26%', left: '80%' }
-  }
+  { id: 'blitar-kota', name: 'Kota Blitar', region: 'Pusat Kota & Wisatawan Lokal', pax: 940, percentage: 38.4, gtv: 18800000, character: 'Wisatawan Keluarga & Repeat Member', color: '#D97706', dotClass: 'dot-gold', badgeClass: 'bubble-gold', travelTime: '< 15 Menit', position: { top: '34%', left: '45%' } },
+  { id: 'blitar-kab', name: 'Kab. Blitar', region: 'Wlingi, Kanigoro & Sekitar', pax: 580, percentage: 23.7, gtv: 11600000, character: 'Keluarga, Anak & Santri Akhir Pekan', color: '#F59E0B', dotClass: 'dot-amber', badgeClass: 'bubble-amber', travelTime: '20 - 40 Menit', position: { top: '72%', left: '62%' } },
+  { id: 'kediri', name: 'Kediri Raya', region: 'Koridor Mataraman Utara', pax: 390, percentage: 15.9, gtv: 7800000, character: 'Wisata Edukasi & Rombongan Komunitas', color: '#2563EB', dotClass: 'dot-blue', badgeClass: 'bubble-blue', travelTime: '45 - 60 Menit', position: { top: '22%', left: '24%' } },
+  { id: 'tulungagung', name: 'Tulungagung & Trenggalek', region: 'Koridor Jalur Lintas Selatan (JLS)', pax: 290, percentage: 11.8, gtv: 5800000, character: 'Paket Terusan Wahana Edukasi Coklat', color: '#059669', dotClass: 'dot-green', badgeClass: 'bubble-green', travelTime: '45 - 60 Menit', position: { top: '70%', left: '18%' } },
+  { id: 'malang-sby', name: 'Malang & Surabaya', region: 'Regional Jawa Timur & Tol Trans-Jawa', pax: 250, percentage: 10.2, gtv: 5000000, character: 'Rombongan Bus Study Tour & Biro Wisata', color: '#7C3AED', dotClass: 'dot-purple', badgeClass: 'bubble-purple', travelTime: '90 - 150 Menit', position: { top: '26%', left: '80%' } }
 ])
 
 // -------------------------------------------------------------------------
-type PeriodType = 
-  | 'today' 
-  | 'yesterday' 
-  | 'week' 
-  | 'last_week' 
-  | 'month' 
-  | 'last_month' 
-  | 'quarter' 
-  | 'year' 
-  | 'custom'
+type PeriodType = 'today' | 'yesterday' | 'week' | 'last_week' | 'month' | 'last_month' | 'quarter' | 'year' | 'custom'
 
 interface PeriodOption {
   value: PeriodType
@@ -1103,33 +882,21 @@ const customEndDate = ref('2026-08-19')
 const excelTabStripRef = ref<HTMLElement | null>(null)
 
 const periodOptions: PeriodOption[] = [
-  // Presisi Harian
   { value: 'today', label: 'Hari Ini', subtitle: '19 Agustus 2026', group: 'daily', badge: 'Live' },
   { value: 'yesterday', label: 'Kemarin', subtitle: '18 Agustus 2026', group: 'daily' },
-  
-  // Mingguan & Bulanan
   { value: 'week', label: '7 Hari Terakhir', subtitle: '13 - 19 Agu 2026', group: 'periodic', badge: 'Populer' },
   { value: 'last_week', label: 'Minggu Lalu', subtitle: '06 - 12 Agu 2026', group: 'periodic' },
   { value: 'month', label: 'Bulan Ini', subtitle: '01 - 19 Agu 2026', group: 'periodic' },
   { value: 'last_month', label: 'Bulan Lalu', subtitle: '01 - 31 Jul 2026', group: 'periodic' },
-  
-  // Kuartal & Tahunan
   { value: 'quarter', label: 'Kuartal Q3', subtitle: 'Juli - September 2026', group: 'annual' },
   { value: 'year', label: 'Tahun 2026', subtitle: '01 Jan - 19 Agu 2026', group: 'annual', badge: 'YTD' }
 ]
 
 const currentPeriodDetail = computed(() => {
   if (selectedPeriod.value === 'custom') {
-    return {
-      value: 'custom' as PeriodType,
-      label: 'Kustom Tanggal',
-      subtitle: `${customStartDate.value} s/d ${customEndDate.value}`,
-      group: 'periodic' as const,
-      badge: 'Rentang Kustom'
-    }
+    return { value: 'custom' as PeriodType, label: 'Kustom Tanggal', subtitle: `${customStartDate.value} s/d ${customEndDate.value}`, group: 'periodic' as const, badge: 'Rentang Kustom' }
   }
-  const found = periodOptions.find(p => p.value === selectedPeriod.value)
-  return found || periodOptions[0]
+  return periodOptions.find(p => p.value === selectedPeriod.value) || periodOptions[0]
 })
 
 const selectPeriodOption = (val: PeriodType, event?: MouseEvent) => {
@@ -1165,10 +932,7 @@ const scrollExcelTabs = (direction: 'left' | 'right') => {
       activeEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })
     } else if (excelTabStripRef.value) {
       const scrollAmount = 140
-      excelTabStripRef.value.scrollBy({
-        left: direction === 'left' ? -scrollAmount : scrollAmount,
-        behavior: 'smooth'
-      })
+      excelTabStripRef.value.scrollBy({ left: direction === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' })
     }
   })
 }
@@ -1179,132 +943,19 @@ const applyCustomDateRange = () => {
   refreshCharts()
 }
 
-const setPresetRange = (type: number | 'this_month') => {
-  const now = new Date(2026, 7, 19) // 19 August 2026
-  const formatYMD = (d: Date) => {
-    const y = d.getFullYear()
-    const m = String(d.getMonth() + 1).padStart(2, '0')
-    const day = String(d.getDate()).padStart(2, '0')
-    return `${y}-${m}-${day}`
-  }
-
-  customEndDate.value = formatYMD(now)
-
-  if (typeof type === 'number') {
-    const past = new Date(now)
-    past.setDate(past.getDate() - type + 1)
-    customStartDate.value = formatYMD(past)
-  } else if (type === 'this_month') {
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1)
-    customStartDate.value = formatYMD(startOfMonth)
-  }
-
-  applyCustomDateRange()
-}
-
 // -------------------------------------------------------------------------
 // [API INTEGRATION POINT: METRICS DATA]
 // -------------------------------------------------------------------------
-const mockMetricsMap: Record<string, {
-  totalGtv: number
-  gtvComparison: string
-  totalTickets: number
-  ticketsComparison: string
-  totalVisitors: number
-  visitorsComparison: string
-  newMembers: number
-  newMembersComparison: string
-}> = {
-  today: {
-    totalGtv: 48750000,
-    gtvComparison: '+14.4% vs kemarin (Rp 42.6 Jt)',
-    totalTickets: 2450,
-    ticketsComparison: '+320 tiket vs kemarin',
-    totalVisitors: 2180,
-    visitorsComparison: '89.0% check-in rate (Gate)',
-    newMembers: 215,
-    newMembersComparison: '+38 member vs kemarin'
-  },
-  yesterday: {
-    totalGtv: 42600000,
-    gtvComparison: '+8.1% vs rata-rata harian',
-    totalTickets: 2130,
-    ticketsComparison: '+140 tiket vs H-2',
-    totalVisitors: 1940,
-    visitorsComparison: '91.1% check-in rate (Gate)',
-    newMembers: 177,
-    newMembersComparison: '+22 member'
-  },
-  week: {
-    totalGtv: 312500000,
-    gtvComparison: '+18.2% vs 7 hari sebelumnya',
-    totalTickets: 15625,
-    ticketsComparison: '+2.410 tiket vs 7 hari sebelumnya',
-    totalVisitors: 14280,
-    visitorsComparison: '91.4% check-in rate (Gate)',
-    newMembers: 1420,
-    newMembersComparison: '+280 member vs 7 hari sebelumnya'
-  },
-  last_week: {
-    totalGtv: 264300000,
-    gtvComparison: '+11.5% vs minggu sebelumnya',
-    totalTickets: 13215,
-    ticketsComparison: '+1.350 tiket',
-    totalVisitors: 12050,
-    visitorsComparison: '91.2% check-in rate (Gate)',
-    newMembers: 1140,
-    newMembersComparison: '+195 member'
-  },
-  month: {
-    totalGtv: 1280000000,
-    gtvComparison: '+24.5% vs bulan lalu',
-    totalTickets: 64200,
-    ticketsComparison: '+11.200 tiket vs bulan lalu',
-    totalVisitors: 59800,
-    visitorsComparison: '93.1% check-in rate (Gate)',
-    newMembers: 5850,
-    newMembersComparison: '+1.150 member vs bulan lalu'
-  },
-  last_month: {
-    totalGtv: 1028000000,
-    gtvComparison: '+16.0% vs Juni 2026',
-    totalTickets: 53000,
-    ticketsComparison: '+8.400 tiket',
-    totalVisitors: 49200,
-    visitorsComparison: '92.8% check-in rate (Gate)',
-    newMembers: 4700,
-    newMembersComparison: '+820 member'
-  },
-  quarter: {
-    totalGtv: 2308000000,
-    gtvComparison: '+21.4% vs Q2 2026',
-    totalTickets: 117200,
-    ticketsComparison: '+19.600 tiket vs Q2',
-    totalVisitors: 109000,
-    visitorsComparison: '93.0% check-in rate (Gate)',
-    newMembers: 10550,
-    newMembersComparison: '+1.970 member vs Q2'
-  },
-  year: {
-    totalGtv: 9480000000,
-    gtvComparison: '+28.6% vs periode sama 2025',
-    totalTickets: 474000,
-    ticketsComparison: '+84.000 tiket vs 2025',
-    totalVisitors: 442000,
-    visitorsComparison: '93.2% check-in rate (Gate)',
-    newMembers: 42600,
-    newMembersComparison: '+8.400 member vs 2025'
-  },
-  custom: {
-    totalGtv: 785000000,
-    gtvComparison: 'Rentang 1 - 19 Agustus 2026',
-    totalTickets: 39250,
-    ticketsComparison: '39.250 tiket tervalidasi',
-    totalVisitors: 36500,
-    visitorsComparison: '93.0% check-in rate',
-    newMembers: 3580,
-    newMembersComparison: '3.580 member baru'
-  }
+const mockMetricsMap: Record<string, { totalGtv: number, gtvComparison: string, totalTickets: number, ticketsComparison: string, totalVisitors: number, visitorsComparison: string, newMembers: number, newMembersComparison: string }> = {
+  today: { totalGtv: 48750000, gtvComparison: '+14.4% vs kemarin (Rp 42.6 Jt)', totalTickets: 2450, ticketsComparison: '+320 tiket vs kemarin', totalVisitors: 2180, visitorsComparison: '89.0% check-in rate (Gate)', newMembers: 215, newMembersComparison: '+38 member vs kemarin' },
+  yesterday: { totalGtv: 42600000, gtvComparison: '+8.1% vs rata-rata harian', totalTickets: 2130, ticketsComparison: '+140 tiket vs H-2', totalVisitors: 1940, visitorsComparison: '91.1% check-in rate (Gate)', newMembers: 177, newMembersComparison: '+22 member' },
+  week: { totalGtv: 312500000, gtvComparison: '+18.2% vs 7 hari sebelumnya', totalTickets: 15625, ticketsComparison: '+2.410 tiket vs 7 hari sebelumnya', totalVisitors: 14280, visitorsComparison: '91.4% check-in rate (Gate)', newMembers: 1420, newMembersComparison: '+280 member vs 7 hari sebelumnya' },
+  last_week: { totalGtv: 264300000, gtvComparison: '+11.5% vs minggu sebelumnya', totalTickets: 13215, ticketsComparison: '+1.350 tiket', totalVisitors: 12050, visitorsComparison: '91.2% check-in rate (Gate)', newMembers: 1140, newMembersComparison: '+195 member' },
+  month: { totalGtv: 1280000000, gtvComparison: '+24.5% vs bulan lalu', totalTickets: 64200, ticketsComparison: '+11.200 tiket vs bulan lalu', totalVisitors: 59800, visitorsComparison: '93.1% check-in rate (Gate)', newMembers: 5850, newMembersComparison: '+1.150 member vs bulan lalu' },
+  last_month: { totalGtv: 1028000000, gtvComparison: '+16.0% vs Juni 2026', totalTickets: 53000, ticketsComparison: '+8.400 tiket', totalVisitors: 49200, visitorsComparison: '92.8% check-in rate (Gate)', newMembers: 4700, newMembersComparison: '+820 member' },
+  quarter: { totalGtv: 2308000000, gtvComparison: '+21.4% vs Q2 2026', totalTickets: 117200, ticketsComparison: '+19.600 tiket vs Q2', totalVisitors: 109000, visitorsComparison: '93.0% check-in rate (Gate)', newMembers: 10550, newMembersComparison: '+1.970 member vs Q2' },
+  year: { totalGtv: 9480000000, gtvComparison: '+28.6% vs periode sama 2025', totalTickets: 474000, ticketsComparison: '+84.000 tiket vs 2025', totalVisitors: 442000, visitorsComparison: '93.2% check-in rate (Gate)', newMembers: 42600, newMembersComparison: '+8.400 member vs 2025' },
+  custom: { totalGtv: 785000000, gtvComparison: 'Rentang 1 - 19 Agustus 2026', totalTickets: 39250, ticketsComparison: '39.250 tiket tervalidasi', totalVisitors: 36500, visitorsComparison: '93.0% check-in rate', newMembers: 3580, newMembersComparison: '3.580 member baru' }
 }
 
 const currentMetrics = computed(() => {
@@ -1320,9 +971,7 @@ const memberSegments = ref([
   { code: 'PT', title: 'Paket Terusan Edukasi', count: 1860, percentage: 12.5, color: '#10B981' }
 ])
 
-const memberSegmentTotal = computed(() => {
-  return memberSegments.value.reduce((acc, seg) => acc + seg.count, 0)
-})
+const memberSegmentTotal = computed(() => memberSegments.value.reduce((acc, seg) => acc + seg.count, 0))
 
 // -------------------------------------------------------------------------
 // [API INTEGRATION POINT: TICKET SALES BREAKDOWN (4 COMPLETE CATEGORIES)]
@@ -1348,9 +997,7 @@ const mockTicketBreakdownMap: Record<string, any[]> = {
   ]
 }
 
-const currentTicketBreakdown = computed(() => {
-  return mockTicketBreakdownMap[selectedPeriod.value] || mockTicketBreakdownMap.month
-})
+const currentTicketBreakdown = computed(() => mockTicketBreakdownMap[selectedPeriod.value] || mockTicketBreakdownMap.month)
 
 // -------------------------------------------------------------------------
 // [API INTEGRATION POINT: DEMOGRAPHIC ORIGIN CITIES]
@@ -1379,9 +1026,7 @@ const mockDemographicsMap: Record<string, any[]> = {
   ]
 }
 
-const currentDemographics = computed(() => {
-  return mockDemographicsMap[selectedPeriod.value] || mockDemographicsMap.month
-})
+const currentDemographics = computed(() => mockDemographicsMap[selectedPeriod.value] || mockDemographicsMap.month)
 
 // -------------------------------------------------------------------------
 // [API INTEGRATION POINT: PAYMENT METHODS SUMMARY]
@@ -1407,197 +1052,69 @@ const mockPaymentMethodsMap: Record<string, any[]> = {
   ]
 }
 
-const currentPaymentMethods = computed(() => {
-  return mockPaymentMethodsMap[selectedPeriod.value] || mockPaymentMethodsMap.month
-})
-
-const totalPaymentAmount = computed(() => {
-  return currentPaymentMethods.value.reduce((acc, pay) => acc + pay.amount, 0)
-})
+const currentPaymentMethods = computed(() => mockPaymentMethodsMap[selectedPeriod.value] || mockPaymentMethodsMap.month)
+const totalPaymentAmount = computed(() => currentPaymentMethods.value.reduce((acc, pay) => acc + pay.amount, 0))
 
 // -------------------------------------------------------------------------
 // [API INTEGRATION POINT: CASHIER SHIFT SUMMARY DATA]
 // -------------------------------------------------------------------------
-interface ShiftInfo {
-  id: string
-  shiftName: string
-  terminalName: string
-  cashierName: string
-  cashierId: string
-  date: string
-  startTime: string
-  endTime: string
-  totalTransactions: number
-  totalTicketsSold: number
-  cashReceived: number
-  nonCashReceived: number
-  reconciliationStatus: 'balanced' | 'surplus' | 'deficit'
-  statusLabel: string
-  reconciliationNotes: string
-  variance: number
-  isClosed: boolean
-}
-
 const allShiftList = ref<ShiftInfo[]>([
   {
-    id: 'ALL',
-    shiftName: 'Agregat Operasional Hari Ini',
-    terminalName: '4 Loket Aktif (Utama & 3 Wahana)',
-    cashierName: 'Semua Loket (1 Utama + 3 Wahana)',
-    cashierId: 'ALL-POS',
-    date: '19 Agustus 2026',
-    startTime: '08:00',
-    endTime: '17:00',
-    totalTransactions: 1254,
-    totalTicketsSold: 2450,
-    cashReceived: 17200000,
-    nonCashReceived: 31550000,
-    reconciliationStatus: 'balanced',
-    statusLabel: '4 Loket Beroperasi (Live)',
-    reconciliationNotes: 'Seluruh pencatatan laci kasir keempat loket klop 100% tanpa selisih.',
-    variance: 0,
-    isClosed: false
+    id: 'ALL', shiftName: 'Agregat Operasional Hari Ini', terminalName: '4 Loket Aktif (Utama & 3 Wahana)', cashierName: 'Semua Loket (1 Utama + 3 Wahana)', cashierId: 'ALL-POS', date: '19 Agustus 2026', startTime: '08:00', endTime: '17:00', totalTransactions: 1254, totalTicketsSold: 2450, cashReceived: 17200000, nonCashReceived: 31550000, reconciliationStatus: 'balanced', statusLabel: '4 Loket Beroperasi (Live)', reconciliationNotes: 'Seluruh pencatatan laci kasir keempat loket klop 100% tanpa selisih.', variance: 0, isClosed: false
   },
   {
-    id: 'LOKET-UTAMA',
-    shiftName: 'Shift 1 (Pagi)',
-    terminalName: 'Loket Utama (Main Gate)',
-    cashierName: 'Siti Rahmawati',
-    cashierId: 'KASIR-01',
-    date: '19 Agustus 2026',
-    startTime: '08:00',
-    endTime: '17:00',
-    totalTransactions: 782,
-    totalTicketsSold: 1650,
-    cashReceived: 11450000,
-    nonCashReceived: 21550000,
-    reconciliationStatus: 'balanced',
-    statusLabel: 'Loket Beroperasi (Live)',
-    reconciliationNotes: 'Pencatatan kas fisik laci sesuai dengan struk tiket masuk reguler.',
-    variance: 0,
-    isClosed: false
-  },
-  {
-    id: 'LOKET-WAHANA-1',
-    shiftName: 'Shift Reguler',
-    terminalName: 'Loket Wahana 1 (Cooking Class & Edukasi)',
-    cashierName: 'Dewi Lestari',
-    cashierId: 'KASIR-02',
-    date: '19 Agustus 2026',
-    startTime: '08:30',
-    endTime: '17:00',
-    totalTransactions: 205,
-    totalTicketsSold: 345,
-    cashReceived: 2500000,
-    nonCashReceived: 4400000,
-    reconciliationStatus: 'balanced',
-    statusLabel: 'Loket Beroperasi (Live)',
-    reconciliationNotes: 'Laci kasir terverifikasi klop dengan tiket Cooking Class & Edukasi Coklat.',
-    variance: 0,
-    isClosed: false
-  },
-  {
-    id: 'LOKET-WAHANA-2',
-    shiftName: 'Shift Reguler',
-    terminalName: 'Loket Wahana 2 (Kereta Safari & Feeding)',
-    cashierName: 'Rian Pratama',
-    cashierId: 'KASIR-03',
-    date: '19 Agustus 2026',
-    startTime: '08:30',
-    endTime: '17:00',
-    totalTransactions: 152,
-    totalTicketsSold: 275,
-    cashReceived: 1950000,
-    nonCashReceived: 3200000,
-    reconciliationStatus: 'balanced',
-    statusLabel: 'Loket Beroperasi (Live)',
-    reconciliationNotes: 'Laci kasir terverifikasi klop dengan tiket Kereta Safari & Animal Feeding.',
-    variance: 0,
-    isClosed: false
-  },
-  {
-    id: 'LOKET-WAHANA-3',
-    shiftName: 'Shift Reguler',
-    terminalName: 'Loket Wahana 3 (Playground & Kolam Coklat)',
-    cashierName: 'Anita Widya',
-    cashierId: 'KASIR-04',
-    date: '19 Agustus 2026',
-    startTime: '08:30',
-    endTime: '17:00',
-    totalTransactions: 115,
-    totalTicketsSold: 180,
-    cashReceived: 1300000,
-    nonCashReceived: 2400000,
-    reconciliationStatus: 'balanced',
-    statusLabel: 'Loket Beroperasi (Live)',
-    reconciliationNotes: 'Laci kasir terverifikasi klop dengan wahana Playground & Kolam Coklat.',
-    variance: 0,
-    isClosed: false
+    id: 'LOKET-UTAMA', shiftName: 'Shift 1 (Pagi)', terminalName: 'Loket Utama (Main Gate)', cashierName: 'Siti Rahmawati', cashierId: 'KASIR-01', date: '19 Agustus 2026', startTime: '08:00', endTime: '17:00', totalTransactions: 782, totalTicketsSold: 1650, cashReceived: 11450000, nonCashReceived: 21550000, reconciliationStatus: 'balanced', statusLabel: 'Loket Beroperasi (Live)', reconciliationNotes: 'Pencatatan kas fisik laci sesuai dengan struk tiket masuk reguler.', variance: 0, isClosed: false
   }
 ])
 
-const currentShiftData = computed(() => {
-  return allShiftList.value[0]
-})
+const currentShiftData = computed(() => allShiftList.value[0])
+
+const handleViewShiftLog = (shift: ShiftInfo) => {
+  showShiftModal.value = true
+}
+
+const handleCloseShift = (shift: ShiftInfo) => {
+  if (confirm(`Apakah Anda yakin ingin menutup ${shift.shiftName}? Sistem akan melakukan rekonsiliasi akhir.`)) {
+    shift.isClosed = true
+    shift.statusLabel = 'Shift Ditutup & Rekonsiliasi Sukses'
+    alert(`Shift ${shift.shiftName} berhasil ditutup. Laporan terkirim ke Manager & Owner.`)
+  }
+}
 
 // =========================================================================
 // CHART.JS INSTANCES & RENDERING (Ultra-Smooth Bezier Gradient Spline)
 // =========================================================================
 const revenueChartCanvas = ref<HTMLCanvasElement | null>(null)
 const memberChartCanvas = ref<HTMLCanvasElement | null>(null)
-
 let revenueChartInstance: Chart | null = null
 let memberChartInstance: Chart | null = null
 
-// Chart Data Configuration based on period
 const getChartLabels = (period: PeriodType) => {
-  if (period === 'today' || period === 'yesterday') {
-    return ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00']
-  } else if (period === 'week' || period === 'last_week') {
-    return ['Kamis', 'Jumat', 'Sabtu', 'Minggu', 'Senin', 'Selasa', 'Rabu']
-  } else if (period === 'month' || period === 'last_month' || period === 'custom') {
-    return ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4']
-  } else if (period === 'quarter') {
-    return ['Bulan 1', 'Bulan 2', 'Bulan 3']
-  } else {
-    return ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu']
-  }
+  if (period === 'today' || period === 'yesterday') return ['08:00', '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00']
+  else if (period === 'week' || period === 'last_week') return ['Kamis', 'Jumat', 'Sabtu', 'Minggu', 'Senin', 'Selasa', 'Rabu']
+  else if (period === 'quarter') return ['Bulan 1', 'Bulan 2', 'Bulan 3']
+  else if (period === 'year') return ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu']
+  return ['Minggu 1', 'Minggu 2', 'Minggu 3', 'Minggu 4']
 }
 
 const getChartGtvData = (period: PeriodType) => {
-  if (period === 'today') {
-    return [2400000, 4100000, 7800000, 8900000, 5200000, 6800000, 7200000, 4100000, 1850000, 400000]
-  } else if (period === 'yesterday') {
-    return [2100000, 3600000, 6900000, 7800000, 4800000, 6100000, 6500000, 3200000, 1400000, 200000]
-  } else if (period === 'week') {
-    return [32000000, 36500000, 68000000, 74500000, 28000000, 24750000, 48750000]
-  } else if (period === 'last_week') {
-    return [28000000, 31000000, 59000000, 62000000, 24000000, 21000000, 39300000]
-  } else if (period === 'quarter') {
-    return [680000000, 780000000, 848000000]
-  } else if (period === 'year') {
-    return [850000000, 920000000, 1140000000, 1280000000, 1340000000, 1410000000, 1260000000, 1280000000]
-  } else {
-    return [280000000, 340000000, 375000000, 285000000]
-  }
+  if (period === 'today') return [2400000, 4100000, 7800000, 8900000, 5200000, 6800000, 7200000, 4100000, 1850000, 400000]
+  else if (period === 'yesterday') return [2100000, 3600000, 6900000, 7800000, 4800000, 6100000, 6500000, 3200000, 1400000, 200000]
+  else if (period === 'week') return [32000000, 36500000, 68000000, 74500000, 28000000, 24750000, 48750000]
+  else if (period === 'last_week') return [28000000, 31000000, 59000000, 62000000, 24000000, 21000000, 39300000]
+  else if (period === 'quarter') return [680000000, 780000000, 848000000]
+  else if (period === 'year') return [850000000, 920000000, 1140000000, 1280000000, 1340000000, 1410000000, 1260000000, 1280000000]
+  return [280000000, 340000000, 375000000, 285000000]
 }
 
 const getChartTicketData = (period: PeriodType) => {
-  if (period === 'today') {
-    return [140, 260, 480, 560, 310, 420, 450, 240, 110, 25]
-  } else if (period === 'yesterday') {
-    return [120, 220, 410, 480, 280, 370, 400, 190, 80, 15]
-  } else if (period === 'week') {
-    return [1950, 2200, 4100, 4550, 1700, 1500, 2980]
-  } else if (period === 'last_week') {
-    return [1650, 1850, 3550, 3750, 1450, 1250, 2350]
-  } else if (period === 'quarter') {
-    return [38000, 43500, 47800]
-  } else if (period === 'year') {
-    return [48000, 52000, 64000, 72000, 75500, 79000, 71000, 72000]
-  } else {
-    return [17500, 21000, 23500, 17800]
-  }
+  if (period === 'today') return [140, 260, 480, 560, 310, 420, 450, 240, 110, 25]
+  else if (period === 'yesterday') return [120, 220, 410, 480, 280, 370, 400, 190, 80, 15]
+  else if (period === 'week') return [1950, 2200, 4100, 4550, 1700, 1500, 2980]
+  else if (period === 'last_week') return [1650, 1850, 3550, 3750, 1450, 1250, 2350]
+  else if (period === 'quarter') return [38000, 43500, 47800]
+  else if (period === 'year') return [48000, 52000, 64000, 72000, 75500, 79000, 71000, 72000]
+  return [17500, 21000, 23500, 17800]
 }
 
 const initRevenueChart = () => {
@@ -1610,18 +1127,15 @@ const initRevenueChart = () => {
 
   const ctx = revenueChartCanvas.value.getContext('2d')
   let gtvLineGradient: any = 'rgba(245, 158, 11, 0.25)'
-  let ticketLineGradient: any = 'transparent'
   let gtvBarGradient: any = '#F59E0B'
   let ticketBarGradient: any = '#2C1A13'
 
   if (ctx) {
-    // Line Chart Glowing Area Fill (Primary Series)
     gtvLineGradient = ctx.createLinearGradient(0, 0, 0, 320)
     gtvLineGradient.addColorStop(0, 'rgba(245, 158, 11, 0.42)')
     gtvLineGradient.addColorStop(0.6, 'rgba(245, 158, 11, 0.10)')
     gtvLineGradient.addColorStop(1, 'rgba(245, 158, 11, 0.0)')
 
-    // 3D Rounded Pill Bar Vertical Gradients (Side-by-side)
     gtvBarGradient = ctx.createLinearGradient(0, 0, 0, 290)
     gtvBarGradient.addColorStop(0, '#FBBF24')
     gtvBarGradient.addColorStop(0.3, '#F59E0B')
@@ -1641,95 +1155,32 @@ const initRevenueChart = () => {
       labels,
       datasets: [
         {
-          label: 'Pendapatan GTV',
-          data: gtvData,
-          borderColor: '#F59E0B',
-          backgroundColor: isLine ? gtvLineGradient : gtvBarGradient,
-          borderWidth: isLine ? 3.5 : 0,
-          tension: 0.42,
-          fill: isLine,
-          yAxisID: 'y',
-          pointRadius: isLine ? 5 : 0,
-          pointHoverRadius: isLine ? 8.5 : 0,
-          pointBackgroundColor: '#FFFFFF',
-          pointBorderColor: '#F59E0B',
-          pointBorderWidth: 2.5,
-          borderRadius: !isLine ? { topLeft: 8, topRight: 8, bottomLeft: 0, bottomRight: 0 } : 0,
-          borderSkipped: false,
-          barPercentage: 0.72,
-          categoryPercentage: 0.68
+          label: 'Pendapatan GTV', data: gtvData, borderColor: '#F59E0B', backgroundColor: isLine ? gtvLineGradient : gtvBarGradient, borderWidth: isLine ? 3.5 : 0, tension: 0.42, fill: isLine, yAxisID: 'y', pointRadius: isLine ? 5 : 0, pointHoverRadius: isLine ? 8.5 : 0, pointBackgroundColor: '#FFFFFF', pointBorderColor: '#F59E0B', pointBorderWidth: 2.5, borderRadius: !isLine ? { topLeft: 8, topRight: 8, bottomLeft: 0, bottomRight: 0 } : 0, borderSkipped: false, barPercentage: 0.72, categoryPercentage: 0.68
         },
         {
-          label: 'Volume Tiket',
-          data: ticketData,
-          borderColor: '#2C1A13',
-          backgroundColor: isLine ? 'transparent' : ticketBarGradient,
-          borderWidth: isLine ? 2.8 : 0,
-          borderDash: isLine ? [6, 4] : undefined,
-          tension: 0.42,
-          fill: false,
-          yAxisID: 'y1',
-          pointRadius: isLine ? 4.5 : 0,
-          pointHoverRadius: isLine ? 7.5 : 0,
-          pointBackgroundColor: '#2C1A13',
-          pointBorderColor: '#FFFFFF',
-          pointBorderWidth: 2,
-          borderRadius: !isLine ? { topLeft: 8, topRight: 8, bottomLeft: 0, bottomRight: 0 } : 0,
-          borderSkipped: false,
-          barPercentage: 0.72,
-          categoryPercentage: 0.68
+          label: 'Volume Tiket', data: ticketData, borderColor: '#2C1A13', backgroundColor: isLine ? 'transparent' : ticketBarGradient, borderWidth: isLine ? 2.8 : 0, borderDash: isLine ? [6, 4] : undefined, tension: 0.42, fill: false, yAxisID: 'y1', pointRadius: isLine ? 4.5 : 0, pointHoverRadius: isLine ? 7.5 : 0, pointBackgroundColor: '#2C1A13', pointBorderColor: '#FFFFFF', pointBorderWidth: 2, borderRadius: !isLine ? { topLeft: 8, topRight: 8, bottomLeft: 0, bottomRight: 0 } : 0, borderSkipped: false, barPercentage: 0.72, categoryPercentage: 0.68
         }
       ]
     },
     options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: {
-        mode: 'index',
-        intersect: false
-      },
+      responsive: true, maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
       plugins: {
-        legend: {
-          display: false
-        },
+        legend: { display: false },
         tooltip: {
-          backgroundColor: 'rgba(28, 14, 8, 0.96)',
-          titleColor: '#FBBF24',
-          titleFont: { family: "'Plus Jakarta Sans', sans-serif", size: 12.5, weight: 'bold' },
-          bodyColor: '#FFFDF9',
-          bodyFont: { family: "'Plus Jakarta Sans', sans-serif", size: 11.5, weight: '600' },
-          padding: 14,
-          cornerRadius: 12,
-          borderColor: '#F59E0B',
-          borderWidth: 1.5,
-          displayColors: true,
-          boxWidth: 8,
-          boxHeight: 8,
-          boxPadding: 6,
-          usePointStyle: false,
+          backgroundColor: 'rgba(28, 14, 8, 0.96)', titleColor: '#FBBF24', titleFont: { family: "'Plus Jakarta Sans', sans-serif", size: 12.5, weight: 'bold' }, bodyColor: '#FFFDF9', bodyFont: { family: "'Plus Jakarta Sans', sans-serif", size: 11.5, weight: '600' }, padding: 14, cornerRadius: 12, borderColor: '#F59E0B', borderWidth: 1.5, displayColors: true, boxWidth: 8, boxHeight: 8, boxPadding: 6, usePointStyle: false,
           callbacks: {
-            title: (items) => {
-              if (items.length) {
-                return `Waktu: ${items[0].label} WIB`
-              }
-              return ''
-            },
+            title: (items) => items.length ? `Waktu: ${items[0].label} WIB` : '',
             label: (ctx) => {
               const label = ctx.dataset.label || ''
               const val = ctx.parsed.y as number
-              if (label === 'Pendapatan GTV') {
-                return ` ${label}: ${formatRupiah(val)}`
-              }
-              return ` ${label}: ${val.toLocaleString('id-ID')} Pax`
+              return label === 'Pendapatan GTV' ? ` ${label}: ${formatRupiah(val)}` : ` ${label}: ${val.toLocaleString('id-ID')} Pax`
             },
             afterBody: (items) => {
               if (items.length >= 2) {
                 const gtv = items[0].parsed.y as number
                 const tickets = items[1].parsed.y as number
-                if (tickets > 0) {
-                  const avgPerTicket = Math.round(gtv / tickets)
-                  return `\n• Rata-rata / Tiket: ${formatRupiah(avgPerTicket)}`
-                }
+                if (tickets > 0) return `\n• Rata-rata / Tiket: ${formatRupiah(Math.round(gtv / tickets))}`
               }
               return ''
             }
@@ -1737,53 +1188,9 @@ const initRevenueChart = () => {
         }
       },
       scales: {
-        x: {
-          grid: {
-            color: 'rgba(0, 0, 0, 0.04)'
-          },
-          ticks: {
-            font: { family: "'Plus Jakarta Sans', sans-serif", size: 11, weight: '600' },
-            color: '#78655C'
-          }
-        },
-        y: {
-          type: 'linear',
-          display: true,
-          position: 'left',
-          beginAtZero: true,
-          grid: {
-            color: 'rgba(0, 0, 0, 0.05)'
-          },
-          ticks: {
-            font: { family: "'Plus Jakarta Sans', sans-serif", size: 10.5, weight: '600' },
-            color: '#78655C',
-            callback: (val) => {
-              const num = val as number
-              if (num >= 1000000000) return `Rp ${(num / 1000000000).toFixed(1)} M`
-              if (num >= 1000000) return `Rp ${(num / 1000000).toFixed(0)} Jt`
-              if (num >= 1000) return `Rp ${(num / 1000).toFixed(0)} Rb`
-              return `Rp ${num}`
-            }
-          }
-        },
-        y1: {
-          type: 'linear',
-          display: true,
-          position: 'right',
-          beginAtZero: true,
-          grid: {
-            drawOnChartArea: false
-          },
-          ticks: {
-            font: { family: "'Plus Jakarta Sans', sans-serif", size: 10.5, weight: '600' },
-            color: '#2C1A13',
-            callback: (val) => {
-              const num = val as number
-              if (num >= 1000) return `${(num / 1000).toFixed(0)}k Pax`
-              return `${num} Pax`
-            }
-          }
-        }
+        x: { grid: { color: 'rgba(0, 0, 0, 0.04)' }, ticks: { font: { family: "'Plus Jakarta Sans', sans-serif", size: 11, weight: '600' }, color: '#78655C' } },
+        y: { type: 'linear', display: true, position: 'left', beginAtZero: true, grid: { color: 'rgba(0, 0, 0, 0.05)' }, ticks: { font: { family: "'Plus Jakarta Sans', sans-serif", size: 10.5, weight: '600' }, color: '#78655C', callback: (val) => { const num = val as number; if (num >= 1000000000) return `Rp ${(num / 1000000000).toFixed(1)} M`; if (num >= 1000000) return `Rp ${(num / 1000000).toFixed(0)} Jt`; if (num >= 1000) return `Rp ${(num / 1000).toFixed(0)} Rb`; return `Rp ${num}` } } },
+        y1: { type: 'linear', display: true, position: 'right', beginAtZero: true, grid: { drawOnChartArea: false }, ticks: { font: { family: "'Plus Jakarta Sans', sans-serif", size: 10.5, weight: '600' }, color: '#2C1A13', callback: (val) => { const num = val as number; if (num >= 1000) return `${(num / 1000).toFixed(0)}k Pax`; return `${num} Pax` } } }
       }
     }
   })
@@ -1818,20 +1225,19 @@ watch(selectedPeriod, () => {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Outfit:wght@500;600;700;800;900&family=Jost:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap');
+
 .dashboard-container {
+  width: 100%;
+  max-width: 1380px;
   display: flex;
   flex-direction: column;
   gap: 22px;
-  max-width: 1440px;
   margin: 0 auto;
-  width: 100%;
   font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   position: relative;
 }
 
-/* =========================================================================
-   1. ULTRA-LUXURY EXECUTIVE COMMAND BANNER & FILTER
-   ========================================================================= */
 .executive-command-header {
   background: linear-gradient(135deg, #FFFFFF 0%, #FFFDF9 50%, #FAF5ED 100%);
   border: 1.5px solid rgba(230, 220, 208, 0.95);
@@ -1886,7 +1292,6 @@ watch(selectedPeriod, () => {
   z-index: 2;
 }
 
-/* Left: Brand Hero Profile */
 .brand-hero-col {
   display: flex;
   align-items: center;
@@ -1965,7 +1370,6 @@ watch(selectedPeriod, () => {
   gap: 4px;
 }
 
-/* Line 1: Title + Status Pill Inline */
 .title-with-status-row {
   display: flex;
   align-items: center;
@@ -2026,7 +1430,6 @@ watch(selectedPeriod, () => {
   50% { opacity: 0.4; transform: scale(0.85); }
 }
 
-/* Line 2: Clean Metadata Line */
 .header-meta-clean-line {
   display: flex;
   align-items: center;
@@ -2044,20 +1447,10 @@ watch(selectedPeriod, () => {
   font-size: 11px;
 }
 
-.meta-sep {
-  color: #D6CCC2;
-  font-size: 10px;
-}
+.meta-sep { color: #D6CCC2; font-size: 10px; }
+.meta-time-text { color: #6B5A52; }
+.meta-loc-text { color: #8C786E; }
 
-.meta-time-text {
-  color: #6B5A52;
-}
-
-.meta-loc-text {
-  color: #8C786E;
-}
-
-/* Right: Controls Hero Col */
 .controls-hero-col {
   display: flex;
   align-items: center;
@@ -2065,9 +1458,6 @@ watch(selectedPeriod, () => {
   flex-wrap: wrap;
 }
 
-/* =========================================================================
-   EXCEL / SPREADSHEET-STYLE SLIDING TAB BAR (Clean Flex Layout)
-   ========================================================================= */
 .excel-tabs-slider-bar {
   background: #F4EFEA;
   border: 1.5px solid #E2D9CE;
@@ -2163,13 +1553,8 @@ watch(selectedPeriod, () => {
   flex-shrink: 0;
 }
 
-.sheet-tab-label {
-  font-weight: 700;
-}
-
-.excel-sheet-tab.is-active .sheet-tab-label {
-  font-weight: 800;
-}
+.sheet-tab-label { font-weight: 700; }
+.excel-sheet-tab.is-active .sheet-tab-label { font-weight: 800; }
 
 .sheet-active-underline {
   position: absolute;
@@ -2181,7 +1566,6 @@ watch(selectedPeriod, () => {
   border-radius: 2px;
 }
 
-/* Dedicated Custom Date Button (Icon Only) */
 .btn-custom-date-icon-only {
   width: 44px;
   height: 44px;
@@ -2225,7 +1609,6 @@ watch(selectedPeriod, () => {
   box-shadow: 0 0 6px #F29727;
 }
 
-/* Matching 44x44 Squircle Refresh Button */
 .btn-header-refresh-icon {
   width: 44px;
   height: 44px;
@@ -2259,81 +1642,11 @@ watch(selectedPeriod, () => {
   cursor: not-allowed;
 }
 
-
-
-/* Top-Right Corner Floating Sync Button (Soft & Subtle) */
-.header-top-corner-sync {
-  position: absolute;
-  top: 14px;
-  right: 22px;
-  z-index: 10;
-}
-
-.btn-corner-sync {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 32px;
-  padding: 0 12px;
-  font-size: 11px;
-  font-weight: 800;
-  font-family: inherit;
-  background: linear-gradient(135deg, #FFFDF9 0%, #FAF4EB 100%);
-  color: #6B442A;
-  border: 1px solid #FCD34D;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 2px 6px rgba(245, 158, 11, 0.1), inset 0 1px 0 #FFFFFF;
-}
-
-.btn-corner-sync:hover:not(:disabled) {
-  background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
-  border-color: #F59E0B;
-  color: #92400E;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
-}
-
-.btn-corner-sync:active:not(:disabled) {
-  transform: translateY(0);
-}
-
-.btn-corner-sync:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.btn-corner-sync svg {
-  color: #D97706;
-}
-
-.btn-corner-sync:hover:not(:disabled) svg {
-  color: #B45309;
-}
-
-.sync-live-dot {
-  width: 5px;
-  height: 5px;
-  background: #10B981;
-  border-radius: 50%;
-  box-shadow: 0 0 4px #10B981;
-}
-
-.sync-text {
-  letter-spacing: 0.3px;
-}
-
-.spin-anim {
-  animation: spin 0.8s linear infinite;
-}
-
 @keyframes spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
 
-/* Popover Transition */
 .popover-fade-enter-active,
 .popover-fade-leave-active {
   transition: opacity 0.2s ease, transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
@@ -2345,18 +1658,12 @@ watch(selectedPeriod, () => {
   transform: translateY(-8px) scale(0.98);
 }
 
-/* =========================================================================
-   2. 4 TOP KPI CARDS GRID (Bento Pill Grid)
-   ========================================================================= */
 .kpi-cards-grid-4 {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
 }
 
-/* =========================================================================
-   3. BENTO CARD CONTAINER & CHARTS ROW
-   ========================================================================= */
 .bento-card {
   background: #FFFFFF;
   border: 1.5px solid rgba(230, 220, 208, 0.95);
@@ -2379,10 +1686,11 @@ watch(selectedPeriod, () => {
 
 .bento-card-header {
   display: flex;
-  align-items: flex-start;
   justify-content: space-between;
+  align-items: flex-start;
   margin-bottom: 16px;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 .header-title-group {
@@ -2423,14 +1731,13 @@ watch(selectedPeriod, () => {
 .peak-beacon-chip {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
+  gap: 4px;
   background: #FEF3C7;
-  color: #B45309;
-  border: 1px solid #FDE68A;
+  color: #92400E;
   font-size: 10.5px;
-  font-weight: 700;
+  font-weight: 800;
   padding: 2px 8px;
-  border-radius: 12px;
+  border-radius: 10px;
 }
 
 .beacon-dot {
@@ -2438,12 +1745,12 @@ watch(selectedPeriod, () => {
   height: 6px;
   background: #F59E0B;
   border-radius: 50%;
-  box-shadow: 0 0 6px #F59E0B;
 }
 
 .bento-card-subtitle {
   font-size: 12px;
-  color: #78655C;
+  color: #7A5034;
+  margin-top: 2px;
 }
 
 .header-right-controls {
@@ -2490,14 +1797,8 @@ watch(selectedPeriod, () => {
   flex-shrink: 0;
 }
 
-.color-gtv { 
-  background: #F59E0B; 
-  box-shadow: 0 0 4px rgba(245, 158, 11, 0.4);
-}
-
-.color-comp, .color-tickets { 
-  background: #2C1A13; 
-}
+.color-gtv { background: #F59E0B; box-shadow: 0 0 4px rgba(245, 158, 11, 0.4); }
+.color-comp, .color-tickets { background: #2C1A13; }
 
 .chart-type-pill {
   display: inline-flex;
@@ -2529,17 +1830,15 @@ watch(selectedPeriod, () => {
   box-shadow: 0 2px 8px rgba(44, 26, 19, 0.25);
 }
 
-.trend-full-section {
-  width: 100%;
-}
+.trend-full-section { width: 100%; }
 
 .chart-canvas-container {
   position: relative;
   height: 290px;
   width: 100%;
+  margin: 10px 0;
 }
 
-/* 3-Column Highlight Cards Strip (Inspired by Image 2) */
 .chart-highlight-strip {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -2591,7 +1890,7 @@ watch(selectedPeriod, () => {
 .highlight-label {
   font-size: 10px;
   font-weight: 700;
-  color: #8C786E;
+  color: #8C6D58;
   text-transform: uppercase;
   letter-spacing: 0.3px;
 }
@@ -2602,36 +1901,30 @@ watch(selectedPeriod, () => {
   font-variant-numeric: tabular-nums;
 }
 
-.text-amber { color: #D97706; }
-.text-cocoa { color: #2C1A13; }
-.text-green { color: #059669; }
+.text-amber { color: #B45309; }
+.text-cocoa { color: #3D2214; }
+.text-green { color: #047857; }
 
-/* Donut Member Card */
 .crm-total-pill {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  background: #FEF3C7;
-  color: #92400E;
-  border: 1px solid #FCD34D;
-  font-size: 11.5px;
+  gap: 5px;
+  background: #FAF3E8;
+  border: 1px solid #EADBCC;
+  padding: 3px 10px;
+  border-radius: 14px;
+  font-size: 11px;
   font-weight: 800;
-  padding: 4px 10px;
-  border-radius: 20px;
+  color: #3D2214;
 }
 
 .pulse-crm-dot {
   width: 6px;
   height: 6px;
-  background: #F59E0B;
+  background: #10B981;
   border-radius: 50%;
-  box-shadow: 0 0 6px #F59E0B;
-  animation: pulse-green 1.5s infinite;
 }
 
-/* =========================================================================
-   CONCENTRIC RADIAL RINGS MEMBER CARD (Rich Bento Layout)
-   ========================================================================= */
 .radial-gauge-flex-body {
   display: flex;
   align-items: center;
@@ -2640,7 +1933,6 @@ watch(selectedPeriod, () => {
   margin: 14px 0 10px 0;
 }
 
-/* Left Column: Rich Items List */
 .radial-legend-list {
   display: flex;
   flex-direction: column;
@@ -2670,7 +1962,6 @@ watch(selectedPeriod, () => {
 
 .legend-card-top {
   display: flex;
-  align-items: center;
   justify-content: space-between;
   gap: 8px;
 }
@@ -2739,10 +2030,9 @@ watch(selectedPeriod, () => {
 .legend-track-fill {
   height: 100%;
   border-radius: 10px;
-  transition: width 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: width 0.4s ease;
 }
 
-/* Right Column: Multi-Ring Concentric SVG with Metric Below */
 .radial-rings-chart-container {
   flex: 1;
   display: flex;
@@ -2759,19 +2049,10 @@ watch(selectedPeriod, () => {
   filter: drop-shadow(0 6px 16px rgba(44, 26, 19, 0.07));
 }
 
-.ring-track {
-  stroke: #F3EFE9;
-}
+.ring-track { stroke: #F3EFE9; }
+.ring-active { transition: stroke-dashoffset 1s cubic-bezier(0.16, 1, 0.3, 1), stroke-width 0.25s ease; }
+.radial-rings-card-elevated:hover .ring-active { stroke-width: 13; }
 
-.ring-active {
-  transition: stroke-dashoffset 1s cubic-bezier(0.16, 1, 0.3, 1), stroke-width 0.25s ease;
-}
-
-.radial-rings-card-elevated:hover .ring-active {
-  stroke-width: 13;
-}
-
-/* Metric Display Below Circular Rings */
 .rings-bottom-metric {
   display: flex;
   flex-direction: column;
@@ -2786,18 +2067,8 @@ watch(selectedPeriod, () => {
   gap: 5px;
 }
 
-.bottom-total-label {
-  font-size: 11.5px;
-  font-weight: 700;
-  color: #6B5A52;
-}
-
-.bottom-total-val {
-  font-size: 15px;
-  font-weight: 900;
-  color: #2C1A13;
-  letter-spacing: -0.3px;
-}
+.bottom-total-label { font-size: 11.5px; font-weight: 700; color: #6B5A52; }
+.bottom-total-val { font-size: 15px; font-weight: 900; color: #2C1A13; letter-spacing: -0.3px; }
 
 .bottom-active-badge {
   display: inline-flex;
@@ -2829,17 +2100,9 @@ watch(selectedPeriod, () => {
   margin-top: 1px;
 }
 
-.subinfo-item strong {
-  color: #2C1A13;
-  font-weight: 700;
-}
+.subinfo-item strong { color: #2C1A13; font-weight: 700; }
+.subinfo-sep { color: #D6CCC2; font-size: 8px; }
 
-.subinfo-sep {
-  color: #D6CCC2;
-  font-size: 8px;
-}
-
-/* CRM Multi-Metric Insight Matrix (3 Solid Bento Capsules) */
 .crm-insight-matrix-3 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -2875,10 +2138,7 @@ watch(selectedPeriod, () => {
   color: #78655C;
 }
 
-.matrix-card-header svg {
-  color: #D97706;
-  flex-shrink: 0;
-}
+.matrix-card-header svg { color: #D97706; flex-shrink: 0; }
 
 .matrix-card-body {
   display: flex;
@@ -2894,11 +2154,7 @@ watch(selectedPeriod, () => {
   font-variant-numeric: tabular-nums;
 }
 
-.matrix-sub-pct {
-  font-size: 10.5px;
-  font-weight: 800;
-}
-
+.matrix-sub-pct { font-size: 10.5px; font-weight: 800; }
 .matrix-sub-badge {
   font-size: 9.5px;
   font-weight: 800;
@@ -2907,11 +2163,7 @@ watch(selectedPeriod, () => {
   padding: 1px 5px;
   border-radius: 4px;
 }
-
-.matrix-sub-sub {
-  font-size: 10px;
-  color: #8C786E;
-}
+.matrix-sub-sub { font-size: 10px; color: #8C786E; }
 
 .crm-card-footer {
   margin-top: 12px;
@@ -2931,34 +2183,18 @@ watch(selectedPeriod, () => {
   transition: transform 0.2s ease;
 }
 
-.btn-see-more:hover {
-  transform: translateX(4px);
-  color: #D97706;
-}
+.btn-see-more:hover { transform: translateX(4px); color: #D97706; }
+.arrow-sym { font-size: 14px; }
 
-.arrow-sym {
-  font-size: 14px;
-}
-
-/* =========================================================================
-   4. 2-COLUMN GRID (CRM Member Segmentation + Ticket Sales Table)
-   ========================================================================= */
 .crm-ticket-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 20px;
 }
 
-.ticket-sales-col {
-  height: 100%;
-}
+.ticket-sales-col { height: 100%; }
 
-/* =========================================================================
-   5. FULL-WIDTH LUXURY DEMOGRAPHIC GEOSPATIAL HUB
-   ========================================================================= */
-.demographic-full-section {
-  width: 100%;
-}
+.demographic-full-section { width: 100%; }
 
 .demographic-card-luxury {
   background: #FFFFFF;
@@ -3021,17 +2257,9 @@ watch(selectedPeriod, () => {
   color: #6B5A52;
 }
 
-.summary-pill-item strong {
-  color: #2C1A13;
-}
+.summary-pill-item strong { color: #2C1A13; }
+.pill-dot { width: 7px; height: 7px; border-radius: 50%; }
 
-.pill-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-}
-
-/* Map Canvas Container - Full Width & Clean */
 .demographic-map-luxury {
   position: relative;
   height: 380px;
@@ -3046,36 +2274,24 @@ watch(selectedPeriod, () => {
   box-shadow: inset 0 2px 10px rgba(44, 26, 19, 0.05);
 }
 
-.demographic-map-luxury.is-panning {
-  cursor: grabbing;
-}
+.demographic-map-luxury.is-panning { cursor: grabbing; }
 
-/* Pannable & Zoomable Container - Critical 100% Dimensions */
 .map-pan-zoom-container {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0; width: 100%; height: 100%;
   transform-origin: center center;
   pointer-events: auto;
 }
 
 .map-vector-canvas {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0; width: 100%; height: 100%;
   pointer-events: none;
 }
 
-/* Floating Controls */
 .map-controls-floating {
   position: absolute;
-  top: 12px;
-  left: 12px;
-  right: 12px;
+  top: 12px; left: 12px; right: 12px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -3099,11 +2315,7 @@ watch(selectedPeriod, () => {
 }
 
 .pulse-gold-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: #F59E0B;
-  box-shadow: 0 0 6px #F59E0B;
+  width: 6px; height: 6px; border-radius: 50%; background: #F59E0B; box-shadow: 0 0 6px #F59E0B;
   animation: radar-ping 1.8s infinite;
 }
 
@@ -3121,1021 +2333,167 @@ watch(selectedPeriod, () => {
 }
 
 .map-btn {
-  width: 26px;
-  height: 26px;
-  border-radius: 6px;
-  border: 1px solid #EAE2D8;
-  background: #FAF7F2;
-  color: #5A4034;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: all 0.15s ease;
+  width: 26px; height: 26px; border-radius: 6px; border: 1px solid #EAE2D8; background: #FAF7F2;
+  color: #5A4034; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s ease;
 }
 
-.map-btn:hover {
-  background: #2C1A13;
-  color: #FBBF24;
-  border-color: #2C1A13;
-}
+.map-btn:hover { background: #2C1A13; color: #FBBF24; border-color: #2C1A13; }
+.zoom-level-text { font-size: 10.5px; font-weight: 800; color: #5A4034; min-width: 34px; text-align: center; font-variant-numeric: tabular-nums; }
 
-.zoom-level-text {
-  font-size: 10.5px;
-  font-weight: 800;
-  color: #5A4034;
-  min-width: 34px;
-  text-align: center;
-  font-variant-numeric: tabular-nums;
-}
-
-/* Map Elements & Radar Rings centered at (45%, 54%) */
 .radar-ring {
-  position: absolute;
-  border: 1px dashed rgba(217, 119, 6, 0.22);
-  border-radius: 50%;
-  pointer-events: none;
-  transform: translate(-50%, -50%);
+  position: absolute; border: 1px dashed rgba(217, 119, 6, 0.22); border-radius: 50%; pointer-events: none; transform: translate(-50%, -50%);
 }
-
-.ring-center-core {
-  width: 44px;
-  height: 44px;
-  top: 54%;
-  left: 45%;
-  border: 1.5px solid rgba(245, 158, 11, 0.6);
-  background: rgba(245, 158, 11, 0.04);
-}
-
+.ring-center-core { width: 44px; height: 44px; top: 54%; left: 45%; border: 1.5px solid rgba(245, 158, 11, 0.6); background: rgba(245, 158, 11, 0.04); }
 .ring-10km  { width: 140px; height: 140px; top: 54%; left: 45%; border-color: rgba(245, 158, 11, 0.3); }
 .ring-30km  { width: 280px; height: 280px; top: 54%; left: 45%; border-color: rgba(217, 119, 6, 0.2); }
 .ring-60km  { width: 440px; height: 440px; top: 54%; left: 45%; border-color: rgba(44, 26, 19, 0.15); }
 .ring-120km { width: 620px; height: 620px; top: 54%; left: 45%; border-color: rgba(44, 26, 19, 0.08); }
 
-@keyframes laserFlow {
-  from { stroke-dashoffset: 28; }
-  to { stroke-dashoffset: 0; }
-}
+@keyframes laserFlow { from { stroke-dashoffset: 28; } to { stroke-dashoffset: 0; } }
+.laser-route-path { animation: laserFlow 1.6s linear infinite; opacity: 0.6; transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
+.map-vector-canvas.has-active-hover .laser-route-path:not(.laser-active) { opacity: 0.18; stroke-dasharray: 4 6; }
+.laser-route-path.laser-active { opacity: 1; stroke-width: 4.8px; filter: drop-shadow(0 0 8px currentColor); }
 
-.laser-route-path {
-  animation: laserFlow 1.6s linear infinite;
-  opacity: 0.6;
-  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.map-vector-canvas.has-active-hover .laser-route-path:not(.laser-active) {
-  opacity: 0.18;
-  stroke-dasharray: 4 6;
-}
-
-.laser-route-path.laser-active {
-  opacity: 1;
-  stroke-width: 4.8px;
-  filter: drop-shadow(0 0 8px currentColor);
-}
-
-/* Central Epicenter Marker at (45%, 54%) */
 .map-epicenter-marker {
-  position: absolute;
-  top: 54%;
-  left: 45%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  z-index: 30;
-  pointer-events: none;
+  position: absolute; top: 54%; left: 45%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; z-index: 30; pointer-events: none;
 }
+.epicenter-pulse-ring { position: absolute; width: 28px; height: 28px; border-radius: 50%; background: rgba(245, 158, 11, 0.4); animation: radar-ping 1.6s infinite; }
+.epicenter-core-dot { width: 14px; height: 14px; border-radius: 50%; background: #2C1A13; border: 2.5px solid #FBBF24; box-shadow: 0 0 10px rgba(245, 158, 11, 0.6); z-index: 2; }
+.epicenter-badge { display: flex; align-items: center; gap: 5px; background: linear-gradient(135deg, #2C1A13 0%, #4A2E22 100%); color: #FFFFFF; border: 1.5px solid #F59E0B; border-radius: 20px; padding: 3px 9px; font-size: 10.5px; font-weight: 800; box-shadow: 0 4px 14px rgba(44, 26, 19, 0.3); margin-top: 4px; white-space: nowrap; }
+.epicenter-tag { font-size: 8.5px; background: #D97706; color: #FFFFFF; padding: 1px 4px; border-radius: 4px; letter-spacing: 0.5px; }
 
-.epicenter-pulse-ring {
-  position: absolute;
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: rgba(245, 158, 11, 0.4);
-  animation: radar-ping 1.6s infinite;
-}
-
-.epicenter-core-dot {
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: #2C1A13;
-  border: 2.5px solid #FBBF24;
-  box-shadow: 0 0 10px rgba(245, 158, 11, 0.6);
-  z-index: 2;
-}
-
-.epicenter-badge {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  background: linear-gradient(135deg, #2C1A13 0%, #4A2E22 100%);
-  color: #FFFFFF;
-  border: 1.5px solid #F59E0B;
-  border-radius: 20px;
-  padding: 3px 9px;
-  font-size: 10.5px;
-  font-weight: 800;
-  box-shadow: 0 4px 14px rgba(44, 26, 19, 0.3);
-  margin-top: 4px;
-  white-space: nowrap;
-}
-
-.epicenter-tag {
-  font-size: 8.5px;
-  background: #D97706;
-  color: #FFFFFF;
-  padding: 1px 4px;
-  border-radius: 4px;
-  letter-spacing: 0.5px;
-}
-
-/* Map Pins */
-.map-pin-marker {
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  z-index: 20;
-  cursor: pointer;
-  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
-  transform: translate(-50%, -50%);
-}
-
-.map-pin-marker:hover,
-.map-pin-marker.is-hovered {
-  transform: translate(-50%, -50%) scale(1.1) translateY(-3px);
-  z-index: 40;
-}
-
-.map-pin-marker.is-dimmed {
-  opacity: 0.35;
-  filter: grayscale(40%);
-}
-
-.pin-beacon {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  margin-bottom: 2px;
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.06);
-}
-
-.pin-card-bubble {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  background: rgba(255, 255, 255, 0.96);
-  backdrop-filter: blur(6px);
-  border: 1.5px solid #E5DDD3;
-  border-radius: 20px;
-  padding: 4px 10px;
-  box-shadow: 0 4px 14px rgba(44, 26, 19, 0.1);
-  font-size: 11.5px;
-  white-space: nowrap;
-  transition: all 0.2s ease;
-}
-
+.map-pin-marker { position: absolute; display: flex; flex-direction: column; align-items: center; z-index: 20; cursor: pointer; transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease; transform: translate(-50%, -50%); }
+.map-pin-marker:hover, .map-pin-marker.is-hovered { transform: translate(-50%, -50%) scale(1.1) translateY(-3px); z-index: 40; }
+.map-pin-marker.is-dimmed { opacity: 0.35; filter: grayscale(40%); }
+.pin-beacon { width: 8px; height: 8px; border-radius: 50%; margin-bottom: 2px; box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.06); }
+.pin-card-bubble { display: flex; align-items: center; gap: 5px; background: rgba(255, 255, 255, 0.96); backdrop-filter: blur(6px); border: 1.5px solid #E5DDD3; border-radius: 20px; padding: 4px 10px; box-shadow: 0 4px 14px rgba(44, 26, 19, 0.1); font-size: 11.5px; white-space: nowrap; transition: all 0.2s ease; }
 .bubble-gold   { border-color: #F59E0B; background: linear-gradient(135deg, #FFFDF8 0%, #FEF9EE 100%); box-shadow: 0 4px 14px rgba(245, 158, 11, 0.22); }
 .bubble-amber  { border-color: #F59E0B; }
 .bubble-blue   { border-color: #93C5FD; }
 .bubble-green  { border-color: #A7F3D0; }
 .bubble-purple { border-color: #DDD6FE; }
-
-.pin-glyph-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
+.pin-glyph-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
 .dot-gold   { background: #D97706; }
 .dot-amber  { background: #F59E0B; }
 .dot-blue   { background: #2563EB; }
 .dot-green  { background: #059669; }
 .dot-purple { background: #7C3AED; }
-
 .pin-city { font-weight: 800; color: #2C1A13; }
 .pin-divider { color: #D6CCC2; font-size: 9px; }
 .pin-visitors { font-weight: 900; color: #D97706; font-variant-numeric: tabular-nums; }
 .pin-share { font-size: 10.5px; color: #78655C; font-weight: 700; }
 
-/* 3. Bottom 5 Detailed Origin City Bento Metric Cards */
-.demo-bottom-cities-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
-}
+.demo-bottom-cities-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+.city-metric-slate { background: #FFFDF9; border: 1.5px solid #EFEAE2; border-radius: 14px; padding: 11px 13px; display: flex; flex-direction: column; gap: 6px; transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer; }
+.city-metric-slate:hover, .city-metric-slate.is-hover-highlight { background: #FFFFFF; border-color: #F59E0B; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(44, 26, 19, 0.08); }
+.city-metric-slate.is-lead-city { border-color: #F59E0B; background: linear-gradient(135deg, #FFFDF9 0%, #FEF9EE 100%); }
+.slate-top-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.slate-rank-wrap { display: flex; align-items: center; gap: 6px; }
+.slate-rank-badge { font-size: 10px; font-weight: 900; color: #8C786E; background: #F3EFEA; padding: 1px 5px; border-radius: 5px; }
+.slate-rank-badge.badge-crown { background: #2C1A13; color: #FBBF24; }
+.slate-city-name { font-size: 12.5px; font-weight: 800; color: #2C1A13; white-space: nowrap; }
+.slate-pct-pill { font-size: 10px; font-weight: 800; padding: 1px 6px; border-radius: 6px; border: 1px solid; font-variant-numeric: tabular-nums; }
+.slate-metrics-row { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
+.slate-metric-block { display: flex; flex-direction: column; gap: 1px; }
+.slate-meta-label { font-size: 8.5px; font-weight: 700; color: #8C786E; text-transform: uppercase; }
+.slate-meta-val-dark { font-size: 12px; font-weight: 800; color: #2C1A13; font-variant-numeric: tabular-nums; }
+.slate-meta-val-dark small { font-size: 9.5px; color: #78655C; }
+.slate-meta-val-amber { font-size: 12px; font-weight: 900; color: #D97706; font-variant-numeric: tabular-nums; }
+.slate-track-line { width: 100%; height: 4px; background: #EFE8DF; border-radius: 4px; overflow: hidden; }
+.slate-fill-line { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
+.slate-bottom-sub { font-size: 9.5px; color: #8C786E; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+.demographic-footer-luxury { display: flex; align-items: flex-start; gap: 10px; background: #FFFDF8; border: 1px dashed #E2D9CE; border-radius: 12px; padding: 10px 14px; }
+.insight-icon-box { width: 26px; height: 26px; border-radius: 8px; background: #FEF3C7; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.insight-text-group { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; font-size: 11.5px; line-height: 1.45; }
+.insight-main-title { font-weight: 800; color: #B45309; }
+.insight-body { color: #5A4034; }
+.insight-body strong { color: #2C1A13; }
+
+.operations-grid { display: grid; grid-template-columns: 5.5fr 6.5fr; gap: 20px; }
+.badge-total-pill { font-size: 12px; font-weight: 800; background-color: #2C1A13; color: #FBBF24; padding: 4px 10px; border-radius: 8px; font-variant-numeric: tabular-nums; border: 1px solid #F59E0B; }
+.payment-distribution-wrap { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; background: #FFFDF9; border: 1px solid #EFEAE2; border-radius: 14px; padding: 9px 14px; }
+.payment-distribution-bar { display: flex; height: 6px; border-radius: 10px; overflow: hidden; gap: 2px; background: #F3ECE2; }
+.dist-segment { height: 100%; border-radius: 2px; transition: width 0.6s ease; }
+.payment-legend-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.legend-item { display: flex; align-items: center; gap: 5px; font-size: 11px; }
+.legend-dot { width: 7px; height: 7px; border-radius: 50%; }
+.legend-name { color: #78655C; font-weight: 700; }
+.legend-pct { font-weight: 800; }
+.payment-slates-stack { display: flex; flex-direction: column; gap: 8px; flex: 1; }
+.pay-channel-slate { background: #FFFDF9; border: 1.5px solid #EFEAE2; border-radius: 14px; padding: 10px 14px 8px 14px; display: flex; flex-direction: column; gap: 8px; transition: all 0.2s ease; }
+.pay-channel-slate:hover { background: #FFFFFF; border-color: var(--pay-brand, #F59E0B); transform: translateX(3px); box-shadow: 0 4px 14px rgba(44, 26, 19, 0.06); }
+.is-lead-pay { background: #FFFCF7; border-color: #F59E0B; }
+.pay-card-main-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.pay-slate-left { display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1; }
+.pay-brand-squircle { width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.pay-svg { width: 17px; height: 17px; }
+.pay-slate-title-group { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
+.pay-title-badge-row { display: flex; align-items: center; gap: 6px; }
+.pay-channel-title { font-size: 13px; font-weight: 800; color: #2C1A13; white-space: nowrap; }
+.pay-top-tag { font-size: 9px; font-weight: 800; color: #B45309; background: #FEF3C7; border: 1px solid #F59E0B; padding: 1px 5px; border-radius: 4px; }
+.pay-tx-sub { font-size: 11px; color: #8C786E; white-space: nowrap; }
+.pay-slate-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+.pay-slate-amount { font-size: 13.5px; font-weight: 900; color: #2C1A13; font-variant-numeric: tabular-nums; }
+.pay-slate-share { font-size: 10.5px; font-weight: 800; padding: 2px 6px; border-radius: 5px; border: 1px solid; font-variant-numeric: tabular-nums; min-width: 40px; text-align: center; }
+.pay-mini-track { width: 100%; height: 4px; background: #EFEAE2; border-radius: 6px; overflow: hidden; }
+.pay-mini-fill { height: 100%; border-radius: 6px; transition: width 0.5s ease; }
+.payment-settlement-strip { display: flex; align-items: center; gap: 7px; background: #F0FDF4; border: 1px solid #BBF7D0; border-radius: 10px; padding: 8px 12px; font-size: 11px; font-weight: 700; color: #047857; margin-top: 6px; }
+.settle-icon { color: #059669; flex-shrink: 0; }
+
+.modal-backdrop { position: fixed; inset: 0; background-color: rgba(44, 26, 19, 0.65); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; }
+.modal-card { background: #FFFFFF; border-radius: 20px; width: 100%; max-width: 520px; padding: 24px; box-shadow: 0 25px 50px -12px rgba(44, 26, 19, 0.35); border: 1.5px solid #EAE2D8; display: flex; flex-direction: column; gap: 16px; font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+.modal-header { display: flex; align-items: flex-start; justify-content: space-between; border-bottom: 1.5px solid #F0EAE2; padding-bottom: 14px; }
+.modal-title-group { display: flex; flex-direction: column; gap: 2px; }
+.modal-kicker { font-size: 10px; font-weight: 800; letter-spacing: 1px; color: #D97706; text-transform: uppercase; }
+.modal-header h3 { font-size: 18px; font-weight: 800; color: #2C1A13; margin: 0; }
+.btn-close { background: #F8F5F0; border: 1px solid #EAE2D8; width: 32px; height: 32px; border-radius: 8px; font-size: 20px; line-height: 1; cursor: pointer; color: #6B5A52; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; }
+.btn-close:hover { background: #2C1A13; color: #FFFFFF; }
+.modal-body { display: flex; flex-direction: column; gap: 10px; font-size: 13.5px; }
+.modal-info-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: #FFFDF9; border: 1px solid #F0EAE2; border-radius: 8px; }
+.info-label { color: #78655C; font-size: 12.5px; }
+.info-val { color: #2C1A13; font-variant-numeric: tabular-nums; }
+.alert-info-box { background-color: #FEF3C7; border: 1px solid #FDE68A; color: #92400E; padding: 10px 12px; border-radius: 10px; font-size: 12px; display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+.modal-footer { display: flex; justify-content: flex-end; gap: 8px; border-top: 1.5px solid #F0EAE2; padding-top: 14px; }
+.btn-action-secondary { display: inline-flex; align-items: center; gap: 6px; height: 38px; padding: 0 14px; font-size: 12px; font-weight: 700; font-family: inherit; background: #FFFFFF; color: #3D2214; border: 1.5px solid #E2D9CE; border-radius: 10px; cursor: pointer; transition: all 0.2s ease; }
+.btn-action-secondary:hover { background: #F8F5F0; border-color: #D97706; }
+.custom-date-popover-wrapper { position: relative; display: inline-flex; }
+.mini-calendar-floating-card { position: absolute; top: calc(100% + 10px); right: 0; width: 280px; background: #FFFFFF; border: 1.5px solid #F59E0B; border-radius: 16px; padding: 14px 16px; box-shadow: 0 16px 36px -4px rgba(44, 26, 19, 0.18), 0 3px 8px rgba(0, 0, 0, 0.04); z-index: 999; display: flex; flex-direction: column; gap: 12px; font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; animation: miniPopIn 0.2s cubic-bezier(0.16, 1, 0.3, 1); }
+@keyframes miniPopIn { from { opacity: 0; transform: translateY(-6px) scale(0.96); } to { opacity: 1; transform: translateY(0) scale(1); } }
+.mini-card-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #F0EAE2; padding-bottom: 8px; }
+.mini-card-title-row { display: flex; align-items: center; gap: 6px; }
+.mini-cal-icon { font-size: 14px; }
+.mini-card-title { font-size: 13px; font-weight: 800; color: #2C1A13; }
+.btn-mini-close { background: transparent; border: none; font-size: 18px; line-height: 1; color: #8C786E; cursor: pointer; padding: 0 4px; border-radius: 4px; transition: color 0.15s ease; }
+.btn-mini-close:hover { color: #2C1A13; }
+.mini-card-body { display: flex; flex-direction: column; gap: 8px; }
+.mini-date-row { display: flex; align-items: center; justify-content: space-between; background: #FFFDF9; border: 1.5px solid #E5DDD3; border-radius: 10px; padding: 6px 10px; gap: 8px; transition: all 0.18s ease; }
+.mini-date-row:focus-within { border-color: #F59E0B; background: #FFFFFF; box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.15); }
+.mini-label { font-size: 11px; font-weight: 800; color: #78655C; min-width: 46px; }
+.mini-date-input { border: none; background: transparent; font-family: inherit; font-size: 12px; font-weight: 700; color: #2C1A13; outline: none; cursor: pointer; width: 100%; }
+.mini-card-footer { display: flex; align-items: center; justify-content: flex-end; gap: 8px; border-top: 1px solid #F0EAE2; padding-top: 10px; }
+.btn-mini-cancel { background: #F8F5F0; border: 1px solid #E2D9CE; border-radius: 8px; padding: 5px 10px; font-size: 11.5px; font-weight: 700; color: #6B5A52; cursor: pointer; font-family: inherit; transition: all 0.15s ease; }
+.btn-mini-cancel:hover { background: #EBE3D7; color: #2C1A13; }
+.btn-mini-apply { background: linear-gradient(135deg, #2C1A13 0%, #4A2E22 100%); color: #FFFFFF; border: 1px solid #F59E0B; border-radius: 8px; padding: 5px 14px; font-size: 11.5px; font-weight: 800; cursor: pointer; font-family: inherit; transition: all 0.15s ease; box-shadow: 0 2px 6px rgba(44, 26, 19, 0.15); }
+.btn-mini-apply:hover { background: #D97706; border-color: #B45309; }
 
-.city-metric-slate {
-  background: #FFFDF9;
-  border: 1.5px solid #EFEAE2;
-  border-radius: 14px;
-  padding: 11px 13px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
-  cursor: pointer;
-}
-
-.city-metric-slate:hover,
-.city-metric-slate.is-hover-highlight {
-  background: #FFFFFF;
-  border-color: #F59E0B;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(44, 26, 19, 0.08);
-}
-
-.city-metric-slate.is-lead-city {
-  border-color: #F59E0B;
-  background: linear-gradient(135deg, #FFFDF9 0%, #FEF9EE 100%);
-}
-
-.slate-top-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 6px;
-}
-
-.slate-rank-wrap {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.slate-rank-badge {
-  font-size: 10px;
-  font-weight: 900;
-  color: #8C786E;
-  background: #F3EFEA;
-  padding: 1px 5px;
-  border-radius: 5px;
-}
-
-.slate-rank-badge.badge-crown {
-  background: #2C1A13;
-  color: #FBBF24;
-}
-
-.slate-city-name {
-  font-size: 12.5px;
-  font-weight: 800;
-  color: #2C1A13;
-  white-space: nowrap;
-}
-
-.slate-pct-pill {
-  font-size: 10px;
-  font-weight: 800;
-  padding: 1px 6px;
-  border-radius: 6px;
-  border: 1px solid;
-  font-variant-numeric: tabular-nums;
-}
-
-.slate-metrics-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 4px;
-}
-
-.slate-metric-block {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-
-.slate-meta-label {
-  font-size: 8.5px;
-  font-weight: 700;
-  color: #8C786E;
-  text-transform: uppercase;
-}
-
-.slate-meta-val-dark {
-  font-size: 12px;
-  font-weight: 800;
-  color: #2C1A13;
-  font-variant-numeric: tabular-nums;
-}
-
-.slate-meta-val-dark small {
-  font-size: 9.5px;
-  color: #78655C;
-}
-
-.slate-meta-val-amber {
-  font-size: 12px;
-  font-weight: 900;
-  color: #D97706;
-  font-variant-numeric: tabular-nums;
-}
-
-.slate-track-line {
-  width: 100%;
-  height: 4px;
-  background: #EFE8DF;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.slate-fill-line {
-  height: 100%;
-  border-radius: 4px;
-  transition: width 0.5s ease;
-}
-
-.slate-bottom-sub {
-  font-size: 9.5px;
-  color: #8C786E;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* 4. Executive Geospatial Takeaway Footer */
-.demographic-footer-luxury {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  background: #FFFDF8;
-  border: 1px dashed #E2D9CE;
-  border-radius: 12px;
-  padding: 10px 14px;
-}
-
-.insight-icon-box {
-  width: 26px;
-  height: 26px;
-  border-radius: 8px;
-  background: #FEF3C7;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  margin-top: 1px;
-}
-
-.insight-text-group {
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
-  flex-wrap: wrap;
-  font-size: 11.5px;
-  line-height: 1.45;
-}
-
-.insight-main-title {
-  font-weight: 800;
-  color: #B45309;
-}
-
-.insight-body {
-  color: #5A4034;
-}
-
-.insight-body strong {
-  color: #2C1A13;
-}
-
-/* =========================================================================
-   5. OPERATIONS GRID (Payment Methods + Cashier Shift)
-   ========================================================================= */
-.operations-grid {
-  display: grid;
-  grid-template-columns: 5.5fr 6.5fr;
-  gap: 20px;
-}
-
-.badge-total-pill {
-  font-size: 12px;
-  font-weight: 800;
-  background-color: #2C1A13;
-  color: #FBBF24;
-  padding: 4px 10px;
-  border-radius: 8px;
-  font-variant-numeric: tabular-nums;
-  border: 1px solid #F59E0B;
-}
-
-/* Top Multi-Channel Distribution Proportion Strip with Legend */
-.payment-distribution-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 10px;
-  background: #FFFDF9;
-  border: 1px solid #EFEAE2;
-  border-radius: 14px;
-  padding: 9px 14px;
-}
-
-.payment-distribution-bar {
-  display: flex;
-  height: 6px;
-  border-radius: 10px;
-  overflow: hidden;
-  gap: 2px;
-  background: #F3ECE2;
-}
-
-.dist-segment {
-  height: 100%;
-  border-radius: 2px;
-  transition: width 0.6s ease;
-}
-
-.payment-legend-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-  flex-wrap: wrap;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 11px;
-}
-
-.legend-dot {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-}
-
-.legend-name {
-  color: #78655C;
-  font-weight: 700;
-}
-
-.legend-pct {
-  font-weight: 800;
-}
-
-/* 4 Distinct Outlined Payment Channel Cards (Spacious & Zero Overlap) */
-.payment-slates-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  flex: 1;
-}
-
-.pay-channel-slate {
-  background: #FFFDF9;
-  border: 1.5px solid #EFEAE2;
-  border-radius: 14px;
-  padding: 10px 14px 8px 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  transition: all 0.2s ease;
-}
-
-.pay-channel-slate:hover {
-  background: #FFFFFF;
-  border-color: var(--pay-brand, #F59E0B);
-  transform: translateX(3px);
-  box-shadow: 0 4px 14px rgba(44, 26, 19, 0.06);
-}
-
-.is-lead-pay {
-  background: #FFFCF7;
-  border-color: #F59E0B;
-}
-
-.pay-card-main-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.pay-slate-left {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-width: 0;
-  flex: 1;
-}
-
-.pay-brand-squircle {
-  width: 34px;
-  height: 34px;
-  border-radius: 9px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-}
-
-.pay-svg {
-  width: 17px;
-  height: 17px;
-}
-
-.pay-slate-title-group {
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-  min-width: 0;
-}
-
-.pay-title-badge-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.pay-channel-title {
-  font-size: 13px;
-  font-weight: 800;
-  color: #2C1A13;
-  white-space: nowrap;
-}
-
-.pay-top-tag {
-  font-size: 9px;
-  font-weight: 800;
-  color: #B45309;
-  background: #FEF3C7;
-  border: 1px solid #F59E0B;
-  padding: 1px 5px;
-  border-radius: 4px;
-}
-
-.pay-tx-sub {
-  font-size: 11px;
-  color: #8C786E;
-  white-space: nowrap;
-}
-
-.pay-slate-right {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-}
-
-.pay-slate-amount {
-  font-size: 13.5px;
-  font-weight: 900;
-  color: #2C1A13;
-  font-variant-numeric: tabular-nums;
-}
-
-.pay-slate-share {
-  font-size: 10.5px;
-  font-weight: 800;
-  padding: 2px 6px;
-  border-radius: 5px;
-  border: 1px solid;
-  font-variant-numeric: tabular-nums;
-  min-width: 40px;
-  text-align: center;
-}
-
-.pay-mini-track {
-  width: 100%;
-  height: 4px;
-  background: #EFEAE2;
-  border-radius: 6px;
-  overflow: hidden;
-}
-
-.pay-mini-fill {
-  height: 100%;
-  border-radius: 6px;
-  transition: width 0.5s ease;
-}
-
-.payment-settlement-strip {
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  background: #F0FDF4;
-  border: 1px solid #BBF7D0;
-  border-radius: 10px;
-  padding: 8px 12px;
-  font-size: 11px;
-  font-weight: 700;
-  color: #047857;
-  margin-top: 6px;
-}
-
-.settle-icon {
-  color: #059669;
-  flex-shrink: 0;
-}
-
-.text-green { color: #059669; }
-.text-amber { color: #D97706; }
-.font-medium { font-weight: 600; }
-.font-bold { font-weight: 800; }
-
-/* =========================================================================
-   6. SHIFT LOG MODAL DIALOG
-   ========================================================================= */
-.modal-backdrop {
-  position: fixed;
-  inset: 0;
-  background-color: rgba(44, 26, 19, 0.65);
-  backdrop-filter: blur(4px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 999;
-  padding: 20px;
-}
-
-.modal-card {
-  background: #FFFFFF;
-  border-radius: 20px;
-  width: 100%;
-  max-width: 520px;
-  padding: 24px;
-  box-shadow: 0 25px 50px -12px rgba(44, 26, 19, 0.35);
-  border: 1.5px solid #EAE2D8;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-}
-
-.modal-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  border-bottom: 1.5px solid #F0EAE2;
-  padding-bottom: 14px;
-}
-
-.modal-title-group {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.modal-kicker {
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 1px;
-  color: #D97706;
-  text-transform: uppercase;
-}
-
-.modal-header h3 {
-  font-size: 18px;
-  font-weight: 800;
-  color: #2C1A13;
-  margin: 0;
-}
-
-.btn-close {
-  background: #F8F5F0;
-  border: 1px solid #EAE2D8;
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  font-size: 20px;
-  line-height: 1;
-  cursor: pointer;
-  color: #6B5A52;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: all 0.2s ease;
-}
-
-.btn-close:hover {
-  background: #2C1A13;
-  color: #FFFFFF;
-}
-
-.modal-body {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  font-size: 13.5px;
-}
-
-.modal-info-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px 12px;
-  background: #FFFDF9;
-  border: 1px solid #F0EAE2;
-  border-radius: 8px;
-}
-
-.info-label {
-  color: #78655C;
-  font-size: 12.5px;
-}
-
-.info-val {
-  color: #2C1A13;
-  font-variant-numeric: tabular-nums;
-}
-
-.alert-info-box {
-  background-color: #FEF3C7;
-  border: 1px solid #FDE68A;
-  color: #92400E;
-  padding: 10px 12px;
-  border-radius: 10px;
-  font-size: 12px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 4px;
-}
-
-.modal-footer {
-  display: flex;
-  justify-content: flex-end;
-  gap: 8px;
-  border-top: 1.5px solid #F0EAE2;
-  padding-top: 14px;
-}
-
-.btn-action-secondary {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  height: 38px;
-  padding: 0 14px;
-  font-size: 12px;
-  font-weight: 700;
-  font-family: inherit;
-  background: #FFFFFF;
-  color: #3D2214;
-  border: 1.5px solid #E2D9CE;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.btn-action-secondary:hover {
-  background: #F8F5F0;
-  border-color: #D97706;
-}
-
-/* =========================================================================
-   6B. RIGHT-SIDE SLIDE-OVER CALENDAR PANEL
-   ========================================================================= */
-.side-panel-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(44, 26, 19, 0.45);
-  backdrop-filter: blur(4px);
-  z-index: 9999;
-  display: flex;
-  justify-content: flex-end;
-}
-
-/* =========================================================================
-   6B. MINI FLOATING CALENDAR POPOVER (Simple, Small & Clean in Open Space)
-   ========================================================================= */
-.custom-date-popover-wrapper {
-  position: relative;
-  display: inline-flex;
-}
-
-.mini-calendar-floating-card {
-  position: absolute;
-  top: calc(100% + 10px);
-  right: 0;
-  width: 280px;
-  background: #FFFFFF;
-  border: 1.5px solid #F59E0B;
-  border-radius: 16px;
-  padding: 14px 16px;
-  box-shadow: 0 16px 36px -4px rgba(44, 26, 19, 0.18), 0 3px 8px rgba(0, 0, 0, 0.04);
-  z-index: 999;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  font-family: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  animation: miniPopIn 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes miniPopIn {
-  from {
-    opacity: 0;
-    transform: translateY(-6px) scale(0.96);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
-
-.mini-card-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-bottom: 1px solid #F0EAE2;
-  padding-bottom: 8px;
-}
-
-.mini-card-title-row {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.mini-cal-icon {
-  font-size: 14px;
-}
-
-.mini-card-title {
-  font-size: 13px;
-  font-weight: 800;
-  color: #2C1A13;
-}
-
-.btn-mini-close {
-  background: transparent;
-  border: none;
-  font-size: 18px;
-  line-height: 1;
-  color: #8C786E;
-  cursor: pointer;
-  padding: 0 4px;
-  border-radius: 4px;
-  transition: color 0.15s ease;
-}
-
-.btn-mini-close:hover {
-  color: #2C1A13;
-}
-
-.mini-card-body {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.mini-date-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: #FFFDF9;
-  border: 1.5px solid #E5DDD3;
-  border-radius: 10px;
-  padding: 6px 10px;
-  gap: 8px;
-  transition: all 0.18s ease;
-}
-
-.mini-date-row:focus-within {
-  border-color: #F59E0B;
-  background: #FFFFFF;
-  box-shadow: 0 0 0 2px rgba(245, 158, 11, 0.15);
-}
-
-.mini-label {
-  font-size: 11px;
-  font-weight: 800;
-  color: #78655C;
-  min-width: 46px;
-}
-
-.mini-date-input {
-  border: none;
-  background: transparent;
-  font-family: inherit;
-  font-size: 12px;
-  font-weight: 700;
-  color: #2C1A13;
-  outline: none;
-  cursor: pointer;
-  width: 100%;
-}
-
-.mini-card-footer {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
-  border-top: 1px solid #F0EAE2;
-  padding-top: 10px;
-}
-
-.btn-mini-cancel {
-  background: #F8F5F0;
-  border: 1px solid #E2D9CE;
-  border-radius: 8px;
-  padding: 5px 10px;
-  font-size: 11.5px;
-  font-weight: 700;
-  color: #6B5A52;
-  cursor: pointer;
-  font-family: inherit;
-  transition: all 0.15s ease;
-}
-
-.btn-mini-cancel:hover {
-  background: #EBE3D7;
-  color: #2C1A13;
-}
-
-.btn-mini-apply {
-  background: linear-gradient(135deg, #2C1A13 0%, #4A2E22 100%);
-  color: #FFFFFF;
-  border: 1px solid #F59E0B;
-  border-radius: 8px;
-  padding: 5px 14px;
-  font-size: 11.5px;
-  font-weight: 800;
-  cursor: pointer;
-  font-family: inherit;
-  transition: all 0.15s ease;
-  box-shadow: 0 2px 6px rgba(44, 26, 19, 0.15);
-}
-
-.btn-mini-apply:hover {
-  background: #D97706;
-  border-color: #B45309;
-}
-
-/* =========================================================================
-   7. RESPONSIVE BREAKPOINTS (Desktop -> Tablet -> Mobile)
-   ========================================================================= */
 @media (max-width: 1280px) {
-  .kpi-cards-grid-4 {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .demo-bottom-cities-grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
+  .kpi-cards-grid-4 { grid-template-columns: repeat(2, 1fr); }
+  .demo-bottom-cities-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
 @media (max-width: 1024px) {
-  .crm-ticket-grid,
-  .operations-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .demo-bottom-cities-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .header-inner-flex {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 16px;
-  }
-
-  .controls-hero-col {
-    justify-content: space-between;
-  }
-
-  .excel-tabs-slider-bar {
-    max-width: 100%;
-    flex: 1;
-  }
+  .crm-ticket-grid, .operations-grid { grid-template-columns: 1fr; }
+  .demo-bottom-cities-grid { grid-template-columns: repeat(2, 1fr); }
+  .header-inner-flex { flex-direction: column; align-items: stretch; gap: 16px; }
+  .controls-hero-col { justify-content: space-between; }
+  .excel-tabs-slider-bar { max-width: 100%; flex: 1; }
 }
 
 @media (max-width: 640px) {
-  .controls-hero-col {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .btn-period-pill {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .kpi-cards-grid-4 {
-    grid-template-columns: 1fr;
-  }
-
-  .demo-bottom-cities-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .demo-header-wrap {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  .chart-highlight-strip {
-    grid-template-columns: 1fr;
-  }
-
-  .header-main-title {
-    font-size: 20px;
-  }
+  .controls-hero-col { flex-direction: column; align-items: flex-start; }
+  .kpi-cards-grid-4, .demo-bottom-cities-grid, .chart-highlight-strip { grid-template-columns: 1fr; }
+  .demo-header-wrap { flex-direction: column; align-items: stretch; }
+  .header-main-title { font-size: 20px; }
 }
 </style>

@@ -1,12 +1,9 @@
 <template>
   <div class="roles-page">
-    <!-- Header -->
+    <!-- Header Section -->
     <header class="config-header">
-      <div>
-        <div class="badge-tag">
-          <span>👥 Keamanan & Hak Akses (RBAC)</span>
-        </div>
-        <h1 class="page-title">Manajemen Role & Permission Matrix</h1>
+      <div class="header-left">
+        <h1 class="page-title">Manajemen Role &amp; Permission Matrix</h1>
         <p class="page-subtitle">
           Pengaturan akun pengguna staf internal, penetapan role (Admin, Manager, Kasir, Owner), dan matriks hak akses.
         </p>
@@ -16,10 +13,10 @@
         <button 
           v-if="canManageConfig"
           type="button" 
-          class="btn-primary"
+          class="btn-primary-action"
           @click="openAddUserModal"
         >
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
             <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
             <circle cx="9" cy="7" r="4" />
             <line x1="19" y1="8" x2="19" y2="14" />
@@ -41,143 +38,167 @@
         <line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
       </svg>
       <div>
-        <strong>Akses Terbatas:</strong> Anda sedang masuk sebagai <u>{{ user.roleTitle }}</u>. Penambahan akun dan perubahan hak akses permission sistem hanya dapat dilakukan oleh Super Admin.
+        <strong>Akses Terbatas:</strong> Anda sedang masuk sebagai <u>{{ user.roleTitle }}</u>. Penambahan akun staf dan perubahan hak akses permission hanya dapat dikelola oleh Super Admin.
       </div>
     </div>
 
-    <!-- Section 1: Staff Accounts Table -->
-    <section class="config-section">
-      <div class="section-head">
-        <div>
-          <h2 class="section-title">1. Daftar Akun Pengguna Staf</h2>
-          <span class="section-subtitle">Daftar petugas POS, tim manajemen, dan dewan direksi yang terdaftar di sistem</span>
+    <!-- ========================================================================= -->
+    <!-- SECTION 1: DAFTAR AKUN PENGGUNA STAF (CLEAN & AESTHETIC CARD TABLE)       -->
+    <!-- ========================================================================= -->
+    <section class="section-widget-frame">
+      <div class="section-head-bar">
+        <div class="section-head-left">
+          <div class="section-title-badge">
+            <span class="sec-icon">👥</span>
+            <h2 class="sec-title">Daftar Akun Pengguna Staf</h2>
+          </div>
+          <p class="sec-subtitle">Daftar petugas POS, tim manajemen, dan dewan direksi yang terdaftar di sistem</p>
         </div>
       </div>
 
-      <div class="content-card">
-        <div class="table-responsive">
-          <table class="config-table">
-            <thead>
-              <tr>
-                <th>Nama Pengguna</th>
-                <th>Email ID</th>
-                <th>Departemen / Unit</th>
-                <th>Role Akses</th>
-                <th>Status Akun</th>
-                <th class="text-right">Aksi</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="u in usersList" :key="u.id">
-                <td>
-                  <div class="user-cell">
-                    <span class="avatar-sm">{{ u.avatar }}</span>
-                    <div>
-                      <strong class="user-name">{{ u.name }}</strong>
-                      <div class="user-id">ID: {{ u.id }}</div>
-                    </div>
+      <div class="table-responsive-box">
+        <table class="aesthetic-staff-table">
+          <thead>
+            <tr>
+              <th>NAMA PENGGUNA</th>
+              <th>EMAIL / LOGIN ID</th>
+              <th>DEPARTEMEN / UNIT</th>
+              <th>ROLE AKSES</th>
+              <th>STATUS AKUN</th>
+              <th class="text-right">AKSI</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="u in usersList" :key="u.id" class="staff-row">
+              <td>
+                <div class="user-cell-wrap">
+                  <div class="avatar-disc-staff">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="staff-avatar-svg">
+                      <circle cx="24" cy="24" r="23" fill="#FAF3E8"/>
+                      <path d="M12 42 C12 33 18 30 24 30 C30 30 36 33 36 42 Z" fill="#3D2214"/>
+                      <circle cx="24" cy="19" r="8" fill="#D97706"/>
+                    </svg>
                   </div>
-                </td>
-                <td class="font-mono">{{ u.email }}</td>
-                <td>{{ u.department }}</td>
-                <td>
-                  <span class="role-badge-pill" :class="`pill-role-${u.role}`">
-                    {{ u.roleTitle }}
-                  </span>
-                </td>
-                <td>
-                  <span class="status-indicator" :class="u.isActive ? 'active' : 'inactive'">
-                    ● {{ u.isActive ? 'Aktif' : 'Terkunci' }}
-                  </span>
-                </td>
-                <td class="text-right">
-                  <button 
-                    type="button" 
-                    class="btn-secondary btn-sm"
-                    :disabled="!canManageConfig"
-                    @click="editUser(u)"
-                  >
-                    Edit Akun
-                  </button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+                  <div class="user-meta-col">
+                    <strong class="user-name-txt">{{ u.name }}</strong>
+                    <span class="user-id-chip">ID: {{ u.id }}</span>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span class="email-code-pill">{{ u.email }}</span>
+              </td>
+              <td>
+                <span class="dept-text">{{ u.department }}</span>
+              </td>
+              <td>
+                <span class="role-pill-badge" :class="`role-${u.role}`">
+                  {{ u.roleTitle }}
+                </span>
+              </td>
+              <td>
+                <span class="status-pill-badge" :class="u.isActive ? 'status-active' : 'status-locked'">
+                  <span class="status-dot-mini"></span>
+                  <span>{{ u.isActive ? 'Aktif' : 'Terkunci' }}</span>
+                </span>
+              </td>
+              <td class="text-right">
+                <button 
+                  type="button" 
+                  class="btn-action-edit"
+                  :disabled="!canManageConfig"
+                  @click="editUser(u)"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+                    <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                  </svg>
+                  <span>Edit Akun</span>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </section>
 
-    <!-- Section 2: Permission Matrix Grid -->
-    <section class="config-section">
-      <div class="section-head">
-        <div>
-          <h2 class="section-title">2. Matriks Hak Akses & Kewenangan Fitur (Permission Matrix)</h2>
-          <span class="section-subtitle">Struktur hak baca (Read), tulis (Write), dan eksekusi per peran pengguna</span>
+    <!-- ========================================================================= -->
+    <!-- SECTION 2: MATRIKS HAK AKSES & PERMISSION (CLEAN RBAC MATRIX)             -->
+    <!-- ========================================================================= -->
+    <section class="section-widget-frame">
+      <div class="section-head-bar">
+        <div class="section-head-left">
+          <div class="section-title-badge">
+            <span class="sec-icon">🛡️</span>
+            <h2 class="sec-title">Matriks Hak Akses Role (RBAC)</h2>
+          </div>
+          <p class="sec-subtitle">Struktur hak baca (Read), tulis (Write), dan eksekusi per peran pengguna internal</p>
         </div>
       </div>
 
-      <div class="content-card">
-        <div class="table-responsive">
-          <table class="matrix-table">
-            <thead>
-              <tr>
-                <th style="width: 280px;">Modul / Fitur Sistem</th>
-                <th class="text-center role-th th-admin">
-                  <div class="role-header-box">
-                    <span>👨💼 Admin</span>
-                    <small>Full System Control</small>
-                  </div>
-                </th>
-                <th class="text-center role-th th-manager">
-                  <div class="role-header-box">
-                    <span>👔 Manager</span>
-                    <small>Monitoring & Evaluasi</small>
-                  </div>
-                </th>
-                <th class="text-center role-th th-kasir">
-                  <div class="role-header-box">
-                    <span>🧾 Kasir FO</span>
-                    <small>Frontliner POS</small>
-                  </div>
-                </th>
-                <th class="text-center role-th th-owner">
-                  <div class="role-header-box">
-                    <span>👑 Owner</span>
-                    <small>Executive Read-Only</small>
-                  </div>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="item in permissionMatrix" :key="item.module">
-                <td>
-                  <div class="module-title">{{ item.module }}</div>
-                  <div class="module-desc">{{ item.description }}</div>
-                </td>
-                <td class="text-center">
-                  <span class="perm-tag" :class="item.admin ? 'perm-yes' : 'perm-no'">
-                    {{ item.admin ? '✓ Full Akses' : '✕ Tidak Ada' }}
-                  </span>
-                </td>
-                <td class="text-center">
-                  <span class="perm-tag" :class="item.manager === 'READ' ? 'perm-read' : item.manager ? 'perm-yes' : 'perm-no'">
-                    {{ item.manager === 'READ' ? '👁️ Read-Only' : item.manager ? '✓ Full Akses' : '✕ Terkunci' }}
-                  </span>
-                </td>
-                <td class="text-center">
-                  <span class="perm-tag" :class="item.kasir ? 'perm-yes' : 'perm-no'">
-                    {{ item.kasir ? '✓ Operasional' : '✕ Terkunci' }}
-                  </span>
-                </td>
-                <td class="text-center">
-                  <span class="perm-tag" :class="item.owner === 'READ' ? 'perm-read' : item.owner ? 'perm-yes' : 'perm-no'">
-                    {{ item.owner === 'READ' ? '👁️ Read-Only' : item.owner ? '✓ Full Akses' : '✕ Terkunci' }}
-                  </span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <div class="table-responsive-box">
+        <table class="aesthetic-matrix-table">
+          <thead>
+            <tr>
+              <th style="width: 320px;">MODUL / FITUR SISTEM</th>
+              <th class="text-center role-th">
+                <div class="role-th-card">
+                  <span class="th-role-name">👑 Super Admin</span>
+                  <span class="th-role-sub">Full System Control</span>
+                </div>
+              </th>
+              <th class="text-center role-th">
+                <div class="role-th-card">
+                  <span class="th-role-name">👔 Manager</span>
+                  <span class="th-role-sub">Monitoring &amp; Evaluasi</span>
+                </div>
+              </th>
+              <th class="text-center role-th">
+                <div class="role-th-card">
+                  <span class="th-role-name">🧾 Kasir Front Office</span>
+                  <span class="th-role-sub">Frontliner POS</span>
+                </div>
+              </th>
+              <th class="text-center role-th">
+                <div class="role-th-card">
+                  <span class="th-role-name">🏛️ Owner / Direksi</span>
+                  <span class="th-role-sub">Executive Read-Only</span>
+                </div>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="item in permissionMatrix" :key="item.module" class="matrix-row">
+              <td>
+                <div class="module-title-txt">{{ item.module }}</div>
+                <div class="module-desc-txt">{{ item.description }}</div>
+              </td>
+              <td class="text-center">
+                <span class="matrix-tag tag-full">
+                  <span class="tag-icon">✓</span>
+                  <span>Full Akses</span>
+                </span>
+              </td>
+              <td class="text-center">
+                <span class="matrix-tag" :class="item.manager === 'READ' ? 'tag-read' : item.manager ? 'tag-full' : 'tag-locked'">
+                  <span class="tag-icon">{{ item.manager === 'READ' ? '👁️' : item.manager ? '✓' : '✕' }}</span>
+                  <span>{{ item.manager === 'READ' ? 'Read-Only' : item.manager ? 'Full Akses' : 'Terkunci' }}</span>
+                </span>
+              </td>
+              <td class="text-center">
+                <span class="matrix-tag" :class="item.kasir ? 'tag-pos' : 'tag-locked'">
+                  <span class="tag-icon">{{ item.kasir ? '⚡' : '✕' }}</span>
+                  <span>{{ item.kasir ? 'POS Kasir' : 'Terkunci' }}</span>
+                </span>
+              </td>
+              <td class="text-center">
+                <span class="matrix-tag" :class="item.owner === 'READ' ? 'tag-read' : item.owner ? 'tag-full' : 'tag-locked'">
+                  <span class="tag-icon">{{ item.owner === 'READ' ? '👁️' : item.owner ? '✓' : '✕' }}</span>
+                  <span>{{ item.owner === 'READ' ? 'Read-Only' : item.owner ? 'Full Akses' : 'Terkunci' }}</span>
+                </span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </section>
 
@@ -185,7 +206,10 @@
     <div v-if="showUserModal" class="modal-backdrop" @click.self="showUserModal = false">
       <div class="modal-card">
         <div class="modal-header">
-          <h3>{{ isEditing ? `Edit Akun: ${userForm.name}` : 'Tambah Akun Staf Baru' }}</h3>
+          <div class="modal-title-col">
+            <img :src="logoImg" alt="Kampung Coklat" class="modal-mini-logo" />
+            <h3>{{ isEditing ? `Edit Akun: ${userForm.name}` : 'Tambah Akun Staf Baru' }}</h3>
+          </div>
           <button class="btn-close" @click="showUserModal = false">&times;</button>
         </div>
         <form @submit.prevent="saveUser">
@@ -227,7 +251,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn-secondary" @click="showUserModal = false">Batal</button>
-            <button type="submit" class="btn-primary">Simpan Akun Staf</button>
+            <button type="submit" class="btn-primary-modal">Simpan Akun Staf</button>
           </div>
         </form>
       </div>
@@ -238,6 +262,7 @@
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { useAuth, type UserRole } from '~/composables/useAuth'
+import logoImg from '~/assets/assets_POS/KAMPUNGCOKLAT.png'
 
 definePageMeta({
   layout: 'admin'
@@ -268,13 +293,33 @@ const usersList = ref<StaffAccount[]>([
     isActive: true
   },
   {
-    id: 'USR-MGR-01',
-    name: 'Dewi Lestari, S.E.',
-    email: 'manager.ops@kampungcoklat.id',
+    id: 'USR-MGR-02',
+    name: 'Rina Indrawati',
+    email: 'manager@kampungcoklat.id',
     role: 'manager',
     roleTitle: 'Operational Manager',
-    department: 'Manajemen Operasional',
-    avatar: '👔',
+    department: 'Operational Management',
+    avatar: '👩💼',
+    isActive: true
+  },
+  {
+    id: 'USR-POS-01',
+    name: 'Siti Aminah',
+    email: 'kasir1@kampungcoklat.id',
+    role: 'kasir',
+    roleTitle: 'Kasir Front Office',
+    department: 'Ticketing & POS Terminal 1',
+    avatar: '🧕',
+    isActive: true
+  },
+  {
+    id: 'USR-POS-02',
+    name: 'Dwi Prasetyo',
+    email: 'kasir2@kampungcoklat.id',
+    role: 'kasir',
+    roleTitle: 'Kasir Front Office',
+    department: 'Ticketing & POS Terminal 2',
+    avatar: '👨🌾',
     isActive: true
   },
   {
@@ -282,107 +327,71 @@ const usersList = ref<StaffAccount[]>([
     name: 'H. Kholid Mustofa',
     email: 'owner@kampungcoklat.id',
     role: 'owner',
-    roleTitle: 'Owner / Direksi Utama',
-    department: 'Dewan Eksekutif',
+    roleTitle: 'Owner / Direksi',
+    department: 'Executive Board',
     avatar: '👑',
-    isActive: true
-  },
-  {
-    id: 'USR-KAS-04',
-    name: 'Siti Rahmawati',
-    email: 'kasir.gate1@kampungcoklat.id',
-    role: 'kasir',
-    roleTitle: 'Kasir Front Office',
-    department: 'Front Office POS',
-    avatar: '🧾',
-    isActive: true
-  },
-  {
-    id: 'USR-KAS-05',
-    name: 'Rudi Hartono',
-    email: 'kasir.terusan@kampungcoklat.id',
-    role: 'kasir',
-    roleTitle: 'Kasir Front Office',
-    department: 'POS Terusan & Wahana',
-    avatar: '🧾',
     isActive: true
   }
 ])
 
-const permissionMatrix = [
+const permissionMatrix = ref([
   {
-    module: 'Executive Dashboard & Overview',
-    description: 'Melihat ringkasan metrik KPI harian, grafik tren pendapatan, dan live gate-in.',
-    admin: true,
-    manager: true,
-    kasir: false,
-    owner: 'READ'
-  },
-  {
-    module: 'Reports & Evaluasi Finansial (GTV)',
-    description: 'Akses penuh laporan pendapatan historis, omzet tiket, dan ekspor PDF/Excel.',
-    admin: true,
-    manager: true,
-    kasir: false,
-    owner: 'READ'
-  },
-  {
-    module: 'Database CRM & Segmentasi Member',
-    description: 'Melihat direktori kontak WhatsApp, domisili, dan memicu broadcast promo.',
+    module: 'Dashboard Finansial & GTV',
+    description: 'Akses ringkasan eksekutif, grafik tren, dan metrik revenue',
     admin: true,
     manager: 'READ',
     kasir: false,
     owner: 'READ'
   },
   {
-    module: 'POS Kasir & Checkout Transaksi',
-    description: 'Melayani penjualan tiket walk-in, input domisili, dan redeem voucher.',
+    module: 'Audit Rekonsiliasi Shift Kasir',
+    description: 'Approval selisih kas fisik dan validasi serah terima shift',
+    admin: true,
+    manager: true,
+    kasir: false,
+    owner: 'READ'
+  },
+  {
+    module: 'Konfigurasi Tarif Tiket & Wahana',
+    description: 'Ubah harga tiket masuk, paket edukasi, dan status operasional',
+    admin: true,
+    manager: 'READ',
+    kasir: false,
+    owner: 'READ'
+  },
+  {
+    module: 'Pengaturan Diskon & Promo CRM',
+    description: 'Pembuatan voucher diskon, free ticket majlis (PP), dan blast WA',
+    admin: true,
+    manager: 'READ',
+    kasir: false,
+    owner: 'READ'
+  },
+  {
+    module: 'Terminal Transaksi POS Kasir',
+    description: 'Input penjualan tiket, cetak barcode wristband, refund & void',
     admin: true,
     manager: false,
     kasir: true,
     owner: false
   },
   {
-    module: 'Web QR Gate Scanner (Turnstile)',
-    description: 'Memindai tiket dinamis QR code pengunjung di gerbang masuk.',
+    module: 'Laporan & Ekspor Data (PDF / Excel)',
+    description: 'Download riwayat transaksi, demografi, dan log audit staf',
     admin: true,
-    manager: false,
-    kasir: true,
-    owner: false
-  },
-  {
-    module: 'Atur Tarif & Harga Tiket Masuk',
-    description: 'Konfigurasi harga tiket reguler, terusan, rombongan B2B, dan edukasi.',
-    admin: true,
-    manager: false,
+    manager: true,
     kasir: false,
-    owner: false
+    owner: 'READ'
   },
   {
-    module: 'Atur Katalog Wahana & Atraksi',
-    description: 'Menambah wahana baru, status operasional (Buka/Maintenance), dan kuota.',
-    admin: true,
-    manager: false,
-    kasir: false,
-    owner: false
-  },
-  {
-    module: 'Atur Diskon & Promo CRM',
-    description: 'Membuat kupon diskon persentase dan promo Free Ticket Pengajian.',
-    admin: true,
-    manager: false,
-    kasir: false,
-    owner: false
-  },
-  {
-    module: 'Manajemen User & Hak Akses Role',
-    description: 'Membuat akun staf baru dan mengatur izin permission RBAC.',
+    module: 'Manajemen Role & Staf (RBAC)',
+    description: 'Tambah staf baru, ganti role pengguna, dan reset password',
     admin: true,
     manager: false,
     kasir: false,
     owner: false
   }
-]
+])
 
 const showUserModal = ref(false)
 const isEditing = ref(false)
@@ -392,19 +401,37 @@ const userForm = reactive({
   name: '',
   email: '',
   role: 'kasir' as UserRole,
-  department: 'Front Office POS',
-  avatar: '🧾',
+  department: '',
   isActive: true
 })
 
+const getRoleTitle = (role: UserRole): string => {
+  switch (role) {
+    case 'admin': return 'Super Admin'
+    case 'manager': return 'Operational Manager'
+    case 'kasir': return 'Kasir Front Office'
+    case 'owner': return 'Owner / Direksi'
+    default: return 'Staff'
+  }
+}
+
+const getAvatar = (role: UserRole): string => {
+  switch (role) {
+    case 'admin': return '👨💼'
+    case 'manager': return '👩💼'
+    case 'kasir': return '🧾'
+    case 'owner': return '👑'
+    default: return '👤'
+  }
+}
+
 const openAddUserModal = () => {
   isEditing.value = false
-  userForm.id = `USR-${Date.now().toString().slice(-4)}`
+  userForm.id = `USR-${Math.floor(100 + Math.random() * 900)}`
   userForm.name = ''
   userForm.email = ''
   userForm.role = 'kasir'
-  userForm.department = 'Front Office POS'
-  userForm.avatar = '🧾'
+  userForm.department = 'Ticketing POS'
   userForm.isActive = true
   showUserModal.value = true
 }
@@ -416,40 +443,24 @@ const editUser = (u: StaffAccount) => {
   userForm.email = u.email
   userForm.role = u.role
   userForm.department = u.department
-  userForm.avatar = u.avatar
   userForm.isActive = u.isActive
   showUserModal.value = true
 }
 
 const saveUser = () => {
-  const getRoleTitle = (r: UserRole) => {
-    switch (r) {
-      case 'admin': return 'Super Admin'
-      case 'manager': return 'Operational Manager'
-      case 'owner': return 'Owner / Direksi'
-      case 'kasir': default: return 'Kasir Front Office'
-    }
-  }
-
-  const getAvatar = (r: UserRole) => {
-    switch (r) {
-      case 'admin': return '👨💼'
-      case 'manager': return '👔'
-      case 'owner': return '👑'
-      case 'kasir': default: return '🧾'
-    }
-  }
-
   if (isEditing.value) {
-    const existing = usersList.value.find(u => u.id === userForm.id)
-    if (existing) {
-      existing.name = userForm.name
-      existing.email = userForm.email
-      existing.role = userForm.role
-      existing.roleTitle = getRoleTitle(userForm.role)
-      existing.department = userForm.department
-      existing.avatar = getAvatar(userForm.role)
-      existing.isActive = userForm.isActive
+    const idx = usersList.value.findIndex(u => u.id === userForm.id)
+    if (idx !== -1) {
+      usersList.value[idx] = {
+        ...usersList.value[idx],
+        name: userForm.name,
+        email: userForm.email,
+        role: userForm.role,
+        roleTitle: getRoleTitle(userForm.role),
+        department: userForm.department,
+        avatar: getAvatar(userForm.role),
+        isActive: userForm.isActive
+      }
     }
   } else {
     usersList.value.push({
@@ -465,224 +476,505 @@ const saveUser = () => {
   }
 
   showUserModal.value = false
-  alert('[SUKSES] Akun staf berhasil disimpan!')
 }
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Outfit:wght@500;600;700;800;900&family=Jost:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@600;700&display=swap');
+
+/* ========================================================================= */
+/* PAGE ROOT CONTAINER                                                       */
+/* ========================================================================= */
 .roles-page {
   display: flex;
   flex-direction: column;
-  gap: 20px;
-  max-width: 1320px;
+  gap: 22px;
+  max-width: 1380px;
   width: 100%;
-  margin: 0 auto;
+  font-family: 'Jost', sans-serif;
 }
 
+/* ========================================================================= */
+/* HEADER BANNER WITH COCOA & CHOCOLATE ART                                  */
+/* ========================================================================= */
 .config-header {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: 16px;
   flex-wrap: wrap;
+  min-height: 75px;
+  padding: 6px 0 10px 0;
+  position: relative;
 }
 
-.badge-tag {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background-color: rgba(242, 151, 39, 0.15);
-  color: #B45309;
-  font-size: 11.5px;
-  font-weight: 600;
-  padding: 3px 10px;
-  border-radius: 20px;
-  margin-bottom: 4px;
+.header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-width: 680px;
+  position: relative;
+  z-index: 2;
 }
 
 .page-title {
+  font-family: 'Cinzel', serif;
   font-size: 26px;
-  font-weight: 700;
-  color: var(--color-primary, #2C1A13);
+  font-weight: 900;
+  color: #2C1A13;
   margin: 0;
+  letter-spacing: 0.3px;
 }
 
 .page-subtitle {
-  font-size: 13px;
-  color: #6B5A52;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #6E442B;
   margin: 0;
+  line-height: 1.4;
+}
+
+.header-right-group {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+  z-index: 2;
+}
+
+.btn-primary-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #3D2214;
+  color: #FAF5EE;
+  border: none;
+  padding: 9px 20px;
+  border-radius: 20px;
+  font-size: 12.5px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(61, 34, 20, 0.2);
+  transition: all 0.2s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.btn-primary-action:hover {
+  background: #D97706;
+  transform: translateY(-1px);
 }
 
 .read-only-pill {
-  background-color: #FEF3C7;
+  background-color: #FAF3E8;
   color: #92400E;
-  border: 1px solid #FDE68A;
+  border: 1px solid #EADBCC;
   font-size: 12px;
-  font-weight: 600;
-  padding: 6px 14px;
-  border-radius: 6px;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 20px;
+  position: relative;
+  z-index: 2;
+}
+
+/* Header Right Cocoa & Chocolate Decorative Graphic */
+.header-cocoa-decor {
+  position: absolute;
+  right: 0;
+  top: -15px;
+  bottom: -15px;
+  width: 280px;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.9;
+}
+
+.botanical-leaves-bg {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+}
+
+.chocolate-pieces-art {
+  position: absolute;
+  right: 10px;
+  top: 0;
+  width: 140px;
+  height: 100px;
+}
+
+.choc-svg {
+  width: 100%;
+  height: 100%;
 }
 
 .role-warning-banner {
-  background-color: #FFFBEB;
-  border: 1px solid #FDE68A;
-  color: #92400E;
-  padding: 12px 16px;
-  border-radius: 8px;
   display: flex;
   align-items: center;
   gap: 12px;
+  background: #FEF3C7;
+  border: 1.5px solid #F59E0B;
+  color: #92400E;
+  padding: 12px 16px;
+  border-radius: 14px;
   font-size: 13px;
+  font-weight: 700;
 }
 
-.config-section {
+/* ========================================================================= */
+/* SECTION WIDGET FRAMES & AESTHETIC TABLES                                  */
+/* ========================================================================= */
+.section-widget-frame {
+  background: #FFFDF9;
+  border: 1.5px solid #EFE4D6;
+  border-radius: 24px;
+  padding: 22px 26px 26px 26px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 18px;
+  box-shadow: 0 4px 16px rgba(61, 34, 20, 0.04);
 }
 
-.section-head {
-  border-bottom: 1px solid #E5E7EB;
-  padding-bottom: 8px;
+.section-head-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1.5px solid #F0E5D8;
+  padding-bottom: 12px;
 }
 
-.section-title {
+.section-head-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.section-title-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sec-icon {
   font-size: 18px;
-  font-weight: 700;
-  color: var(--color-primary, #2C1A13);
+}
+
+.sec-title {
+  font-family: 'Cinzel', serif;
+  font-size: 17.5px;
+  font-weight: 900;
+  color: #2C1A13;
   margin: 0;
 }
 
-.section-subtitle {
-  font-size: 12.5px;
-  color: #6B5A52;
+.sec-subtitle {
+  font-size: 12px;
+  color: #7A5034;
+  margin: 0;
 }
 
-.content-card {
-  background-color: #FFFFFF;
-  border: 1px solid #E5E7EB;
-  border-radius: 8px;
-  padding: 18px 20px;
-  box-shadow: 0 1px 3px rgba(44, 26, 19, 0.04);
-}
-
-.table-responsive { overflow-x: auto; }
-
-.config-table, .matrix-table {
+.table-responsive-box {
   width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
+  overflow-x: auto;
 }
 
-.config-table th, .matrix-table th {
-  background-color: #FAF8F5;
-  color: #6B5A52;
-  font-size: 11.5px;
-  text-transform: uppercase;
-  padding: 10px 12px;
-  border-bottom: 1px solid #E5E7EB;
+/* Table 1: Staff Table */
+.aesthetic-staff-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+}
+
+.aesthetic-staff-table thead th {
+  padding: 10px 14px;
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #8C6D58;
+  letter-spacing: 0.5px;
   text-align: left;
+  border-bottom: 1px solid #EFE4D6;
 }
 
-.config-table td, .matrix-table td {
-  padding: 12px;
-  border-bottom: 1px solid #F3F4F6;
-  color: var(--color-primary, #2C1A13);
+.staff-row {
+  background: #FFFFFF;
+  border: 1px solid #EFE4D6;
+  border-radius: 14px;
+  transition: all 0.2s ease;
 }
 
-.user-cell {
+.staff-row:hover {
+  background: #FAF5EE;
+  box-shadow: 0 4px 12px rgba(61, 34, 20, 0.05);
+}
+
+.staff-row td {
+  padding: 12px 14px;
+  font-size: 13px;
+  vertical-align: middle;
+}
+
+.staff-row td:first-child {
+  border-top-left-radius: 14px;
+  border-bottom-left-radius: 14px;
+  border-left: 1px solid #EFE4D6;
+}
+
+.staff-row td:last-child {
+  border-top-right-radius: 14px;
+  border-bottom-right-radius: 14px;
+  border-right: 1px solid #EFE4D6;
+}
+
+.user-cell-wrap {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
-.avatar-sm { font-size: 20px; }
-.user-name { color: var(--color-primary, #2C1A13); font-size: 13.5px; }
-.user-id { font-size: 11px; color: #9CA3AF; }
+.avatar-disc-staff {
+  width: 36px;
+  height: 36px;
+  background: #FAF3E8;
+  border: 1.5px solid #EADBCC;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
 
-.role-badge-pill {
-  font-size: 11px;
-  font-weight: 600;
+.user-meta-col {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.user-name-txt {
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  color: #2C1A13;
+}
+
+.user-id-chip {
+  font-size: 10px;
+  color: #8C6D58;
+  font-weight: 700;
+}
+
+.email-code-pill {
+  font-family: 'JetBrains Mono', monospace;
+  background: #FAF3E8;
+  border: 1px solid #EADBCC;
+  color: #5A2E17;
   padding: 3px 8px;
-  border-radius: 4px;
+  border-radius: 6px;
+  font-size: 11.5px;
 }
 
-.pill-role-admin { background-color: #ECFDF5; color: #047857; }
-.pill-role-manager { background-color: #EFF6FF; color: #1D4ED8; }
-.pill-role-owner { background-color: #FEF3C7; color: #92400E; }
-.pill-role-kasir { background-color: #F3F4F6; color: #374151; }
+.dept-text {
+  font-size: 12.5px;
+  color: #5A2E17;
+  font-weight: 600;
+}
 
-.status-indicator { font-size: 12px; font-weight: 600; }
-.status-indicator.active { color: #047857; }
-.status-indicator.inactive { color: #DC2626; }
+.role-pill-badge {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 800;
+}
 
-/* Permission Matrix Specific Styles */
-.role-header-box {
+.role-admin { background: #3D2214; color: #FAF5EE; }
+.role-manager { background: #FEF3C7; color: #B45309; border: 1px solid #FDE68A; }
+.role-kasir { background: #DBEAFE; color: #1E40AF; border: 1px solid #BFDBFE; }
+.role-owner { background: #D1FAE5; color: #065F46; border: 1px solid #A7F3D0; }
+
+.status-pill-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.status-active { background: #D1FAE5; color: #065F46; }
+.status-locked { background: #FEE2E2; color: #991B1B; }
+
+.status-dot-mini {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.btn-action-edit {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #FAF3E8;
+  border: 1px solid #EADBCC;
+  color: #3D2214;
+  padding: 6px 12px;
+  border-radius: 10px;
+  font-size: 11.5px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-action-edit:hover:not(:disabled) {
+  background: #3D2214;
+  color: #FAF5EE;
+}
+
+/* Table 2: RBAC Matrix Table */
+.aesthetic-matrix-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 8px;
+}
+
+.aesthetic-matrix-table thead th {
+  padding: 12px 14px;
+  border-bottom: 1.5px solid #EFE4D6;
+}
+
+.role-th-card {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 2px;
 }
 
-.role-header-box span { font-weight: 700; color: var(--color-primary, #2C1A13); }
-.role-header-box small { font-size: 10px; color: #6B5A52; text-transform: none; }
-
-.module-title { font-weight: 600; color: var(--color-primary, #2C1A13); font-size: 13.5px; }
-.module-desc { font-size: 11px; color: #6B5A52; line-height: 1.3; }
-
-.perm-tag {
-  font-size: 11.5px;
-  font-weight: 600;
-  padding: 3px 10px;
-  border-radius: 20px;
-  display: inline-block;
+.th-role-name {
+  font-family: 'Cinzel', serif;
+  font-size: 12px;
+  font-weight: 900;
+  color: #2C1A13;
 }
 
-.perm-yes { background-color: #ECFDF5; color: #047857; }
-.perm-read { background-color: #FEF3C7; color: #92400E; }
-.perm-no { background-color: #F3F4F6; color: #9CA3AF; }
+.th-role-sub {
+  font-size: 9.5px;
+  color: #8C6D58;
+  font-weight: 600;
+}
 
-.text-center { text-align: center; }
+.matrix-row {
+  background: #FFFFFF;
+  border: 1px solid #EFE4D6;
+  border-radius: 14px;
+  transition: all 0.2s ease;
+}
+
+.matrix-row:hover {
+  background: #FAF5EE;
+}
+
+.matrix-row td {
+  padding: 14px 16px;
+  vertical-align: middle;
+}
+
+.matrix-row td:first-child {
+  border-top-left-radius: 14px;
+  border-bottom-left-radius: 14px;
+  border-left: 1px solid #EFE4D6;
+}
+
+.matrix-row td:last-child {
+  border-top-right-radius: 14px;
+  border-bottom-right-radius: 14px;
+  border-right: 1px solid #EFE4D6;
+}
+
+.module-title-txt {
+  font-family: 'Outfit', sans-serif;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #2C1A13;
+  margin-bottom: 2px;
+}
+
+.module-desc-txt {
+  font-size: 11px;
+  color: #7A5034;
+}
+
+.matrix-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 10px;
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.tag-full { background: #D1FAE5; color: #065F46; }
+.tag-read { background: #FEF3C7; color: #92400E; }
+.tag-pos { background: #DBEAFE; color: #1E40AF; }
+.tag-locked { background: #F3F4F6; color: #9CA3AF; }
+
 .text-right { text-align: right; }
-.font-mono { font-family: monospace; }
-.btn-sm { height: 32px; font-size: 12px; padding: 0 12px; }
+.text-center { text-align: center; }
 
-/* Modal */
+/* ========================================================================= */
+/* MODAL STYLING                                                             */
+/* ========================================================================= */
 .modal-backdrop {
   position: fixed;
-  inset: 0;
-  background-color: rgba(44, 26, 19, 0.65);
-  backdrop-filter: blur(2px);
-  z-index: 1000;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(36, 20, 13, 0.65);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 1000;
   padding: 20px;
 }
 
 .modal-card {
-  background: #FFFFFF;
-  border-radius: 10px;
+  background: #FFFDF9;
+  border: 2px solid #8B5738;
+  border-radius: 20px;
   width: 100%;
-  max-width: 480px;
-  padding: 20px;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
+  max-width: 520px;
+  padding: 22px 24px;
+  box-shadow: 0 20px 50px rgba(44, 26, 19, 0.35);
 }
 
 .modal-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid #E5E7EB;
-  padding-bottom: 10px;
+  align-items: center;
+  border-bottom: 1.5px solid #EFE4D6;
+  padding-bottom: 12px;
+  margin-bottom: 14px;
+}
+
+.modal-title-col {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.modal-mini-logo {
+  max-height: 24px;
 }
 
 .modal-header h3 {
+  font-family: 'Cinzel', serif;
   font-size: 16px;
-  color: var(--color-primary, #2C1A13);
+  font-weight: 800;
+  color: #2C1A13;
   margin: 0;
 }
 
@@ -690,13 +982,19 @@ const saveUser = () => {
   background: transparent;
   border: none;
   font-size: 24px;
+  color: #8C6D58;
   cursor: pointer;
-  color: #6B7280;
 }
 
 .modal-body {
   display: flex;
   flex-direction: column;
+  gap: 12px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 12px;
 }
 
@@ -707,32 +1005,56 @@ const saveUser = () => {
 }
 
 .form-group label {
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--color-primary, #2C1A13);
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  font-size: 11px;
+  font-weight: 700;
+  color: #5A3A28;
+  text-transform: uppercase;
 }
 
 .input-control, .filter-select {
-  padding: 8px 10px;
-  border: 1px solid #E5E7EB;
-  border-radius: 6px;
-  font-family: inherit;
+  border: 1.5px solid #C4AA8F;
+  background: #FFFFFF;
+  border-radius: 8px;
+  padding: 7px 11px;
   font-size: 13px;
+  color: #2C1A13;
+  outline: none;
 }
 
-.full-width { width: 100%; }
+.input-control:focus, .filter-select:focus {
+  border-color: #D97706;
+}
 
 .modal-footer {
+  margin-top: 18px;
   display: flex;
   justify-content: flex-end;
-  gap: 8px;
-  border-top: 1px solid #E5E7EB;
-  padding-top: 12px;
+  gap: 10px;
+}
+
+.btn-secondary {
+  background: #FAF3E8;
+  border: 1.5px solid #C4AA8F;
+  color: #5A3A28;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.btn-primary-modal {
+  background: linear-gradient(135deg, #D97706 0%, #B45309 100%);
+  color: #FFFFFF;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 10px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .header-cocoa-decor {
+    display: none;
+  }
 }
 </style>
