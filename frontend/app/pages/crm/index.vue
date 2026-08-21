@@ -443,51 +443,28 @@ function getTypeClass(type?: string) {
   <div class="crm-page">
 
     <!-- HEADER PATTERN KAMPUNG COKLAT -->
-    <section class="crm-hero">
-      <div class="hero-pattern"></div>
-
-      <div class="hero-content">
-        <div class="hero-text">
-          <span class="hero-badge">
-            CRM MEMBERSHIP
-          </span>
-
-          <h1>
-            Data Member
-          </h1>
-
-          <p>
-            Kelola data dan hubungan dengan member Kampung Coklat.
-          </p>
+    <header class="executive-command-header">
+      <div class="brand-text-wrapper">
+        <h1 class="header-main-title">Data Member</h1>
+        <div class="header-meta-clean-line">
+          Kelola data dan hubungan dengan member Kampung Coklat.
         </div>
-
-      <button
-        class="blast-main-button"
-        @click="openBlast"
-      >
-        <span>📣</span>
-
-        <span>
-          Blast WhatsApp
-        </span>
-
-        <span
-          v-if="selected.length"
-          class="selected-badge"
-        >
-          {{ selected.length }}
-        </span>
-      </button>
       </div>
-      </section>
+
+    </header>
 
     <!-- STATS -->
 
     <section class="stats-grid">
 
       <div class="stat-card">
-        <div class="stat-icon brown">
-          👥
+        <div class="stat-icon purple">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7541bd" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
         </div>
 
         <div>
@@ -498,8 +475,12 @@ function getTypeClass(type?: string) {
       </div>
 
       <div class="stat-card">
-        <div class="stat-icon orange">
-          ✓
+        <div class="stat-icon green">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#20864e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <polyline points="16 11 18 13 22 9"/>
+          </svg>
         </div>
 
         <div>
@@ -510,8 +491,10 @@ function getTypeClass(type?: string) {
       </div>
 
       <div class="stat-card">
-        <div class="stat-icon green">
-          💬
+        <div class="stat-icon blue">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3869c4" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+          </svg>
         </div>
 
         <div>
@@ -545,90 +528,57 @@ function getTypeClass(type?: string) {
 
       </div>
 
-      <!-- SEARCH / FILTER -->
-
-      <div class="filter-area">
-
-        <div class="search-box">
-
-          <span>
-            🔍
-          </span>
-
-          <input
-            v-model="filters.search"
-            type="text"
-            placeholder="Cari nama atau nomor WhatsApp..."
-          >
-
-        </div>
-
-        <select
-          v-model="filters.tipeMember"
-          class="filter-select"
-        >
-          <option value="">
-            Semua Tipe Member
-          </option>
-
-          <option value="PR">
-            PR — Pengunjung Reguler
-          </option>
-
-          <option value="PP">
-            PP — Pengunjung Pengajian
-          </option>
-
-          <option value="PT">
-            PT — Pengunjung Tour
-          </option>
-        </select>
-
-        <input
-          v-model="filters.domisili"
-          class="filter-input"
-          type="text"
-          placeholder="Domisili..."
-        >
-
-        <button
-          class="reset-button"
-          @click="resetFilter"
-        >
-          ↻ Reset
-        </button>
-
-      </div>
-
-      <!-- SELECTED TOOLBAR -->
-
-      <div
-        v-if="selected.length"
-        class="selected-toolbar"
-      >
-
-        <div>
-          <strong>
-            {{ selected.length }} member dipilih
-          </strong>
-
-          <span>
-            Siap dikirimi pesan WhatsApp
-          </span>
-        </div>
-
-        <button
-          class="send-button"
-          @click="openBlast"
-        >
-          💬 Kirim WhatsApp
-        </button>
-
-      </div>
-
-      <!-- TABLE -->
-
       <div class="table-container">
+
+        <!-- SEARCH / FILTER -->
+        <div class="filter-area">
+          <div class="search-box">
+            <span>🔍</span>
+            <input
+              v-model="filters.search"
+              type="text"
+              placeholder="Cari nama atau nomor WhatsApp..."
+            >
+          </div>
+          <select
+            v-model="filters.tipeMember"
+            class="filter-select"
+          >
+            <option value="">Semua Tipe Member</option>
+            <option value="PR">PR — Pengunjung Reguler</option>
+            <option value="PP">PP — Pengunjung Pengajian</option>
+            <option value="PT">PT — Pengunjung Tour</option>
+          </select>
+          <input
+            v-model="filters.domisili"
+            class="filter-input"
+            type="text"
+            placeholder="Domisili..."
+          >
+          <button
+            class="reset-button"
+            @click="resetFilter"
+          >
+            ↻ Reset
+          </button>
+        </div>
+
+        <!-- SELECTED TOOLBAR -->
+        <div
+          v-if="selected.length"
+          class="selected-toolbar"
+        >
+          <div>
+            <strong>{{ selected.length }} member dipilih</strong>
+            <span>Siap dikirimi pesan WhatsApp</span>
+          </div>
+          <button
+            class="send-button"
+            @click="openBlast"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg> Kirim WhatsApp
+          </button>
+        </div>
 
         <div
           v-if="isLoading"
@@ -675,7 +625,7 @@ function getTypeClass(type?: string) {
                   STATUS
                 </th>
 
-                <th class="action-column">
+                <th class="col-action">
                   ACTION
                 </th>
 
@@ -701,8 +651,11 @@ function getTypeClass(type?: string) {
 
                   <div class="member-cell">
 
-                    <div class="avatar">
-                      {{ getInitial(member.nama) }}
+                    <div class="avatar-disc-staff">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="staff-avatar-svg">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                      </svg>
                     </div>
 
                     <div>
@@ -733,7 +686,7 @@ function getTypeClass(type?: string) {
                     class="type-badge"
                     :class="getTypeClass(member.tipeMember)"
                   >
-                    {{ member.tipeMember || '-' }}
+                    {{ getMemberTypeLabel(member.tipeMember) }}
                   </span>
 
                 </td>
@@ -741,21 +694,18 @@ function getTypeClass(type?: string) {
                 <td>
 
                   <span
-                    class="status"
+                    class="status-pill-badge"
                     :class="member.status === 'Aktif'
-                      ? 'active'
-                      : 'inactive'"
+                      ? 'status-active'
+                      : 'status-locked'"
                   >
-                    <i></i>
-
-                    {{
-                      member.status || 'Aktif'
-                    }}
+                    <span class="status-dot-mini"></span>
+                    <span>{{ member.status || 'Aktif' }}</span>
                   </span>
 
                 </td>
 
-                <td>
+                <td class="col-action-cell">
 
                   <button
                     class="view-button"
@@ -848,15 +798,6 @@ function getTypeClass(type?: string) {
 
     <!-- DEMO BADGE -->
 
-    <div
-      v-if="isDemoData"
-      class="demo-notice"
-    >
-      <span>●</span>
-      Mode preview — menggunakan data demo karena
-      API member belum mengembalikan data.
-    </div>
-
     <!-- MEMBER DETAIL -->
 
     <Teleport to="body">
@@ -925,8 +866,7 @@ function getTypeClass(type?: string) {
                       )
                     "
                   >
-                    {{ selectedMember.tipeMember }}
-                  </span>
+                    {{ getMemberTypeLabel(selectedMember.tipeMember) }}</span>
 
                   <span
                     class="status active"
@@ -1091,7 +1031,7 @@ function getTypeClass(type?: string) {
                 openBlast();
               "
             >
-              💬 Kirim WhatsApp
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg> Kirim WhatsApp
             </button>
 
           </div>
@@ -1112,82 +1052,72 @@ function getTypeClass(type?: string) {
       @sent="handleBlastSent"
     />
 
+    <!-- FAB WhatsApp Blast -->
+    <button
+      class="fab-whatsapp-blast"
+      @click="openBlast"
+    >
+      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" class="fab-icon" />
+      <span
+        v-if="selected.length"
+        class="fab-badge"
+      >
+        {{ selected.length }}
+      </span>
+    </button>
+
   </div>
 </template>
 
 <style scoped>
 .crm-page {
-  min-height: 100%;
-  padding: 34px 42px 50px;
+  width: 100%;
+  max-width: 1380px;
+  margin: 0 auto;
   color: #302019;
   font-size: 17px;
+  display: flex;
+  flex-direction: column;
 }
 
-.crm-hero {
-  position: relative;
-  min-height: 190px;
-  overflow: hidden;
-  margin-bottom: 28px;
-  padding: 34px 38px;
-  border-radius: 22px;
-  background:
-    radial-gradient(circle at 88% 18%, rgba(255, 190, 83, 0.3), transparent 25%),
-    linear-gradient(115deg, #3b1e16 0%, #6b351f 56%, #a85d24 100%);
-  box-shadow: 0 18px 32px rgba(71, 39, 22, 0.18);
-}
-
-.hero-pattern {
-  position: absolute;
-  inset: 0;
-  opacity: 0.2;
-  background-image:
-    radial-gradient(circle at 12% 24%, #ffd37c 0 2px, transparent 3px),
-    radial-gradient(circle at 26% 72%, #ffd37c 0 3px, transparent 4px),
-    radial-gradient(circle at 78% 68%, #ffd37c 0 2px, transparent 3px),
-    radial-gradient(circle at 92% 36%, #ffd37c 0 3px, transparent 4px);
-  background-size: 110px 110px, 150px 150px, 130px 130px, 170px 170px;
-}
-
-.hero-content {
+.executive-command-header {
+  background: transparent;
+  margin: -24px -36px 24px -36px;
+  padding: 24px 36px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 30px;
-  position: relative;
-  z-index: 1;
+  gap: 20px;
+  flex-wrap: wrap;
 }
 
-.hero-text {
-  min-width: 0;
+.brand-text-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
-.hero-badge {
-  display: inline-flex;
-  margin-bottom: 13px;
-  padding: 6px 11px;
-  border: 1px solid rgba(255, 218, 145, 0.45);
-  border-radius: 999px;
-  background: rgba(43, 20, 13, 0.28);
-  color: #ffe4a8;
-  font-size: 14px;
+.header-main-title {
+  font-size: 28px;
   font-weight: 800;
-  letter-spacing: 1.4px;
-}
-
-.hero-text h1 {
+  color: #111827;
   margin: 0;
-  color: #fffaf1;
-  font-size: clamp(34px, 4vw, 50px);
-  line-height: 1.05;
-  letter-spacing: 0;
+  letter-spacing: -0.5px;
 }
 
-.hero-text p {
-  max-width: 640px;
-  margin: 11px 0 0;
-  color: #f6d9b0;
-  font-size: 18px;
+.header-meta-clean-line {
+  font-size: 14px;
+  font-weight: 500;
+  color: #4B5563;
+  margin: 0;
   line-height: 1.5;
+}
+
+.controls-hero-col {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
 /* HEADER */
@@ -1295,8 +1225,8 @@ function getTypeClass(type?: string) {
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 18px;
-  margin-bottom: 22px;
+  gap: 20px;
+  margin-bottom: 24px;
 }
 
 .stat-card {
@@ -1304,11 +1234,16 @@ function getTypeClass(type?: string) {
   display: flex;
   align-items: center;
   gap: 17px;
-  padding: 21px;
-  border: 1px solid #e9e2dc;
-  border-radius: 17px;
+  padding: 21px 24px;
+  border: 1px solid #E2E8F0;
+  border-radius: 14px;
   background: white;
-  box-shadow: 0 8px 24px rgba(52, 34, 24, 0.045);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 10px 20px rgba(0,0,0,0.015);
+  transition: box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+  box-shadow: 0 4px 6px rgba(0,0,0,0.04), 0 15px 30px rgba(0,0,0,0.03);
 }
 
 .stat-icon {
@@ -1322,16 +1257,16 @@ function getTypeClass(type?: string) {
   font-size: 22px;
 }
 
-.stat-icon.brown {
-  background: #f0e2d7;
-}
-
-.stat-icon.orange {
-  background: #fff0d2;
+.stat-icon.purple {
+  background: #f3ecff;
 }
 
 .stat-icon.green {
-  background: #e2f3e9;
+  background: #e0f7e9;
+}
+
+.stat-icon.blue {
+  background: #e6f0ff;
 }
 
 .stat-card > div:last-child {
@@ -1340,28 +1275,33 @@ function getTypeClass(type?: string) {
 }
 
 .stat-card span {
-  color: #756961;
+  color: #44403C;
   font-size: 16px;
   font-weight: 700;
 }
 
 .stat-card strong {
   margin-top: 2px;
-  color: #321c13;
+  color: #1C1917;
   font-size: 27px;
   line-height: 1.2;
 }
 
 .stat-card small {
   margin-top: 3px;
-  color: #a09791;
-  font-size: 14px;
+  color: #78716C;
+  font-size: 14.5px;
+  font-weight: 500;
 }
 
 /* MAIN CARD */
 
 .members-card {
   overflow: hidden;
+  border: 1px solid #e6dfd9;
+  border-radius: 18px;
+  background: white;
+  box-shadow: 0 10px 30px rgba(48, 32, 23, 0.055);
 }
 
 .members-header {
@@ -1369,23 +1309,19 @@ function getTypeClass(type?: string) {
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  margin-bottom: 16px;
   padding: 23px 25px;
-  border: 1px solid #e6dfd9;
-  border-radius: 18px;
-  background: white;
-  box-shadow: 0 10px 30px rgba(48, 32, 23, 0.055);
+  border-bottom: 1px solid #eee8e3;
 }
 
 .members-header h2 {
   margin: 0;
-  color: #3b2419;
+  color: #1C1917;
   font-size: 20px;
 }
 
 .members-header p {
   margin: 5px 0 0;
-  color: #958980;
+  color: #44403C;
   font-size: 15px;
 }
 
@@ -1405,7 +1341,7 @@ function getTypeClass(type?: string) {
   grid-template-columns: 1.7fr 1fr 1fr auto;
   gap: 11px;
   padding: 19px 25px;
-  background: #fcfaf8;
+  background: white;
   border-bottom: 1px solid #eee8e3;
 }
 
@@ -1417,7 +1353,7 @@ function getTypeClass(type?: string) {
   border: 1px solid #ded6cf;
   border-radius: 10px;
   background: white;
-  color: #3d291f;
+  color: #1C1917;
   font-family: inherit;
   font-size: 16px;
   outline: none;
@@ -1467,7 +1403,7 @@ function getTypeClass(type?: string) {
   border: 1px solid #ddd4cc;
   border-radius: 10px;
   background: white;
-  color: #5b493e;
+  color: #1C1917;
   font-family: inherit;
   font-size: 16px;
   font-weight: 700;
@@ -1497,12 +1433,12 @@ function getTypeClass(type?: string) {
 }
 
 .selected-toolbar strong {
-  color: #4a2d1e;
+  color: #1C1917;
   font-size: 16px;
 }
 
 .selected-toolbar span {
-  color: #978980;
+  color: #44403C;
   font-size: 14px;
 }
 
@@ -1523,36 +1459,33 @@ function getTypeClass(type?: string) {
 
 .table-container {
   overflow-x: auto;
-  border: 1px solid #e6dfd9;
-  border-radius: 18px 18px 0 0;
   background: white;
-  box-shadow: 0 10px 30px rgba(48, 32, 23, 0.055);
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed;
 }
 
 th {
-  height: 48px;
-  padding: 0 16px;
-  border-bottom: 1px solid #eee9e5;
-  background: #fdfcfb;
-  color: #81756e;
+  padding: 14px 16px;
+  border-bottom: 2px solid #E5DFD3;
+  background: #F4F1ED;
+  color: #111111;
   text-align: left;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 800;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
 td {
-  height: 68px;
-  padding: 0 16px;
-  border-bottom: 1px solid #f0ebe7;
-  color: #40342e;
-  font-size: 16px;
+  padding: 18px 16px;
+  border-bottom: 1px solid #EFE4D6;
+  color: #1C1917;
+  font-size: 15px;
+  font-weight: 500;
+  vertical-align: middle;
 }
 
 tbody tr {
@@ -1569,8 +1502,12 @@ td:first-child {
   padding-left: 20px;
 }
 
-.action-column {
-  width: 90px;
+.col-action { 
+  width: 110px; 
+  text-align: center;
+}
+.col-action-cell {
+  text-align: center;
 }
 
 input[type="checkbox"] {
@@ -1583,21 +1520,19 @@ input[type="checkbox"] {
 .member-cell {
   display: flex;
   align-items: center;
-  gap: 11px;
+  gap: 16px;
 }
 
-.avatar {
+.avatar-disc-staff {
   width: 36px;
   height: 36px;
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
-  border-radius: 11px;
-  background: #f0e5dd;
-  color: #65422e;
-  font-size: 11px;
-  font-weight: 800;
+  color: #64748B;
 }
 
 .member-cell > div:last-child {
@@ -1607,17 +1542,20 @@ input[type="checkbox"] {
 }
 
 .member-cell strong {
-  color: #33231c;
-  font-size: 16px;
+  color: #1C1917;
+  font-size: 16.5px;
+  font-weight: 800;
 }
 
 .member-cell small {
-  color: #a19790;
-  font-size: 13px;
+  color: #64748B;
+  font-size: 11.5px;
+  font-weight: 600;
 }
 
 .whatsapp-cell {
-  color: #70645c;
+  color: #44403C;
+  font-weight: 600;
   white-space: nowrap;
 }
 
@@ -1625,73 +1563,71 @@ input[type="checkbox"] {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 30px;
-  padding: 5px 9px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 800;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
 }
 
 .type-pr {
-  background: #eee3ff;
-  color: #7541bd;
+  background: #DCE6F5; /* Light blue matching image 2 */
+  color: #1A365D;
 }
 
 .type-pp {
-  background: #e3edff;
-  color: #3869c4;
+  background: #FEF08A; /* Yellow matching image 2 */
+  color: #422006;
 }
 
 .type-pt {
-  background: #e0f7e9;
-  color: #20864e;
+  background: #C4DCFB; /* Slightly distinct blue */
+  color: #1A365D;
 }
 
-.status {
+.status-pill-badge {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  font-size: 14px;
+  gap: 5px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
 }
 
-.status i {
-  width: 6px;
-  height: 6px;
-  display: block;
+.status-active { background: #BBF7D0; color: #0F172A; }
+.status-locked { background: #FECACA; color: #0F172A; }
+
+.status-dot-mini {
+  width: 5px;
+  height: 5px;
   border-radius: 50%;
   background: currentColor;
-}
-
-.status.active {
-  color: #199b50;
-}
-
-.status.inactive {
-  color: #99918b;
 }
 
 .view-button {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 8px 11px;
-  border: 1px solid #ddd5cf;
-  border-radius: 8px;
-  background: white;
-  color: #4d392e;
-  font-family: inherit;
-  font-size: 14px;
+  background: #FFFFFF;
+  border: 1px solid #EADBCC;
+  color: #5A3A28;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
   font-weight: 700;
   cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(61, 34, 20, 0.05);
 }
 
 .view-button:hover {
-  border-color: #8e6043;
-  background: #faf5f0;
+  background: #FAF5EE;
+  border-color: #D6C3B1;
+  color: #3D2214;
 }
 
 .view-button span {
-  font-size: 16px;
+  font-size: 14px;
 }
 
 .empty-state {
@@ -1726,11 +1662,8 @@ input[type="checkbox"] {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border: 1px solid #e6dfd9;
-  border-top: 0;
-  border-radius: 0 0 18px 18px;
   background: white;
-  padding: 17px 25px;
+  padding: 15px 25px;
   color: #8f857e;
   font-size: 14px;
 }
@@ -1808,22 +1741,25 @@ input[type="checkbox"] {
 }
 
 .detail-modal {
-  width: 850px;
+  width: 600px;
   max-width: 100%;
   max-height: 90vh;
   overflow: hidden;
-  border-radius: 20px;
-  background: #fff;
-  box-shadow: 0 30px 90px rgba(34, 22, 15, 0.3);
+  border-radius: 16px;
+  background: #FFFFFF;
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
 }
 
 .detail-header {
+  flex-shrink: 0;
   display: grid;
   grid-template-columns: 42px 1fr 42px;
   align-items: center;
   gap: 12px;
   padding: 21px 24px;
-  border-bottom: 1px solid #eee7e1;
+  border-bottom: 1px solid #E5E7EB;
 }
 
 .detail-header > div {
@@ -1831,28 +1767,37 @@ input[type="checkbox"] {
 }
 
 .detail-header span {
-  color: #a18e82;
-  font-size: 9px;
-  font-weight: 800;
+  color: #6B7280;
+  font-size: 10px;
+  font-weight: 700;
   letter-spacing: 1.2px;
 }
 
 .detail-header h2 {
   margin: 3px 0 0;
-  color: #342016;
-  font-size: 20px;
+  color: #111827;
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: -0.3px;
 }
 
 .back-button,
 .close-detail {
   width: 36px;
   height: 36px;
-  border: 1px solid #e2d9d2;
-  border-radius: 9px;
-  background: white;
-  color: #59463a;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  background: #FFFFFF;
+  color: #4B5563;
   font-size: 17px;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+.back-button:hover,
+.close-detail:hover {
+  background: #F9FAFB;
+  border-color: #D1D5DB;
+  color: #111827;
 }
 
 .close-detail {
@@ -1860,42 +1805,45 @@ input[type="checkbox"] {
 }
 
 .detail-body {
-  max-height: calc(90vh - 145px);
+  flex: 1;
   overflow-y: auto;
-  padding: 28px;
+  padding: 20px 24px;
 }
 
 .profile-section {
   display: flex;
   align-items: center;
-  gap: 19px;
-  padding-bottom: 25px;
-  border-bottom: 1px solid #eee8e2;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #E5E7EB;
 }
 
 .large-avatar {
-  width: 86px;
-  height: 86px;
+  width: 68px;
+  height: 68px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 25px;
-  background: #ead9ca;
-  color: #68442e;
-  font-size: 25px;
-  font-weight: 800;
+  border-radius: 18px;
+  background: #FFFBEB;
+  color: #B45309;
+  font-size: 24px;
+  font-weight: 900;
+  border: 2px solid #FDE68A;
+  box-shadow: 0 4px 10px rgba(245, 158, 11, 0.08);
 }
 
 .profile-section h2 {
   margin: 0;
-  color: #281a13;
-  font-size: 27px;
+  color: #111827;
+  font-size: 22px;
+  font-weight: 800;
 }
 
 .profile-section p {
-  margin: 8px 0 0;
-  color: #93867e;
-  font-size: 15px;
+  margin: 4px 0 0;
+  color: #6B7280;
+  font-size: 13px;
 }
 
 .profile-meta {
@@ -1908,15 +1856,23 @@ input[type="checkbox"] {
 .detail-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 13px;
-  margin-top: 22px;
+  gap: 10px;
+  margin-top: 16px;
 }
 
 .detail-info-card {
-  padding: 17px;
-  border: 1px solid #ebe3dc;
-  border-radius: 13px;
-  background: #fcfaf8;
+  padding: 12px 16px;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  background: #FAFAFA;
+  border-left: 3px solid #D97706;
+  transition: all 0.2s ease;
+}
+
+.detail-info-card:hover {
+  background: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border-color: #D1D5DB;
 }
 
 .detail-info-card span,
@@ -1926,59 +1882,71 @@ input[type="checkbox"] {
 }
 
 .detail-info-card span {
-  color: #92857c;
-  font-size: 14px;
+  color: #4B5563;
+  font-size: 11px;
   font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 4px;
 }
 
 .detail-info-card strong {
-  margin-top: 7px;
-  color: #352219;
-  font-size: 18px;
+  margin-top: 4px;
+  color: #111827;
+  font-size: 19px;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+  margin-bottom: 2px;
 }
 
 .detail-info-card small {
-  margin-top: 4px;
-  color: #aaa098;
-  font-size: 13px;
+  color: #9CA3AF;
+  font-size: 11px;
 }
 
 .activity-card {
-  margin-top: 18px;
-  padding: 20px;
-  border: 1px solid #ebe3dc;
-  border-radius: 15px;
+  margin-top: 16px;
+  padding: 16px 20px;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  background: #FFFFFF;
 }
 
 .activity-header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: 15px;
 }
 
 .activity-header h3 {
   margin: 0;
-  color: #352219;
-  font-size: 15px;
+  color: #111827;
+  font-size: 16px;
+  font-weight: 800;
 }
 
 .activity-header p {
   margin: 4px 0 0;
-  color: #978b83;
-  font-size: 14px;
+  color: #6B7280;
+  font-size: 13.5px;
 }
 
 .activity-header > span {
-  color: #199b50;
-  font-size: 13px;
+  color: #059669;
+  background: #D1FAE5;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 11px;
   font-weight: 800;
+  letter-spacing: 0.5px;
 }
 
 .activity-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 15px;
-  margin-top: 20px;
+  margin-top: 14px;
 }
 
 .activity-row div {
@@ -1988,49 +1956,75 @@ input[type="checkbox"] {
 }
 
 .activity-row span {
-  color: #988b82;
-  font-size: 14px;
+  color: #6B7280;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .activity-row strong {
-  color: #473329;
+  color: #111827;
   font-size: 16px;
+  font-weight: 800;
 }
 
+
+
 .detail-footer {
+  flex-shrink: 0;
   display: flex;
   justify-content: flex-end;
-  gap: 9px;
+  gap: 12px;
   padding: 16px 24px;
-  border-top: 1px solid #eee8e2;
+  border-top: 1px solid #E5E7EB;
+  background: #F9FAFB;
 }
 
 .secondary-detail-button,
 .primary-detail-button {
   height: 40px;
-  padding: 0 16px;
-  border-radius: 9px;
+  padding: 0 20px;
+  border-radius: 8px;
   font-family: inherit;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
 }
 
 .secondary-detail-button {
-  border: 1px solid #ded6cf;
-  background: white;
-  color: #65544a;
+  border: 1px solid #D1D5DB;
+  background: #FFFFFF;
+  color: #374151;
+}
+
+.secondary-detail-button:hover {
+  background: #F3F4F6;
+  border-color: #9CA3AF;
 }
 
 .primary-detail-button {
   border: 0;
-  background: #5b3826;
-  color: white;
+  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+  color: #FFFFFF;
+  box-shadow: 0 4px 10px rgba(37, 211, 102, 0.2);
+}
+
+.primary-detail-button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(37, 211, 102, 0.3);
 }
 
 .primary-detail-button:disabled {
-  opacity: 0.4;
+  opacity: 0.5;
   cursor: not-allowed;
+  background: #9CA3AF;
+  box-shadow: none;
 }
 
 /* LOADING */
@@ -2098,8 +2092,11 @@ input[type="checkbox"] {
   }
 
   .detail-grid {
-    grid-template-columns: 1fr;
-  }
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+  margin-top: 16px;
+}
 }
 
 @media (max-width: 600px) {
@@ -2134,14 +2131,21 @@ input[type="checkbox"] {
   }
 
   .detail-body {
-    padding: 20px;
-  }
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px 24px;
+}
 
   .profile-section {
-    align-items: flex-start;
-  }
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #E5E7EB;
+}
 
   .detail-footer {
+  flex-shrink: 0;
     flex-direction: column;
   }
 
@@ -2210,10 +2214,57 @@ th,
 
 .members-header h2,
 .detail-header h2 {
+  margin: 3px 0 0;
+  color: #111827;
   font-size: 22px;
+  font-weight: 900;
+  letter-spacing: -0.3px;
 }
 
-.blast-main-button {
-  font-size: 16px;
+/* WhatsApp FAB */
+.fab-whatsapp-blast {
+  position: fixed;
+  bottom: 40px;
+  right: 40px;
+  width: 65px;
+  height: 65px;
+  background-color: #25D366;
+  border-radius: 50%;
+  border: none;
+  box-shadow: 0 6px 16px rgba(37, 211, 102, 0.4);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.fab-whatsapp-blast:hover {
+  transform: scale(1.05);
+  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.5);
+}
+
+.fab-icon {
+  width: 36px;
+  height: 36px;
+}
+
+.fab-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background-color: #EF4444;
+  color: white;
+  font-size: 12px;
+  font-weight: 800;
+  min-width: 22px;
+  height: 22px;
+  border-radius: 11px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  border: 2px solid white;
 }
 </style>

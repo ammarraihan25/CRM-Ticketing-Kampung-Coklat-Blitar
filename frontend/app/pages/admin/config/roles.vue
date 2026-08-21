@@ -575,18 +575,17 @@ const saveUser = () => {
 }
 
 .page-title {
-  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
   font-size: 28px;
-  font-weight: 900;
-  color: #2C1A13;
+  font-weight: 800;
+  color: #111827;
   margin: 0;
   letter-spacing: -0.5px;
 }
 
 .page-subtitle {
   font-size: 14px;
-  font-weight: 600;
-  color: #6E442B;
+  font-weight: 500;
+  color: #4B5563;
   margin: 0;
   line-height: 1.5;
 }
