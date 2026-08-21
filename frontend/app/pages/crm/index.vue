@@ -651,12 +651,7 @@ function getTypeClass(type?: string) {
 
                   <div class="member-cell">
 
-                    <div class="avatar-disc-staff">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="staff-avatar-svg">
-                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                        <circle cx="12" cy="7" r="4"></circle>
-                      </svg>
-                    </div>
+                    
 
                     <div>
                       <strong>
@@ -699,7 +694,7 @@ function getTypeClass(type?: string) {
                       ? 'status-active'
                       : 'status-locked'"
                   >
-                    <span class="status-dot-mini"></span>
+                    
                     <span>{{ member.status || 'Aktif' }}</span>
                   </span>
 
@@ -868,15 +863,7 @@ function getTypeClass(type?: string) {
                   >
                     {{ getMemberTypeLabel(selectedMember.tipeMember) }}</span>
 
-                  <span
-                    class="status active"
-                  >
-                    <i></i>
-                    {{
-                      selectedMember.status
-                      || 'Aktif'
-                    }}
-                  </span>
+                  
 
                 </div>
 
@@ -1468,33 +1455,33 @@ table {
 }
 
 th {
-  padding: 14px 16px;
-  border-bottom: 2px solid #E5DFD3;
-  background: #F4F1ED;
-  color: #111111;
-  text-align: left;
-  font-size: 12.5px;
-  font-weight: 800;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-}
-
-td {
-  padding: 18px 16px;
-  border-bottom: 1px solid #EFE4D6;
-  color: #1C1917;
-  font-size: 15px;
-  font-weight: 500;
-  vertical-align: middle;
-}
-
-tbody tr {
-  transition: background 0.15s ease;
-}
-
-tbody tr:hover {
-  background: #fffbf8;
-}
+    padding: 10px 16px;
+    border-bottom: 1px solid #F3F4F6;
+    background: #FAFAFA;
+    color: #6B7280;
+    text-align: left;
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  
+  td {
+    padding: 10px 16px;
+    border-bottom: 1px solid #F3F4F6;
+    color: #374151;
+    font-size: 13px;
+    font-weight: 500;
+    vertical-align: middle;
+  }
+  
+  tbody tr {
+    transition: background 0.15s ease;
+  }
+  
+  tbody tr:hover {
+    background: #F9FAFB;
+  }
 
 th:first-child,
 td:first-child {
@@ -1536,22 +1523,22 @@ input[type="checkbox"] {
 }
 
 .member-cell > div:last-child {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.member-cell strong {
-  color: #1C1917;
-  font-size: 16.5px;
-  font-weight: 800;
-}
-
-.member-cell small {
-  color: #64748B;
-  font-size: 11.5px;
-  font-weight: 600;
-}
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  
+  .member-cell strong {
+    color: #111827;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  
+  .member-cell small {
+    color: #6B7280;
+    font-size: 11px;
+    font-weight: 500;
+  }
 
 .whatsapp-cell {
   color: #44403C;
@@ -1560,14 +1547,14 @@ input[type="checkbox"] {
 }
 
 .type-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 12.5px;
-  font-weight: 600;
-}
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+  }
 
 .type-pr {
   background: #DCE6F5; /* Light blue matching image 2 */
@@ -1585,17 +1572,17 @@ input[type="checkbox"] {
 }
 
 .status-pill-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 6px 10px;
-  border-radius: 6px;
-  font-size: 12.5px;
-  font-weight: 600;
-}
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+  }
 
-.status-active { background: #BBF7D0; color: #0F172A; }
-.status-locked { background: #FECACA; color: #0F172A; }
+.status-active { background: #D1FAE5; color: #065F46; }
+  .status-locked { background: #F3F4F6; color: #6B7280; }
 
 .status-dot-mini {
   width: 5px;
@@ -1605,20 +1592,19 @@ input[type="checkbox"] {
 }
 
 .view-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: #FFFFFF;
-  border: 1px solid #EADBCC;
-  color: #5A3A28;
-  padding: 6px 12px;
-  border-radius: 6px;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 1px 2px rgba(61, 34, 20, 0.05);
-}
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: #FFFFFF;
+    border: 1px solid #EADBCC;
+    color: #5A3A28;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
 
 .view-button:hover {
   background: #FAF5EE;

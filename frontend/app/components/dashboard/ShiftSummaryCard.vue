@@ -52,11 +52,9 @@
         <div class="profile-meta">
           <div class="profile-name-row">
             <span class="cashier-name">{{ activeShift.cashierName }}</span>
-            <span class="terminal-badge">{{ activeShift.id === 'ALL' ? '4 Loket Aktif' : activeShift.terminalName }}</span>
           </div>
           <span class="session-time">Sesi Aktif: {{ activeShift.startTime }} - {{ activeShift.endTime }} WIB</span>
         </div>
-      </div>
 
       <div class="profile-stats">
         <div class="stat-group">
@@ -69,10 +67,12 @@
           <span class="stat-lbl">Pax Terbit</span>
         </div>
       </div>
+      </div>
     </div>
 
     <!-- Financial Split Metrics (Bento-style) -->
     <div class="metrics-grid">
+      
       <!-- Kas Fisik Card -->
       <div class="metric-card">
         <div class="metric-card-header">
@@ -136,17 +136,7 @@
     </div>
 
 
-    <!-- Actions -->
-    <div class="action-footer">
-      <button type="button" class="btn-outline" @click="$emit('view-details', activeShift)">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-        Audit Log Transaksi
-      </button>
-      <button type="button" class="btn-solid" :disabled="activeShift.isClosed" @click="$emit('close-shift', activeShift)">
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-        {{ activeShift.isClosed ? 'Shift Telah Ditutup' : 'Tutup & Rekonsiliasi Shift' }}
-      </button>
-    </div>
+    
 
   </div>
 </template>
@@ -210,16 +200,18 @@ const formatRupiah = (val: number): string => {
 /* Main Container */
 .premium-shift-card {
   background: #FFFFFF;
-  border: 1px solid #EFEAE2;
-  border-radius: 24px;
-  padding: 24px;
+  border: 1px solid #E5E7EB;
+  border-radius: 20px;
+  padding: 24px 28px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0, 0, 0, 0.02);
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
   font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
-  box-shadow: 0 4px 20px -2px rgba(44, 26, 19, 0.03);
   transition: box-shadow 0.3s ease;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .premium-shift-card:hover {
@@ -231,12 +223,14 @@ const formatRupiah = (val: number): string => {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
 }
 
 .shift-title-group {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
 }
 
 .shift-icon-box {
@@ -244,7 +238,7 @@ const formatRupiah = (val: number): string => {
   height: 44px;
   border-radius: 12px;
   background: #FFFDF9;
-  border: 1px solid #EFEAE2;
+  border: 1px solid #E5E7EB;
   color: #D97706;
   display: flex;
   align-items: center;
@@ -259,8 +253,8 @@ const formatRupiah = (val: number): string => {
 
 .shift-title {
   font-size: 17px;
-  font-weight: 800;
-  color: #111111;
+  font-weight: 900;
+  color: #111827;
   margin: 0;
   letter-spacing: -0.3px;
 }
@@ -268,7 +262,7 @@ const formatRupiah = (val: number): string => {
 .shift-subtitle {
   font-size: 13.5px;
   font-weight: 600;
-  color: #111111;
+  color: #4B5563;
   margin: 2px 0 0 0;
   line-height: 1.5;
 }
@@ -277,31 +271,31 @@ const formatRupiah = (val: number): string => {
 .segmented-control {
   display: flex;
   align-items: center;
-  background: #F8F5F0;
+  background: #F9FAFB;
   padding: 4px;
   border-radius: 10px;
-  border: 1px solid #EFEAE2;
+  border: 1px solid #E5E7EB;
 }
 
 .seg-btn {
   border: none;
   background: transparent;
-  padding: 6px 14px;
+  padding: 8px 16px;
   border-radius: 6px;
-  font-size: 12px;
+  font-size: 12.5px;
   font-weight: 700;
-  color: #8C786E;
+  color: #6B7280;
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .seg-btn:hover:not(.active) {
-  color: #111111;
+  color: #111827;
 }
 
 .seg-btn.active {
   background: #FFFFFF;
-  color: #111111;
+  color: #111827;
   font-weight: 800;
   box-shadow: 0 1px 4px rgba(0,0,0,0.06);
 }
@@ -321,28 +315,29 @@ const formatRupiah = (val: number): string => {
 
 /* Profile Bar */
 .profile-bar {
-  background: #FDFBF7;
-  border: 1px solid #EFEAE2;
-  border-radius: 16px;
-  padding: 14px 18px;
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
+  border-radius: 14px;
+  padding: 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
 }
 
 .profile-left {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
 }
 
 .avatar-ring {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   background: #FFFFFF;
-  border: 1px solid #EFEAE2;
-  color: #78655C;
+  border: 1px solid #E5E7EB;
+  color: #4B5563;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -351,33 +346,34 @@ const formatRupiah = (val: number): string => {
 .profile-meta {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
 }
 
 .profile-name-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .cashier-name {
-  font-size: 14.5px;
+  font-size: 15px;
   font-weight: 800;
-  color: #111111;
+  color: #111827;
 }
 
 .terminal-badge {
-  font-size: 10.5px;
-  font-weight: 700;
-  color: #8C786E;
-  background: #EFEAE2;
-  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 800;
+  color: #4B5563;
+  background: #E5E7EB;
+  padding: 4px 8px;
   border-radius: 6px;
 }
 
 .session-time {
-  font-size: 11.5px;
-  color: #8C786E;
+  font-size: 12px;
+  color: #6B7280;
+  font-weight: 500;
 }
 
 .profile-stats {
@@ -394,47 +390,47 @@ const formatRupiah = (val: number): string => {
 
 .stat-val {
   font-size: 16px;
-  font-weight: 800;
-  color: #111111;
+  font-weight: 900;
+  color: #111827;
 }
 
 .text-amber { color: #D97706; }
 
 .stat-lbl {
-  font-size: 10px;
-  font-weight: 700;
-  color: #8C786E;
+  font-size: 11px;
+  font-weight: 800;
+  color: #6B7280;
   text-transform: uppercase;
 }
 
 .stat-divider {
   width: 1px;
-  height: 24px;
-  background: #EAE2D8;
+  height: 32px;
+  background: #E5E7EB;
 }
 
 /* Metrics Grid (Bento) */
 .metrics-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 16px;
+  gap: 12px;
 }
 
 .metric-card {
   background: #FFFFFF;
-  border: 1px solid #EFEAE2;
-  border-radius: 16px;
-  padding: 16px 20px;
+  border: 1px solid #E5E7EB;
+  border-radius: 14px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 12px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
   transition: all 0.2s ease;
 }
 
 .metric-card:hover {
-  border-color: #EAE2D8;
-  background: #FDFBF7;
+  border-color: #D1D5DB;
+  background: #F9FAFB;
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
 }
@@ -448,65 +444,69 @@ const formatRupiah = (val: number): string => {
 .metric-title-group {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .metric-icon {
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
+.metric-icon svg {
+  width: 13px;
+  height: 13px;
+}
 
 .bg-amber-light { background: #FEF3C7; }
 .text-amber { color: #D97706; }
-.bg-gray-light { background: #F3ECE2; }
-.text-gray { color: #6B5A52; }
+.bg-gray-light { background: #E5E7EB; }
+.text-gray { color: #374151; }
 
 .metric-name {
-  font-size: 13px;
-  font-weight: 700;
-  color: #5A4034;
+  font-size: 12px;
+  font-weight: 800;
+  color: #111827;
 }
 
 .metric-pct {
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 800;
-  padding: 2px 8px;
+  padding: 2px 6px;
   border-radius: 6px;
 }
 
 .metric-value-group {
   display: flex;
   align-items: baseline;
-  gap: 4px;
+  gap: 6px;
 }
 
 .metric-currency {
-  font-size: 16px;
-  font-weight: 700;
-  color: #8C786E;
+  font-size: 13px;
+  font-weight: 800;
+  color: #4B5563;
 }
 
 .metric-amount {
-  font-size: 26px;
+  font-size: 19px;
   font-weight: 900;
-  color: #111111;
+  color: #111827;
   letter-spacing: -0.5px;
 }
 
 .metric-progress-wrapper {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .metric-progress-track {
   width: 100%;
-  height: 5px;
-  background: #F0EBE1;
+  height: 6px;
+  background: #E5E7EB;
   border-radius: 4px;
   overflow: hidden;
 }
@@ -517,41 +517,46 @@ const formatRupiah = (val: number): string => {
   transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.bg-amber { background: #F59E0B; }
-.bg-gray { background: #8C786E; }
+.bg-amber { background: #F97316; }
+.bg-gray { background: #684534; }
 
 .metric-desc {
-  font-size: 11px;
-  color: #8C786E;
+  font-size: 10px;
+  color: #6B7280;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Grand Total Bar */
 .grand-total-bar {
-  background: linear-gradient(135deg, #111111 0%, #000000 100%);
+  background: #111827;
   border-radius: 16px;
-  padding: 18px 24px;
+  padding: 20px 24px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
   color: #FFFFFF;
+  margin-top: auto;
 }
 
 .total-left {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 4px;
 }
 
 .total-lbl {
-  font-size: 13px;
-  font-weight: 600;
-  color: #D6CCC2;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #9CA3AF;
 }
 
 .total-scope {
-  font-size: 11.5px;
-  color: #A49389;
+  font-size: 12px;
+  color: #6B7280;
 }
 
 .total-right {
@@ -560,9 +565,9 @@ const formatRupiah = (val: number): string => {
 }
 
 .total-amount {
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 900;
-  color: #FBBF24;
+  color: #F97316;
   letter-spacing: -0.5px;
 }
 
@@ -644,6 +649,7 @@ const formatRupiah = (val: number): string => {
   align-items: center;
   justify-content: flex-end;
   gap: 12px;
+  flex-wrap: wrap;
   padding-top: 8px;
 }
 

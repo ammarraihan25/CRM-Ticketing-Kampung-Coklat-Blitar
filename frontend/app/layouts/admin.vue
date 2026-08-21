@@ -53,7 +53,15 @@
               <path d="M3 9l9-6 9 6v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
               <polyline points="9 22 9 12 15 12 15 22"/>
             </svg>
-            <span>Katalog &amp; Tarif Wahana</span>
+            <span>Tarif Tiket Masuk</span>
+          </NuxtLink>
+
+          <NuxtLink to="/admin/config/wahana" exact-active-class="active" class="nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
+              <circle cx="12" cy="12" r="10"/>
+              <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+            </svg>
+            <span>Status Wahana</span>
           </NuxtLink>
           
           <template v-if="currentRole === 'admin'">

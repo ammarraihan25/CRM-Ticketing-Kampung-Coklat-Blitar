@@ -24,10 +24,8 @@
       <!-- Table Header -->
       <div class="clean-table-header">
         <div class="th-cell th-name">Kategori &amp; Akses</div>
-        <div class="th-cell th-porsi">Porsi Volume</div>
         <div class="th-cell th-vol text-right">Volume</div>
         <div class="th-cell th-omzet text-right">Total Omzet</div>
-        <div class="th-cell th-harga text-right">@ Harga</div>
       </div>
 
       <!-- Table Rows -->
@@ -42,26 +40,12 @@
             <span class="slate-desc">{{ item.description }}</span>
           </div>
 
-          <div class="td-cell td-porsi">
-            <div class="slate-track-bg">
-              <div 
-                class="slate-track-fill" 
-                :style="{ width: `${item.percentage * 1.8}%`, backgroundColor: item.color }"
-              ></div>
-            </div>
-            <span class="progress-pct-val">{{ item.percentage }}%</span>
-          </div>
-
           <div class="td-cell td-vol text-right">
             <span class="metric-val-dark">{{ item.qty.toLocaleString('id-ID') }} <small>pax</small></span>
           </div>
 
           <div class="td-cell td-omzet text-right">
             <span class="metric-val-amber">{{ formatRupiah(item.totalGtv) }}</span>
-          </div>
-
-          <div class="td-cell td-harga text-right">
-            <span class="slate-price-pill">{{ formatRupiah(item.price) }}</span>
           </div>
         </div>
       </div>
@@ -70,16 +54,16 @@
     <!-- Bottom Summary Ribbon -->
     <div class="ticket-footer-ribbon">
       <div class="ribbon-stat">
-        <span class="ribbon-lbl">Total Volume:</span>
+        <span class="ribbon-lbl">Total Volume</span>
         <span class="ribbon-val">{{ totalTicketsSold.toLocaleString('id-ID') }} Pax</span>
       </div>
       <div class="ribbon-stat">
-        <span class="ribbon-lbl">Total Pendapatan:</span>
+        <span class="ribbon-lbl">Total Pendapatan</span>
         <span class="ribbon-val-gold">{{ formatRupiah(totalGtvAmount) }}</span>
       </div>
       <div class="ribbon-stat">
-        <span class="ribbon-lbl">Rata-rata:</span>
-        <span class="ribbon-val">{{ totalTicketsSold > 0 ? formatRupiah(Math.round(totalGtvAmount / totalTicketsSold)) : 'Rp 0' }} / tiket</span>
+        <span class="ribbon-lbl">Rata-rata</span>
+        <span class="ribbon-val">{{ totalTicketsSold > 0 ? formatRupiah(Math.round(totalGtvAmount / totalTicketsSold)) : 'Rp 0' }}</span>
       </div>
     </div>
   </div>
@@ -136,6 +120,9 @@ const formatRupiah = (val: number): string => {
   gap: 20px;
   height: 100%;
   font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .card-header-flex {
@@ -195,15 +182,15 @@ const formatRupiah = (val: number): string => {
 .clean-table-header {
   display: flex;
   align-items: center;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #EAE2D8;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #E5E7EB;
   margin-bottom: 12px;
 }
 
 .th-cell {
   font-size: 11.5px;
   font-weight: 800;
-  color: #111111;
+  color: #111827;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -216,8 +203,8 @@ const formatRupiah = (val: number): string => {
 .ticket-slate-row {
   display: flex;
   align-items: center;
-  padding: 12px 0;
-  border-bottom: 1px solid #F5EFE6;
+  padding: 16px 0;
+  border-bottom: 1px solid #E5E7EB;
   transition: background-color 0.2s ease;
 }
 
@@ -226,20 +213,18 @@ const formatRupiah = (val: number): string => {
 }
 
 .ticket-slate-row:hover {
-  background: #FFFCF7;
+  background: #F9FAFB;
   border-radius: 8px;
-  padding-left: 8px;
-  padding-right: 8px;
-  margin-left: -8px;
-  margin-right: -8px;
+  padding-left: 10px;
+  padding-right: 10px;
+  margin-left: -10px;
+  margin-right: -10px;
 }
 
 /* Grid Columns Strategy */
-.th-name, .td-name { flex: 2; min-width: 160px; padding-right: 12px; }
-.th-porsi, .td-porsi { flex: 1.5; min-width: 120px; padding-right: 12px; }
+.th-name, .td-name { flex: 2; min-width: 140px; padding-right: 12px; }
 .th-vol, .td-vol { flex: 1; min-width: 80px; }
 .th-omzet, .td-omzet { flex: 1.2; min-width: 100px; padding-left: 12px; }
-.th-harga, .td-harga { width: 90px; flex-shrink: 0; padding-left: 12px; }
 
 .td-cell {
   display: flex;
@@ -255,78 +240,41 @@ const formatRupiah = (val: number): string => {
 .td-name {
   flex-direction: column;
   align-items: flex-start;
-  gap: 2px;
+  gap: 4px;
 }
 
 .slate-name {
-  font-size: 13.5px;
+  font-size: 14.5px;
   font-weight: 800;
-  color: #111111;
+  color: #111827;
 }
 
 .slate-desc {
-  font-size: 12.5px;
-  font-weight: 600;
-  color: #111111;
+  font-size: 13px;
+  font-weight: 500;
+  color: #4B5563;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 100%;
 }
 
-.td-porsi {
-  gap: 10px;
-}
-
-.slate-track-bg {
-  flex: 1;
-  height: 6px;
-  background: #F0EBE1;
-  border-radius: 4px;
-  overflow: hidden;
-}
-
-.slate-track-fill {
-  height: 100%;
-  border-radius: 4px;
-  transition: width 0.5s ease;
-}
-
-.progress-pct-val {
-  font-size: 11px;
-  font-weight: 800;
-  color: #5A4034;
-  width: 32px;
-  text-align: right;
-}
-
-.metric-val-dark {
-  font-size: 13px;
-  font-weight: 800;
-  color: #111111;
-}
-
-.metric-val-dark small {
-  font-size: 10px;
-  color: #8C786E;
-  font-weight: 600;
-}
-
 .metric-val-amber {
-  font-size: 13px;
+  font-size: 14.5px;
   font-weight: 800;
   color: #D97706;
 }
 
-.slate-price-pill {
-  font-size: 12px;
-  font-weight: 700;
-  color: #78655C;
-  background: #FFFDF9;
-  border: 1px solid #EAE2D8;
-  padding: 4px 8px;
-  border-radius: 6px;
-  display: inline-block;
+.metric-val-dark {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: #111827;
+}
+
+.metric-val-dark small {
+  font-size: 11px;
+  color: #6B7280;
+  font-weight: 600;
 }
 
 /* Footer Ribbon */
@@ -334,35 +282,38 @@ const formatRupiah = (val: number): string => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #FFFCF7;
-  border-top: 1px solid #EAE2D8;
-  padding: 12px 16px;
+  flex-wrap: wrap;
+  gap: 12px;
+  background: #111827;
+  border-top: none;
+  padding: 16px 20px;
   border-radius: 0 0 16px 16px;
   margin: 0 -28px -24px -28px;
 }
 
 .ribbon-stat {
   display: flex;
-  align-items: baseline;
-  gap: 6px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
 }
 
 .ribbon-lbl {
-  font-size: 11px;
-  font-weight: 700;
-  color: #8C786E;
+  font-size: 10.5px;
+  font-weight: 800;
+  color: #9CA3AF;
   text-transform: uppercase;
 }
 
 .ribbon-val {
-  font-size: 12.5px;
+  font-size: 14px;
   font-weight: 800;
-  color: #111111;
+  color: #FFFFFF;
 }
 
 .ribbon-val-gold {
-  font-size: 13px;
+  font-size: 14.5px;
   font-weight: 900;
-  color: #D97706;
+  color: #FBBF24;
 }
 </style>
