@@ -1,26 +1,119 @@
+export type GuestBookVisitType =
+  | 'pengajian'
+  | 'hall'
+  | 'b2b'
+
 export interface GuestBookPayload {
-  nama: string;
-  whatsapp: string;
-  domisili: string;
+
+  nama: string
+
+  whatsapp: string
+
+  domisili: string
+
+  tipeKunjungan: GuestBookVisitType
+
+}
+
+export interface GuestBookRecord extends GuestBookPayload {
+
+  id: string
+
+  createdAt: string
+
+  status: 'terdaftar' | 'terverifikasi'
+
 }
 
 export const useGuestBookApi = () => {
-  // FEAT-07/08: kirim data pendaftaran, backend akan trigger kirim OTP ke WA
-  const requestOtp = async (payload: GuestBookPayload) => {
-    // TODO: POST /api/v1/guestbook/register
-    console.log('Request OTP', payload);
-    return { success: true };
-  };
 
-  // FEAT-08: verifikasi kode OTP yang diketik user
-  const verifyOtp = async (whatsapp: string, code: string) => {
-    // TODO: POST /api/v1/guestbook/verify-otp
-    console.log('Verify OTP', whatsapp, code);
-    return { success: true };
-  };
+  // =====================================================
+  // REQUEST OTP
+  // =====================================================
+
+  const requestOtp = async (
+    payload: GuestBookPayload
+  ) => {
+
+    console.log(
+      'Request Guest Book:',
+      payload
+    )
+
+    /*
+     * TODO BACKEND
+     *
+     * POST /api/v1/guestbook/register
+     *
+     * payload:
+     * {
+     *   nama,
+     *   whatsapp,
+     *   domisili,
+     *   tipeKunjungan
+     * }
+     */
+
+    return {
+      success: true
+    }
+
+  }
+
+
+  // =====================================================
+  // VERIFY OTP
+  // =====================================================
+
+  const verifyOtp = async (
+    whatsapp: string,
+    code: string
+  ) => {
+
+    console.log(
+      'Verify OTP:',
+      whatsapp,
+      code
+    )
+
+    /*
+     * TODO BACKEND
+     *
+     * POST /api/v1/guestbook/verify-otp
+     */
+
+    return {
+      success: true
+    }
+
+  }
+
+
+  // =====================================================
+  // GET GUEST BOOK DATA
+  // =====================================================
+
+  const getGuestBookData = async (): Promise<GuestBookRecord[]> => {
+
+    /*
+     * TODO BACKEND
+     *
+     * GET /api/v1/guestbook
+     */
+
+    return []
+
+  }
+
 
   return {
+
     requestOtp,
-    verifyOtp
-  };
-};
+
+    verifyOtp,
+
+    getGuestBookData
+
+  }
+
+}

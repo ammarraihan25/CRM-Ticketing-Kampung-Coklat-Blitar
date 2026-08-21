@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { GuestBookPayload } from '~/composables/useGuestBookApi'
+
 definePageMeta({
   layout: false
 })
@@ -10,7 +12,8 @@ const step = ref<'form' | 'otp' | 'success'>('form')
 const form = ref({
   nama: '',
   whatsapp: '',
-  domisili: ''
+  domisili: '',
+  tipeKunjungan: ''
 })
 
 const otpCode = ref('')
@@ -18,40 +21,85 @@ const isLoading = ref(false)
 const errorMessage = ref('')
 
 const stepNumber = computed(() => {
-  return step.value === 'form' ? 1 : step.value === 'otp' ? 2 : 3
+  return step.value === 'form'
+    ? 1
+    : step.value === 'otp'
+      ? 2
+      : 3
 })
 
 async function handleSubmit() {
-  isLoading.value = true
   errorMessage.value = ''
 
+  if (!form.value.tipeKunjungan) {
+    errorMessage.value = 'Silakan pilih tujuan kunjungan terlebih dahulu.'
+    return
+  }
+
+  isLoading.value = true
+
   try {
-    await requestOtp(form.value)
+    const payload: GuestBookPayload = {
+      ...form.value,
+      tipeKunjungan: form.value.tipeKunjungan as GuestBookPayload['tipeKunjungan']
+    }
+
+    await requestOtp(payload)
+
     step.value = 'otp'
-  } catch {
-    errorMessage.value = 'Gagal mengirim OTP, coba lagi.'
+  } catch (error) {
+    console.error(error)
+
+    errorMessage.value =
+      'Gagal mengirim OTP. Silakan coba lagi.'
   } finally {
     isLoading.value = false
   }
 }
 
 async function handleVerify() {
-  if (otpCode.value.length < 6) return
+  if (otpCode.value.length < 6) {
+    errorMessage.value = 'Masukkan 6 digit kode OTP.'
+    return
+  }
 
   isLoading.value = true
   errorMessage.value = ''
 
   try {
-    const res = await verifyOtp(form.value.whatsapp, otpCode.value)
+    const res = await verifyOtp(
+      form.value.whatsapp,
+      otpCode.value
+    )
 
     if (res.success) {
       step.value = 'success'
     } else {
-      errorMessage.value = 'Kode OTP salah, coba lagi.'
+      errorMessage.value =
+        'Kode OTP salah. Silakan coba lagi.'
     }
+  } catch (error) {
+    console.error(error)
+
+    errorMessage.value =
+      'Terjadi kesalahan saat verifikasi OTP.'
   } finally {
     isLoading.value = false
   }
+}
+
+function resetForm() {
+  step.value = 'form'
+
+  form.value = {
+    nama: '',
+    whatsapp: '',
+    domisili: '',
+    tipeKunjungan: ''
+  }
+
+  otpCode.value = ''
+  errorMessage.value = ''
 }
 </script>
 
@@ -164,145 +212,293 @@ async function handleVerify() {
           <!-- =================================================
                STEP 1
           ================================================== -->
-          <template v-if="step === 'form'">
+ <template v-if="step === 'form'">
 
-            <div class="form-heading">
+  <div class="form-heading">
 
-              <div class="heading-icon">
-                <span>✦</span>
-              </div>
+    <div class="heading-icon">
+      <span>✦</span>
+    </div>
 
-              <h2>Isi Data Diri</h2>
+    <h2>Isi Buku Tamu</h2>
 
-              <p>
-                Daftar sebagai pengunjung Kampung Coklat
-                hanya membutuhkan waktu kurang dari 1 menit.
-              </p>
+    <p>
+      Lengkapi data diri untuk mencatat kunjungan
+      Anda di Kampung Coklat.
+    </p>
 
-            </div>
-
-
-            <form
-              class="guest-form"
-              @submit.prevent="handleSubmit"
-            >
-
-              <!-- NAMA -->
-              <div class="form-group">
-
-                <label for="nama">
-                  Nama Lengkap
-                </label>
-
-                <div class="input-wrapper">
-
-                  <span class="input-icon">👤</span>
-
-                  <input
-                    id="nama"
-                    v-model="form.nama"
-                    type="text"
-                    placeholder="Masukkan nama lengkap"
-                    required
-                  />
-
-                </div>
-
-              </div>
+  </div>
 
 
-              <!-- WHATSAPP -->
-              <div class="form-group">
+  <form
+    class="guest-form"
+    @submit.prevent="handleSubmit"
+  >
 
-                <label for="whatsapp">
-                  Nomor WhatsApp
-                </label>
+    <!-- =================================================
+         TIPE KUNJUNGAN
+    ================================================== -->
 
-                <div class="input-wrapper">
+    <div class="form-group">
 
-                  <span class="input-icon">📱</span>
+      <label>
+        Tujuan Kunjungan
+      </label>
 
-                  <input
-                    id="whatsapp"
-                    v-model="form.whatsapp"
-                    type="tel"
-                    placeholder="08xxxxxxxxxx"
-                    required
-                  />
+      <div class="visit-type-grid">
 
-                </div>
+        <label
+          class="visit-type-card"
+          :class="{
+            selected: form.tipeKunjungan === 'pengajian'
+          }"
+        >
 
-                <span class="input-hint">
-                  Pastikan nomor WhatsApp aktif untuk menerima OTP.
-                </span>
+          <input
+            v-model="form.tipeKunjungan"
+            type="radio"
+            value="pengajian"
+          />
 
-              </div>
+          <div class="visit-type-icon">
+            🕌
+          </div>
 
+          <div class="visit-type-content">
 
-              <!-- DOMISILI -->
-              <div class="form-group">
+            <strong>
+              Pengajian
+            </strong>
 
-                <label for="domisili">
-                  Domisili
-                </label>
+            <span>
+              Jamaah pengajian Kampung Coklat
+            </span>
 
-                <div class="input-wrapper">
+          </div>
 
-                  <span class="input-icon">📍</span>
+          <div class="visit-type-check">
+            ✓
+          </div>
 
-                  <input
-                    id="domisili"
-                    v-model="form.domisili"
-                    type="text"
-                    placeholder="Contoh: Blitar"
-                    required
-                  />
-
-                </div>
-
-              </div>
-
-
-              <!-- ERROR -->
-              <p
-                v-if="errorMessage"
-                class="error-text"
-              >
-                {{ errorMessage }}
-              </p>
+        </label>
 
 
-              <!-- BUTTON -->
-              <button
-                type="submit"
-                class="submit-button"
-                :disabled="isLoading"
-              >
+        <label
+          class="visit-type-card"
+          :class="{
+            selected: form.tipeKunjungan === 'hall'
+          }"
+        >
 
-                <span>
-                  {{
-                    isLoading
-                      ? 'Mengirim OTP...'
-                      : 'Daftar & Lanjutkan'
-                  }}
-                </span>
+          <input
+            v-model="form.tipeKunjungan"
+            type="radio"
+            value="hall"
+          />
 
-                <span class="button-arrow">
-                  →
-                </span>
+          <div class="visit-type-icon">
+            🏛️
+          </div>
 
-              </button>
+          <div class="visit-type-content">
+
+            <strong>
+              Pengguna Hall / Event
+            </strong>
+
+            <span>
+              Tamu acara, seminar, gathering, dan lainnya
+            </span>
+
+          </div>
+
+          <div class="visit-type-check">
+            ✓
+          </div>
+
+        </label>
 
 
-              <p class="privacy-note">
-                Dengan melanjutkan, Anda menyetujui
-                penggunaan data untuk kebutuhan layanan
-                Kampung Coklat.
-              </p>
+        <label
+          class="visit-type-card"
+          :class="{
+            selected: form.tipeKunjungan === 'b2b'
+          }"
+        >
 
-            </form>
+          <input
+            v-model="form.tipeKunjungan"
+            type="radio"
+            value="b2b"
+          />
 
-          </template>
+          <div class="visit-type-icon">
+            🤝
+          </div>
+
+          <div class="visit-type-content">
+
+            <strong>
+              B2B / Travel
+            </strong>
+
+            <span>
+              Travel agent atau mitra bisnis
+            </span>
+
+          </div>
+
+          <div class="visit-type-check">
+            ✓
+          </div>
+
+        </label>
+
+      </div>
+
+    </div>
+
+
+    <!-- =================================================
+         NAMA
+    ================================================== -->
+
+    <div class="form-group">
+
+      <label for="nama">
+        Nama Lengkap
+      </label>
+
+      <div class="input-wrapper">
+
+        <span class="input-icon">
+          👤
+        </span>
+
+        <input
+          id="nama"
+          v-model="form.nama"
+          type="text"
+          placeholder="Masukkan nama lengkap"
+          autocomplete="name"
+          required
+        />
+
+      </div>
+
+    </div>
+
+
+    <!-- =================================================
+         WHATSAPP
+    ================================================== -->
+
+    <div class="form-group">
+
+      <label for="whatsapp">
+        Nomor WhatsApp
+      </label>
+
+      <div class="input-wrapper">
+
+        <span class="input-icon">
+          📱
+        </span>
+
+        <input
+          id="whatsapp"
+          v-model="form.whatsapp"
+          type="tel"
+          inputmode="numeric"
+          placeholder="08xxxxxxxxxx"
+          autocomplete="tel"
+          required
+        />
+
+      </div>
+
+      <span class="input-hint">
+        Nomor WhatsApp digunakan untuk verifikasi OTP.
+      </span>
+
+    </div>
+
+
+    <!-- =================================================
+         DOMISILI
+    ================================================== -->
+
+    <div class="form-group">
+
+      <label for="domisili">
+        Domisili
+      </label>
+
+      <div class="input-wrapper">
+
+        <span class="input-icon">
+          📍
+        </span>
+
+        <input
+          id="domisili"
+          v-model="form.domisili"
+          type="text"
+          placeholder="Contoh: Blitar"
+          autocomplete="address-level2"
+          required
+        />
+
+      </div>
+
+    </div>
+
+
+    <!-- =================================================
+         ERROR
+    ================================================== -->
+
+    <p
+      v-if="errorMessage"
+      class="error-text"
+    >
+      {{ errorMessage }}
+    </p>
+
+
+    <!-- =================================================
+         BUTTON
+    ================================================== -->
+
+    <button
+      type="submit"
+      class="submit-button"
+      :disabled="isLoading"
+    >
+
+      <span>
+        {{
+          isLoading
+            ? 'Mengirim OTP...'
+            : 'Lanjutkan Verifikasi'
+        }}
+      </span>
+
+      <span class="button-arrow">
+        →
+      </span>
+
+    </button>
+
+
+    <p class="privacy-note">
+      Data yang Anda berikan digunakan untuk pencatatan
+      kunjungan dan kebutuhan layanan Kampung Coklat.
+    </p>
+
+  </form>
+
+</template>
 
 
           <!-- =================================================
@@ -417,7 +613,7 @@ async function handleVerify() {
                   </strong>
 
                   <span>
-                    Voucher & tiket gratis telah dikirim
+                    Voucher diskon atau free ticket telah dikirim
                     ke {{ form.whatsapp }}
                   </span>
                 </div>
@@ -2142,4 +2338,173 @@ async function handleVerify() {
   }
 }
 
+/* =========================================================
+   VISIT TYPE
+========================================================= */
+
+.visit-type-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.visit-type-card {
+  position: relative;
+
+  display: flex;
+  align-items: center;
+
+  gap: 16px;
+
+  padding: 18px;
+
+  border: 1.5px solid #e5d9d1;
+  border-radius: 16px;
+
+  background: #fff;
+
+  cursor: pointer;
+
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.visit-type-card:hover {
+  border-color: #e9a04a;
+
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 8px 20px rgba(53, 31, 23, 0.07);
+}
+
+.visit-type-card.selected {
+  border-color: #f39421;
+
+  background: #fff8ef;
+
+  box-shadow:
+    0 8px 24px rgba(243, 148, 33, 0.12);
+}
+
+.visit-type-card input {
+  position: absolute;
+
+  opacity: 0;
+
+  pointer-events: none;
+}
+
+.visit-type-icon {
+  width: 50px;
+  height: 50px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 14px;
+
+  background: #fff1df;
+
+  font-size: 25px;
+}
+
+.visit-type-content {
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 4px;
+
+  flex: 1;
+}
+
+.visit-type-content strong {
+  color: #3b241a;
+
+  font-size: 17px;
+
+  font-weight: 800;
+}
+
+.visit-type-content span {
+  color: #8f7d74;
+
+  font-size: 14px;
+
+  line-height: 1.45;
+}
+
+.visit-type-check {
+  width: 25px;
+  height: 25px;
+
+  flex-shrink: 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  border: 2px solid #ddd0c7;
+
+  color: transparent;
+
+  font-size: 13px;
+  font-weight: 800;
+
+  transition: 0.2s ease;
+}
+
+.visit-type-card.selected .visit-type-check {
+  background: #f39421;
+
+  border-color: #f39421;
+
+  color: white;
+}
+
+
+/* =========================================================
+   MOBILE VISIT TYPE
+========================================================= */
+
+@media (max-width: 560px) {
+
+  .visit-type-card {
+    padding: 15px;
+
+    gap: 12px;
+  }
+
+  .visit-type-icon {
+    width: 44px;
+    height: 44px;
+
+    border-radius: 12px;
+
+    font-size: 22px;
+  }
+
+  .visit-type-content strong {
+    font-size: 15px;
+  }
+
+  .visit-type-content span {
+    font-size: 12px;
+  }
+
+  .visit-type-check {
+    width: 22px;
+    height: 22px;
+  }
+
+}
 </style>
