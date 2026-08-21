@@ -8,27 +8,6 @@
           Pengaturan akun pengguna staf internal, penetapan role (Admin, Manager, Kasir, Owner), dan matriks hak akses.
         </p>
       </div>
-
-      <div class="header-actions">
-        <button 
-          v-if="canManageConfig"
-          type="button" 
-          class="btn-primary-action"
-          @click="openAddUserModal"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-            <circle cx="9" cy="7" r="4" />
-            <line x1="19" y1="8" x2="19" y2="14" />
-            <line x1="22" y1="11" x2="16" y2="11" />
-          </svg>
-          <span>Tambah Akun Staf</span>
-        </button>
-
-        <div v-else class="read-only-pill">
-          🔒 Mode Read-Only (Role: {{ user.roleTitle }})
-        </div>
-      </div>
     </header>
 
     <!-- Role Warning if not Admin -->
@@ -49,10 +28,29 @@
       <div class="section-head-bar">
         <div class="section-head-left">
           <div class="section-title-badge">
-            <span class="sec-icon">👥</span>
             <h2 class="sec-title">Daftar Akun Pengguna Staf</h2>
           </div>
           <p class="sec-subtitle">Daftar petugas POS, tim manajemen, dan dewan direksi yang terdaftar di sistem</p>
+        </div>
+        <div class="header-actions">
+          <button 
+            v-if="canManageConfig"
+            type="button" 
+            class="btn-primary-action"
+            @click="openAddUserModal"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
+              <circle cx="9" cy="7" r="4" />
+              <line x1="19" y1="8" x2="19" y2="14" />
+              <line x1="22" y1="11" x2="16" y2="11" />
+            </svg>
+            <span>Tambah Akun Staf</span>
+          </button>
+
+          <div v-else class="read-only-pill">
+            🔒 Mode Read-Only (Role: {{ user.roleTitle }})
+          </div>
         </div>
       </div>
 
@@ -65,7 +63,7 @@
               <th>DEPARTEMEN / UNIT</th>
               <th>ROLE AKSES</th>
               <th>STATUS AKUN</th>
-              <th class="text-right">AKSI</th>
+              <th class="text-center">AKSI</th>
             </tr>
           </thead>
           <tbody>
@@ -73,10 +71,9 @@
               <td>
                 <div class="user-cell-wrap">
                   <div class="avatar-disc-staff">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" class="staff-avatar-svg">
-                      <circle cx="24" cy="24" r="23" fill="#FAF3E8"/>
-                      <path d="M12 42 C12 33 18 30 24 30 C30 30 36 33 36 42 Z" fill="#3D2214"/>
-                      <circle cx="24" cy="19" r="8" fill="#D97706"/>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="staff-avatar-svg">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="12" cy="7" r="4"></circle>
                     </svg>
                   </div>
                   <div class="user-meta-col">
@@ -102,7 +99,7 @@
                   <span>{{ u.isActive ? 'Aktif' : 'Terkunci' }}</span>
                 </span>
               </td>
-              <td class="text-right">
+              <td class="text-center">
                 <button 
                   type="button" 
                   class="btn-action-edit"
@@ -128,10 +125,31 @@
       <div class="section-head-bar">
         <div class="section-head-left">
           <div class="section-title-badge">
-            <span class="sec-icon">🛡️</span>
             <h2 class="sec-title">Matriks Hak Akses Role (RBAC)</h2>
           </div>
           <p class="sec-subtitle">Struktur hak baca (Read), tulis (Write), dan eksekusi per peran pengguna internal</p>
+        </div>
+        <div class="header-actions">
+          <template v-if="!isEditingMatrix">
+            <button 
+              v-if="canManageConfig"
+              type="button" 
+              class="btn-primary-action"
+              @click="openEditRoleMatrix"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 20h9"></path>
+                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+              </svg>
+              <span>Edit Role Akses</span>
+            </button>
+          </template>
+          <template v-else>
+            <div class="edit-actions-group">
+              <button type="button" class="btn-outline-action" @click="cancelEditMatrix">Batal</button>
+              <button type="button" class="btn-primary-action" @click="saveMatrix">Simpan Perubahan</button>
+            </div>
+          </template>
         </div>
       </div>
 
@@ -139,28 +157,28 @@
         <table class="aesthetic-matrix-table">
           <thead>
             <tr>
-              <th style="width: 320px;">MODUL / FITUR SISTEM</th>
+              <th style="width: 380px;">MODUL / FITUR SISTEM</th>
               <th class="text-center role-th">
                 <div class="role-th-card">
-                  <span class="th-role-name">👑 Super Admin</span>
+                  <span class="th-role-name">Super Admin</span>
                   <span class="th-role-sub">Full System Control</span>
                 </div>
               </th>
               <th class="text-center role-th">
                 <div class="role-th-card">
-                  <span class="th-role-name">👔 Manager</span>
+                  <span class="th-role-name">Manager</span>
                   <span class="th-role-sub">Monitoring &amp; Evaluasi</span>
                 </div>
               </th>
               <th class="text-center role-th">
                 <div class="role-th-card">
-                  <span class="th-role-name">🧾 Kasir Front Office</span>
+                  <span class="th-role-name">Kasir Front Office</span>
                   <span class="th-role-sub">Frontliner POS</span>
                 </div>
               </th>
               <th class="text-center role-th">
                 <div class="role-th-card">
-                  <span class="th-role-name">🏛️ Owner / Direksi</span>
+                  <span class="th-role-name">Owner / Direksi</span>
                   <span class="th-role-sub">Executive Read-Only</span>
                 </div>
               </th>
@@ -174,27 +192,49 @@
               </td>
               <td class="text-center">
                 <span class="matrix-tag tag-full">
-                  <span class="tag-icon">✓</span>
                   <span>Full Akses</span>
                 </span>
               </td>
               <td class="text-center">
-                <span class="matrix-tag" :class="item.manager === 'READ' ? 'tag-read' : item.manager ? 'tag-full' : 'tag-locked'">
-                  <span class="tag-icon">{{ item.manager === 'READ' ? '👁️' : item.manager ? '✓' : '✕' }}</span>
-                  <span>{{ item.manager === 'READ' ? 'Read-Only' : item.manager ? 'Full Akses' : 'Terkunci' }}</span>
-                </span>
+                <template v-if="!isEditingMatrix">
+                  <span class="matrix-tag" :class="item.manager === 'READ' ? 'tag-read' : item.manager ? 'tag-full' : 'tag-locked'">
+                    <span>{{ item.manager === 'READ' ? 'Read-Only' : item.manager ? 'Full Akses' : 'Terkunci' }}</span>
+                  </span>
+                </template>
+                <template v-else>
+                  <select v-model="item.manager" class="matrix-inline-select" :class="item.manager === 'READ' ? 'select-read' : item.manager ? 'select-full' : 'select-locked'">
+                    <option :value="true">Full Akses</option>
+                    <option value="READ">Read-Only</option>
+                    <option :value="false">Terkunci</option>
+                  </select>
+                </template>
               </td>
               <td class="text-center">
-                <span class="matrix-tag" :class="item.kasir ? 'tag-pos' : 'tag-locked'">
-                  <span class="tag-icon">{{ item.kasir ? '⚡' : '✕' }}</span>
-                  <span>{{ item.kasir ? 'POS Kasir' : 'Terkunci' }}</span>
-                </span>
+                <template v-if="!isEditingMatrix">
+                  <span class="matrix-tag" :class="item.kasir ? 'tag-pos' : 'tag-locked'">
+                    <span>{{ item.kasir ? 'POS Kasir' : 'Terkunci' }}</span>
+                  </span>
+                </template>
+                <template v-else>
+                  <select v-model="item.kasir" class="matrix-inline-select" :class="item.kasir ? 'select-pos' : 'select-locked'">
+                    <option :value="true">POS Kasir</option>
+                    <option :value="false">Terkunci</option>
+                  </select>
+                </template>
               </td>
               <td class="text-center">
-                <span class="matrix-tag" :class="item.owner === 'READ' ? 'tag-read' : item.owner ? 'tag-full' : 'tag-locked'">
-                  <span class="tag-icon">{{ item.owner === 'READ' ? '👁️' : item.owner ? '✓' : '✕' }}</span>
-                  <span>{{ item.owner === 'READ' ? 'Read-Only' : item.owner ? 'Full Akses' : 'Terkunci' }}</span>
-                </span>
+                <template v-if="!isEditingMatrix">
+                  <span class="matrix-tag" :class="item.owner === 'READ' ? 'tag-read' : item.owner ? 'tag-full' : 'tag-locked'">
+                    <span>{{ item.owner === 'READ' ? 'Read-Only' : item.owner ? 'Full Akses' : 'Terkunci' }}</span>
+                  </span>
+                </template>
+                <template v-else>
+                  <select v-model="item.owner" class="matrix-inline-select" :class="item.owner === 'READ' ? 'select-read' : item.owner ? 'select-full' : 'select-locked'">
+                    <option :value="true">Full Akses</option>
+                    <option value="READ">Read-Only</option>
+                    <option :value="false">Terkunci</option>
+                  </select>
+                </template>
               </td>
             </tr>
           </tbody>
@@ -395,6 +435,8 @@ const permissionMatrix = ref([
 
 const showUserModal = ref(false)
 const isEditing = ref(false)
+const isEditingMatrix = ref(false)
+const originalMatrix = ref<any[]>([])
 
 const userForm = reactive({
   id: '',
@@ -434,6 +476,21 @@ const openAddUserModal = () => {
   userForm.department = 'Ticketing POS'
   userForm.isActive = true
   showUserModal.value = true
+}
+
+const openEditRoleMatrix = () => {
+  isEditingMatrix.value = true
+  originalMatrix.value = JSON.parse(JSON.stringify(permissionMatrix.value))
+}
+
+const cancelEditMatrix = () => {
+  permissionMatrix.value = JSON.parse(JSON.stringify(originalMatrix.value))
+  isEditingMatrix.value = false
+}
+
+const saveMatrix = () => {
+  isEditingMatrix.value = false
+  // Logic to save to backend would go here
 }
 
 const editUser = (u: StaffAccount) => {
@@ -491,7 +548,7 @@ const saveUser = () => {
   gap: 22px;
   max-width: 1380px;
   width: 100%;
-  font-family: 'Jost', sans-serif;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
 }
 
 /* ========================================================================= */
@@ -511,27 +568,27 @@ const saveUser = () => {
 .header-left {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 8px;
   max-width: 680px;
   position: relative;
   z-index: 2;
 }
 
 .page-title {
-  font-family: 'Cinzel', serif;
-  font-size: 26px;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  font-size: 28px;
   font-weight: 900;
   color: #2C1A13;
   margin: 0;
-  letter-spacing: 0.3px;
+  letter-spacing: -0.5px;
 }
 
 .page-subtitle {
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 600;
   color: #6E442B;
   margin: 0;
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
 .header-right-group {
@@ -545,24 +602,48 @@ const saveUser = () => {
 .btn-primary-action {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   background: #3D2214;
-  color: #FAF5EE;
-  border: none;
-  padding: 9px 20px;
-  border-radius: 20px;
-  font-size: 12.5px;
-  font-weight: 800;
+  color: #FFFFFF;
+  border: 1px solid transparent;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(61, 34, 20, 0.2);
+  box-shadow: 0 1px 2px rgba(61, 34, 20, 0.1);
   transition: all 0.2s ease;
   position: relative;
   z-index: 2;
 }
 
 .btn-primary-action:hover {
-  background: #D97706;
-  transform: translateY(-1px);
+  background: #502D1A;
+}
+
+.edit-actions-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-outline-action {
+  display: inline-flex;
+  align-items: center;
+  background: #FFFFFF;
+  color: #3D2214;
+  border: 1.5px solid #E2D9CE;
+  padding: 7px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-outline-action:hover {
+  background: #F8F5F0;
+  border-color: #D6C3B1;
 }
 
 .read-only-pill {
@@ -632,7 +713,7 @@ const saveUser = () => {
   padding: 22px 26px 26px 26px;
   display: flex;
   flex-direction: column;
-  gap: 18px;
+  gap: 24px;
   box-shadow: 0 4px 16px rgba(61, 34, 20, 0.04);
 }
 
@@ -640,14 +721,12 @@ const saveUser = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1.5px solid #F0E5D8;
-  padding-bottom: 12px;
 }
 
 .section-head-left {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 6px;
 }
 
 .section-title-badge {
@@ -661,17 +740,19 @@ const saveUser = () => {
 }
 
 .sec-title {
-  font-family: 'Cinzel', serif;
-  font-size: 17.5px;
-  font-weight: 900;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  font-size: 21px;
+  font-weight: 800;
   color: #2C1A13;
   margin: 0;
+  letter-spacing: -0.3px;
 }
 
 .sec-subtitle {
-  font-size: 12px;
+  font-size: 14.5px;
   color: #7A5034;
   margin: 0;
+  line-height: 1.5;
 }
 
 .table-responsive-box {
@@ -682,128 +763,110 @@ const saveUser = () => {
 /* Table 1: Staff Table */
 .aesthetic-staff-table {
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 0 8px;
+  border-collapse: collapse;
 }
 
 .aesthetic-staff-table thead th {
-  padding: 10px 14px;
-  font-size: 10.5px;
+  padding: 14px 16px;
+  font-size: 12.5px;
   font-weight: 800;
-  color: #8C6D58;
+  color: #111111;
   letter-spacing: 0.5px;
   text-align: left;
-  border-bottom: 1px solid #EFE4D6;
+  border-bottom: 2px solid #E5DFD3;
+  background: #F4F1ED;
 }
 
 .staff-row {
   background: #FFFFFF;
-  border: 1px solid #EFE4D6;
-  border-radius: 14px;
+  border-bottom: 1px solid #EFE4D6;
   transition: all 0.2s ease;
 }
 
 .staff-row:hover {
-  background: #FAF5EE;
-  box-shadow: 0 4px 12px rgba(61, 34, 20, 0.05);
+  background: #FAF8F5;
 }
 
 .staff-row td {
-  padding: 12px 14px;
-  font-size: 13px;
+  padding: 18px 16px;
+  font-size: 14.5px;
   vertical-align: middle;
-}
-
-.staff-row td:first-child {
-  border-top-left-radius: 14px;
-  border-bottom-left-radius: 14px;
-  border-left: 1px solid #EFE4D6;
-}
-
-.staff-row td:last-child {
-  border-top-right-radius: 14px;
-  border-bottom-right-radius: 14px;
-  border-right: 1px solid #EFE4D6;
 }
 
 .user-cell-wrap {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
 }
 
 .avatar-disc-staff {
   width: 36px;
   height: 36px;
-  background: #FAF3E8;
-  border: 1.5px solid #EADBCC;
+  background: #F1F5F9;
+  border: 1px solid #E2E8F0;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  color: #64748B;
 }
 
 .user-meta-col {
   display: flex;
   flex-direction: column;
-  gap: 1px;
+  gap: 4px;
 }
 
 .user-name-txt {
-  font-family: 'Outfit', sans-serif;
-  font-size: 14px;
-  font-weight: 800;
-  color: #2C1A13;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  font-size: 15.5px;
+  font-weight: 700;
+  color: #0F172A;
 }
 
 .user-id-chip {
-  font-size: 10px;
-  color: #8C6D58;
-  font-weight: 700;
+  font-size: 11.5px;
+  color: #64748B;
+  font-weight: 600;
 }
 
 .email-code-pill {
-  font-family: 'JetBrains Mono', monospace;
-  background: #FAF3E8;
-  border: 1px solid #EADBCC;
-  color: #5A2E17;
-  padding: 3px 8px;
-  border-radius: 6px;
-  font-size: 11.5px;
+  color: #334155;
+  font-size: 14.5px;
+  font-weight: 500;
 }
 
 .dept-text {
-  font-size: 12.5px;
-  color: #5A2E17;
-  font-weight: 600;
+  font-size: 14px;
+  color: #334155;
+  font-weight: 500;
 }
 
 .role-pill-badge {
   display: inline-flex;
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 11px;
-  font-weight: 800;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
 }
 
-.role-admin { background: #3D2214; color: #FAF5EE; }
-.role-manager { background: #FEF3C7; color: #B45309; border: 1px solid #FDE68A; }
-.role-kasir { background: #DBEAFE; color: #1E40AF; border: 1px solid #BFDBFE; }
-.role-owner { background: #D1FAE5; color: #065F46; border: 1px solid #A7F3D0; }
+.role-admin { background: #E2E8F0; color: #0F172A; }
+.role-manager { background: #FEF08A; color: #0F172A; }
+.role-kasir { background: #BFDBFE; color: #0F172A; }
+.role-owner { background: #BBF7D0; color: #0F172A; }
 
 .status-pill-badge {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 3px 8px;
-  border-radius: 10px;
-  font-size: 11px;
-  font-weight: 800;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
 }
 
-.status-active { background: #D1FAE5; color: #065F46; }
-.status-locked { background: #FEE2E2; color: #991B1B; }
+.status-active { background: #BBF7D0; color: #0F172A; }
+.status-locked { background: #FECACA; color: #0F172A; }
 
 .status-dot-mini {
   width: 5px;
@@ -815,113 +878,135 @@ const saveUser = () => {
 .btn-action-edit {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  background: #FAF3E8;
+  gap: 6px;
+  background: #FFFFFF;
   border: 1px solid #EADBCC;
-  color: #3D2214;
+  color: #5A3A28;
   padding: 6px 12px;
-  border-radius: 10px;
-  font-size: 11.5px;
-  font-weight: 800;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(61, 34, 20, 0.05);
 }
 
 .btn-action-edit:hover:not(:disabled) {
-  background: #3D2214;
-  color: #FAF5EE;
+  background: #FAF5EE;
+  border-color: #D6C3B1;
+  color: #3D2214;
 }
 
 /* Table 2: RBAC Matrix Table */
 .aesthetic-matrix-table {
   width: 100%;
-  border-collapse: separate;
-  border-spacing: 0 8px;
+  border-collapse: collapse;
 }
 
 .aesthetic-matrix-table thead th {
-  padding: 12px 14px;
-  border-bottom: 1.5px solid #EFE4D6;
+  padding: 14px 16px;
+  border-bottom: 2px solid #E5DFD3;
+  background: #F4F1ED;
 }
 
 .role-th-card {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: 4px;
 }
 
 .th-role-name {
-  font-family: 'Cinzel', serif;
-  font-size: 12px;
-  font-weight: 900;
-  color: #2C1A13;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  font-size: 13.5px;
+  font-weight: 800;
+  color: #111111;
 }
 
 .th-role-sub {
-  font-size: 9.5px;
-  color: #8C6D58;
+  font-size: 11px;
+  color: #4B5563;
   font-weight: 600;
 }
 
 .matrix-row {
   background: #FFFFFF;
-  border: 1px solid #EFE4D6;
-  border-radius: 14px;
+  border-bottom: 1px solid #EFE4D6;
   transition: all 0.2s ease;
 }
 
 .matrix-row:hover {
-  background: #FAF5EE;
+  background: #FAF8F5;
 }
 
 .matrix-row td {
-  padding: 14px 16px;
+  padding: 18px 16px;
   vertical-align: middle;
 }
 
-.matrix-row td:first-child {
-  border-top-left-radius: 14px;
-  border-bottom-left-radius: 14px;
-  border-left: 1px solid #EFE4D6;
-}
-
-.matrix-row td:last-child {
-  border-top-right-radius: 14px;
-  border-bottom-right-radius: 14px;
-  border-right: 1px solid #EFE4D6;
-}
-
 .module-title-txt {
-  font-family: 'Outfit', sans-serif;
-  font-size: 13.5px;
-  font-weight: 800;
-  color: #2C1A13;
-  margin-bottom: 2px;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0F172A;
+  margin-bottom: 6px;
 }
 
 .module-desc-txt {
-  font-size: 11px;
-  color: #7A5034;
+  font-size: 12.5px;
+  color: #64748B;
+  line-height: 1.5;
+  padding-right: 12px;
 }
 
 .matrix-tag {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  padding: 4px 10px;
-  border-radius: 10px;
-  font-size: 11px;
-  font-weight: 800;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
 }
 
-.tag-full { background: #D1FAE5; color: #065F46; }
-.tag-read { background: #FEF3C7; color: #92400E; }
-.tag-pos { background: #DBEAFE; color: #1E40AF; }
-.tag-locked { background: #F3F4F6; color: #9CA3AF; }
+.tag-full { background: #BBF7D0; color: #0F172A; }
+.tag-read { background: #FEF08A; color: #0F172A; }
+.tag-pos { background: #BFDBFE; color: #0F172A; }
+.tag-locked { background: #F1F5F9; color: #64748B; }
 
-.text-right { text-align: right; }
-.text-center { text-align: center; }
+.text-right { text-align: right !important; }
+.text-center { text-align: center !important; }
+
+.matrix-inline-select {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #E2D9CE;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  color: #3D2214;
+  background-color: #FFFFFF;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 6px center;
+  background-size: 14px;
+  padding-right: 28px;
+}
+
+.select-full { background-color: #BBF7D0; color: #0F172A; border-color: #86EFAC; }
+.select-read { background-color: #FEF08A; color: #0F172A; border-color: #FDE047; }
+.select-pos { background-color: #BFDBFE; color: #0F172A; border-color: #93C5FD; }
+.select-locked { background-color: #F1F5F9; color: #64748B; border-color: #E2E8F0; }
+
+.matrix-inline-select:focus {
+  border-color: #F59E0B;
+}
 
 /* ========================================================================= */
 /* MODAL STYLING                                                             */
@@ -970,8 +1055,16 @@ const saveUser = () => {
   max-height: 24px;
 }
 
+.modal-kicker {
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  color: #2C1A13;
+  margin: 0;
+}
+
 .modal-header h3 {
-  font-family: 'Cinzel', serif;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
   font-size: 16px;
   font-weight: 800;
   color: #2C1A13;
@@ -1033,23 +1126,36 @@ const saveUser = () => {
 }
 
 .btn-secondary {
-  background: #FAF3E8;
-  border: 1.5px solid #C4AA8F;
+  background: #FFFFFF;
+  border: 1px solid #D6C3B1;
   color: #5A3A28;
   padding: 8px 16px;
-  border-radius: 10px;
-  font-weight: 800;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13px;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: #FAF5EE;
 }
 
 .btn-primary-modal {
-  background: linear-gradient(135deg, #D97706 0%, #B45309 100%);
+  background: #3D2214;
   color: #FFFFFF;
-  border: none;
+  border: 1px solid transparent;
   padding: 8px 18px;
-  border-radius: 10px;
-  font-weight: 800;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13px;
   cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(61, 34, 20, 0.1);
+}
+
+.btn-primary-modal:hover {
+  background: #502D1A;
 }
 
 @media (max-width: 768px) {
