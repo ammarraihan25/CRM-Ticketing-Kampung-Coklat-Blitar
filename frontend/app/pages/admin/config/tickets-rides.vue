@@ -22,13 +22,17 @@
     </div>
 
     <!-- ========================================================================= -->
-    <!-- SECTION 1: TARIF TIKET MASUK & PAKET KUNJUNGAN (COMPACT & TIGHT LAYOUT)   -->
+    <!-- ========================================================================= -->
+    <!-- SECTION 1: TARIF TIKET MASUK & PAKET KUNJUNGAN (CLEAN & IMAGELESS)        -->
     <!-- ========================================================================= -->
     <section class="section-widget-frame">
       <div class="section-head-bar">
         <div class="section-head-left">
           <div class="section-title-badge">
-            <span class="sec-icon">🎟️</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="6" width="18" height="12" rx="2"/>
+              <line x1="9" y1="6" x2="9" y2="18" stroke-dasharray="2 2"/>
+            </svg>
             <h2 class="sec-title">Tarif Tiket Masuk &amp; Paket Kunjungan</h2>
           </div>
           <p class="sec-subtitle">Struktur harga tiket resmi pada POS Kasir dan Digital Guestbook</p>
@@ -36,55 +40,54 @@
       </div>
 
       <div class="ticket-rates-grid">
-        <div v-for="ticket in ticketRates" :key="ticket.id" class="ticket-rate-card">
-          <!-- Top Photo Banner -->
-          <div class="rate-banner-box">
-            <img :src="ticket.imageUrl" :alt="ticket.name" class="rate-banner-img" />
-            <div class="rate-category-badge">{{ ticket.tag }}</div>
-            <span class="rate-status-pill" :class="ticket.isActive ? 'pill-active' : 'pill-inactive'">
-              ● {{ ticket.isActive ? 'Aktif' : 'Non-Aktif' }}
-            </span>
+        <div v-for="ticket in ticketRates" :key="ticket.id" class="clean-ticket-card" :class="`card-tier-${ticket.id}`">
+          <!-- Top Card Header Row (Category Tag & Code) -->
+          <div class="clean-card-header">
+            <div class="clean-tag-badge" :class="`tag-${ticket.id}`">
+              <span>{{ ticket.tag }}</span>
+            </div>
+            <div class="clean-ticket-code">{{ getTicketCode(ticket.id) }}</div>
           </div>
 
-          <!-- Body with Tight Spacing -->
-          <div class="rate-card-body">
-            <div class="rate-title-desc-wrap">
-              <h3 class="rate-name">{{ ticket.name }}</h3>
-              <p class="rate-desc">{{ ticket.description }}</p>
-            </div>
-
-            <!-- Price Box -->
-            <div class="rate-price-box">
-              <span class="price-lbl">TARIF SAAT INI</span>
-              <div class="price-num">{{ formatRupiah(ticket.price) }}</div>
-              <span class="price-sub">per pax / pengunjung</span>
-            </div>
-
-            <!-- Rules Checklist -->
-            <div class="rate-rules-box">
-              <div class="rule-item">
-                <span class="check-glyph">✓</span>
-                <span class="rule-txt">{{ ticket.quotaRule }}</span>
-              </div>
-              <div class="rule-item">
-                <span class="check-glyph">✓</span>
-                <span class="rule-txt">{{ ticket.accessRule }}</span>
-              </div>
-            </div>
-
-            <!-- Action Button -->
-            <button 
-              type="button" 
-              class="btn-edit-rate"
-              :disabled="!canManageConfig"
-              @click="editTicketPrice(ticket)"
-            >
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
-                <path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-              </svg>
-              <span>{{ canManageConfig ? 'Ubah Tarif Tiket' : 'Lihat Ketentuan' }}</span>
-            </button>
+          <!-- Title & Description -->
+          <div class="clean-title-desc-wrap">
+            <h3 class="clean-rate-name">{{ ticket.name }}</h3>
+            <p class="clean-rate-desc">{{ ticket.description }}</p>
           </div>
+
+          <!-- Highlighted Compact Price Box -->
+          <div class="clean-price-box">
+            <div class="price-header-strip">
+              <span class="clean-price-lbl">TARIF SAAT INI</span>
+              <span class="clean-price-sub">per pax / pengunjung</span>
+            </div>
+            <div class="clean-price-num">{{ formatRupiah(ticket.price) }}</div>
+          </div>
+
+          <!-- Rules Checklist -->
+          <div class="clean-rules-box">
+            <div class="clean-rule-item">
+              <span class="clean-check-icon">✓</span>
+              <span class="clean-rule-txt">{{ ticket.quotaRule }}</span>
+            </div>
+            <div class="clean-rule-item">
+              <span class="clean-check-icon">✓</span>
+              <span class="clean-rule-txt">{{ ticket.accessRule }}</span>
+            </div>
+          </div>
+
+          <!-- Action Button -->
+          <button 
+            type="button" 
+            class="btn-clean-edit-rate"
+            :disabled="!canManageConfig"
+            @click="editTicketPrice(ticket)"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+              <path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+            </svg>
+            <span>{{ canManageConfig ? 'Ubah Tarif Tiket' : 'Lihat Ketentuan' }}</span>
+          </button>
         </div>
       </div>
     </section>
@@ -96,7 +99,10 @@
       <div class="section-head-bar">
         <div class="section-head-left">
           <div class="section-title-badge">
-            <span class="sec-icon">🎡</span>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"/>
+              <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+            </svg>
             <h2 class="sec-title">Katalog &amp; Status Operasional Wahana</h2>
           </div>
           <p class="sec-subtitle">Kelola wahana rekreasi di kawasan Kampung Coklat</p>
@@ -162,7 +168,7 @@
 
             <!-- Top-Left Category Tag Ribbon -->
             <div class="wahana-top-ribbon" :class="ride.isFreeTerusan ? 'ribbon-terusan' : 'ribbon-paid'">
-              <span>{{ ride.isFreeTerusan ? '★ TERUSAN' : 'TIKET SATUAN' }}</span>
+              <span>{{ ride.isFreeTerusan ? 'TIKET TERUSAN' : 'TIKET SATUAN' }}</span>
             </div>
 
             <!-- Top-Right Status Toggle Pill -->
@@ -449,7 +455,7 @@ const ticketRates = ref<TicketRate[]>([
   },
   {
     id: 'edukasi',
-    name: 'Paket Rombongan Edukasi Cilik (TK/SD)',
+    name: 'Paket Rombongan Edukasi',
     imageUrl: imgPaketCilik,
     tag: 'EDUKASI',
     price: 50000,
@@ -470,6 +476,14 @@ const ticketRates = ref<TicketRate[]>([
     isActive: true
   }
 ])
+
+const getTicketCode = (id: string) => {
+  if (id === 'reguler') return 'PR-01'
+  if (id === 'terusan') return 'TE-02'
+  if (id === 'edukasi') return 'PE-03'
+  if (id === 'rombongan') return 'PM-04'
+  return 'TCK'
+}
 
 const selectedTicket = ref<TicketRate | null>(null)
 const ticketForm = reactive({
@@ -966,96 +980,122 @@ const formatRupiah = (val: number): string => {
 }
 
 /* ========================================================================= */
-/* 1. TARIF TIKET MASUK CARDS GRID (COMPACT & TIGHT LAYOUT)                  */
+/* 1. TARIF TIKET MASUK CARDS GRID (COMPACT & PROPORTIONAL CLEAN DESIGN)     */
 /* ========================================================================= */
 .ticket-rates-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
+  gap: 14px;
 }
 
-.ticket-rate-card {
+.clean-ticket-card {
   background: #FFFFFF;
   border: 1.5px solid #EFE4D6;
-  border-radius: 18px;
-  overflow: hidden;
+  border-radius: 16px;
+  padding: 13px 14px 12px 14px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  gap: 7px;
   box-shadow: 0 2px 8px rgba(61, 34, 20, 0.03);
   transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-.ticket-rate-card:hover {
+.clean-ticket-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3.5px;
+  background: #EFE4D6;
+  transition: height 0.2s ease;
+}
+
+.card-tier-reguler {
+  background: linear-gradient(180deg, #FFFDF8 0%, #FEF8ED 100%);
+  border-color: #FDE68A;
+}
+.card-tier-reguler::before { background: #D97706; }
+
+.card-tier-terusan {
+  background: linear-gradient(180deg, #FAF7F2 0%, #F5EDE2 100%);
+  border-color: #E6D7C3;
+}
+.card-tier-terusan::before { background: #3D2214; }
+
+.card-tier-edukasi {
+  background: linear-gradient(180deg, #FBF8F5 0%, #F3ECE5 100%);
+  border-color: #DDD0C2;
+}
+.card-tier-edukasi::before { background: #5A3825; }
+
+.card-tier-rombongan {
+  background: linear-gradient(180deg, #FFFBF7 0%, #FFF3EB 100%);
+  border-color: #FDCBA4;
+}
+.card-tier-rombongan::before { background: #C2410C; }
+
+.clean-ticket-card:hover {
   transform: translateY(-3px);
   border-color: #D97706;
   box-shadow: 0 8px 20px rgba(61, 34, 20, 0.08);
 }
 
-.rate-banner-box {
-  height: 110px;
-  position: relative;
-  overflow: hidden;
+/* Header Row */
+.clean-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1px;
 }
 
-.rate-banner-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.rate-category-badge {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  background: #3D2214;
-  color: #FAF5EE;
-  padding: 2.5px 7px;
+.clean-tag-badge {
+  padding: 2.5px 8px;
   border-radius: 6px;
-  font-size: 9px;
+  font-size: 10px;
   font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  letter-spacing: 0.3px;
+}
+
+.tag-reguler { background: #FEF3C7; color: #B45309; border: 1px solid #FDE68A; }
+.tag-terusan { background: #FAF0E4; color: #3D2214; border: 1px solid #E6D7C3; }
+.tag-edukasi { background: #ECE2D7; color: #5A3825; border: 1px solid #DDD0C2; }
+.tag-rombongan { background: #FFEDD5; color: #C2410C; border: 1px solid #FED7AA; }
+
+.clean-ticket-code {
+  font-size: 10px;
+  font-weight: 800;
+  color: #8C6D58;
+  background: #FAF7F2;
+  border: 1px solid #EFE4D6;
+  padding: 2px 6px;
+  border-radius: 5px;
   letter-spacing: 0.4px;
 }
 
-.rate-status-pill {
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
-  padding: 2.5px 8px;
-  border-radius: 10px;
-  font-size: 9.5px;
-  font-weight: 800;
-}
-
-.pill-active { background: #D1FAE5; color: #065F46; }
-.pill-inactive { background: #FEE2E2; color: #991B1B; }
-
-.rate-card-body {
-  padding: 12px 14px 14px 14px;
+/* Title & Description */
+.clean-title-desc-wrap {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  flex: 1;
-  gap: 8px;
+  gap: 2px;
 }
 
-.rate-title-desc-wrap {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.rate-name {
+.clean-rate-name {
   font-family: 'Cinzel', serif;
-  font-size: 14.5px;
+  font-size: 13.5px;
   font-weight: 800;
   color: #2C1A13;
   margin: 0;
   line-height: 1.25;
 }
 
-.rate-desc {
-  font-size: 11px;
+.clean-rate-desc {
+  font-size: 10.5px;
   color: #6E442B;
   margin: 0;
   line-height: 1.35;
@@ -1065,55 +1105,79 @@ const formatRupiah = (val: number): string => {
   overflow: hidden;
 }
 
-.rate-price-box {
-  background: #FAF3E8;
-  border: 1px solid #EFE4D6;
-  border-radius: 12px;
-  padding: 8px 10px;
-  text-align: center;
+/* Price Box */
+.clean-price-box {
+  background: rgba(255, 255, 255, 0.88);
+  border: 1.5px solid #EFE4D6;
+  border-radius: 9px;
+  padding: 6px 10px 6px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 1px 0;
+  box-shadow: 0 1px 3px rgba(61, 34, 20, 0.03);
 }
 
-.price-lbl {
-  font-size: 9px;
+.price-header-strip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.clean-price-lbl {
+  font-size: 8.5px;
   font-weight: 800;
   color: #8C6D58;
+  letter-spacing: 0.4px;
 }
 
-.price-num {
+.clean-price-sub {
+  font-size: 8.5px;
+  color: #8C6D58;
+  font-weight: 600;
+}
+
+.clean-price-num {
   font-family: 'Outfit', sans-serif;
   font-size: 18px;
   font-weight: 900;
   color: #2C1A13;
   line-height: 1.1;
-  margin: 1px 0;
+  margin: 0;
+  text-align: left;
 }
 
-.price-sub {
-  font-size: 9.5px;
-  color: #7A5034;
-}
-
-.rate-rules-box {
+/* Rules Checklist */
+.clean-rules-box {
   display: flex;
   flex-direction: column;
   gap: 3px;
+  padding: 0;
 }
 
-.rule-item {
+.clean-rule-item {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 5px;
   font-size: 10.5px;
-  color: #5A2E17;
+  color: #432A20;
   font-weight: 600;
+  line-height: 1.3;
 }
 
-.check-glyph {
-  color: #10B981;
+.clean-check-icon {
+  color: #059669;
   font-weight: 900;
+  font-size: 11px;
+  flex-shrink: 0;
 }
 
-.btn-edit-rate {
+.clean-rule-txt {
+  flex: 1;
+}
+
+/* Action Button */
+.btn-clean-edit-rate {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -1122,12 +1186,19 @@ const formatRupiah = (val: number): string => {
   color: #FAF5EE;
   border: none;
   padding: 7px 12px;
-  border-radius: 10px;
+  border-radius: 9px;
   font-size: 11.5px;
   font-weight: 800;
   cursor: pointer;
   transition: all 0.2s ease;
   width: 100%;
+  box-shadow: 0 2px 5px rgba(61, 34, 20, 0.1);
+}
+
+.btn-clean-edit-rate:hover:not(:disabled) {
+  background: #D97706;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(217, 119, 6, 0.2);
 }
 
 .btn-edit-rate:hover:not(:disabled) {
@@ -1488,15 +1559,18 @@ const formatRupiah = (val: number): string => {
 }
 
 .btn-pill-edit {
-  background: #FAF3E8;
-  border-color: #EADBCC;
-  color: #3D2214;
+  background: #3D2214;
+  border-color: #3D2214;
+  color: #FAF5EE;
+  box-shadow: 0 2px 4px rgba(61, 34, 20, 0.15);
 }
 
 .btn-pill-edit:hover:not(:disabled) {
-  background: #3D2214;
-  color: #FAF5EE;
-  border-color: #3D2214;
+  background: #5A351E;
+  border-color: #5A351E;
+  color: #FFFFFF;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(61, 34, 20, 0.22);
 }
 
 .btn-pill-maint {
