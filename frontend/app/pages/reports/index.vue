@@ -233,7 +233,7 @@
                   <div class="text-xs text-muted">{{ t.whatsapp }}</div>
                 </td>
                 <td>{{ t.ticketType }}</td>
-                <td><span class="member-tag" :class="`tag-${t.memberType.toLowerCase()}`">{{ t.memberType }}</span></td>
+                <td><span class="member-tag" :class="`tag-${t.memberType.toLowerCase()}`">{{ formatMemberType(t.memberType) }}</span></td>
                 <td>
                   <span class="status-pill" :class="`pill-${t.status.toLowerCase()}`">
                     {{ t.status }}
@@ -321,7 +321,7 @@
                 <td class="font-medium">{{ m.name }}</td>
                 <td class="font-mono text-cocoa font-bold">{{ m.whatsapp }}</td>
                 <td>{{ m.domisili }}</td>
-                <td><span class="member-tag" :class="`tag-${m.type.toLowerCase()}`">{{ m.type }}</span></td>
+                <td><span class="member-tag" :class="`tag-${m.type.toLowerCase()}`">{{ formatMemberType(m.type) }}</span></td>
                 <td>{{ m.visits }} Kali</td>
                 <td>{{ m.registeredAt }}</td>
                 <td>
@@ -713,6 +713,15 @@ const formatRupiah = (val: number): string => {
   }).format(val)
 }
 
+const formatMemberType = (code: string): string => {
+  const map: Record<string, string> = {
+    'PR': 'Pengunjung Reguler',
+    'PP': 'Pengunjung Pengajian',
+    'PT': 'Pengunjung Tour'
+  }
+  return map[code] || code
+}
+
 onMounted(() => {
   initRevenueReportChart()
 })
@@ -727,7 +736,7 @@ onMounted(() => {
   gap: 22px;
   max-width: 1380px;
   width: 100%;
-  font-family: 'Jost', sans-serif;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
 }
 
 .executive-command-header {
@@ -747,17 +756,19 @@ onMounted(() => {
 }
 
 .header-main-title {
-  font-size: 34px;
-  font-weight: 900;
-  color: #1F120B;
+  font-size: 28px;
+  font-weight: 800;
+  color: #111827;
   margin: 0;
-  letter-spacing: -0.8px;
+  letter-spacing: -0.5px;
 }
 
 .header-meta-clean-line {
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 500;
-  color: #8C786E;
+  color: #4B5563;
+  margin: 0;
+  line-height: 1.5;
 }
 
 .controls-hero-col {
@@ -1034,15 +1045,18 @@ onMounted(() => {
 .pill-expired { background-color: #F3F4F6; color: #6B7280; }
 
 .member-tag {
-  font-size: 11px;
-  font-weight: 700;
-  padding: 2px 6px;
-  border-radius: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
 }
 
-.tag-pr { background-color: #F3F4F6; color: #374151; }
-.tag-pp { background-color: #FEF3C7; color: #92400E; }
-.tag-pt { background-color: #E0E7FF; color: #3730A3; }
+.tag-pr { background-color: #DCE6F5; color: #1A365D; }
+.tag-pp { background-color: #FEF08A; color: #422006; }
+.tag-pt { background-color: #C4DCFB; color: #1A365D; }
 
 .badge-voucher {
   background-color: #ECFDF5;

@@ -192,26 +192,7 @@
             <!-- Price & Capacity in a Single Symmetric Row -->
             <div class="wahana-meta-line">
               <span class="wahana-price-val">{{ ride.price === 0 ? 'Gratis (Terusan)' : formatRupiah(ride.price) }}</span>
-              <span class="wahana-capacity-tag">
-                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
-                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
-                  <circle cx="9" cy="7" r="4"/>
-                </svg>
-                <span>{{ ride.capacity }} Org</span>
-              </span>
-            </div>
-
-            <!-- Compact Sub-Metric Strip -->
-            <div class="wahana-metrics-strip">
-              <span class="metric-item">
-                <span class="metric-lbl">Main:</span>
-                <strong class="metric-val">{{ ride.playedToday.toLocaleString('id-ID') }}x</strong>
-              </span>
-              <span class="metric-dot-sep">•</span>
-              <span class="metric-item">
-                <span class="metric-lbl">Durasi:</span>
-                <strong class="metric-val">{{ ride.duration }}</strong>
-              </span>
+            <!-- Removed Capacity Tag and Metrics Strip -->
             </div>
 
             <!-- Sleek Action Buttons Bar -->
@@ -794,7 +775,7 @@ const formatRupiah = (val: number): string => {
   display: flex;
   flex-direction: column;
   gap: 22px;
-  font-family: 'Jost', sans-serif;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
 }
 
 /* ========================================================================= */
@@ -866,20 +847,19 @@ const formatRupiah = (val: number): string => {
 }
 
 .page-title {
-  font-family: 'Cinzel', serif;
-  font-size: 26px;
-  font-weight: 900;
-  color: #2C1A13;
+  font-size: 28px;
+  font-weight: 800;
+  color: #111827;
   margin: 0;
-  letter-spacing: 0.3px;
+  letter-spacing: -0.5px;
 }
 
 .page-subtitle {
-  font-size: 13.5px;
-  font-weight: 600;
-  color: #6E442B;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4B5563;
   margin: 0;
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
 /* Header Right Cocoa & Chocolate Decorative Graphic */
@@ -966,7 +946,6 @@ const formatRupiah = (val: number): string => {
 }
 
 .sec-title {
-  font-family: 'Cinzel', serif;
   font-size: 17px;
   font-weight: 900;
   color: #2C1A13;
@@ -990,14 +969,14 @@ const formatRupiah = (val: number): string => {
 
 .clean-ticket-card {
   background: #FFFFFF;
-  border: 1.5px solid #EFE4D6;
-  border-radius: 16px;
-  padding: 13px 14px 12px 14px;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 7px;
-  box-shadow: 0 2px 8px rgba(61, 34, 20, 0.03);
+  gap: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   transition: all 0.25s ease;
   position: relative;
   overflow: hidden;
@@ -1009,39 +988,27 @@ const formatRupiah = (val: number): string => {
   top: 0;
   left: 0;
   right: 0;
-  height: 3.5px;
+  height: 2px;
   background: #EFE4D6;
   transition: height 0.2s ease;
 }
 
-.card-tier-reguler {
-  background: linear-gradient(180deg, #FFFDF8 0%, #FEF8ED 100%);
-  border-color: #FDE68A;
-}
+.card-tier-reguler {}
 .card-tier-reguler::before { background: #D97706; }
 
-.card-tier-terusan {
-  background: linear-gradient(180deg, #FAF7F2 0%, #F5EDE2 100%);
-  border-color: #E6D7C3;
-}
+.card-tier-terusan {}
 .card-tier-terusan::before { background: #3D2214; }
 
-.card-tier-edukasi {
-  background: linear-gradient(180deg, #FBF8F5 0%, #F3ECE5 100%);
-  border-color: #DDD0C2;
-}
+.card-tier-edukasi {}
 .card-tier-edukasi::before { background: #5A3825; }
 
-.card-tier-rombongan {
-  background: linear-gradient(180deg, #FFFBF7 0%, #FFF3EB 100%);
-  border-color: #FDCBA4;
-}
+.card-tier-rombongan {}
 .card-tier-rombongan::before { background: #C2410C; }
 
 .clean-ticket-card:hover {
-  transform: translateY(-3px);
-  border-color: #D97706;
-  box-shadow: 0 8px 20px rgba(61, 34, 20, 0.08);
+  transform: translateY(-2px);
+  border-color: #D1D5DB;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 /* Header Row */
@@ -1053,9 +1020,9 @@ const formatRupiah = (val: number): string => {
 }
 
 .clean-tag-badge {
-  padding: 2.5px 8px;
+  padding: 4px 10px;
   border-radius: 6px;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 800;
   display: inline-flex;
   align-items: center;
@@ -1068,12 +1035,12 @@ const formatRupiah = (val: number): string => {
 .tag-rombongan { background: #FFEDD5; color: #C2410C; border: 1px solid #FED7AA; }
 
 .clean-ticket-code {
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 800;
   color: #8C6D58;
   background: #FAF7F2;
   border: 1px solid #EFE4D6;
-  padding: 2px 6px;
+  padding: 4px 8px;
   border-radius: 5px;
   letter-spacing: 0.4px;
 }
@@ -1086,8 +1053,7 @@ const formatRupiah = (val: number): string => {
 }
 
 .clean-rate-name {
-  font-family: 'Cinzel', serif;
-  font-size: 13.5px;
+  font-size: 16px;
   font-weight: 800;
   color: #2C1A13;
   margin: 0;
@@ -1095,8 +1061,8 @@ const formatRupiah = (val: number): string => {
 }
 
 .clean-rate-desc {
-  font-size: 10.5px;
-  color: #6E442B;
+  font-size: 13px;
+  color: #4B5563;
   margin: 0;
   line-height: 1.35;
   display: -webkit-box;
@@ -1107,15 +1073,14 @@ const formatRupiah = (val: number): string => {
 
 /* Price Box */
 .clean-price-box {
-  background: rgba(255, 255, 255, 0.88);
-  border: 1.5px solid #EFE4D6;
-  border-radius: 9px;
-  padding: 6px 10px 6px 10px;
+  background: #F9FAFB;
+  border: 1px solid #F3F4F6;
+  border-radius: 8px;
+  padding: 10px 12px;
   display: flex;
   flex-direction: column;
   gap: 2px;
-  margin: 1px 0;
-  box-shadow: 0 1px 3px rgba(61, 34, 20, 0.03);
+  margin: 2px 0;
 }
 
 .price-header-strip {
@@ -1125,21 +1090,20 @@ const formatRupiah = (val: number): string => {
 }
 
 .clean-price-lbl {
-  font-size: 8.5px;
+  font-size: 11px;
   font-weight: 800;
-  color: #8C6D58;
+  color: #6B7280;
   letter-spacing: 0.4px;
 }
 
 .clean-price-sub {
-  font-size: 8.5px;
-  color: #8C6D58;
+  font-size: 11px;
+  color: #9CA3AF;
   font-weight: 600;
 }
 
 .clean-price-num {
-  font-family: 'Outfit', sans-serif;
-  font-size: 18px;
+  font-size: 24px;
   font-weight: 900;
   color: #2C1A13;
   line-height: 1.1;
@@ -1159,16 +1123,16 @@ const formatRupiah = (val: number): string => {
   display: flex;
   align-items: flex-start;
   gap: 5px;
-  font-size: 10.5px;
-  color: #432A20;
-  font-weight: 600;
+  font-size: 13px;
+  color: #374151;
+  font-weight: 500;
   line-height: 1.3;
 }
 
 .clean-check-icon {
   color: #059669;
   font-weight: 900;
-  font-size: 11px;
+  font-size: 14px;
   flex-shrink: 0;
 }
 
@@ -1182,23 +1146,22 @@ const formatRupiah = (val: number): string => {
   align-items: center;
   justify-content: center;
   gap: 5px;
-  background: #3D2214;
-  color: #FAF5EE;
-  border: none;
-  padding: 7px 12px;
-  border-radius: 9px;
-  font-size: 11.5px;
-  font-weight: 800;
+  background: #FFFFFF;
+  color: #374151;
+  border: 1px solid #D1D5DB;
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
   width: 100%;
-  box-shadow: 0 2px 5px rgba(61, 34, 20, 0.1);
 }
 
 .btn-clean-edit-rate:hover:not(:disabled) {
-  background: #D97706;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 10px rgba(217, 119, 6, 0.2);
+  background: #F9FAFB;
+  color: #111827;
+  border-color: #9CA3AF;
 }
 
 .btn-edit-rate:hover:not(:disabled) {
@@ -1220,14 +1183,14 @@ const formatRupiah = (val: number): string => {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: #FAF3E8;
-  border: 1px solid #EFE4D6;
-  color: #5A2E17;
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
+  color: #374151;
   padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 12.5px;
-  font-weight: 800;
-  box-shadow: 0 2px 6px rgba(61, 34, 20, 0.03);
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .control-bar-right {
@@ -1277,16 +1240,16 @@ const formatRupiah = (val: number): string => {
 
 .category-select-pill {
   appearance: none;
-  background: #FAF3E8;
-  border: 1px solid #EFE4D6;
-  color: #2C1A13;
+  background: #FFFFFF;
+  border: 1px solid #D1D5DB;
+  color: #374151;
   padding: 8px 32px 8px 16px;
-  border-radius: 20px;
-  font-size: 12.5px;
-  font-weight: 800;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
   cursor: pointer;
   outline: none;
-  box-shadow: 0 2px 6px rgba(61, 34, 20, 0.03);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   transition: border-color 0.2s ease;
 }
 
@@ -1298,27 +1261,27 @@ const formatRupiah = (val: number): string => {
   position: absolute;
   right: 12px;
   pointer-events: none;
-  color: #7A5034;
+  color: #9CA3AF;
 }
 
 .btn-add-wahana-pill {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: #3D2214;
-  color: #FAF5EE;
+  background: #111827;
+  color: #FFFFFF;
   border: none;
-  padding: 8px 18px;
-  border-radius: 20px;
-  font-size: 12.5px;
-  font-weight: 800;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(61, 34, 20, 0.2);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
   transition: all 0.2s ease;
 }
 
 .btn-add-wahana-pill:hover {
-  background: #D97706;
+  background: #374151;
   transform: translateY(-1px);
 }
 
@@ -1333,21 +1296,21 @@ const formatRupiah = (val: number): string => {
 
 .wahana-card-ref {
   background: #FFFFFF;
-  border: 1.5px solid #EFE4D6;
-  border-radius: 18px;
-  padding: 10px 10px 12px 10px;
+  border: 1px solid #E5E7EB;
+  border-radius: 12px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  box-shadow: 0 3px 12px rgba(61, 34, 20, 0.04);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
 }
 
 .wahana-card-ref:hover {
-  transform: translateY(-4px);
-  border-color: #D97706;
-  box-shadow: 0 10px 22px rgba(61, 34, 20, 0.08);
+  transform: translateY(-2px);
+  border-color: #D1D5DB;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 /* Top Photo Box */
@@ -1457,7 +1420,6 @@ const formatRupiah = (val: number): string => {
 }
 
 .wahana-title {
-  font-family: 'Cinzel', serif;
   font-size: 13.5px;
   font-weight: 800;
   color: #2C1A13;
@@ -1479,7 +1441,6 @@ const formatRupiah = (val: number): string => {
 }
 
 .wahana-price-val {
-  font-family: 'Outfit', sans-serif;
   font-size: 14.5px;
   font-weight: 900;
   color: #C2410C;
@@ -1525,7 +1486,6 @@ const formatRupiah = (val: number): string => {
 }
 
 .metric-val {
-  font-family: 'Outfit', sans-serif;
   font-size: 11px;
   font-weight: 800;
   color: #2C1A13;
@@ -1549,40 +1509,43 @@ const formatRupiah = (val: number): string => {
   align-items: center;
   justify-content: center;
   gap: 4px;
-  padding: 6px 8px;
-  border-radius: 9px;
-  font-size: 11px;
-  font-weight: 800;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
   border: 1px solid transparent;
 }
 
 .btn-pill-edit {
-  background: #3D2214;
-  border-color: #3D2214;
-  color: #FAF5EE;
-  box-shadow: 0 2px 4px rgba(61, 34, 20, 0.15);
+  background: #FFFFFF;
+  border-color: #D1D5DB;
+  color: #374151;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .btn-pill-edit:hover:not(:disabled) {
-  background: #5A351E;
-  border-color: #5A351E;
-  color: #FFFFFF;
+  background: #F9FAFB;
+  border-color: #9CA3AF;
+  color: #111827;
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(61, 34, 20, 0.22);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 .btn-pill-maint {
-  background: #FFFBEB;
-  border-color: #FDE68A;
-  color: #B45309;
+  background: #FFFFFF;
+  border-color: #D1D5DB;
+  color: #111827;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 .btn-pill-maint:hover:not(:disabled) {
-  background: #F59E0B;
-  color: #FFFFFF;
-  border-color: #F59E0B;
+  background: #F9FAFB;
+  border-color: #9CA3AF;
+  color: #111827;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 .btn-pill-maint.is-maint-active {
@@ -1641,7 +1604,6 @@ const formatRupiah = (val: number): string => {
 }
 
 .safety-title {
-  font-family: 'Cinzel', serif;
   font-size: 15.5px;
   font-weight: 900;
   color: #2C1A13;
@@ -1686,22 +1648,22 @@ const formatRupiah = (val: number): string => {
 }
 
 .modal-card {
-  background: #FFFDF9;
-  border: 2px solid #8B5738;
-  border-radius: 20px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 16px;
   width: 100%;
   max-width: 520px;
-  padding: 22px 24px;
-  box-shadow: 0 20px 50px rgba(44, 26, 19, 0.35);
+  padding: 24px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
 }
 
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1.5px solid #EFE4D6;
-  padding-bottom: 12px;
-  margin-bottom: 14px;
+  border-bottom: 1px solid #E5E7EB;
+  padding-bottom: 16px;
+  margin-bottom: 16px;
 }
 
 .modal-title-col {
@@ -1715,10 +1677,9 @@ const formatRupiah = (val: number): string => {
 }
 
 .modal-header h3 {
-  font-family: 'Cinzel', serif;
-  font-size: 16px;
-  font-weight: 800;
-  color: #2C1A13;
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
   margin: 0;
 }
 
@@ -1726,7 +1687,7 @@ const formatRupiah = (val: number): string => {
   background: transparent;
   border: none;
   font-size: 24px;
-  color: #8C6D58;
+  color: #9CA3AF;
   cursor: pointer;
 }
 
@@ -1749,33 +1710,35 @@ const formatRupiah = (val: number): string => {
 }
 
 .form-group label {
-  font-size: 11px;
-  font-weight: 700;
-  color: #5A3A28;
+  font-size: 12px;
+  font-weight: 600;
+  color: #4B5563;
   text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .input-control, .filter-select, .textarea-control {
-  border: 1.5px solid #C4AA8F;
+  border: 1px solid #D1D5DB;
   background: #FFFFFF;
   border-radius: 8px;
-  padding: 7px 11px;
-  font-size: 13px;
-  color: #2C1A13;
+  padding: 10px 14px;
+  font-size: 14px;
+  color: #111827;
   outline: none;
   font-family: inherit;
+  transition: border-color 0.2s ease;
 }
 
 .input-control:focus, .filter-select:focus, .textarea-control:focus {
-  border-color: #D97706;
+  border-color: #111827;
 }
 
 .checkbox-row {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 12px;
-  color: #2C1A13;
+  font-size: 13.5px;
+  color: #374151;
   cursor: pointer;
 }
 
@@ -1787,23 +1750,35 @@ const formatRupiah = (val: number): string => {
 }
 
 .btn-secondary {
-  background: #FAF3E8;
-  border: 1.5px solid #C4AA8F;
-  color: #5A3A28;
-  padding: 8px 16px;
-  border-radius: 10px;
-  font-weight: 800;
+  background: #FFFFFF;
+  border: 1px solid #D1D5DB;
+  color: #374151;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
   cursor: pointer;
+  transition: all 0.2s ease;
+}
+.btn-secondary:hover {
+  background: #F9FAFB;
+  border-color: #9CA3AF;
 }
 
 .btn-primary-modal {
-  background: linear-gradient(135deg, #D97706 0%, #B45309 100%);
+  background: #111827;
   color: #FFFFFF;
   border: none;
-  padding: 8px 18px;
-  border-radius: 10px;
-  font-weight: 800;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
   cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+.btn-primary-modal:hover {
+  background: #374151;
 }
 
 /* ========================================================================= */

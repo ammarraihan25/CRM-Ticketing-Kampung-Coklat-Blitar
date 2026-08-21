@@ -1095,17 +1095,19 @@ watch(selectedPeriod, () => {
 }
 
 .header-main-title {
-  font-size: 34px;
-  font-weight: 900;
-  color: #1F120B;
+  font-size: 28px;
+  font-weight: 800;
+  color: #111827;
   margin: 0;
-  letter-spacing: -0.8px;
+  letter-spacing: -0.5px;
 }
 
 .header-meta-clean-line {
-  font-size: 13.5px;
+  font-size: 14px;
   font-weight: 500;
-  color: #8C786E;
+  color: #4B5563;
+  margin: 0;
+  line-height: 1.5;
 }
 
 .controls-hero-col {
@@ -2266,6 +2268,12 @@ watch(selectedPeriod, () => {
   .controls-hero-col { flex-direction: column; align-items: flex-start; }
   .kpi-cards-grid-4, .demo-bottom-cities-grid, .chart-highlight-strip { grid-template-columns: 1fr; }
   .demo-header-wrap { flex-direction: column; align-items: stretch; }
-  .header-main-title { font-size: 20px; }
+  .header-main-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #111827;
+  margin: 0;
+  letter-spacing: -0.5px;
+}
 }
 </style>

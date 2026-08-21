@@ -633,7 +633,7 @@ const copyCode = (code: string) => {
   display: flex;
   flex-direction: column;
   gap: 22px;
-  font-family: 'Jost', sans-serif;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
 }
 
 /* Header */
@@ -695,20 +695,18 @@ const copyCode = (code: string) => {
 }
 
 .page-title {
-  font-family: 'Cinzel', serif;
-  font-size: 26px;
-  font-weight: 900;
-  color: #2C1A13;
+  font-size: 28px;
+  font-weight: 800;
+  color: #111827;
   margin: 0;
-  letter-spacing: 0.3px;
+  letter-spacing: -0.5px;
 }
 
 .page-subtitle {
-  font-size: 13.5px;
-  font-weight: 600;
-  color: #5A3A28;
+  font-size: 14px;
+  font-weight: 500;
+  color: #4B5563;
   margin: 0;
-  max-width: 680px;
   line-height: 1.5;
 }
 
@@ -988,7 +986,7 @@ const copyCode = (code: string) => {
 }
 
 .segment-pill-tag {
-  font-size: 10.5px;
+  font-size: 13.5px;
   font-weight: 900;
   text-transform: uppercase;
   padding: 3px 10px;
@@ -1008,7 +1006,6 @@ const copyCode = (code: string) => {
 }
 
 .bold-ticket-title {
-  font-family: 'Outfit', sans-serif;
   font-size: 17px;
   font-weight: 900;
   letter-spacing: 0.5px;
@@ -1064,7 +1061,7 @@ const copyCode = (code: string) => {
 }
 
 .code-prefix {
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 900;
   color: #8C6D58;
 }
@@ -1077,7 +1074,7 @@ const copyCode = (code: string) => {
   letter-spacing: 0.6px;
 }
 
-.copy-glyph { font-size: 11px; }
+.copy-glyph { font-size: 13.5px; }
 
 .btn-detail-link {
   display: inline-flex;
@@ -1107,15 +1104,14 @@ const copyCode = (code: string) => {
 }
 
 .stub-brand-kcb {
-  font-family: 'Cinzel', serif;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 900;
   letter-spacing: 0.6px;
   color: #FFFFFF;
 }
 
 .stub-tag-kcb {
-  font-size: 8px;
+  font-size: 13.5px;
   font-weight: 800;
   color: rgba(255, 255, 255, 0.75);
   letter-spacing: 0.3px;
@@ -1126,7 +1122,6 @@ const copyCode = (code: string) => {
 }
 
 .stub-callout-text {
-  font-family: 'Outfit', sans-serif;
   font-size: 14.5px;
   font-weight: 900;
   letter-spacing: 0.6px;
@@ -1161,7 +1156,7 @@ const copyCode = (code: string) => {
 
 .stub-date-val {
   font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
+  font-size: 13.5px;
   font-weight: 900;
   color: #FFFFFF;
   letter-spacing: 0.8px;
@@ -1178,7 +1173,7 @@ const copyCode = (code: string) => {
   border: none;
   padding: 4px;
   border-radius: 6px;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 900;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -1201,7 +1196,7 @@ const copyCode = (code: string) => {
   color: #2C1A13;
   padding: 4px;
   border-radius: 6px;
-  font-size: 9px;
+  font-size: 12px;
   font-weight: 900;
   cursor: pointer;
   transition: all 0.2s ease;
@@ -1254,7 +1249,7 @@ const copyCode = (code: string) => {
 }
 
 .banner-lbl {
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 800;
   color: #8C6D58;
 }
@@ -1270,7 +1265,6 @@ const copyCode = (code: string) => {
 .detail-discount-tag {
   background: #2C1A13;
   color: #F59E0B;
-  font-family: 'Outfit', sans-serif;
   font-size: 16px;
   font-weight: 900;
   padding: 6px 14px;
@@ -1279,7 +1273,6 @@ const copyCode = (code: string) => {
 }
 
 .detail-promo-title {
-  font-family: 'Cinzel', serif;
   font-size: 18px;
   font-weight: 800;
   color: #2C1A13;
@@ -1314,7 +1307,7 @@ const copyCode = (code: string) => {
 
 .spec-label {
   display: block;
-  font-size: 10.5px;
+  font-size: 13.5px;
   font-weight: 700;
   color: #8C6D58;
 }
@@ -1431,7 +1424,6 @@ const copyCode = (code: string) => {
 }
 
 .modal-title-col h3 {
-  font-family: 'Cinzel', serif;
   font-size: 17px;
   font-weight: 900;
   color: #2C1A13;
@@ -1502,7 +1494,7 @@ const copyCode = (code: string) => {
 }
 
 .form-group label {
-  font-size: 11px;
+  font-size: 13.5px;
   font-weight: 700;
   color: #5A3A28;
   text-transform: uppercase;
@@ -1565,7 +1557,7 @@ const copyCode = (code: string) => {
 }
 
 .footer-tip {
-  font-size: 11px;
+  font-size: 13.5px;
   color: #6E442B;
   max-width: 500px;
   font-weight: 600;

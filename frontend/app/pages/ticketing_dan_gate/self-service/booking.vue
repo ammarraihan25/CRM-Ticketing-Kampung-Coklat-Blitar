@@ -278,7 +278,7 @@ const closeTicketModal = () => {
           <h3>Buka Keuntungan Eksklusif Member!</h3>
           <p>Bergabunglah dengan program keanggotaan kami untuk menikmati diskon spesial, akses awal ke produk baru, dan penawaran eksklusif khusus anggota.</p>
         </div>
-        <button class="btn-member">Daftar Membership</button>
+        <button class="btn-member" @click="navigateTo('/membership')">Daftar Membership</button>
       </div>
 
       <!-- Main Layout: 2 Columns -->
