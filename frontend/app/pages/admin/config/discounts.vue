@@ -63,21 +63,8 @@
             <span class="vertical-date-text">{{ v.validUntil }}</span>
           </div>
 
-          <!-- Soft Aesthetic Botanical Cocoa Artwork -->
-          <div class="ticket-illustration-art">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" class="cocoa-art-svg">
-              <path d="M50 150 C30 110 50 50 110 40 C170 30 175 110 130 155 C90 190 60 175 50 150 Z" :fill="getPodFill(v.targetSegment)" stroke="#2C1A13" stroke-width="3" opacity="0.85"/>
-              <path d="M110 40 C95 80 80 120 130 155" fill="none" stroke="#2C1A13" stroke-width="2" opacity="0.6"/>
-              <path d="M70 70 C60 100 65 130 90 155" fill="none" stroke="#2C1A13" stroke-width="2" opacity="0.6"/>
-              <path d="M140 60 C150 90 145 130 115 155" fill="none" stroke="#2C1A13" stroke-width="2" opacity="0.6"/>
-              <path d="M30 120 C10 80 40 40 80 50 C60 90 50 110 30 120 Z" fill="#2D6A4F" stroke="#1B4332" stroke-width="2.5" opacity="0.75"/>
-              <path d="M90 160 C110 190 160 185 170 145 C135 155 110 165 90 160 Z" fill="#40916C" stroke="#1B4332" stroke-width="2.5" opacity="0.75"/>
-              <ellipse cx="115" cy="95" rx="13" ry="8" transform="rotate(-25 115 95)" fill="#F59E0B" opacity="0.9"/>
-              <ellipse cx="95" cy="115" rx="12" ry="7" transform="rotate(35 95 115)" fill="#D97706" opacity="0.9"/>
-              <circle cx="155" cy="45" r="3.5" fill="#FBBF24" opacity="0.8"/>
-              <circle cx="168" cy="65" r="2" fill="#FBBF24" opacity="0.8"/>
-            </svg>
-          </div>
+          <!-- Tiled Logo Watermark -->
+          <div class="ticket-watermark-bg" :style="{ backgroundImage: `url(${logoImg})` }"></div>
 
           <!-- Main Text Content Area (Bold & Legible) -->
           <div class="ticket-text-content">
@@ -930,6 +917,8 @@ const copyCode = (code: string) => {
 
 /* Far Left Vertical Date Strip (Bolder) */
 .ticket-vertical-edge {
+    position: relative;
+    z-index: 1;
   width: 44px;
   display: flex;
   align-items: center;
@@ -950,20 +939,18 @@ const copyCode = (code: string) => {
 }
 
 /* Floating Soft Cocoa Pod Illustration */
-.ticket-illustration-art {
+.ticket-watermark-bg {
   position: absolute;
-  left: 42px;
-  bottom: -15px;
-  width: 140px;
-  height: 140px;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  opacity: 0.12;
+  background-size: 80px auto;
+  background-repeat: repeat;
+  background-position: center;
+  z-index: 0;
   pointer-events: none;
-  z-index: 1;
-  opacity: 0.35;
-}
-
-.cocoa-art-svg {
-  width: 100%;
-  height: 100%;
 }
 
 /* Text Content Area */

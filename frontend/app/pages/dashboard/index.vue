@@ -111,18 +111,18 @@
               <button 
                 type="button"
                 class="type-btn"
-                :class="{ active: chartType === 'line' }"
-                @click="setChartType('line')"
-              >
-                Line
-              </button>
-              <button 
-                type="button"
-                class="type-btn"
                 :class="{ active: chartType === 'bar' }"
                 @click="setChartType('bar')"
               >
                 Bar
+              </button>
+              <button 
+                type="button"
+                class="type-btn"
+                :class="{ active: chartType === 'line' }"
+                @click="setChartType('line')"
+              >
+                Line
               </button>
             </div>
           </div>
@@ -259,62 +259,43 @@
 
         <div class="radial-gauge-flex-body">
           <div class="radial-rings-chart-container">
-            <svg viewBox="0 0 200 200" class="concentric-rings-svg">
-              <g v-for="(seg, idx) in memberSegments" :key="seg.code">
-                <!-- Track Background Circle -->
-                <circle cx="100" cy="100" :r="85 - idx * 24" class="ring-track" stroke-width="14" fill="none" />
-                <!-- Active Progress Arc -->
-                <circle 
-                  cx="100" cy="100" :r="85 - idx * 24" class="ring-active" :stroke="seg.color" stroke-width="14" fill="none" stroke-linecap="round"
-                  :stroke-dasharray="2 * Math.PI * (85 - idx * 24)"
-                  :stroke-dashoffset="2 * Math.PI * (85 - idx * 24) * (1 - seg.percentage / 100)"
-                  transform="rotate(-90 100 100)"
-                />
-              </g>
-            </svg>
-
+            <div class="donut-chart-wrapper" style="position: relative; width: 100%; height: 200px;">
+              <canvas ref="segmentDonutCanvas"></canvas>
+            </div>
             <div class="rings-bottom-metric">
               <div class="rings-bottom-total-row">
                 <span class="bottom-total-label">Total Member:</span>
                 <span class="bottom-total-val">{{ memberSegmentTotal.toLocaleString('id-ID') }}</span>
               </div>
-              <span class="bottom-active-badge">
-                <span class="hub-live-dot"></span>
-                <span>92% Aktif Terdaftar</span>
-              </span>
             </div>
+
+            <!-- Active badge below SVG -->
+            <span class="bottom-active-badge" style="margin-top: 10px;">
+              <span class="hub-live-dot"></span>
+              <span>92% Aktif Terdaftar</span>
+            </span>
           </div>
 
-          <div class="radial-legend-list">
+          <!-- Clean modern Legend -->
+          <div class="radial-legend-modern">
             <div 
               v-for="seg in memberSegments" 
               :key="seg.code" 
-              class="radial-legend-card-row"
+              class="legend-modern-row"
               :class="{ 'is-hovered': activeHoverSegment === seg.code }"
               @mouseenter="activeHoverSegment = seg.code"
               @mouseleave="activeHoverSegment = null"
             >
-              <div class="legend-card-top">
-                <div class="legend-left-meta">
-                  <span class="legend-color-dot" :style="{ backgroundColor: seg.color }"></span>
-                  <span class="legend-code-tag">{{ seg.code }}</span>
-                  <span class="legend-name-text">{{ seg.title }}</span>
-                </div>
-                <div class="legend-right-score">
-                  <span class="legend-count-val">{{ seg.count.toLocaleString('id-ID') }}</span>
-                  <span class="legend-pct-val">({{ seg.percentage }}%)</span>
-                </div>
+              <div class="legend-modern-header">
+                <span class="legend-color-indicator" :style="{ backgroundColor: seg.color }"></span>
+                <span class="legend-modern-title">{{ seg.title }}</span>
+                <span class="legend-modern-pct">{{ seg.percentage }}%</span>
               </div>
-
-              <div class="legend-track-bg">
-                <div 
-                  class="legend-track-fill" 
-                  :style="{ width: `${seg.percentage}%`, backgroundColor: seg.color }"
-                ></div>
-              </div>
-
-              <div class="legend-card-subinfo">
+              <div class="legend-modern-desc">
                 {{ seg.desc }}
+              </div>
+              <div class="legend-modern-bar">
+                <div class="legend-modern-bar-fill" :style="{ width: `${seg.percentage}%`, backgroundColor: seg.color }"></div>
               </div>
             </div>
           </div>
@@ -361,8 +342,23 @@
         </div>
       </div>
 
+
+    </section>
+
+    <!-- Operations Grid -->
+    <section class="operations-grid" style="margin-bottom: 24px;">
       <div class="ticket-sales-col">
         <TicketSalesTable :ticket-items="currentTicketBreakdown" />
+      </div>
+
+      <div class="shift-wrapper">
+        <ShiftSummaryCard 
+          :shift-data="currentShiftData" 
+          :shifts-list="allShiftList"
+          :is-read-only="currentRole === 'owner'"
+          @view-details="handleViewShiftLog"
+          @close-shift="handleCloseShift"
+        />
       </div>
     </section>
 
@@ -471,25 +467,21 @@
                 <span class="slate-rank-badge" :class="{ 'badge-crown': idx === 0 }">#{{ idx + 1 }}</span>
                 <span class="slate-city-name">{{ city.name }}</span>
               </div>
-              <span class="slate-pct-pill" :style="{ backgroundColor: `${city.color}18`, color: city.color, borderColor: `${city.color}40` }">{{ city.percentage }}%</span>
+              <span class="slate-pct-text" :style="{ color: city.color }">{{ city.percentage }}%</span>
             </div>
 
-            <div class="slate-metrics-row">
-              <div class="slate-metric-block">
-                <span class="slate-meta-label">PENGUNJUNG</span>
-                <span class="slate-meta-val-dark">{{ city.pax.toLocaleString('id-ID') }} <small>pax</small></span>
-              </div>
-              <div class="slate-metric-block text-right">
-                <span class="slate-meta-label">TOTAL GTV</span>
-                <span class="slate-meta-val-amber">{{ formatRupiah(city.gtv) }}</span>
-              </div>
+            <div class="slate-metrics-clean">
+              <span class="slate-val-pax">{{ city.pax.toLocaleString('id-ID') }} <small>pax</small></span>
+              <span class="slate-val-divider">&bull;</span>
+              <span class="slate-val-gtv">{{ formatRupiah(city.gtv) }}</span>
             </div>
 
             <div class="slate-track-line">
               <div class="slate-fill-line" :style="{ width: `${city.percentage * 2}%`, backgroundColor: city.color }"></div>
             </div>
+            
             <div class="slate-bottom-sub">
-              <span>{{ city.character }}</span>
+              {{ city.character }}
             </div>
           </div>
         </div>
@@ -498,19 +490,7 @@
       </div>
     </section>
 
-    <!-- Operations Grid -->
-    <section class="operations-grid">
 
-      <div class="shift-wrapper">
-        <ShiftSummaryCard 
-          :shift-data="currentShiftData" 
-          :shifts-list="allShiftList"
-          :is-read-only="currentRole === 'owner'"
-          @view-details="handleViewShiftLog"
-          @close-shift="handleCloseShift"
-        />
-      </div>
-    </section>
 
     <!-- Shift Log Modal Dialog -->
     <div v-if="showShiftModal" class="modal-backdrop" @click.self="showShiftModal = false">
@@ -705,7 +685,7 @@ interface PeriodOption {
 
 const selectedPeriod = ref<PeriodType>('today')
 const isPeriodMenuOpen = ref(false)
-const chartType = ref<'line' | 'bar'>('line')
+const chartType = ref<'line' | 'bar'>('bar')
 const isLoading = ref(false)
 const showShiftModal = ref(false)
 const showCustomDateModal = ref(false)
@@ -774,9 +754,9 @@ const currentMetrics = computed(() => {
 // [API INTEGRATION POINT: CRM MEMBER SEGMENTS & RESONANCE SCORES]
 // -------------------------------------------------------------------------
 const memberSegments = ref([
-  { code: 'PR', title: 'Reguler Kasir POS', count: 8640, percentage: 58.3, color: '#D97706', desc: 'Pelanggan langsung (walk-in) yang melakukan transaksi reguler di loket kasir utama dan wahana.' },
-  { code: 'PP', title: 'Promo WhatsApp', count: 4320, percentage: 29.2, color: '#8C786E', desc: 'Pelanggan aktif hasil konversi dari kampanye broadcast diskon & promo tiket via WhatsApp Official.' },
-  { code: 'PT', title: 'Paket Terusan Edukasi', count: 1860, percentage: 12.5, color: '#D4C9BD', desc: 'Pelanggan VIP prioritas yang mereservasi paket lengkap (termasuk wahana bermain & mini bioskop 3D).' }
+  { code: 'PR', title: 'Reguler Kasir POS', count: 8640, percentage: 58.3, color: '#F97316', desc: 'Pelanggan langsung (walk-in) yang melakukan transaksi reguler di loket kasir utama dan wahana.' },
+  { code: 'PP', title: 'Promo WhatsApp', count: 4320, percentage: 29.2, color: '#271710', desc: 'Pelanggan aktif hasil konversi dari kampanye broadcast diskon & promo tiket via WhatsApp Official.' },
+  { code: 'PT', title: 'Paket Terusan Edukasi', count: 1860, percentage: 12.5, color: '#684534', desc: 'Pelanggan VIP prioritas yang mereservasi paket lengkap (termasuk wahana bermain & mini bioskop 3D).' }
 ])
 
 const memberSegmentTotal = computed(() => memberSegments.value.reduce((acc, seg) => acc + seg.count, 0))
@@ -786,22 +766,28 @@ const memberSegmentTotal = computed(() => memberSegments.value.reduce((acc, seg)
 // -------------------------------------------------------------------------
 const mockTicketBreakdownMap: Record<string, any[]> = {
   today: [
-    { id: 'tiket-reguler', code: 'REGULER', name: 'Tiket Masuk Reguler', description: 'Akses wahana edukasi utama & kebun coklat', price: 20000, qty: 1650, totalGtv: 33000000, percentage: 50.2, color: '#D97706', bgLight: '#FEF3C7' },
-    { id: 'tiket-terusan', code: 'TERUSAN', name: 'Tiket Masuk Terusan', description: 'Termasuk wahana bermain & mini bioskop 3D', price: 35000, qty: 495, totalGtv: 17325000, percentage: 26.4, color: '#8C786E', bgLight: '#F3EFEA' },
-    { id: 'wisata-edukasi', code: 'EDUKASI', name: 'Wisata Edukasi Coklat', description: 'Cooking class mini & cetak coklat kreasi', price: 25000, qty: 390, totalGtv: 9750000, percentage: 14.8, color: '#D4C9BD', bgLight: '#F9F8F6' },
-    { id: 'paket-tour', code: 'TOUR', name: 'Paket Rombongan Tour', description: 'Pemandu tur khusus, souvenir & tasting', price: 15000, qty: 375, totalGtv: 5625000, percentage: 8.6, color: '#E5E7EB', bgLight: '#F3F4F6' }
+    { id: 'tiket-reguler', code: 'REGULER', name: 'Tiket Masuk Reguler', description: 'Akses wahana edukasi utama & kebun coklat', price: 20000, qty: 1650, totalGtv: 33000000, percentage: 50.2, color: '#F97316', bgLight: '#FEF3C7' },
+    { id: 'tiket-terusan', code: 'TERUSAN', name: 'Tiket Masuk Terusan', description: 'Termasuk wahana bermain & mini bioskop 3D', price: 35000, qty: 495, totalGtv: 17325000, percentage: 26.4, color: '#271710', bgLight: '#F3EFEA' },
+    { id: 'wisata-edukasi', code: 'EDUKASI', name: 'Wisata Edukasi Coklat', description: 'Cooking class mini & cetak coklat kreasi', price: 25000, qty: 390, totalGtv: 9750000, percentage: 14.8, color: '#684534', bgLight: '#F9F8F6' },
+    { id: 'paket-tour', code: 'TOUR', name: 'Paket Rombongan Tour', description: 'Pemandu tur khusus, souvenir & tasting', price: 15000, qty: 375, totalGtv: 5625000, percentage: 8.6, color: '#D1D5DB', bgLight: '#F3F4F6' }
   ],
   week: [
-    { id: 'tiket-reguler', code: 'REGULER', name: 'Tiket Masuk Reguler', description: 'Akses wahana edukasi utama & kebun coklat', price: 20000, qty: 10450, totalGtv: 209000000, percentage: 50.5, color: '#D97706', bgLight: '#FEF3C7' },
-    { id: 'tiket-terusan', code: 'TERUSAN', name: 'Tiket Masuk Terusan', description: 'Termasuk wahana bermain & mini bioskop 3D', price: 35000, qty: 3120, totalGtv: 109200000, percentage: 26.4, color: '#8C786E', bgLight: '#F3EFEA' },
-    { id: 'wisata-edukasi', code: 'EDUKASI', name: 'Wisata Edukasi Coklat', description: 'Cooking class mini & cetak coklat kreasi', price: 25000, qty: 2450, totalGtv: 61250000, percentage: 14.8, color: '#D4C9BD', bgLight: '#F9F8F6' },
-    { id: 'paket-tour', code: 'TOUR', name: 'Paket Rombongan Tour', description: 'Pemandu tur khusus, souvenir & tasting', price: 15000, qty: 2320, totalGtv: 34800000, percentage: 8.3, color: '#E5E7EB', bgLight: '#F3F4F6' }
+    { id: 'tiket-reguler', code: 'REGULER', name: 'Tiket Masuk Reguler', description: 'Akses wahana edukasi utama & kebun coklat', price: 20000, qty: 10450, totalGtv: 209000000, percentage: 50.5, color: '#F97316', bgLight: '#FEF3C7' },
+    { id: 'tiket-terusan', code: 'TERUSAN', name: 'Tiket Masuk Terusan', description: 'Termasuk wahana bermain & mini bioskop 3D', price: 35000, qty: 3120, totalGtv: 109200000, percentage: 26.4, color: '#271710', bgLight: '#F3EFEA' },
+    { id: 'wisata-edukasi', code: 'EDUKASI', name: 'Wisata Edukasi Coklat', description: 'Cooking class mini & cetak coklat kreasi', price: 25000, qty: 2450, totalGtv: 61250000, percentage: 14.8, color: '#684534', bgLight: '#F9F8F6' },
+    { id: 'paket-tour', code: 'TOUR', name: 'Paket Rombongan Tour', description: 'Pemandu tur khusus, souvenir & tasting', price: 15000, qty: 2320, totalGtv: 34800000, percentage: 8.3, color: '#D1D5DB', bgLight: '#F3F4F6' }
   ],
   month: [
-    { id: 'tiket-reguler', code: 'REGULER', name: 'Tiket Masuk Reguler', description: 'Akses wahana edukasi utama & kebun coklat', price: 20000, qty: 42800, totalGtv: 856000000, percentage: 50.8, color: '#D97706', bgLight: '#FEF3C7' },
-    { id: 'tiket-terusan', code: 'TERUSAN', name: 'Tiket Masuk Terusan', description: 'Termasuk wahana bermain & mini bioskop 3D', price: 35000, qty: 12600, totalGtv: 441000000, percentage: 26.1, color: '#8C786E', bgLight: '#F3EFEA' },
-    { id: 'wisata-edukasi', code: 'EDUKASI', name: 'Wisata Edukasi Coklat', description: 'Cooking class mini & cetak coklat kreasi', price: 25000, qty: 10050, totalGtv: 251250000, percentage: 14.9, color: '#D4C9BD', bgLight: '#F9F8F6' },
-    { id: 'paket-tour', code: 'TOUR', name: 'Paket Rombongan Tour', description: 'Pemandu tur khusus, souvenir & tasting', price: 15000, qty: 9150, totalGtv: 137250000, percentage: 8.2, color: '#E5E7EB', bgLight: '#F3F4F6' }
+    { id: 'tiket-reguler', code: 'REGULER', name: 'Tiket Masuk Reguler', description: 'Akses wahana edukasi utama & kebun coklat', price: 20000, qty: 42800, totalGtv: 856000000, percentage: 50.8, color: '#F97316', bgLight: '#FEF3C7' },
+    { id: 'tiket-terusan', code: 'TERUSAN', name: 'Tiket Masuk Terusan', description: 'Termasuk wahana bermain & mini bioskop 3D', price: 35000, qty: 12600, totalGtv: 441000000, percentage: 26.1, color: '#271710', bgLight: '#F3EFEA' },
+    { id: 'wisata-edukasi', code: 'EDUKASI', name: 'Wisata Edukasi Coklat', description: 'Cooking class mini & cetak coklat kreasi', price: 25000, qty: 10050, totalGtv: 251250000, percentage: 14.9, color: '#684534', bgLight: '#F9F8F6' },
+    { id: 'paket-tour', code: 'TOUR', name: 'Paket Rombongan Tour', description: 'Pemandu tur khusus, souvenir & tasting', price: 15000, qty: 9150, totalGtv: 137250000, percentage: 8.2, color: '#D1D5DB', bgLight: '#F3F4F6' }
+  ],
+  year: [
+    { id: 'tiket-reguler', code: 'REGULER', name: 'Tiket Masuk Reguler', description: 'Akses wahana edukasi utama & kebun coklat', price: 20000, qty: 428000, totalGtv: 8560000000, percentage: 50.8, color: '#F97316', bgLight: '#FEF3C7' },
+    { id: 'tiket-terusan', code: 'TERUSAN', name: 'Tiket Masuk Terusan', description: 'Termasuk wahana bermain & mini bioskop 3D', price: 35000, qty: 126000, totalGtv: 4410000000, percentage: 26.1, color: '#271710', bgLight: '#F3EFEA' },
+    { id: 'wisata-edukasi', code: 'EDUKASI', name: 'Wisata Edukasi Coklat', description: 'Cooking class mini & cetak coklat kreasi', price: 25000, qty: 100500, totalGtv: 2512500000, percentage: 14.9, color: '#684534', bgLight: '#F9F8F6' },
+    { id: 'paket-tour', code: 'TOUR', name: 'Paket Rombongan Tour', description: 'Pemandu tur khusus, souvenir & tasting', price: 15000, qty: 91500, totalGtv: 1372500000, percentage: 8.2, color: '#D1D5DB', bgLight: '#F3F4F6' }
   ]
 }
 
@@ -963,10 +949,10 @@ const initRevenueChart = () => {
       labels,
       datasets: [
         {
-          label: 'Pendapatan GTV', data: gtvData, borderColor: '#F59E0B', backgroundColor: isLine ? gtvLineGradient : gtvBarGradient, borderWidth: isLine ? 3.5 : 0, tension: 0.42, fill: isLine, yAxisID: 'y', pointRadius: isLine ? 5 : 0, pointHoverRadius: isLine ? 8.5 : 0, pointBackgroundColor: '#FFFFFF', pointBorderColor: '#F59E0B', pointBorderWidth: 2.5, borderRadius: !isLine ? { topLeft: 8, topRight: 8, bottomLeft: 0, bottomRight: 0 } : 0, borderSkipped: false, barPercentage: 0.72, categoryPercentage: 0.68
+          label: 'Pendapatan GTV', data: gtvData, borderColor: '#F59E0B', backgroundColor: isLine ? gtvLineGradient : gtvBarGradient, borderWidth: isLine ? 3.5 : 0, tension: 0.42, fill: isLine, yAxisID: 'y', pointRadius: isLine ? 5 : 0, pointHoverRadius: isLine ? 8.5 : 0, pointBackgroundColor: '#FFFFFF', pointBorderColor: '#F59E0B', pointBorderWidth: 2.5, borderRadius: 0, borderSkipped: false, barPercentage: 0.72, categoryPercentage: 0.68
         },
         {
-          label: 'Volume Tiket', data: ticketData, borderColor: '#111111', backgroundColor: isLine ? 'transparent' : ticketBarGradient, borderWidth: isLine ? 2.8 : 0, tension: 0.42, fill: false, yAxisID: 'y1', pointRadius: isLine ? 4.5 : 0, pointHoverRadius: isLine ? 7.5 : 0, pointBackgroundColor: '#111111', pointBorderColor: '#FFFFFF', pointBorderWidth: 2, borderRadius: !isLine ? { topLeft: 8, topRight: 8, bottomLeft: 0, bottomRight: 0 } : 0, borderSkipped: false, barPercentage: 0.72, categoryPercentage: 0.68
+          label: 'Volume Tiket', data: ticketData, borderColor: '#111111', backgroundColor: isLine ? 'transparent' : ticketBarGradient, borderWidth: isLine ? 2.8 : 0, tension: 0.42, fill: false, yAxisID: 'y1', pointRadius: isLine ? 4.5 : 0, pointHoverRadius: isLine ? 7.5 : 0, pointBackgroundColor: '#111111', pointBorderColor: '#FFFFFF', pointBorderWidth: 2, borderRadius: 0, borderSkipped: false, barPercentage: 0.72, categoryPercentage: 0.68
         }
       ]
     },
@@ -1012,6 +998,7 @@ const setChartType = (type: 'line' | 'bar') => {
 const refreshCharts = () => {
   nextTick(() => {
     initRevenueChart()
+    initSegmentDonutChart()
   })
 }
 
@@ -1023,8 +1010,49 @@ const refreshData = () => {
   }, 400)
 }
 
+// -------------------------------------------------------------------------
+// CHART-BASED SEGMENT DONUT
+// -------------------------------------------------------------------------
+const segmentDonutCanvas = ref<HTMLCanvasElement | null>(null)
+let segChart: Chart | null = null
+
+const initSegmentDonutChart = () => {
+  if (segmentDonutCanvas.value) {
+    if (segChart) segChart.destroy()
+    segChart = new Chart(segmentDonutCanvas.value, {
+      type: 'doughnut',
+      data: {
+        labels: memberSegments.value.map(s => `${s.code} - ${s.title.split(' ')[0]} (${s.percentage}%)`),
+        datasets: [{
+          data: memberSegments.value.map(s => s.count),
+          backgroundColor: memberSegments.value.map(s => s.color),
+          borderWidth: 2,
+          borderColor: '#ffffff',
+          hoverOffset: 4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        cutout: '55%',
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (context) => {
+                return ` ${context.formattedValue} Members`
+              }
+            }
+          }
+        }
+      }
+    })
+  }
+}
+
 onMounted(() => {
   initRevenueChart()
+  initSegmentDonutChart()
 })
 
 watch(selectedPeriod, () => {
@@ -1581,104 +1609,28 @@ watch(selectedPeriod, () => {
   margin: 20px 0 10px 0;
 }
 
-.radial-legend-list {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  flex: 1;
-  min-width: 0;
-}
-
-.radial-legend-card-row {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  background: #FFFFFF;
-  border: 1px solid #D1C7BD;
-  border-radius: 10px;
-  padding: 12px 14px;
-  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.radial-legend-card-row:hover,
-.radial-legend-card-row.is-hovered {
-  border-color: #D97706;
-  box-shadow: 0 4px 12px rgba(44, 26, 19, 0.05);
-  transform: translateY(-2px);
-}
-
-.legend-card-top {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.legend-left-meta {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 0;
-  flex: 1;
-}
-
-.legend-color-dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
-}
-
-.legend-code-tag {
+.svg-total-val {
+  font-size: 26px;
   font-weight: 900;
-  color: #111111;
-  background: #E8DFD5;
-  padding: 2px 6px;
-  border-radius: 5px;
-  font-size: 10.5px;
+  fill: #111827;
+  letter-spacing: -0.5px;
+}
+
+.svg-total-label {
+  font-size: 11px;
+  font-weight: 600;
+  fill: #6B7280;
+  text-transform: uppercase;
   letter-spacing: 0.5px;
-  flex-shrink: 0;
 }
 
-.legend-name-text {
-  font-size: 12.5px;
-  font-weight: 700;
-  color: #111111;
-  line-height: 1.2;
+.svg-ring-dimmed {
+  opacity: 0.2;
 }
 
-.legend-right-score {
-  display: flex;
-  align-items: baseline;
-  gap: 4px;
-  font-variant-numeric: tabular-nums;
-  flex-shrink: 0;
-}
-
-.legend-count-val {
-  font-size: 13.5px;
-  font-weight: 900;
-  color: #1C0E08;
-}
-
-.legend-pct-val {
-  font-size: 13px;
-  font-weight: 800;
-  color: #111111;
-}
-
-.legend-track-bg {
-  width: 100%;
-  height: 5px;
-  background: #E0D4C8;
-  border-radius: 10px;
-  overflow: hidden;
-}
-
-.legend-track-fill {
-  height: 100%;
-  border-radius: 10px;
-  transition: width 0.4s ease;
+.svg-ring-hovered .ring-active {
+  stroke-width: 16;
+  filter: brightness(1.1);
 }
 
 .radial-rings-chart-container {
@@ -1687,18 +1639,11 @@ watch(selectedPeriod, () => {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 12px;
 }
 
-.concentric-rings-svg {
-  width: 220px;
-  height: 220px;
-  filter: drop-shadow(0 8px 24px rgba(217, 119, 6, 0.15));
+.donut-chart-wrapper {
+  margin-bottom: 12px;
 }
-
-.ring-track { stroke: #E0D4C8; }
-.ring-active { transition: stroke-dashoffset 1s cubic-bezier(0.16, 1, 0.3, 1), stroke-width 0.25s ease; }
-.radial-rings-card-elevated:hover .ring-active { stroke-width: 16; }
 
 .rings-bottom-metric {
   display: flex;
@@ -1717,16 +1662,25 @@ watch(selectedPeriod, () => {
 .bottom-total-label { font-size: 11.5px; font-weight: 700; color: #6B5A52; }
 .bottom-total-val { font-size: 15px; font-weight: 900; color: #111111; letter-spacing: -0.3px; }
 
+.concentric-rings-svg {
+  width: 240px;
+  height: 240px;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.04));
+}
+
+.ring-track { stroke: #F3F4F6; }
+.ring-active { transition: stroke-dashoffset 1s cubic-bezier(0.16, 1, 0.3, 1), stroke-width 0.25s ease; }
+
 .bottom-active-badge {
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  font-size: 9.5px;
+  font-size: 10px;
   font-weight: 800;
   color: #047857;
   background: #ECFDF5;
-  padding: 1px 7px;
-  border-radius: 8px;
+  padding: 2px 8px;
+  border-radius: 10px;
   border: 1px solid #A7F3D0;
 }
 
@@ -1738,50 +1692,112 @@ watch(selectedPeriod, () => {
   box-shadow: 0 0 5px #10B981;
 }
 
-.legend-card-subinfo {
-  font-size: 12.5px;
-  font-weight: 600;
-  line-height: 1.5;
-  color: #111111;
-  margin-top: 4px;
+.radial-legend-modern {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
 }
 
-.subinfo-item strong { color: #111111; font-weight: 700; }
-.subinfo-sep { color: #D6CCC2; font-size: 8px; }
+.legend-modern-row {
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: pointer;
+}
+
+.legend-modern-row:hover,
+.legend-modern-row.is-hovered {
+  border-color: #D97706;
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.08);
+  transform: translateY(-2px);
+}
+
+.legend-modern-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.legend-color-indicator {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+}
+
+.legend-modern-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: #111827;
+  flex: 1;
+}
+
+.legend-modern-pct {
+  font-size: 16px;
+  font-weight: 900;
+  color: #111827;
+}
+
+.legend-modern-desc {
+  font-size: 12.5px;
+  color: #4B5563;
+  line-height: 1.5;
+  margin-bottom: 12px;
+  padding-left: 26px;
+}
+
+.legend-modern-bar {
+  height: 6px;
+  background: #E5E7EB;
+  border-radius: 3px;
+  overflow: hidden;
+  margin-left: 26px;
+}
+
+.legend-modern-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 1s ease-out;
+}
 
 .crm-insight-matrix-3 {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  gap: 16px;
   margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid #EFEAE2;
+  padding-top: 20px;
+  border-top: 1px solid #E5E7EB;
 }
 
 .crm-matrix-card {
   background: #FFFFFF;
-  border: 1px solid #EAE2D8;
+  border: 1px solid #E5E7EB;
   border-radius: 12px;
-  padding: 12px 14px;
+  padding: 16px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
   transition: all 0.2s ease;
 }
 
 .crm-matrix-card:hover {
   border-color: #D97706;
-  box-shadow: 0 4px 12px rgba(44, 26, 19, 0.04);
+  box-shadow: 0 4px 12px rgba(217, 119, 6, 0.06);
   transform: translateY(-2px);
 }
 
 .matrix-card-header {
   display: flex;
   align-items: center;
-  gap: 5px;
-  font-size: 13px;
+  gap: 6px;
+  font-size: 13.5px;
   font-weight: 800;
-  color: #111111;
+  color: #111827;
 }
 
 .matrix-card-header svg { color: #D97706; flex-shrink: 0; }
@@ -1794,20 +1810,21 @@ watch(selectedPeriod, () => {
 }
 
 .matrix-main-val {
-  font-size: 13.5px;
-  font-weight: 800;
-  color: #111111;
+  font-size: 16px;
+  font-weight: 900;
+  color: #111827;
   font-variant-numeric: tabular-nums;
+  letter-spacing: -0.3px;
 }
 
-.matrix-sub-pct { font-size: 10.5px; font-weight: 800; }
+.matrix-sub-pct { font-size: 12px; font-weight: 800; }
 .matrix-sub-badge {
-  font-size: 9.5px;
+  font-size: 10.5px;
   font-weight: 800;
   color: #047857;
   background: #ECFDF5;
-  padding: 1px 5px;
-  border-radius: 4px;
+  padding: 2px 6px;
+  border-radius: 6px;
 }
 .matrix-sub-sub { font-size: 10px; color: #8C786E; }
 
@@ -1844,22 +1861,21 @@ watch(selectedPeriod, () => {
 
 .demographic-card-luxury {
   background: #FFFFFF;
-  border: 1.5px solid rgba(230, 220, 208, 0.95);
-  border-radius: 24px;
-  padding: 22px 26px;
-  box-shadow: 0 12px 32px -4px rgba(44, 26, 19, 0.08), 0 3px 8px rgba(44, 26, 19, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  border: 1px solid #E5E7EB;
+  border-radius: 20px;
+  padding: 24px 28px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0, 0, 0, 0.02);
   position: relative;
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 20px;
   transition: all 0.32s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .demographic-card-luxury:hover {
   transform: translateY(-4px);
-  box-shadow: 0 22px 45px -6px rgba(44, 26, 19, 0.13), 0 6px 16px rgba(44, 26, 19, 0.04);
-  border-color: rgba(242, 151, 39, 0.5);
+  box-shadow: 0 12px 30px -4px rgba(44, 26, 19, 0.08);
 }
 
 .demo-header-wrap {
@@ -1910,14 +1926,13 @@ watch(selectedPeriod, () => {
   position: relative;
   height: 380px;
   width: 100%;
-  background: radial-gradient(circle at 45% 54%, #FFFDF8 0%, #FAF4E8 50%, #F5ECDD 100%);
-  border: 1.5px solid #EAE2D8;
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
   border-radius: 18px;
   overflow: hidden;
   display: block;
   cursor: grab;
   user-select: none;
-  box-shadow: inset 0 2px 10px rgba(44, 26, 19, 0.05);
 }
 
 .demographic-map-luxury.is-panning { cursor: grabbing; }
@@ -1951,17 +1966,17 @@ watch(selectedPeriod, () => {
   gap: 6px;
   background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(8px);
-  border: 1px solid #E5DDD3;
+  border: 1px solid #E5E7EB;
   border-radius: 20px;
   padding: 4px 10px;
-  font-size: 10.5px;
+  font-size: 11px;
   font-weight: 800;
-  color: #5A4034;
-  box-shadow: 0 2px 8px rgba(44, 26, 19, 0.08);
+  color: #4B5563;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .pulse-gold-dot {
-  width: 6px; height: 6px; border-radius: 50%; background: #F59E0B; box-shadow: 0 0 6px #F59E0B;
+  width: 6px; height: 6px; border-radius: 50%; background: #F97316; box-shadow: 0 0 6px #F97316;
   animation: radar-ping 1.8s infinite;
 }
 
@@ -1971,29 +1986,29 @@ watch(selectedPeriod, () => {
   gap: 3px;
   background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(8px);
-  border: 1px solid #E5DDD3;
+  border: 1px solid #E5E7EB;
   border-radius: 10px;
   padding: 3px;
-  box-shadow: 0 2px 8px rgba(44, 26, 19, 0.08);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   pointer-events: auto;
 }
 
 .map-btn {
-  width: 26px; height: 26px; border-radius: 6px; border: 1px solid #EAE2D8; background: #FAF7F2;
-  color: #5A4034; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s ease;
+  width: 26px; height: 26px; border-radius: 6px; border: 1px solid #E5E7EB; background: #FFFFFF;
+  color: #4B5563; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s ease;
 }
 
-.map-btn:hover { background: #111111; color: #FBBF24; border-color: #111111; }
-.zoom-level-text { font-size: 10.5px; font-weight: 800; color: #5A4034; min-width: 34px; text-align: center; font-variant-numeric: tabular-nums; }
+.map-btn:hover { background: #111827; color: #FFFFFF; border-color: #111827; }
+.zoom-level-text { font-size: 11px; font-weight: 800; color: #111827; min-width: 34px; text-align: center; font-variant-numeric: tabular-nums; }
 
 .radar-ring {
-  position: absolute; border: 1px dashed rgba(217, 119, 6, 0.22); border-radius: 50%; pointer-events: none; transform: translate(-50%, -50%);
+  position: absolute; border: 1px dashed rgba(249, 115, 22, 0.22); border-radius: 50%; pointer-events: none; transform: translate(-50%, -50%);
 }
-.ring-center-core { width: 44px; height: 44px; top: 54%; left: 45%; border: 1.5px solid rgba(245, 158, 11, 0.6); background: rgba(245, 158, 11, 0.04); }
-.ring-10km  { width: 140px; height: 140px; top: 54%; left: 45%; border-color: rgba(245, 158, 11, 0.3); }
-.ring-30km  { width: 280px; height: 280px; top: 54%; left: 45%; border-color: rgba(217, 119, 6, 0.2); }
-.ring-60km  { width: 440px; height: 440px; top: 54%; left: 45%; border-color: rgba(44, 26, 19, 0.15); }
-.ring-120km { width: 620px; height: 620px; top: 54%; left: 45%; border-color: rgba(44, 26, 19, 0.08); }
+.ring-center-core { width: 44px; height: 44px; top: 54%; left: 45%; border: 1.5px solid rgba(249, 115, 22, 0.6); background: rgba(249, 115, 22, 0.04); }
+.ring-10km  { width: 140px; height: 140px; top: 54%; left: 45%; border-color: rgba(249, 115, 22, 0.3); }
+.ring-30km  { width: 280px; height: 280px; top: 54%; left: 45%; border-color: rgba(249, 115, 22, 0.2); }
+.ring-60km  { width: 440px; height: 440px; top: 54%; left: 45%; border-color: rgba(17, 24, 39, 0.15); }
+.ring-120km { width: 620px; height: 620px; top: 54%; left: 45%; border-color: rgba(17, 24, 39, 0.08); }
 
 @keyframes laserFlow { from { stroke-dashoffset: 28; } to { stroke-dashoffset: 0; } }
 .laser-route-path { animation: laserFlow 1.6s linear infinite; opacity: 0.6; transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
@@ -2003,51 +2018,50 @@ watch(selectedPeriod, () => {
 .map-epicenter-marker {
   position: absolute; top: 54%; left: 45%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; z-index: 30; pointer-events: none;
 }
-.epicenter-pulse-ring { position: absolute; width: 28px; height: 28px; border-radius: 50%; background: rgba(245, 158, 11, 0.4); animation: radar-ping 1.6s infinite; }
-.epicenter-core-dot { width: 14px; height: 14px; border-radius: 50%; background: #111111; border: 2.5px solid #FBBF24; box-shadow: 0 0 10px rgba(245, 158, 11, 0.6); z-index: 2; }
-.epicenter-badge { display: flex; align-items: center; gap: 5px; background: linear-gradient(135deg, #111111 0%, #4A2E22 100%); color: #FFFFFF; border: 1.5px solid #F59E0B; border-radius: 20px; padding: 3px 9px; font-size: 10.5px; font-weight: 800; box-shadow: 0 4px 14px rgba(44, 26, 19, 0.3); margin-top: 4px; white-space: nowrap; }
-.epicenter-tag { font-size: 8.5px; background: #D97706; color: #FFFFFF; padding: 1px 4px; border-radius: 4px; letter-spacing: 0.5px; }
+.epicenter-pulse-ring { position: absolute; width: 28px; height: 28px; border-radius: 50%; background: rgba(249, 115, 22, 0.4); animation: radar-ping 1.6s infinite; }
+.epicenter-core-dot { width: 14px; height: 14px; border-radius: 50%; background: #111827; border: 2.5px solid #F97316; box-shadow: 0 0 10px rgba(249, 115, 22, 0.6); z-index: 2; }
+.epicenter-badge { display: flex; align-items: center; gap: 5px; background: #111827; color: #FFFFFF; border: 1.5px solid #F97316; border-radius: 20px; padding: 4px 10px; font-size: 11px; font-weight: 800; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15); margin-top: 4px; white-space: nowrap; }
+.epicenter-tag { font-size: 9px; background: #F97316; color: #FFFFFF; padding: 2px 5px; border-radius: 4px; letter-spacing: 0.5px; }
 
 .map-pin-marker { position: absolute; display: flex; flex-direction: column; align-items: center; z-index: 20; cursor: pointer; transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease; transform: translate(-50%, -50%); }
 .map-pin-marker:hover, .map-pin-marker.is-hovered { transform: translate(-50%, -50%) scale(1.1) translateY(-3px); z-index: 40; }
 .map-pin-marker.is-dimmed { opacity: 0.35; filter: grayscale(40%); }
 .pin-beacon { width: 8px; height: 8px; border-radius: 50%; margin-bottom: 2px; box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.06); }
-.pin-card-bubble { display: flex; align-items: center; gap: 5px; background: rgba(255, 255, 255, 0.96); backdrop-filter: blur(6px); border: 1.5px solid #E5DDD3; border-radius: 20px; padding: 4px 10px; box-shadow: 0 4px 14px rgba(44, 26, 19, 0.1); font-size: 11.5px; white-space: nowrap; transition: all 0.2s ease; }
-.bubble-gold   { border-color: #F59E0B; background: linear-gradient(135deg, #FFFDF8 0%, #FEF9EE 100%); box-shadow: 0 4px 14px rgba(245, 158, 11, 0.22); }
-.bubble-amber  { border-color: #F59E0B; }
+.pin-card-bubble { display: flex; align-items: center; gap: 5px; background: rgba(255, 255, 255, 0.96); backdrop-filter: blur(6px); border: 1px solid #E5E7EB; border-radius: 20px; padding: 5px 12px; box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06); font-size: 12px; white-space: nowrap; transition: all 0.2s ease; }
+.bubble-gold   { border-color: #F97316; }
+.bubble-amber  { border-color: #F97316; }
 .bubble-blue   { border-color: #93C5FD; }
 .bubble-green  { border-color: #A7F3D0; }
 .bubble-purple { border-color: #DDD6FE; }
 .pin-glyph-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-.dot-gold   { background: #D97706; }
-.dot-amber  { background: #F59E0B; }
-.dot-blue   { background: #2563EB; }
-.dot-green  { background: #059669; }
-.dot-purple { background: #7C3AED; }
-.pin-city { font-weight: 800; color: #111111; }
-.pin-divider { color: #D6CCC2; font-size: 9px; }
-.pin-visitors { font-weight: 900; color: #D97706; font-variant-numeric: tabular-nums; }
-.pin-share { font-size: 10.5px; color: #78655C; font-weight: 700; }
+.dot-gold   { background: #F97316; }
+.dot-amber  { background: #F97316; }
+.dot-blue   { background: #3B82F6; }
+.dot-green  { background: #10B981; }
+.dot-purple { background: #8B5CF6; }
+.pin-city { font-weight: 800; color: #111827; }
+.pin-divider { color: #E5E7EB; font-size: 10px; margin: 0 2px; }
+.pin-visitors { font-weight: 900; color: #F97316; font-variant-numeric: tabular-nums; }
+.pin-share { font-size: 11px; color: #6B7280; font-weight: 700; }
 
 .demo-bottom-cities-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
-.city-metric-slate { background: #FFFDF9; border: 1.5px solid #EFEAE2; border-radius: 14px; padding: 11px 13px; display: flex; flex-direction: column; gap: 6px; transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer; }
-.city-metric-slate:hover, .city-metric-slate.is-hover-highlight { background: #FFFFFF; border-color: #F59E0B; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(44, 26, 19, 0.08); }
-.city-metric-slate.is-lead-city { border-color: #F59E0B; background: linear-gradient(135deg, #FFFDF9 0%, #FEF9EE 100%); }
+.city-metric-slate { background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer; }
+.city-metric-slate:hover, .city-metric-slate.is-hover-highlight { background: #FFFFFF; border-color: #D1D5DB; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04); }
+.city-metric-slate.is-lead-city { border-color: #F97316; background: #FFFFFF; }
 .slate-top-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
 .slate-rank-wrap { display: flex; align-items: center; gap: 6px; }
-.slate-rank-badge { font-size: 10px; font-weight: 900; color: #8C786E; background: #F3EFEA; padding: 1px 5px; border-radius: 5px; }
-.slate-rank-badge.badge-crown { background: #111111; color: #FBBF24; }
-.slate-city-name { font-size: 12.5px; font-weight: 800; color: #111111; white-space: nowrap; }
-.slate-pct-pill { font-size: 10px; font-weight: 800; padding: 1px 6px; border-radius: 6px; border: 1px solid; font-variant-numeric: tabular-nums; }
-.slate-metrics-row { display: flex; align-items: center; justify-content: space-between; gap: 4px; }
-.slate-metric-block { display: flex; flex-direction: column; gap: 1px; }
-.slate-meta-label { font-size: 8.5px; font-weight: 700; color: #8C786E; text-transform: uppercase; }
-.slate-meta-val-dark { font-size: 12px; font-weight: 800; color: #111111; font-variant-numeric: tabular-nums; }
-.slate-meta-val-dark small { font-size: 9.5px; color: #78655C; }
-.slate-meta-val-amber { font-size: 12px; font-weight: 900; color: #D97706; font-variant-numeric: tabular-nums; }
-.slate-track-line { width: 100%; height: 4px; background: #EFE8DF; border-radius: 4px; overflow: hidden; }
+.slate-rank-badge { font-size: 10px; font-weight: 900; color: #4B5563; background: #E5E7EB; padding: 2px 6px; border-radius: 5px; }
+.slate-rank-badge.badge-crown { background: #111827; color: #F97316; }
+.slate-city-name { font-size: 13.5px; font-weight: 800; color: #111827; white-space: nowrap; }
+.slate-pct-text { font-size: 14px; font-weight: 900; font-variant-numeric: tabular-nums; }
+.slate-metrics-clean { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
+.slate-val-pax { font-size: 13.5px; font-weight: 800; color: #111827; font-variant-numeric: tabular-nums; }
+.slate-val-pax small { font-size: 10.5px; color: #6B7280; }
+.slate-val-divider { color: #D1D5DB; font-size: 10px; }
+.slate-val-gtv { font-size: 13.5px; font-weight: 900; color: #F97316; font-variant-numeric: tabular-nums; }
+.slate-track-line { width: 100%; height: 5px; background: #E5E7EB; border-radius: 4px; overflow: hidden; margin-top: 4px; margin-bottom: 4px; }
 .slate-fill-line { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
-.slate-bottom-sub { font-size: 9.5px; color: #8C786E; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.slate-bottom-sub { font-size: 10.5px; color: #6B7280; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.4; }
 
 .demographic-footer-luxury { display: flex; align-items: flex-start; gap: 10px; background: #FFFDF8; border: 1px dashed #E2D9CE; border-radius: 12px; padding: 10px 14px; }
 .insight-icon-box { width: 26px; height: 26px; border-radius: 8px; background: #FEF3C7; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
@@ -2055,7 +2069,9 @@ watch(selectedPeriod, () => {
 .insight-body { font-size: 13.5px; font-weight: 600; line-height: 1.5; color: #111111; }
 .insight-body strong { color: #000000; font-weight: 900; }
 
-.operations-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+.operations-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: stretch; }
+  .ticket-sales-col, .shift-wrapper { display: flex; flex-direction: column; }
+  .ticket-sales-col > *, .shift-wrapper > * { flex: 1; }
 .badge-total-pill { font-size: 12px; font-weight: 800; background-color: #111111; color: #FBBF24; padding: 4px 10px; border-radius: 8px; font-variant-numeric: tabular-nums; border: 1px solid #F59E0B; }
 .payment-distribution-wrap { display: flex; flex-direction: column; gap: 8px; margin-bottom: 10px; background: #FFFDF9; border: 1px solid #EFEAE2; border-radius: 14px; padding: 9px 14px; }
 .payment-distribution-bar { display: flex; height: 6px; border-radius: 10px; overflow: hidden; gap: 2px; background: #F3ECE2; }

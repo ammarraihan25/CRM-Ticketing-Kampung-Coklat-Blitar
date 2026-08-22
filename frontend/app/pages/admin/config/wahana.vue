@@ -23,76 +23,116 @@
 
     <!-- ========================================================================= -->
     <!-- ========================================================================= -->
-    <!-- SECTION 1: TARIF TIKET MASUK & PAKET KUNJUNGAN (CLEAN & IMAGELESS)        -->
+    <!-- SECTION 2: KATALOG WAHANA & STATUS OPERASIONAL (1:1 REFERENCE DESIGN)     -->
     <!-- ========================================================================= -->
     <section class="section-widget-frame">
       <div class="section-head-bar">
         <div class="section-head-left">
           <div class="section-title-badge">
-              <h2 class="sec-title">Tarif Tiket Masuk &amp; Paket Kunjungan</h2>
+              <h2 class="sec-title">Katalog &amp; Status Operasional Wahana</h2>
           </div>
-          <p class="sec-subtitle">Struktur harga tiket resmi pada POS Kasir dan Digital Guestbook</p>
+          <p class="sec-subtitle">Kelola wahana rekreasi di kawasan Kampung Coklat</p>
         </div>
+      </div>
+
+      <!-- Controls: Total count + View toggle + Category selector + Add button -->
+      <div class="katalog-control-bar">
+        <div class="total-wahana-pill">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+            <circle cx="9" cy="7" r="4"/>
+            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+          </svg>
+          <span>Total {{ ridesList.length }} wahana terdaftar</span>
+        </div>
+
         <div class="control-bar-right">
+          <!-- Category Select Pill -->
+          <div class="category-dropdown-wrapper">
+            <select v-model="rideFilterCategory" class="category-select-pill">
+              <option value="ALL">Semua Kategori Wahana</option>
+              <option value="terusan">Free Tiket Terusan</option>
+              <option value="paid">Tiket Satuan (Add-on)</option>
+              <option value="water">Wahana Air &amp; Kolam</option>
+            </select>
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="select-chevron">
+              <polyline points="6 9 12 15 18 9"/>
+            </svg>
+          </div>
+
+          <!-- Add Wahana Button -->
           <button 
             v-if="canManageConfig"
             type="button" 
             class="btn-add-wahana-pill"
-            style="background: #FFFDF9; border: 1px solid #D97706; color: #D97706;"
-            @click="openAddTicketModal"
+            @click="openAddRideModal"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
               <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
             </svg>
-            <span>Tambah Tiket</span>
+            <span>Tambah Wahana Baru</span>
           </button>
         </div>
       </div>
 
-      <!-- Category Tabs for Tickets -->
-      <div class="ticket-category-tabs">
-        <button 
-          v-for="cat in ['gate', 'wahana', 'venue', 'edukasi', 'rombongan']" 
-          :key="cat"
-          class="ticket-tab-btn"
-          :class="{ active: activeTicketCategory === cat }"
-          @click="activeTicketCategory = cat"
+      <!-- 4-Column Compact & Proportional Wahana Cards Grid -->
+      <div class="wahana-reference-grid">
+        <div 
+          v-for="ride in filteredRides" 
+          :key="ride.id" 
+          class="wahana-card-ref"
         >
-          {{ getCategoryName(cat) }}
-        </button>
-      </div>
+          <!-- Top Photo Box with Ribbon, Floating Icon & Status -->
+          <div class="wahana-photo-box">
+            <img 
+              :src="ride.imageUrl" 
+              :alt="ride.name"
+              class="wahana-img"
+              loading="lazy"
+            />
 
-      <div class="ticket-rates-list">
-        <div v-for="ticket in filteredTicketRates" :key="ticket.id" class="horizontal-ticket-card" :class="'card-type-' + ticket.category">
-          <!-- Image Box on the Left -->
-          <div class="htc-image-box">
-             <img :src="ticket.imageUrl" :alt="ticket.name" class="htc-img" loading="lazy" />
+            <!-- Top-Left Category Tag Ribbon -->
+            <div class="wahana-top-ribbon" :class="ride.isFreeTerusan ? 'ribbon-terusan' : 'ribbon-paid'">
+              <span>{{ ride.isFreeTerusan ? 'TIKET TERUSAN' : 'TIKET SATUAN' }}</span>
+            </div>
+
+            <!-- Top-Right Status Toggle Pill -->
+            <button 
+              type="button" 
+              class="wahana-status-pill"
+              :class="`status-${ride.status.toLowerCase()}`"
+              :disabled="!canManageConfig"
+              @click.stop="toggleRideStatus(ride)"
+              title="Klik untuk ubah status operasional"
+            >
+              <span class="status-dot"></span>
+              <span>{{ ride.status }}</span>
+            </button>
           </div>
 
-          <!-- Content on the Right -->
-          <div class="htc-content">
-            <div class="htc-top-section">
-              <span class="htc-category-label">{{ getCategoryName(ticket.category) }}</span>
-              <h3 class="htc-title">{{ ticket.name }}</h3>
-              <div class="htc-divider"></div>
-              <p class="htc-desc">{{ ticket.description }}</p>
-            </div>
+          <!-- Card Content Body (Compact & Harmonious) -->
+          <div class="wahana-content-body">
+            <h3 class="wahana-title">{{ ride.name }}</h3>
+
             
-            <div class="htc-bottom-section">
-              <div class="htc-price-val">
-                <span v-if="ticket.price > 0" class="htc-curr">Rp</span>
-                <span class="htc-amt">{{ ticket.price === 0 ? 'Variatif' : ticket.price.toLocaleString('id-ID') }}</span>
-              </div>
+
+            <!-- Sleek Action Buttons Bar -->
+            <div class="wahana-action-bar-compact">
+              
+
               <button 
                 type="button" 
-                class="btn-tambahkan"
+                class="btn-wahana-pill btn-pill-maint"
+                :class="{ 'is-maint-active': ride.status === 'MAINTENANCE' }"
                 :disabled="!canManageConfig"
-                @click="editTicketPrice(ticket)"
+                @click.stop="toggleRideStatus(ride)"
+                :title="ride.status === 'MAINTENANCE' ? 'Kembalikan ke status Buka Operasional' : 'Ubah status ke Mode Maintenance'"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" style="margin-right: 4px; vertical-align: middle;">
-                  <path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
                 </svg>
-                Edit
+                <span>{{ ride.status === 'MAINTENANCE' ? 'Set Buka' : 'Maintenance' }}</span>
               </button>
             </div>
           </div>
@@ -100,7 +140,6 @@
       </div>
     </section>
 
-    <!-- ========================================================================= -->
     <!-- Modal Edit Harga Tiket -->
     <div v-if="showTicketModal" class="modal-backdrop" @click.self="showTicketModal = false">
       <div class="modal-card">
@@ -983,42 +1022,32 @@ const formatRupiah = (val: number): string => {
    ========================================================= */
 .ticket-category-tabs {
   display: flex;
-  align-items: center;
-  background-color: #FFFFFF;
-  border: 1px solid #E5E7EB;
-  border-radius: 8px;
-  padding: 4px;
-  gap: 4px;
-  overflow-x: auto;
+  gap: 12px;
   margin-bottom: 24px;
+  border-bottom: 1px solid #E2E8F0;
+  padding-bottom: 12px;
+  overflow-x: auto;
 }
 
 .ticket-tab-btn {
-  flex: 1;
-  padding: 10px 16px;
-  font-size: 13px;
-  font-weight: 500;
-  font-family: inherit;
-  border: none;
   background: transparent;
-  color: #6B5A52;
-  border-radius: 6px;
+  border: none;
+  font-weight: 600;
+  font-size: 14px;
+  color: #64748B;
+  padding: 8px 16px;
+  border-radius: 99px;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
+  transition: all 0.2s;
   white-space: nowrap;
-  transition: all 0.2s ease;
 }
 .ticket-tab-btn:hover {
-  background-color: #F9FAFB;
-  color: #2C1A13;
+  background: #F1F5F9;
+  color: #334155;
 }
 .ticket-tab-btn.active {
-  background-color: #2C1A13;
-  color: #FFFFFF;
-  font-weight: 600;
+  background: #111827;
+  color: #FBBF24;
 }
 
 .ticket-rates-list {
@@ -1413,37 +1442,43 @@ const formatRupiah = (val: number): string => {
 
 /* Top-Left Ribbon */
 .wahana-top-ribbon {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  background: rgba(250, 243, 232, 0.95);
-  backdrop-filter: blur(4px);
-  color: #B45309;
-  border: 1px solid #EADBCC;
-  padding: 2px 7px;
-  border-radius: 6px;
-  font-size: 9px;
-  font-weight: 800;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
-}
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    background: #F8F2EA;
+    color: #C67215;
+    border: none;
+    padding: 5px 12px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 900;
+    box-shadow: none;
+    z-index: 2;
+  }
+  
+  .wahana-top-ribbon.ribbon-paid {
+    background: #FFF1F2;
+    color: #BE123C;
+  }
 
 /* Top-Right Status Pill */
 .wahana-status-pill {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  border: none;
-  padding: 3px 8px;
-  border-radius: 10px;
-  font-size: 9.5px;
-  font-weight: 800;
-  cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-  transition: transform 0.15s ease;
-}
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    border: none;
+    padding: 5px 12px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: none;
+    transition: transform 0.15s ease;
+    z-index: 2;
+  }
 
 .wahana-status-pill:hover {
   transform: scale(1.06);
@@ -1576,11 +1611,14 @@ const formatRupiah = (val: number): string => {
 
 /* Sleek Action Buttons Bar */
 .wahana-action-bar-compact {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 6px;
-  margin-top: 6px;
-}
+    display: flex;
+    gap: 8px;
+    margin-top: auto;
+  }
+  .btn-pill-maint {
+    width: 100%;
+    justify-content: center;
+  }
 
 .btn-wahana-pill {
   display: inline-flex;

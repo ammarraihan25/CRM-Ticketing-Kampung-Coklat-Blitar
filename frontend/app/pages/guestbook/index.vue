@@ -7,34 +7,49 @@ definePageMeta({
 
 const { requestOtp, verifyOtp } = useGuestBookApi()
 
-const step = ref<'form' | 'otp' | 'success'>('form')
+const step = ref<'event' | 'form' | 'success'>('event')
 
 const form = ref({
+  tipeKunjungan: '',
+  namaAcara: '',
+  tanggalKunjungan: '',
   nama: '',
   whatsapp: '',
-  domisili: '',
-  tipeKunjungan: ''
+  domisili: ''
 })
 
-const otpCode = ref('')
 const isLoading = ref(false)
 const errorMessage = ref('')
 
 const stepNumber = computed(() => {
-  return step.value === 'form'
-    ? 1
-    : step.value === 'otp'
-      ? 2
-      : 3
+  return step.value === 'event' ? 1
+    : step.value === 'form' ? 2
+    : 3
 })
 
-async function handleSubmit() {
+function handleEventSubmit() {
   errorMessage.value = ''
 
   if (!form.value.tipeKunjungan) {
     errorMessage.value = 'Silakan pilih tujuan kunjungan terlebih dahulu.'
     return
   }
+  
+  if (!form.value.namaAcara) {
+    errorMessage.value = 'Silakan isi nama acara.'
+    return
+  }
+
+  if (!form.value.tanggalKunjungan) {
+    errorMessage.value = 'Silakan isi tanggal kunjungan.'
+    return
+  }
+
+  step.value = 'form'
+}
+
+async function handleSubmit() {
+  errorMessage.value = ''
 
   isLoading.value = true
 
@@ -46,59 +61,29 @@ async function handleSubmit() {
 
     await requestOtp(payload)
 
-    step.value = 'otp'
+    step.value = 'success'
   } catch (error) {
     console.error(error)
 
     errorMessage.value =
-      'Gagal mengirim OTP. Silakan coba lagi.'
-  } finally {
-    isLoading.value = false
-  }
-}
-
-async function handleVerify() {
-  if (otpCode.value.length < 6) {
-    errorMessage.value = 'Masukkan 6 digit kode OTP.'
-    return
-  }
-
-  isLoading.value = true
-  errorMessage.value = ''
-
-  try {
-    const res = await verifyOtp(
-      form.value.whatsapp,
-      otpCode.value
-    )
-
-    if (res.success) {
-      step.value = 'success'
-    } else {
-      errorMessage.value =
-        'Kode OTP salah. Silakan coba lagi.'
-    }
-  } catch (error) {
-    console.error(error)
-
-    errorMessage.value =
-      'Terjadi kesalahan saat verifikasi OTP.'
+      'Gagal menyimpan data. Silakan coba lagi.'
   } finally {
     isLoading.value = false
   }
 }
 
 function resetForm() {
-  step.value = 'form'
+  step.value = 'event'
 
   form.value = {
+    tipeKunjungan: '',
+    namaAcara: '',
+    tanggalKunjungan: '',
     nama: '',
     whatsapp: '',
-    domisili: '',
-    tipeKunjungan: ''
+    domisili: ''
   }
 
-  otpCode.value = ''
   errorMessage.value = ''
 }
 </script>
@@ -166,42 +151,21 @@ function resetForm() {
           <!-- STEP INDICATOR -->
           <div class="step-indicator">
 
-            <div
-              class="step"
-              :class="{
-                active: stepNumber >= 1,
-                completed: stepNumber > 1
-              }"
-            >
+            <div class="step" :class="{ active: stepNumber >= 1, completed: stepNumber > 1 }">
               <span>1</span>
+              <small>Info Kunjungan</small>
+            </div>
+
+            <div class="step-connector" :class="{ active: stepNumber > 1 }"></div>
+
+            <div class="step" :class="{ active: stepNumber >= 2, completed: stepNumber > 2 }">
+              <span>2</span>
               <small>Data Diri</small>
             </div>
 
-            <div
-              class="step-connector"
-              :class="{ active: stepNumber > 1 }"
-            ></div>
+            <div class="step-connector" :class="{ active: stepNumber > 2 }"></div>
 
-            <div
-              class="step"
-              :class="{
-                active: stepNumber >= 2,
-                completed: stepNumber > 2
-              }"
-            >
-              <span>2</span>
-              <small>Verifikasi</small>
-            </div>
-
-            <div
-              class="step-connector"
-              :class="{ active: stepNumber > 2 }"
-            ></div>
-
-            <div
-              class="step"
-              :class="{ active: stepNumber >= 3 }"
-            >
+            <div class="step" :class="{ active: stepNumber >= 3 }">
               <span>3</span>
               <small>Selesai</small>
             </div>
@@ -210,153 +174,86 @@ function resetForm() {
 
 
           <!-- =================================================
-               STEP 1
+               STEP 1: EVENT
           ================================================== -->
- <template v-if="step === 'form'">
+          <template v-if="step === 'event'">
 
-  <div class="form-heading">
+            <div class="form-heading">
+              <h2>Info Kunjungan</h2>
+              <p>Lengkapi informasi acara atau tujuan kunjungan Anda di Kampung Coklat.</p>
+            </div>
 
-    <div class="heading-icon">
-      <span>✦</span>
-    </div>
+            <form class="guest-form" @submit.prevent="handleEventSubmit">
 
-    <h2>Isi Buku Tamu</h2>
+              <div class="form-group">
+                <label>Tujuan Kunjungan</label>
+                <div class="visit-type-grid">
 
-    <p>
-      Lengkapi data diri untuk mencatat kunjungan
-      Anda di Kampung Coklat.
-    </p>
+                  <label class="visit-type-card pengajian-card" :class="{ selected: form.tipeKunjungan === 'pengajian' }">
+                    <input v-model="form.tipeKunjungan" type="radio" value="pengajian" />
+                    <div class="visit-type-content">
+                      <strong>Pengajian</strong>
+                      <span>Jamaah pengajian Kampung Coklat</span>
+                    </div>
+                    <div class="visit-type-check">✓</div>
+                  </label>
 
-  </div>
+                  <label class="visit-type-card hall-card" :class="{ selected: form.tipeKunjungan === 'hall' }">
+                    <input v-model="form.tipeKunjungan" type="radio" value="hall" />
+                    <div class="visit-type-content">
+                      <strong>Pengguna Hall / Event</strong>
+                      <span>Tamu acara, seminar, gathering, dan lainnya</span>
+                    </div>
+                    <div class="visit-type-check">✓</div>
+                  </label>
 
+                  <label class="visit-type-card b2b-card" :class="{ selected: form.tipeKunjungan === 'b2b' }">
+                    <input v-model="form.tipeKunjungan" type="radio" value="b2b" />
+                    <div class="visit-type-content">
+                      <strong>B2B / Travel</strong>
+                      <span>Travel agent atau mitra bisnis</span>
+                    </div>
+                    <div class="visit-type-check">✓</div>
+                  </label>
 
-  <form
-    class="guest-form"
-    @submit.prevent="handleSubmit"
-  >
+                </div>
+              </div>
 
-    <!-- =================================================
-         TIPE KUNJUNGAN
-    ================================================== -->
+              <div class="form-group">
+                <label for="namaAcara">Nama Acara / Rombongan</label>
+                <div class="input-wrapper">
+                  <input id="namaAcara" v-model="form.namaAcara" type="text" placeholder="Contoh: Pengajian Akbar / Study Tour" required />
+                </div>
+              </div>
 
-    <div class="form-group">
+              <div class="form-group">
+                <label for="tanggalKunjungan">Tanggal Kunjungan</label>
+                <div class="input-wrapper">
+                  <input id="tanggalKunjungan" v-model="form.tanggalKunjungan" type="date" required />
+                </div>
+              </div>
 
-      <label>
-        Tujuan Kunjungan
-      </label>
+              <p v-if="errorMessage" class="error-text">{{ errorMessage }}</p>
 
-      <div class="visit-type-grid">
+              <button type="submit" class="submit-button">
+                <span>Lanjut Data Diri</span>
+                <span class="button-arrow">→</span>
+              </button>
 
-        <label
-          class="visit-type-card"
-          :class="{
-            selected: form.tipeKunjungan === 'pengajian'
-          }"
-        >
+            </form>
+          </template>
 
-          <input
-            v-model="form.tipeKunjungan"
-            type="radio"
-            value="pengajian"
-          />
+          <!-- =================================================
+               STEP 2: FORM DATA DIRI
+          ================================================== -->
+          <template v-else-if="step === 'form'">
 
-          <div class="visit-type-icon">
-            🕌
-          </div>
+            <div class="form-heading">
+              <h2>Data Diri</h2>
+              <p>Lengkapi data diri untuk mencatat kunjungan Anda di Kampung Coklat.</p>
+            </div>
 
-          <div class="visit-type-content">
-
-            <strong>
-              Pengajian
-            </strong>
-
-            <span>
-              Jamaah pengajian Kampung Coklat
-            </span>
-
-          </div>
-
-          <div class="visit-type-check">
-            ✓
-          </div>
-
-        </label>
-
-
-        <label
-          class="visit-type-card"
-          :class="{
-            selected: form.tipeKunjungan === 'hall'
-          }"
-        >
-
-          <input
-            v-model="form.tipeKunjungan"
-            type="radio"
-            value="hall"
-          />
-
-          <div class="visit-type-icon">
-            🏛️
-          </div>
-
-          <div class="visit-type-content">
-
-            <strong>
-              Pengguna Hall / Event
-            </strong>
-
-            <span>
-              Tamu acara, seminar, gathering, dan lainnya
-            </span>
-
-          </div>
-
-          <div class="visit-type-check">
-            ✓
-          </div>
-
-        </label>
-
-
-        <label
-          class="visit-type-card"
-          :class="{
-            selected: form.tipeKunjungan === 'b2b'
-          }"
-        >
-
-          <input
-            v-model="form.tipeKunjungan"
-            type="radio"
-            value="b2b"
-          />
-
-          <div class="visit-type-icon">
-            🤝
-          </div>
-
-          <div class="visit-type-content">
-
-            <strong>
-              B2B / Travel
-            </strong>
-
-            <span>
-              Travel agent atau mitra bisnis
-            </span>
-
-          </div>
-
-          <div class="visit-type-check">
-            ✓
-          </div>
-
-        </label>
-
-      </div>
-
-    </div>
+            <form class="guest-form" @submit.prevent="handleSubmit">
 
 
     <!-- =================================================
@@ -370,11 +267,6 @@ function resetForm() {
       </label>
 
       <div class="input-wrapper">
-
-        <span class="input-icon">
-          👤
-        </span>
-
         <input
           id="nama"
           v-model="form.nama"
@@ -383,7 +275,6 @@ function resetForm() {
           autocomplete="name"
           required
         />
-
       </div>
 
     </div>
@@ -400,11 +291,6 @@ function resetForm() {
       </label>
 
       <div class="input-wrapper">
-
-        <span class="input-icon">
-          📱
-        </span>
-
         <input
           id="whatsapp"
           v-model="form.whatsapp"
@@ -414,7 +300,6 @@ function resetForm() {
           autocomplete="tel"
           required
         />
-
       </div>
 
       <span class="input-hint">
@@ -435,11 +320,6 @@ function resetForm() {
       </label>
 
       <div class="input-wrapper">
-
-        <span class="input-icon">
-          📍
-        </span>
-
         <input
           id="domisili"
           v-model="form.domisili"
@@ -448,7 +328,6 @@ function resetForm() {
           autocomplete="address-level2"
           required
         />
-
       </div>
 
     </div>
@@ -479,8 +358,8 @@ function resetForm() {
       <span>
         {{
           isLoading
-            ? 'Mengirim OTP...'
-            : 'Lanjutkan Verifikasi'
+            ? 'Menyimpan...'
+            : 'Simpan Data'
         }}
       </span>
 
@@ -502,82 +381,7 @@ function resetForm() {
 
 
           <!-- =================================================
-               STEP 2
-          ================================================== -->
-          <template v-else-if="step === 'otp'">
-
-            <div class="form-heading">
-
-              <div class="heading-icon otp-icon">
-                <span>✓</span>
-              </div>
-
-              <h2>Verifikasi WhatsApp</h2>
-
-              <p>
-                Kami telah mengirimkan kode OTP ke nomor
-                <strong>{{ form.whatsapp }}</strong>
-              </p>
-
-            </div>
-
-
-            <div class="otp-area">
-
-              <GuestbookOtpInput
-                v-model="otpCode"
-                :length="6"
-              />
-
-              <p class="otp-info">
-                Masukkan 6 digit kode yang kamu terima
-                melalui WhatsApp.
-              </p>
-
-            </div>
-
-
-            <p
-              v-if="errorMessage"
-              class="error-text center"
-            >
-              {{ errorMessage }}
-            </p>
-
-
-            <button
-              class="submit-button"
-              :disabled="isLoading || otpCode.length < 6"
-              @click="handleVerify"
-            >
-
-              <span>
-                {{
-                  isLoading
-                    ? 'Memverifikasi...'
-                    : 'Verifikasi OTP'
-                }}
-              </span>
-
-              <span class="button-arrow">
-                →
-              </span>
-
-            </button>
-
-
-            <button
-              class="back-button"
-              @click="step = 'form'"
-            >
-              ← Ubah data
-            </button>
-
-          </template>
-
-
-          <!-- =================================================
-               STEP 3
+               STEP 3: SELESAI
           ================================================== -->
           <template v-else>
 
@@ -587,43 +391,13 @@ function resetForm() {
                 ✓
               </div>
 
-              <div class="success-label">
-                PENDAFTARAN BERHASIL
-              </div>
-
               <h2>
-                Terima Kasih!
+                Data Berhasil Disimpan
               </h2>
 
               <p>
-                Selamat datang di keluarga
+                Terimakasih atas kunjungannya di
                 <strong>Kampung Coklat</strong>.
-              </p>
-
-
-              <div class="success-message">
-
-                <div class="success-message-icon">
-                  WA
-                </div>
-
-                <div>
-                  <strong>
-                    Benefit dikirim ke WhatsApp
-                  </strong>
-
-                  <span>
-                    Voucher diskon atau free ticket telah dikirim
-                    ke {{ form.whatsapp }}
-                  </span>
-                </div>
-
-              </div>
-
-
-              <p class="success-hint">
-                Silakan cek WhatsApp kamu dan simpan
-                voucher yang telah diberikan.
               </p>
 
             </div>
@@ -1081,7 +855,7 @@ function resetForm() {
 
   height: 66px;
 
-  padding: 0 20px 0 58px;
+  padding: 0 20px;
 
   border: 1px solid #e4dad3;
 
@@ -2344,130 +2118,125 @@ function resetForm() {
 
 .visit-type-grid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
 }
 
 .visit-type-card {
   position: relative;
-
   display: flex;
-  align-items: center;
-
-  gap: 16px;
-
-  padding: 18px;
-
-  border: 1.5px solid #e5d9d1;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 24px 20px;
+  border: 2px solid transparent;
   border-radius: 16px;
-
-  background: #fff;
-
+  background: #2a1a14;
   cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: 150px;
+  overflow: hidden;
+}
 
-  transition:
-    border-color 0.2s ease,
-    background 0.2s ease,
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+.visit-type-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: blur(4px) brightness(0.55);
+  transition: all 0.4s ease;
+  z-index: 0;
+  transform: scale(1.05);
+}
+
+.pengajian-card::before {
+  background-image: url('~/assets/assets_POS/pengajian.png');
+}
+
+.hall-card::before {
+  background-image: url('~/assets/assets_POS/hall.jpg');
+}
+
+.b2b-card::before {
+  background-image: url('~/assets/assets_POS/b2b.png');
 }
 
 .visit-type-card:hover {
   border-color: #e9a04a;
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(233, 160, 74, 0.2);
+}
 
-  transform: translateY(-2px);
-
-  box-shadow:
-    0 8px 20px rgba(53, 31, 23, 0.07);
+.visit-type-card:hover::before {
+  filter: blur(2px) brightness(0.65);
+  transform: scale(1.08);
 }
 
 .visit-type-card.selected {
   border-color: #f39421;
+  background: #3b241a;
+  box-shadow: 0 8px 24px rgba(243, 148, 33, 0.25);
+}
 
-  background: #fff8ef;
-
-  box-shadow:
-    0 8px 24px rgba(243, 148, 33, 0.12);
+.visit-type-card.selected::before {
+  filter: blur(0px) brightness(0.75);
+  transform: scale(1.0);
 }
 
 .visit-type-card input {
   position: absolute;
-
   opacity: 0;
-
   pointer-events: none;
 }
 
-.visit-type-icon {
-  width: 50px;
-  height: 50px;
-
-  flex-shrink: 0;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  border-radius: 14px;
-
-  background: #fff1df;
-
-  font-size: 25px;
-}
-
 .visit-type-content {
+  position: relative;
+  z-index: 1;
   display: flex;
-
   flex-direction: column;
-
-  gap: 4px;
-
+  gap: 8px;
   flex: 1;
+  padding-right: 28px;
 }
 
 .visit-type-content strong {
-  color: #3b241a;
-
+  color: #ffffff;
   font-size: 17px;
-
   font-weight: 800;
+  line-height: 1.3;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
 }
 
 .visit-type-content span {
-  color: #8f7d74;
-
-  font-size: 14px;
-
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 13.5px;
   line-height: 1.45;
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
 }
 
 .visit-type-check {
-  width: 25px;
-  height: 25px;
-
-  flex-shrink: 0;
-
+  position: absolute;
+  z-index: 1;
+  top: 22px;
+  right: 20px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  color: transparent;
+  font-size: 12px;
+  font-weight: 900;
   display: flex;
   align-items: center;
   justify-content: center;
-
-  border-radius: 50%;
-
-  border: 2px solid #ddd0c7;
-
-  color: transparent;
-
-  font-size: 13px;
-  font-weight: 800;
-
   transition: 0.2s ease;
+  backdrop-filter: blur(4px);
+  background: rgba(0, 0, 0, 0.2);
 }
 
 .visit-type-card.selected .visit-type-check {
   background: #f39421;
-
   border-color: #f39421;
-
   color: white;
 }
 
@@ -2477,6 +2246,10 @@ function resetForm() {
 ========================================================= */
 
 @media (max-width: 560px) {
+
+  .visit-type-grid {
+    grid-template-columns: 1fr;
+  }
 
   .visit-type-card {
     padding: 15px;

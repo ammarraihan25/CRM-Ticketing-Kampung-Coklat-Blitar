@@ -57,36 +57,36 @@
           <!-- 2x2 Harmonious Chocolate-Toned Role Cards Grid -->
           <div class="role-cards-grid">
             <!-- 1. Super Admin Card (Warm Caramel Amber) -->
-            <NuxtLink to="/login/admin" class="vibrant-role-card card-admin">
-              <div class="role-icon-blob blob-admin">
+            <NuxtLink to="/login/admin" class="vibrant-role-card">
+              <div class="role-icon-blob">
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
                   <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                 </svg>
               </div>
               <div class="role-text-col">
-                <h3 class="role-name-text title-admin">SUPER ADMIN</h3>
-                <span class="role-tag-pill tag-admin">Konfigurasi &amp; Pengguna</span>
+                <h3 class="role-name-text">SUPER ADMIN</h3>
+                <span class="role-tag-pill">Konfigurasi &amp; Pengguna</span>
               </div>
             </NuxtLink>
 
             <!-- 2. Operational Manager Card (Deep Roasted Cocoa) -->
-            <NuxtLink to="/login/manager" class="vibrant-role-card card-manager">
-              <div class="role-icon-blob blob-manager">
+            <NuxtLink to="/login/manager" class="vibrant-role-card">
+              <div class="role-icon-blob">
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <circle cx="12" cy="12" r="10"/>
                   <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
                 </svg>
               </div>
               <div class="role-text-col">
-                <h3 class="role-name-text title-manager">OPERATIONAL MANAGER</h3>
-                <span class="role-tag-pill tag-manager">Monitoring &amp; Audit</span>
+                <h3 class="role-name-text">OPERATIONAL MANAGER</h3>
+                <span class="role-tag-pill">Monitoring &amp; Audit</span>
               </div>
             </NuxtLink>
 
             <!-- 3. Owner / Direksi Card (Mocha Espresso Bronze) -->
-            <NuxtLink to="/login/owner" class="vibrant-role-card card-owner">
-              <div class="role-icon-blob blob-owner">
+            <NuxtLink to="/login/owner" class="vibrant-role-card">
+              <div class="role-icon-blob">
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M3 21h18"/>
                   <path d="M5 21V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16"/>
@@ -94,14 +94,14 @@
                 </svg>
               </div>
               <div class="role-text-col">
-                <h3 class="role-name-text title-owner">OWNER / DIREKSI</h3>
-                <span class="role-tag-pill tag-owner">Laporan &amp; Strategis</span>
+                <h3 class="role-name-text">OWNER / DIREKSI</h3>
+                <span class="role-tag-pill">Laporan &amp; Strategis</span>
               </div>
             </NuxtLink>
 
             <!-- 4. Kasir Front Office Card (Cinnamon Terracotta Spice) -->
-            <NuxtLink to="/login/kasir" class="vibrant-role-card card-kasir">
-              <div class="role-icon-blob blob-kasir">
+            <NuxtLink to="/login/kasir" class="vibrant-role-card">
+              <div class="role-icon-blob">
                 <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <rect x="2" y="4" width="20" height="16" rx="2"/>
                   <line x1="2" y1="10" x2="22" y2="10"/>
@@ -110,8 +110,8 @@
                 </svg>
               </div>
               <div class="role-text-col">
-                <h3 class="role-name-text title-kasir">KASIR FRONT OFFICE</h3>
-                <span class="role-tag-pill tag-kasir">Tiket &amp; Penjualan POS</span>
+                <h3 class="role-name-text">KASIR FRONT OFFICE</h3>
+                <span class="role-tag-pill">Tiket &amp; Penjualan POS</span>
               </div>
             </NuxtLink>
           </div>
@@ -321,149 +321,53 @@ definePageMeta({
 }
 
 /* =========================================================
-   2X2 HARMONIOUS CHOCOLATE TONED ROLE CARDS
+   PROFESSIONAL UNIFIED ROLE CARDS
 ========================================================= */
 .role-cards-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 18px;
+  gap: 20px;
   width: 100%;
-  margin-bottom: 26px;
+  margin-bottom: 30px;
 }
 
 .vibrant-role-card {
-  border-radius: 20px;
-  padding: 18px 20px;
+  background: #FFFFFF;
+  border: 1px solid rgba(44, 26, 19, 0.12);
+  border-radius: 14px;
+  padding: 22px 24px;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 18px;
   text-decoration: none;
-  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 4px 14px rgba(44, 26, 19, 0.04);
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 12px rgba(44, 26, 19, 0.02);
 }
 
 .vibrant-role-card:hover {
-  transform: translateY(-4px);
-}
-
-/* 1. Super Admin (Warm Caramel Amber Cocoa) */
-.card-admin {
-  background: linear-gradient(135deg, #FFFDF8 0%, #FEF8ED 100%);
-  border: 1.5px solid #FDE68A;
-}
-
-.card-admin:hover {
-  border-color: #D97706;
-  box-shadow: 0 14px 34px rgba(217, 119, 6, 0.18);
-}
-
-.blob-admin {
-  background: #FEF3C7;
-  color: #D97706;
-  border: 1.5px solid #FDE68A;
-}
-
-.title-admin {
-  color: #92400E;
-}
-
-.tag-admin {
-  background: #FEF3C7;
-  color: #B45309;
-}
-
-/* 2. Operational Manager (Deep Roasted Cocoa) */
-.card-manager {
-  background: linear-gradient(135deg, #FAF7F2 0%, #F4ECE1 100%);
-  border: 1.5px solid #E6D7C3;
-}
-
-.card-manager:hover {
-  border-color: #3D2214;
-  box-shadow: 0 14px 34px rgba(61, 34, 20, 0.18);
-}
-
-.blob-manager {
-  background: #FAF0E4;
-  color: #3D2214;
-  border: 1.5px solid #E6D7C3;
-}
-
-.title-manager {
-  color: #3D2214;
-}
-
-.tag-manager {
-  background: #EFE4D6;
-  color: #3D2214;
-}
-
-/* 3. Owner / Direksi (Mocha Bronze) */
-.card-owner {
-  background: linear-gradient(135deg, #FBF8F5 0%, #F3ECE5 100%);
-  border: 1.5px solid #DDD0C2;
-}
-
-.card-owner:hover {
-  border-color: #5A3825;
-  box-shadow: 0 14px 34px rgba(90, 56, 37, 0.18);
-}
-
-.blob-owner {
-  background: #ECE2D7;
-  color: #5A3825;
-  border: 1.5px solid #DDD0C2;
-}
-
-.title-owner {
-  color: #5A3825;
-}
-
-.tag-owner {
-  background: #E8DCD0;
-  color: #5A3825;
-}
-
-/* 4. Kasir Front Office (Cinnamon Terracotta Spice) */
-.card-kasir {
-  background: linear-gradient(135deg, #FFFBF7 0%, #FFF3EB 100%);
-  border: 1.5px solid #FDCBA4;
-}
-
-.card-kasir:hover {
-  border-color: #C2410C;
-  box-shadow: 0 14px 34px rgba(194, 65, 12, 0.18);
-}
-
-.blob-kasir {
-  background: #FFE8D6;
-  color: #C2410C;
-  border: 1.5px solid #FDCBA4;
-}
-
-.title-kasir {
-  color: #9A3412;
-}
-
-.tag-kasir {
-  background: #FFEDD5;
-  color: #C2410C;
+  border-color: #F59E0B;
+  box-shadow: 0 8px 24px rgba(245, 158, 11, 0.12);
+  transform: translateY(-2px);
 }
 
 /* Icon Blobs */
 .role-icon-blob {
-  width: 56px;
-  height: 56px;
-  border-radius: 17px;
+  width: 54px;
+  height: 54px;
+  border-radius: 12px;
+  background: #F8F5F1;
+  color: #3D2214;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: transform 0.25s ease;
+  transition: all 0.25s ease;
 }
 
 .vibrant-role-card:hover .role-icon-blob {
-  transform: scale(1.08);
+  background: #F59E0B;
+  color: #FFFFFF;
+  transform: scale(1.05);
 }
 
 /* Role Text Info */
@@ -471,21 +375,29 @@ definePageMeta({
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 5px;
+  gap: 6px;
 }
 
 .role-name-text {
   font-size: 15px;
-  font-weight: 800;
+  font-weight: 700;
+  color: #2C1A13;
   margin: 0;
   letter-spacing: 0.3px;
+  transition: color 0.25s ease;
+}
+
+.vibrant-role-card:hover .role-name-text {
+  color: #D97706;
 }
 
 .role-tag-pill {
   font-size: 11.5px;
-  font-weight: 700;
-  padding: 3px 10px;
-  border-radius: 8px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: #F8F5F1;
+  color: #5A3825;
   letter-spacing: 0.2px;
 }
 

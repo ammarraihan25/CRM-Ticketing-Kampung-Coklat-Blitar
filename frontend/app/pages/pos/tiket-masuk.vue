@@ -158,7 +158,7 @@ const finishTransaction = () => {
       <div class="step-2-products" style="display: flex; flex-direction: column; flex: 1; min-height: 0; height: 100%;">
 
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-          <h1 style="font-size: 32px; font-weight: 800; color: #2c1a13; margin: 0;">Pilih Produk: Tiket Masuk</h1>
+          <h2 class="pane-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2c1a13" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>Pilih Produk: Tiket Masuk</h2>
         </div>
           
           <div class="product-list-wrapper" style="overflow-y: auto; flex: 1; min-height: 0; padding-bottom: 20px; padding-right: 10px;">
@@ -186,31 +186,40 @@ const finishTransaction = () => {
       </div>
 
       <!-- Right Pane: Cart -->
-      <div class="pos-cart-pane" style="background: #ffffff; border-left: 1px solid #f0f0f0;">
-        <div style="padding: 30px; display: flex; flex-direction: column; height: 100%;">
-          <h1 style="font-size: 32px; font-weight: 800; color: #2c1a13; margin: 0 0 30px 0;">Keranjang</h1>
+      <div class="pos-cart-pane">
+        <div style="padding: 0; display: flex; flex-direction: column; height: 100%;">
+          <h2 class="pane-title"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2c1a13" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>Keranjang</h2>
           <div style="flex: 1; overflow-y: auto; padding-right: 10px;">
-            <div v-if="cart.length === 0" style="color: #aaa; font-size: 14px; text-align: center; padding: 40px 0;">Belum ada pesanan.</div>
-            <div v-for="item in cart" :key="item.id" class="cart-item-row">
-              <div class="cart-item-details">
+            <div v-if="cart.length === 0" style="color: #9CA3AF; font-size: 14px; text-align: center; padding: 60px 0; font-weight: 500; display: flex; flex-direction: column; align-items: center; gap: 12px;"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#E5E7EB" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg>Keranjang kosong</div>
+            <div v-for="item in cart" :key="item.id || item.packageId || item.name" class="cart-item-row">
+              <div class="cart-item-top">
                 <div class="cart-item-name">{{ item.name }}</div>
-                <div class="cart-item-price">Rp {{ item.price.toLocaleString('id-ID') }}</div>
+                <div class="cart-item-subtotal">Rp {{ (item.price * item.qty).toLocaleString('id-ID') }}</div>
               </div>
-              <div class="cart-item-qty-control">
-                <button @click="decreaseItem(item)">-</button>
-                <span>{{ item.qty }}</span>
-                <button @click="increaseItem(item)">+</button>
+              <div class="cart-item-bottom">
+                <div class="cart-item-price">@ Rp {{ item.price.toLocaleString('id-ID') }}</div>
+                <div class="cart-item-qty-control">
+                  <button @click="decreaseItem(item)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                  </button>
+                  <span>{{ item.qty }}</span>
+                  <button @click="increaseItem(item)">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                  </button>
+                </div>
               </div>
-              <div class="cart-item-subtotal">Rp {{ (item.price * item.qty).toLocaleString('id-ID') }}</div>
             </div>
           </div>
-          <div style="border-bottom: 1px dotted #dcdcdc; margin: 20px 0;"></div>
-          <h3 style="text-align: right; font-size: 22px; font-weight: 800; color: #2c1a13; margin: 0 0 20px 0;">
-            Total: Rp {{ grandTotal.toLocaleString('id-ID') }}
-          </h3>
-          <button @click="processCheckout" :disabled="cart.length === 0" style="background: #27ae60; color: #ffffff; border: none; padding: 16px; font-size: 16px; font-weight: bold; border-radius: 6px; width: 100%; cursor: pointer; transition: background 0.2s;">
-            Checkout
-          </button>
+          <div class="cart-footer-summary">
+            <div class="summary-row grand-total">
+              <span>Total Tagihan</span>
+              <span class="total-price">Rp {{ grandTotal.toLocaleString('id-ID') }}</span>
+            </div>
+            <button class="btn-checkout-premium" @click="processCheckout" :disabled="cart.length === 0">
+              Proses Pembayaran
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -421,13 +430,13 @@ const finishTransaction = () => {
   </template>
 
 <style scoped>
-.pos-wrapper { display: flex; height: calc(100vh - 60px); background-color: #f0f2f5; font-family: 'Inter', sans-serif; overflow: hidden; }
-.pos-form-pane { width: 360px; min-width: 360px; background: #f8f9fa; padding: 25px; overflow-y: auto; border-right: 1px solid #e5e7eb; box-shadow: 2px 0 10px rgba(0,0,0,0.02); display: flex; flex-direction: column; z-index: 5; }
-.pos-catalog-pane { flex: 1; display: flex; flex-direction: column; padding: 30px; overflow: hidden; background: transparent; }
-.pos-cart-pane { width: 360px; min-width: 360px; background: #ffffff; border-left: 1px solid #e5e7eb; box-shadow: -4px 0 15px rgba(0,0,0,0.04); display: flex; flex-direction: column; z-index: 5; }
-.pane-title { font-size: 18px; font-weight: 800; color: #2c1a13; margin: 0 0 25px 0; display: flex; align-items: center; gap: 8px; }
+.pos-wrapper { display: flex; height: calc(100vh - 60px); background-color: #F3F4F6; font-family: 'Plus Jakarta Sans', sans-serif; overflow: hidden; gap: 20px; padding: 20px; box-sizing: border-box; }
+.pos-form-pane { width: 360px; min-width: 360px; background: #ffffff; padding: 24px; overflow-y: auto; border: 1px solid #E5E7EB; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); display: flex; flex-direction: column; }
+.pos-catalog-pane { flex: 1; display: flex; flex-direction: column; padding: 24px; overflow: hidden; background: #ffffff; border: 1px solid #E5E7EB; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); }
+.pos-cart-pane { width: 360px; min-width: 360px; background: #ffffff; border: 1px solid #E5E7EB; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.03); display: flex; flex-direction: column;  padding: 24px;}
+.pane-title { font-size: 18px; font-weight: 800; color: #1F2937; margin: 0 0 20px 0; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid #F3F4F6; padding-bottom: 12px; }
 .step-1-form-b2b { max-width: 1000px; margin: 0 auto; padding: 20px; }
-.form-section-box { background: #ffffff; border-radius: 12px; padding: 20px; border: 1px solid #e5e7eb; box-shadow: 0 2px 8px rgba(0,0,0,0.02); margin-bottom: 20px; }
+.form-section-box { background: transparent; padding: 0; border: none; box-shadow: none; margin-bottom: 0; }
 .section-title { font-size: 13px; font-weight: 800; color: #2c1a13; text-transform: uppercase; margin-bottom: 16px; border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; display: flex; align-items: center; gap: 8px; letter-spacing: 0.5px; }
 .booking-form-grid-1 { display: flex; flex-direction: column; gap: 20px; }
 .booking-form-grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
@@ -455,15 +464,17 @@ const finishTransaction = () => {
 .price-currency { font-size: 15px; color: #888; }
 .btn-outline-primary { background: transparent; border: 1px solid #2c1a13; color: #2c1a13; padding: 6px 16px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
 .btn-outline-primary:hover { background: #2c1a13; color: #fff; }
-.cart-item-row { display: flex; align-items: center; gap: 15px; background: #fdfdfd; border: 1px solid #f0f0f0; padding: 15px; border-radius: 8px; margin-bottom: 10px; }
-.cart-item-details { flex: 1; }
-.cart-item-name { font-weight: 700; color: #333; margin-bottom: 4px; }
-.cart-item-price { font-size: 13px; color: #888; }
-.cart-item-qty-control { display: flex; align-items: center; border: 1px solid #ddd; border-radius: 6px; overflow: hidden; }
-.cart-item-qty-control button { background: #f8f9fa; border: none; width: 30px; height: 30px; cursor: pointer; font-weight: bold; color: #555; }
+.cart-item-row { display: flex; flex-direction: column; gap: 10px; background: #ffffff; border: 1px solid #E5E7EB; padding: 16px; border-radius: 12px; margin-bottom: 12px; }
+.cart-item-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.cart-item-bottom { display: flex; justify-content: space-between; align-items: center; }
+.cart-item-name { font-weight: 700; color: #1F2937; font-size: 15px; line-height: 1.3; }
+.cart-item-price { font-size: 13px; color: #6B7280; font-weight: 500; }
+.cart-item-qty-control { display: flex; align-items: center; border: 1px solid #E5E7EB; border-radius: 8px; overflow: hidden; background: #F9FAFB; }
+.cart-item-qty-control button { background: transparent; border: none; width: 32px; height: 32px; cursor: pointer; color: #4B5563; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+.cart-item-qty-control button:hover { background: #E5E7EB; color: #1F2937; }
 .cart-item-qty-control button:hover { background: #e9ecef; }
-.cart-item-qty-control span { width: 30px; text-align: center; font-weight: bold; font-size: 14px; }
-.cart-item-subtotal { font-weight: 800; color: #2c1a13; min-width: 90px; text-align: right; }
+.cart-item-qty-control span { width: 36px; text-align: center; font-weight: 700; font-size: 14px; color: #1F2937; border-left: 1px solid #E5E7EB; border-right: 1px solid #E5E7EB; display: flex; align-items: center; justify-content: center; height: 32px; background: #ffffff; }
+.cart-item-subtotal { font-weight: 800; color: #2C1A13; font-size: 16px; white-space: nowrap; }
 .btn-checkout { width: 100%; background: #f29727; color: #fff; border: none; padding: 16px; font-size: 18px; font-weight: 900; border-radius: 8px; cursor: pointer; transition: 0.2s; }
 .btn-checkout:disabled { background: #ccc; cursor: not-allowed; }
 .btn-checkout:hover:not(:disabled) { background: #e08920; }
@@ -1178,6 +1189,15 @@ const finishTransaction = () => {
   .ticket-item-name { font-size: 12px !important; }
   .ticket-item-qty { font-size: 10px !important; }
 }
+
+.cart-footer-summary { margin-top: auto; padding-top: 20px; border-top: 1px solid #E5E7EB; }
+.summary-row.grand-total { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; background: #F9FAFB; padding: 16px 20px; border-radius: 12px; border: 1px solid #E5E7EB; }
+.summary-row.grand-total span:first-child { font-size: 13px; font-weight: 700; color: #6B7280; text-transform: uppercase; letter-spacing: 0.5px; }
+.summary-row.grand-total .total-price { font-size: 22px; font-weight: 900; color: #1F2937; }
+.btn-checkout-premium { width: 100%; background: #2C1A13; color: #fff; border: none; padding: 18px; font-size: 15px; font-weight: 800; border-radius: 10px; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 8px; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 4px 12px rgba(44,26,19,0.1); }
+.btn-checkout-premium:hover:not(:disabled) { background: #3d241a; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(44,26,19,0.2); }
+.btn-checkout-premium:disabled { background: #E5E7EB; color: #9CA3AF; cursor: not-allowed; box-shadow: none; }
+
 </style>
 
 
