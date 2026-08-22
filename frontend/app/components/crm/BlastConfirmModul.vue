@@ -19,7 +19,7 @@ const {
 } = useWaGateway()
 
 const message = ref(
-  'Halo {name}! 👋\n\nAda promo spesial dari Kampung Coklat untuk Anda. Jangan lewatkan kesempatan menarik ini ya! 🍫'
+  'Halo {name}!\n\nAda promo spesial dari Kampung Coklat untuk Anda. Jangan lewatkan kesempatan menarik ini ya!'
 )
 
 const selectedMembers = computed(() =>
@@ -95,36 +95,15 @@ function closeModal() {
 
         <!-- HEADER -->
 
-        <div class="modal-header">
-
-          <div class="header-icon">
-            📣
+                <div class="modal-header" style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #E5E7EB; padding: 20px;">
+          <div class="modal-head-title" style="display: flex; align-items: center; gap: 12px;">
+            
+            <div>
+              <h3 style="font-size: 16px; color: #2C1A13; margin: 0; font-weight: 700;">Kirim Broadcast Promo</h3>
+              <p class="modal-sub" style="font-size: 14px; color: #6B5A52; margin: 0; margin-top: 2px;">Kirim pesan WhatsApp ke member terpilih.</p>
+            </div>
           </div>
-
-          <div class="header-text">
-
-            <span>
-              WHATSAPP CAMPAIGN
-            </span>
-
-            <h2>
-              Kirim Broadcast Promo
-            </h2>
-
-            <p>
-              Kirim pesan WhatsApp ke member terpilih.
-            </p>
-
-          </div>
-
-          <button
-            class="close-button"
-            :disabled="isLoading"
-            @click="closeModal"
-          >
-            ×
-          </button>
-
+          <button class="btn-close" :disabled="isLoading" @click="closeModal" style="background: transparent; border: none; font-size: 24px; cursor: pointer; color: #9CA3AF;">×</button>
         </div>
 
         <!-- BODY -->
@@ -144,9 +123,7 @@ function closeModal() {
               <div class="target-row">
 
                 <div class="target-left">
-                  <span class="target-icon">
-                    🎯
-                  </span>
+                  
 
                   <div>
                     <strong>
@@ -266,7 +243,7 @@ function closeModal() {
             </div>
 
             <div class="message-hint">
-              💡 Gunakan
+              Gunakan
               <strong>{name}</strong>
               untuk otomatis memasukkan nama member.
             </div>
@@ -318,35 +295,12 @@ function closeModal() {
 
         <!-- FOOTER -->
 
-        <div class="modal-footer">
-
-          <button
-            class="cancel-button"
-            :disabled="isLoading"
-            @click="closeModal"
-          >
-            Batal
+                <div class="modal-footer" style="display: flex; justify-content: flex-end; gap: 8px; border-top: 1px solid #E5E7EB; padding: 16px 20px;">
+          <button class="cancel-button" style="background: white; color: #6B5A52; border: 1px solid #E5E7EB; border-radius: 6px; cursor: pointer; padding: 0 16px; font-weight: 600; height: 34px; font-size: 12.5px;" :disabled="isLoading" @click="closeModal">Batal</button>
+          <button class="send-button" style="border-radius: 6px; padding: 0 16px; background: #25D366; border: none; color: white; display: flex; align-items: center; gap: 6px; font-weight: 600; cursor: pointer; height: 34px; font-size: 12.5px;" :disabled="!canSend" @click="handleConfirm">
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2z"/></svg> 
+            <span>Konfirmasi & Kirim</span>
           </button>
-
-          <button
-            class="send-button"
-            :disabled="!canSend"
-            @click="handleConfirm"
-          >
-
-            <span v-if="isLoading">
-              Mengirim...
-            </span>
-
-            <template v-else>
-              Konfirmasi & Kirim
-              <span>
-                →
-              </span>
-            </template>
-
-          </button>
-
         </div>
 
       </div>
@@ -387,13 +341,12 @@ function closeModal() {
 
   overflow: hidden;
 
-  border-radius: 20px;
+  border-radius: 10px;
 
   background: #ffffff;
 
-  box-shadow:
-    0 30px 90px
-    rgba(40, 26, 18, 0.30);
+  box-shadow: 0 20px 25px -5px
+    rgba(0, 0, 0, 0.20);
 
   animation:
     modalIn 0.2s ease;
@@ -419,10 +372,10 @@ function closeModal() {
   gap: 13px;
   align-items: center;
 
-  padding: 21px 23px;
+  padding: 20px;
 
   border-bottom:
-    1px solid #eee7e1;
+    1px solid #E5E7EB;
 }
 
 .header-icon {
@@ -435,7 +388,7 @@ function closeModal() {
 
   border-radius: 14px;
 
-  background: #fff0d8;
+  background: #FFF6E8;
 
   font-size: 22px;
 }
@@ -443,7 +396,7 @@ function closeModal() {
 .header-text span {
   color: #b18b6e;
 
-  font-size: 9px;
+  font-size: 14px;
   font-weight: 800;
 
   letter-spacing: 1.3px;
@@ -452,7 +405,7 @@ function closeModal() {
 .header-text h2 {
   margin: 4px 0 0;
 
-  color: #332016;
+  color: #2C1A13;
 
   font-size: 20px;
   font-weight: 800;
@@ -463,7 +416,7 @@ function closeModal() {
 
   color: #968980;
 
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .close-button {
@@ -496,7 +449,7 @@ function closeModal() {
 .modal-body {
   overflow-y: auto;
 
-  padding: 21px 23px;
+  padding: 20px;
 }
 
 .section {
@@ -504,9 +457,9 @@ function closeModal() {
 }
 
 .section-label {
-  color: #a1948a;
+  color: #111827;
 
-  font-size: 9px;
+  font-size: 14px;
   font-weight: 800;
 
   letter-spacing: 1px;
@@ -560,26 +513,26 @@ function closeModal() {
 }
 
 .target-left strong {
-  color: #493126;
-  font-size: 12px;
+  color: #111827;
+  font-size: 14px;
 }
 
 .target-left small {
-  color: #9a8e86;
-  font-size: 9px;
+  color: #374151;
+  font-size: 14px;
 }
 
 .recipient-number {
-  color: #3a2419;
+  color: #111827;
 
   font-size: 19px;
   font-weight: 800;
 }
 
 .recipient-number span {
-  color: #998d85;
+  color: #374151;
 
-  font-size: 9px;
+  font-size: 14px;
   font-weight: 500;
 }
 
@@ -599,8 +552,8 @@ function closeModal() {
 }
 
 .section-heading strong {
-  color: #493126;
-  font-size: 12px;
+  color: #111827;
+  font-size: 14px;
 }
 
 .count-pill {
@@ -617,7 +570,7 @@ function closeModal() {
 
   color: #68442e;
 
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 800;
 }
 
@@ -666,7 +619,7 @@ function closeModal() {
 
   color: #65432f;
 
-  font-size: 9px;
+  font-size: 14px;
   font-weight: 800;
 }
 
@@ -682,18 +635,18 @@ function closeModal() {
 .recipient-info strong {
   overflow: hidden;
 
-  color: #453127;
+  color: #111827;
 
-  font-size: 10px;
+  font-size: 13px;
 
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .recipient-info span {
-  color: #9b9088;
+  color: #374151;
 
-  font-size: 8px;
+  font-size: 13px;
 }
 
 .check {
@@ -701,7 +654,7 @@ function closeModal() {
 
   color: #1ca357;
 
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 800;
 }
 
@@ -721,7 +674,7 @@ function closeModal() {
 
   color: #7c5d48;
 
-  font-size: 8px;
+  font-size: 13px;
   font-weight: 700;
 }
 
@@ -742,7 +695,7 @@ function closeModal() {
   resize: vertical;
 
   border:
-    1px solid #ddd5cf;
+    1px solid #D1D5DB;
 
   border-radius: 11px;
 
@@ -750,21 +703,21 @@ function closeModal() {
 
   background: #fff;
 
-  color: #433026;
+  color: #111827;
 
   font-family: inherit;
 
-  font-size: 11px;
+  font-size: 14px;
 
   line-height: 1.65;
 }
 
 .textarea-wrapper textarea:focus {
-  border-color: #9a6b4c;
+  border-color: #25D366;
 
   box-shadow:
     0 0 0 3px
-    rgba(154,107,76,0.08);
+    rgba(37, 211, 102, 0.15);
 }
 
 .character-count {
@@ -773,21 +726,21 @@ function closeModal() {
   right: 10px;
   bottom: 9px;
 
-  color: #aaa099;
+  color: #9CA3AF;
 
-  font-size: 8px;
+  font-size: 13px;
 }
 
 .message-hint {
   margin-top: 6px;
 
-  color: #a1968f;
+  color: #374151;
 
-  font-size: 9px;
+  font-size: 14px;
 }
 
 .message-hint strong {
-  color: #77543d;
+  color: #4B5563;
 }
 
 /* WARNING */
@@ -805,15 +758,15 @@ function closeModal() {
 }
 
 .warning-box {
-  background: #fff6e8;
+  background: #FFFBEB;
 
-  color: #9c5b22;
+  color: #B45309;
 }
 
 .error-box {
   background: #fff0ef;
 
-  color: #b34e48;
+  color: #DC2626;
 }
 
 .warning-box > span,
@@ -823,14 +776,14 @@ function closeModal() {
 
 .warning-box strong,
 .error-box strong {
-  font-size: 10px;
+  font-size: 13px;
 }
 
 .warning-box p,
 .error-box p {
   margin: 3px 0 0;
 
-  font-size: 9px;
+  font-size: 14px;
   line-height: 1.5;
 }
 
@@ -845,7 +798,7 @@ function closeModal() {
   padding: 15px 23px;
 
   border-top:
-    1px solid #eee7e1;
+    1px solid #E5E7EB;
 }
 
 .cancel-button,
@@ -858,7 +811,7 @@ function closeModal() {
 
   font-family: inherit;
 
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 700;
 
   cursor: pointer;

@@ -187,8 +187,7 @@
           <tbody>
             <tr v-for="item in permissionMatrix" :key="item.module" class="matrix-row">
               <td>
-                <div class="module-title-txt">{{ item.module }}</div>
-                <div class="module-desc-txt">{{ item.description }}</div>
+                <div class="module-title-txt" style="margin-bottom: 0;">{{ item.module }}</div>
               </td>
               <td class="text-center">
                 <span class="matrix-tag tag-full">
@@ -706,20 +705,19 @@ const saveUser = () => {
 /* SECTION WIDGET FRAMES & AESTHETIC TABLES                                  */
 /* ========================================================================= */
 .section-widget-frame {
-  background: #FFFDF9;
-  border: 1.5px solid #EFE4D6;
-  border-radius: 24px;
-  padding: 22px 26px 26px 26px;
+  background: white;
+  border-radius: 12px;
+  border: 1px solid #E5E7EB;
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  box-shadow: 0 4px 16px rgba(61, 34, 20, 0.04);
 }
 
 .section-head-bar {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid #E5E7EB;
 }
 
 .section-head-left {
@@ -766,30 +764,32 @@ const saveUser = () => {
 }
 
 .aesthetic-staff-table thead th {
-  padding: 14px 16px;
-  font-size: 12.5px;
-  font-weight: 800;
-  color: #111111;
+  padding: 14px 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6B5A52;
+  background: #FAF8F5;
+  text-transform: uppercase;
   letter-spacing: 0.5px;
   text-align: left;
-  border-bottom: 2px solid #E5DFD3;
-  background: #F4F1ED;
+  border-bottom: 1px solid #E5E7EB;
 }
 
 .staff-row {
   background: #FFFFFF;
-  border-bottom: 1px solid #EFE4D6;
+  border-bottom: 1px solid #F3F4F6;
   transition: all 0.2s ease;
 }
 
 .staff-row:hover {
-  background: #FAF8F5;
+  background: #F9FAFB;
 }
 
 .staff-row td {
-  padding: 18px 16px;
-  font-size: 14.5px;
+  padding: 16px 20px;
+  font-size: 14px;
   vertical-align: middle;
+  color: #2C1A13;
 }
 
 .user-cell-wrap {
@@ -903,9 +903,15 @@ const saveUser = () => {
 }
 
 .aesthetic-matrix-table thead th {
-  padding: 14px 16px;
-  border-bottom: 2px solid #E5DFD3;
-  background: #F4F1ED;
+  padding: 14px 20px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6B5A52;
+  background: #FAF8F5;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  text-align: left;
+  border-bottom: 1px solid #E5E7EB;
 }
 
 .role-th-card {
@@ -930,17 +936,19 @@ const saveUser = () => {
 
 .matrix-row {
   background: #FFFFFF;
-  border-bottom: 1px solid #EFE4D6;
+  border-bottom: 1px solid #F3F4F6;
   transition: all 0.2s ease;
 }
 
 .matrix-row:hover {
-  background: #FAF8F5;
+  background: #F9FAFB;
 }
 
 .matrix-row td {
-  padding: 18px 16px;
+  padding: 16px 20px;
+  font-size: 14px;
   vertical-align: middle;
+  color: #2C1A13;
 }
 
 .module-title-txt {

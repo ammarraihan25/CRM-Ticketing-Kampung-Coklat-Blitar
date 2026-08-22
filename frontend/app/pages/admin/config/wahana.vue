@@ -140,39 +140,6 @@
       </div>
     </section>
 
-    <!-- ========================================================================= -->
-    <!-- BOTTOM SAFETY BANNER                                                      -->
-    <!-- ========================================================================= -->
-    <section class="safety-banner-reference">
-      <div class="safety-banner-left">
-        <div class="safety-emblem-circle">
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="leaf-icon">
-            <path d="M11 20A7 7 0 0 1 4 13C4 7 11 2 11 2s7 5 7 11a7 7 0 0 1-7 7Z"/>
-            <path d="M11 2v18"/>
-          </svg>
-        </div>
-        <div class="safety-banner-texts">
-          <h4 class="safety-title">Safety is our Priority</h4>
-          <p class="safety-desc">
-            Pastikan semua wahana dalam kondisi aman dan siap digunakan untuk kenyamanan pengunjung.
-          </p>
-        </div>
-      </div>
-
-      <div class="safety-banner-right-art">
-        <svg class="plantation-gazebo-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 80" fill="none">
-          <path d="M140 10 L80 35 L90 75 L190 75 L200 35 Z" stroke="#D6BFA8" stroke-width="1.5" />
-          <path d="M140 10 L140 75" stroke="#D6BFA8" stroke-width="1.2" stroke-dasharray="2 2" />
-          <path d="M100 42 L180 42" stroke="#D6BFA8" stroke-width="1.2" />
-          <path d="M115 50 L115 75 M140 50 L140 75 M165 50 L165 75" stroke="#D6BFA8" stroke-width="1.2" />
-          <path d="M20 75 L260 75" stroke="#D6BFA8" stroke-width="1.5" />
-          <circle cx="50" cy="65" r="12" stroke="#E2D4C3" stroke-width="1.2" />
-          <circle cx="65" cy="60" r="10" stroke="#E2D4C3" stroke-width="1.2" />
-          <circle cx="225" cy="62" r="11" stroke="#E2D4C3" stroke-width="1.2" />
-        </svg>
-      </div>
-    </section>
-
     <!-- Modal Edit Harga Tiket -->
     <div v-if="showTicketModal" class="modal-backdrop" @click.self="showTicketModal = false">
       <div class="modal-card">

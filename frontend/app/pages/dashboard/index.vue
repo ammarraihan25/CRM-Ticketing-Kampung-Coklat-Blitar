@@ -111,18 +111,18 @@
               <button 
                 type="button"
                 class="type-btn"
-                :class="{ active: chartType === 'line' }"
-                @click="setChartType('line')"
-              >
-                Line
-              </button>
-              <button 
-                type="button"
-                class="type-btn"
                 :class="{ active: chartType === 'bar' }"
                 @click="setChartType('bar')"
               >
                 Bar
+              </button>
+              <button 
+                type="button"
+                class="type-btn"
+                :class="{ active: chartType === 'line' }"
+                @click="setChartType('line')"
+              >
+                Line
               </button>
             </div>
           </div>
@@ -685,7 +685,7 @@ interface PeriodOption {
 
 const selectedPeriod = ref<PeriodType>('today')
 const isPeriodMenuOpen = ref(false)
-const chartType = ref<'line' | 'bar'>('line')
+const chartType = ref<'line' | 'bar'>('bar')
 const isLoading = ref(false)
 const showShiftModal = ref(false)
 const showCustomDateModal = ref(false)
@@ -949,10 +949,10 @@ const initRevenueChart = () => {
       labels,
       datasets: [
         {
-          label: 'Pendapatan GTV', data: gtvData, borderColor: '#F59E0B', backgroundColor: isLine ? gtvLineGradient : gtvBarGradient, borderWidth: isLine ? 3.5 : 0, tension: 0.42, fill: isLine, yAxisID: 'y', pointRadius: isLine ? 5 : 0, pointHoverRadius: isLine ? 8.5 : 0, pointBackgroundColor: '#FFFFFF', pointBorderColor: '#F59E0B', pointBorderWidth: 2.5, borderRadius: !isLine ? { topLeft: 8, topRight: 8, bottomLeft: 0, bottomRight: 0 } : 0, borderSkipped: false, barPercentage: 0.72, categoryPercentage: 0.68
+          label: 'Pendapatan GTV', data: gtvData, borderColor: '#F59E0B', backgroundColor: isLine ? gtvLineGradient : gtvBarGradient, borderWidth: isLine ? 3.5 : 0, tension: 0.42, fill: isLine, yAxisID: 'y', pointRadius: isLine ? 5 : 0, pointHoverRadius: isLine ? 8.5 : 0, pointBackgroundColor: '#FFFFFF', pointBorderColor: '#F59E0B', pointBorderWidth: 2.5, borderRadius: 0, borderSkipped: false, barPercentage: 0.72, categoryPercentage: 0.68
         },
         {
-          label: 'Volume Tiket', data: ticketData, borderColor: '#111111', backgroundColor: isLine ? 'transparent' : ticketBarGradient, borderWidth: isLine ? 2.8 : 0, tension: 0.42, fill: false, yAxisID: 'y1', pointRadius: isLine ? 4.5 : 0, pointHoverRadius: isLine ? 7.5 : 0, pointBackgroundColor: '#111111', pointBorderColor: '#FFFFFF', pointBorderWidth: 2, borderRadius: !isLine ? { topLeft: 8, topRight: 8, bottomLeft: 0, bottomRight: 0 } : 0, borderSkipped: false, barPercentage: 0.72, categoryPercentage: 0.68
+          label: 'Volume Tiket', data: ticketData, borderColor: '#111111', backgroundColor: isLine ? 'transparent' : ticketBarGradient, borderWidth: isLine ? 2.8 : 0, tension: 0.42, fill: false, yAxisID: 'y1', pointRadius: isLine ? 4.5 : 0, pointHoverRadius: isLine ? 7.5 : 0, pointBackgroundColor: '#111111', pointBorderColor: '#FFFFFF', pointBorderWidth: 2, borderRadius: 0, borderSkipped: false, barPercentage: 0.72, categoryPercentage: 0.68
         }
       ]
     },

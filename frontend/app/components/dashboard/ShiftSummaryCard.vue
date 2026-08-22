@@ -55,18 +55,6 @@
           </div>
           <span class="session-time">Sesi Aktif: {{ activeShift.startTime }} - {{ activeShift.endTime }} WIB</span>
         </div>
-
-      <div class="profile-stats">
-        <div class="stat-group">
-          <span class="stat-val">{{ activeShift.totalTransactions.toLocaleString('id-ID') }}</span>
-          <span class="stat-lbl">Transaksi</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat-group">
-          <span class="stat-val text-amber">{{ activeShift.totalTicketsSold.toLocaleString('id-ID') }}</span>
-          <span class="stat-lbl">Pax Terbit</span>
-        </div>
-      </div>
       </div>
     </div>
 
@@ -121,6 +109,19 @@
           </div>
           <span class="metric-desc">QRIS &amp; EDC Mesin tervalidasi</span>
         </div>
+      </div>
+    </div>
+
+    <!-- Transaction & Pax Stats -->
+    <div class="stats-summary-bar">
+      <div class="summary-stat-group">
+        <span class="summary-stat-val">{{ activeShift.totalTransactions.toLocaleString('id-ID') }}</span>
+        <span class="summary-stat-lbl">Transaksi</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="summary-stat-group">
+        <span class="summary-stat-val text-amber">{{ activeShift.totalTicketsSold.toLocaleString('id-ID') }}</span>
+        <span class="summary-stat-lbl">Pax Terbit</span>
       </div>
     </div>
 
@@ -376,10 +377,35 @@ const formatRupiah = (val: number): string => {
   font-weight: 500;
 }
 
-.profile-stats {
+.stats-summary-bar {
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
+  border-radius: 14px;
+  padding: 16px 24px;
   display: flex;
   align-items: center;
-  gap: 16px;
+  justify-content: space-evenly;
+}
+
+.summary-stat-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.summary-stat-val {
+  font-size: 20px;
+  font-weight: 900;
+  color: #111827;
+}
+
+.summary-stat-lbl {
+  font-size: 11.5px;
+  font-weight: 800;
+  color: #6B7280;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .stat-group {

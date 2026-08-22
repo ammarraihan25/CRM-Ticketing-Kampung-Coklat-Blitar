@@ -1,58 +1,90 @@
-<template>
-  <div class="login-role-page">
-    <!-- =========================================================
-         HERO BANNER (GUESTBOOK STYLE WITH ORGANIC WAVE)
-    ========================================================== -->
-    <section class="role-hero">
-      <div class="hero-image"></div>
-      <div class="hero-overlay"></div>
+import re
+import os
 
-      
+files = {
+    'admin.vue': {
+        'title': 'Kendali Penuh Sistem CRM & Operasional',
+        'content': 'Selamat datang di pusat kendali utama. Sebagai Super Admin, Anda memiliki otoritas tertinggi untuk mengatur seluruh konfigurasi sistem Kampung Coklat.',
+        'list': [
+            'Manajemen Pengguna & Hak Akses (RBAC)',
+            'Konfigurasi Harga Tiket & Wahana',
+            'Pemantauan Aktivitas Sistem Terpadu'
+        ],
+        'email_ph': 'admin@kampungcoklat.id',
+        'role': 'Super Admin'
+    },
+    'manager.vue': {
+        'title': 'Monitor & Evaluasi Operasional Harian',
+        'content': 'Pantau kinerja dan kelancaran operasional secara real-time. Modul ini dirancang untuk memudahkan evaluasi dan pengambilan keputusan taktis di lapangan.',
+        'list': [
+            'Laporan & Audit Transaksi POS',
+            'Pemantauan Kapasitas Wahana',
+            'Approval Pengeluaran & Void Kasir'
+        ],
+        'email_ph': 'manager@kampungcoklat.id',
+        'role': 'Operational Manager'
+    },
+    'owner.vue': {
+        'title': 'Tinjauan Strategis & Laporan Eksekutif',
+        'content': 'Akses langsung ke ringkasan performa bisnis. Pantau pertumbuhan pendapatan dan tren pengunjung untuk menentukan langkah strategis perusahaan.',
+        'list': [
+            'Dashboard Analitik & Visualisasi Data',
+            'Laporan Keuangan Konsolidasi',
+            'Tren & Demografi Pengunjung'
+        ],
+        'email_ph': 'direksi@kampungcoklat.id',
+        'role': 'Owner / Direksi'
+    },
+    'kasir.vue': {
+        'title': 'Pelayanan Cepat & Transaksi Terintegrasi',
+        'content': 'Portal point-of-sale modern untuk memproses tiket masuk, wahana, dan paket edukasi dengan cepat dan akurat demi kepuasan pengunjung.',
+        'list': [
+            'Penjualan Tiket & Gelang Akses',
+            'Booking Rombongan & Edukasi',
+            'Penutupan & Rekapitulasi Kas Harian'
+        ],
+        'email_ph': 'kasir@kampungcoklat.id',
+        'role': 'Kasir Front Office'
+    }
+}
 
-      <div class="hero-content">
-        <div class="brand-label">
-          <span class="brand-line"></span>
-          <span>#KAMPUNGCOKLAT</span>
-          <span class="brand-line"></span>
-        </div>
+base_path = 'd:/CRM-Ticketing-Kampung-Coklat-Blitar-main/frontend/app/pages/login/'
 
-        <h1 class="hero-title">
-          Portal <strong>Owner &amp; Direksi</strong>
-        </h1>
+for filename, data in files.items():
+    filepath = os.path.join(base_path, filename)
+    if not os.path.exists(filepath):
+        continue
 
-        <p class="hero-desc">
-          Sistem Terpadu CRM, Tiket Masuk, Kasir POS &amp; Manajemen Operasional
-        </p>
-      </div>
+    with open(filepath, 'r', encoding='utf-8') as f:
+        content = f.read()
 
-      <!-- Organic Wave Divider -->
-      <div class="hero-wave">
-        <svg
-          viewBox="0 0 1440 120"
-          preserveAspectRatio="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M0 55C180 110 360 110 540 65C720 20 900 20 1080 60C1260 100 1350 95 1440 65V120H0Z"
-            fill="#fffaf5"
-          />
-        </svg>
-      </div>
-    </section>
+    # Create the new HTML block
+    list_html = ""
+    for item in data['list']:
+        list_html += f'''
+              <li>
+                <span class="list-icon">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                </span>
+                <span>{item}</span>
+              </li>'''
 
-    <!-- =========================================================
-         MAIN LOGIN CARD SECTION (OVERLAPPING ONTO WAVE)
-    ========================================================== -->
-    <section class="form-section">
+    new_html = f'''<section class="form-section">
       <div class="form-container">
         <div class="login-card-split">
           
-          <!-- Left Column: Article Panel with Image -->
+          <!-- Left Column: Article Panel -->
           <div class="card-left-article">
-            
-            <h2 class="article-title">Tinjauan Strategis & Laporan Eksekutif</h2>
-            <p class="article-content">Akses langsung ke ringkasan performa bisnis. Pantau pertumbuhan pendapatan dan tren pengunjung untuk menentukan langkah strategis perusahaan.</p>
-            
+            <div class="article-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+            </div>
+            <h2 class="article-title">{data['title']}</h2>
+            <p class="article-content">{data['content']}</p>
+            <ul class="article-list">
+{list_html}
+            </ul>
           </div>
 
           <!-- Right Column: Clean Form -->
@@ -61,8 +93,8 @@
               <div class="brand-logo-centered">
                 <img :src="logoImg" alt="Kampung Coklat" class="brand-logo-img" />
               </div>
-              <h2 class="info-title">Portal Owner / Direksi</h2>
-              <p class="info-desc">Masukkan kredensial akun Owner / Direksi Anda</p>
+              <h2 class="info-title">Portal {data['role']}</h2>
+              <p class="info-desc">Masukkan kredensial akun {data['role']} Anda</p>
             </div>
 
             <form class="clean-auth-form" @submit.prevent="handleLogin">
@@ -72,7 +104,7 @@
                   <span class="input-icon">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" /></svg>
                   </span>
-                  <input id="admin-email" v-model="email" type="email" class="field-input" placeholder="direksi@kampungcoklat.id" required />
+                  <input id="admin-email" v-model="email" type="email" class="field-input" placeholder="{data['email_ph']}" required />
                 </div>
               </div>
 
@@ -87,8 +119,7 @@
                   </span>
                   <input id="admin-password" v-model="password" :type="showPassword ? 'text' : 'password'" class="field-input" placeholder="••••••••" required />
                   <button type="button" class="btn-toggle-eye" title="Tampilkan / Sembunyikan Sandi" @click="showPassword = !showPassword">
-                    <svg v-if="!showPassword" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                    <svg v-else xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22"/></svg>
+                    {{{{ showPassword ? '🙈' : '👁️' }}}}
                   </button>
                 </div>
               </div>
@@ -101,58 +132,39 @@
               </div>
 
               <button type="submit" class="btn-submit-primary" :disabled="isLoading">
-                <span v-if="!isLoading">Masuk Sebagai Owner / Direksi &rarr;</span>
+                <span v-if="!isLoading">Masuk Sebagai {data['role']} &rarr;</span>
                 <span v-else class="loading-state">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="spin-anim"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" /></svg>
                   <span>Memverifikasi...</span>
                 </span>
               </button>
               
-              
+              <div class="autofill-box-unified">
+                <button type="button" class="btn-autofill-text" @click="fillAdminCredentials">
+                  <span class="bolt-icon">⚡</span> Auto-fill Akun Demo
+                </button>
+              </div>
             </form>
           </div>
         </div>
       </div>
-    </section>
-  </div>
-</template>
+    </section>'''
 
-<script setup lang="ts">
-import { ref } from 'vue'
-import { useAuth } from '~/composables/useAuth'
-import logoImg from '~/assets/assets_POS/KAMPUNGCOKLAT.png'
+    # Replace the <section class="form-section"> block
+    start_html = content.find('<section class="form-section">')
+    if start_html == -1:
+        continue
+    end_html = content.find('</section>', start_html)
+    if end_html == -1:
+        continue
+    end_html += 10 # include </section>
 
-definePageMeta({
-  layout: false
-})
+    content = content[:start_html] + new_html + content[end_html:]
 
-const { loginAs } = useAuth()
-
-const email = ref('')
-const password = ref('')
-const rememberMe = ref(true)
-const showPassword = ref(false)
-const isLoading = ref(false)
-
-const fillOwnerCredentials = () => {
-  email.value = 'owner@kampungcoklat.id'
-  password.value = 'owner123'
-}
-
-const handleLogin = () => {
-  isLoading.value = true
-  setTimeout(() => {
-    loginAs('owner')
-    isLoading.value = false
-    navigateTo('/dashboard')
-  }, 400)
-}
-
-const alertHelp = () => {
-  alert('[BANTUAN AKSES OWNER / DIREKSI]\nEmail Demo: owner@kampungcoklat.id\nSandi Demo: owner123\n\nHubungi IT Operations jika akun Anda terkunci.')
-}
-</script>
-
+    # For admin.vue, we also need to update the CSS because we previously changed it to .login-card-single
+    # For others, we might need to replace their whole CSS block. The easiest is to replace everything after </script>
+    
+    css_content = '''
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Jost:wght@400;500;600;700;800&display=swap');
 
@@ -293,16 +305,12 @@ const alertHelp = () => {
 }
 
 .card-left-article {
-  background-image: 
-    linear-gradient(145deg, rgba(44, 26, 19, 0.65) 0%, rgba(23, 13, 9, 0.82) 100%),
-    url('~/assets/assets_POS/kamcok1.jpg');
-  background-size: cover;
-  background-position: center;
+  background: linear-gradient(145deg, #2C1A13 0%, #170d09 100%);
   color: white;
   padding: 48px 40px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
+  justify-content: center;
 }
 
 .article-icon {
@@ -477,13 +485,10 @@ const alertHelp = () => {
   background: transparent;
   border: none;
   cursor: pointer;
-  padding: 6px;
-  color: #9CA3AF;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  font-size: 14px;
+  padding: 4px;
+  color: #6B7280;
 }
-.btn-toggle-eye:hover { color: #F59E0B; }
 
 .remember-row {
   display: flex;
@@ -579,3 +584,14 @@ const alertHelp = () => {
   .form-container { margin-top: -80px; }
 }
 </style>
+'''
+
+    # Replace everything after <script setup ... </script> with our new css
+    script_end = content.find('</script>')
+    if script_end != -1:
+        content = content[:script_end + 9] + "\n" + css_content
+
+    with open(filepath, 'w', encoding='utf-8') as f:
+        f.write(content)
+
+print('Updated all 4 login pages with the new 2-column article design.')

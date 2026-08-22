@@ -13,6 +13,10 @@ export interface GuestBookPayload {
 
   tipeKunjungan: GuestBookVisitType
 
+  namaAcara: string
+
+  tanggalKunjungan: string
+
 }
 
 export interface GuestBookRecord extends GuestBookPayload {
@@ -50,7 +54,9 @@ export const useGuestBookApi = () => {
      *   nama,
      *   whatsapp,
      *   domisili,
-     *   tipeKunjungan
+     *   tipeKunjungan,
+     *   namaAcara,
+     *   tanggalKunjungan
      * }
      */
 

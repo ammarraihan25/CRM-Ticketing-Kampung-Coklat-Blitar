@@ -2,7 +2,7 @@
 import type { Member } from '~/composables/useCrmApi'
 
 definePageMeta({
-  layout: 'admin'
+  layout: 'crm'
 })
 
 const { getMembers } = useCrmApi()
@@ -362,6 +362,11 @@ function nextPage() {
    STATISTICS
 ========================================================= */
 
+
+const totalMemberPR = computed(() => members.value.filter(m => m.tipeMember === 'PR').length)
+const totalMemberPP = computed(() => members.value.filter(m => m.tipeMember === 'PP').length)
+const totalMemberPT = computed(() => members.value.filter(m => m.tipeMember === 'PT').length)
+
 const totalMember = computed(() =>
   total.value
 )
@@ -440,8 +445,7 @@ function getTypeClass(type?: string) {
 </script>
 
 <template>
-  <div class="crm-page">
-
+  <div class="crm-page reports-container">
     <!-- HEADER PATTERN KAMPUNG COKLAT -->
     <header class="executive-command-header">
       <div class="brand-text-wrapper">
@@ -450,153 +454,70 @@ function getTypeClass(type?: string) {
           Kelola data dan hubungan dengan member Kampung Coklat.
         </div>
       </div>
-
     </header>
-
-    <!-- STATS -->
-
-    <section class="stats-grid">
-
-      <div class="stat-card">
-        <div class="stat-icon purple">
-          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7541bd" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-            <circle cx="9" cy="7" r="4"/>
-            <path d="M22 21v-2a4 4 0 0 0-3-3.87"/>
-            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
-          </svg>
+    
+      <!-- Member Overview Counters -->
+      <div class="revenue-kpi-row">
+        <div class="rev-kpi-card">
+          <span class="rev-label">Total Database Member CRM</span>
+          <div class="rev-val text-cocoa">{{ totalMember.toLocaleString('id-ID') }} Kontak</div>
+          <span class="rev-sub">Primary Key: No. WhatsApp</span>
         </div>
-
-        <div>
-          <span>Total Members</span>
-          <strong>{{ totalMember }}</strong>
-          <small>Member terdaftar</small>
+        <div class="rev-kpi-card">
+          <span class="rev-label">Member Reguler (PR)</span>
+          <div class="rev-val">{{ totalMemberPR.toLocaleString('id-ID') }}</div>
+          <span class="rev-sub">52% dari total basis data</span>
         </div>
-      </div>
-
-      <div class="stat-card">
-        <div class="stat-icon green">
-          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#20864e" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
-            <circle cx="9" cy="7" r="4"/>
-            <polyline points="16 11 18 13 22 9"/>
-          </svg>
+        <div class="rev-kpi-card">
+          <span class="rev-label">Jamaah Pengajian (PP)</span>
+          <div class="rev-val text-amber">{{ totalMemberPP.toLocaleString('id-ID') }}</div>
+          <span class="rev-sub">33% via Digital Guest Book</span>
         </div>
-
-        <div>
-          <span>Member Aktif</span>
-          <strong>{{ totalAktif }}</strong>
-          <small>Member aktif</small>
+        <div class="rev-kpi-card">
+          <span class="rev-label">Agen Tour / B2B (PT)</span>
+          <div class="rev-val">{{ totalMemberPT.toLocaleString('id-ID') }}</div>
+          <span class="rev-sub">15% kemitraan rombongan</span>
         </div>
       </div>
 
-      <div class="stat-card">
-        <div class="stat-icon blue">
-          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#3869c4" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-          </svg>
-        </div>
+      <!-- Member CRM Table with Filter & Blast WA Action Placeholder -->
+      <div class="content-card">
+        <div class="card-head search-head">
+          <div>
+            <h3 class="card-title">Direktori Database Member Loyalitas CRM</h3>
+            <span class="card-subtitle">Profil WhatsApp, asal kota domisili, dan riwayat kunjungan</span>
+          </div>
 
-        <div>
-          <span>Kontak WhatsApp</span>
-          <strong>{{ totalWhatsApp }}</strong>
-          <small>Memiliki nomor WhatsApp</small>
-        </div>
-      </div>
-
-    </section>
-
-    <!-- MAIN -->
-
-    <section class="members-card">
-
-      <div class="members-header">
-
-        <div>
-          <h2>
-            Member Directory
-          </h2>
-
-          <p>
-            Daftar seluruh member Kampung Coklat.
-          </p>
-        </div>
-
-        <div class="directory-count">
-          {{ total }} Members
-        </div>
-
-      </div>
-
-      <div class="table-container">
-
-        <!-- SEARCH / FILTER -->
-        <div class="filter-area">
-          <div class="search-box">
-            <span>🔍</span>
+          <div class="member-filter-row">
             <input
               v-model="filters.search"
               type="text"
-              placeholder="Cari nama atau nomor WhatsApp..."
-            >
+              class="filter-select"
+              placeholder="Cari nama atau WA..."
+              style="width: 200px"
+            />
+            <select v-model="filters.tipeMember" class="filter-select">
+              <option value="">Semua Segmen (PR, PP, PT)</option>
+              <option value="PR">PR - Pengunjung Reguler</option>
+              <option value="PP">PP - Jamaah Pengajian</option>
+              <option value="PT">PT - Pengunjung Tour B2B</option>
+            </select>
+
+            <button type="button" class="btn-primary btn-sm" @click="openBlast">
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21.2 15c.7-1.2 1-2.5.7-3.9-.6-2-2.4-3.5-4.4-3.5h-.6c-.2-.7-.5-1.4-1-2-1.5-1.8-3.9-2.4-6-1.5-1.8.8-3 2.5-3.1 4.4H6c-2.2 0-4 1.8-4 4 0 1.5.8 2.8 2 3.4" />
+                <path d="m9 18 3 3 3-3" />
+                <path d="M12 12v9" />
+              </svg>
+              <span>Blast WA Promo (UI Trigger)</span>
+            </button>
           </div>
-          <select
-            v-model="filters.tipeMember"
-            class="filter-select"
-          >
-            <option value="">Semua Tipe Member</option>
-            <option value="PR">PR — Pengunjung Reguler</option>
-            <option value="PP">PP — Pengunjung Pengajian</option>
-            <option value="PT">PT — Pengunjung Tour</option>
-          </select>
-          <input
-            v-model="filters.domisili"
-            class="filter-input"
-            type="text"
-            placeholder="Domisili..."
-          >
-          <button
-            class="reset-button"
-            @click="resetFilter"
-          >
-            ↻ Reset
-          </button>
         </div>
 
-        <!-- SELECTED TOOLBAR -->
-        <div
-          v-if="selected.length"
-          class="selected-toolbar"
-        >
-          <div>
-            <strong>{{ selected.length }} member dipilih</strong>
-            <span>Siap dikirimi pesan WhatsApp</span>
-          </div>
-          <button
-            class="send-button"
-            @click="openBlast"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg> Kirim WhatsApp
-          </button>
-        </div>
-
-        <div
-          v-if="isLoading"
-          class="loading-state"
-        >
-          <div class="loader"></div>
-          <span>
-            Memuat data member...
-          </span>
-        </div>
-
-        <template v-else>
-
-          <table>
-
+        <div class="table-responsive">
+          <table class="report-table">
             <thead>
               <tr>
-
                 <th class="checkbox-column">
                   <input
                     type="checkbox"
@@ -604,429 +525,129 @@ function getTypeClass(type?: string) {
                     @change="toggleAll"
                   >
                 </th>
-
-                <th>
-                  MEMBER
-                </th>
-
-                <th>
-                  WHATSAPP
-                </th>
-
-                <th>
-                  DOMISILI
-                </th>
-
-                <th>
-                  TIPE MEMBER
-                </th>
-
-                <th>
-                  STATUS
-                </th>
-
-                <th class="col-action">
-                  ACTION
-                </th>
-
+                <th>Nama Member</th>
+                <th>Nomor WhatsApp (PK)</th>
+                <th>Domisili (Kota/Kab)</th>
+                <th>Tipe Member</th>
+                <th>Total Transaksi GTV</th>
+                <th>Tanggal Registrasi</th>
+                <th>Status Voucher</th>
+                <th class="col-action">Action</th>
               </tr>
             </thead>
-
             <tbody>
-
-              <tr
-                v-for="member in members"
-                :key="member.id"
-              >
-
+              <tr v-for="m in members" :key="m.id">
                 <td>
                   <input
                     type="checkbox"
-                    :checked="selected.includes(member.id)"
-                    @change="toggleMember(member.id)"
+                    :checked="selected.includes(m.id)"
+                    @change="toggleMember(m.id)"
                   >
                 </td>
-
+                <td class="font-medium">{{ m.nama }}</td>
+                <td class="font-mono text-cocoa font-bold">{{ formatWhatsApp(m.whatsapp) }}</td>
+                <td>{{ m.domisili }}</td>
+                <td><span class="member-tag" :class="`tag-${(m.tipeMember || 'pr').toLowerCase()}`">{{ getMemberTypeLabel(m.tipeMember) }}</span></td>
+                <td>{{ formatRupiah(m.totalSpend) }}</td>
+                <td>{{ m.tanggalDaftar || '-' }}</td>
                 <td>
-
-                  <div class="member-cell">
-
-                    
-
-                    <div>
-                      <strong>
-                        {{ member.nama }}
-                      </strong>
-
-                      <small>
-                        Member #{{ member.id }}
-                      </small>
-                    </div>
-
-                  </div>
-
+                  <span v-if="m.status === 'Aktif'" class="badge-voucher">Voucher Aktif</span>
+                  <span v-else class="text-xs text-muted">Tidak ada</span>
                 </td>
-
-                <td class="whatsapp-cell">
-                  {{ formatWhatsApp(member.whatsapp) }}
-                </td>
-
-                <td>
-                  {{ member.domisili || '-' }}
-                </td>
-
-                <td>
-
-                  <span
-                    class="type-badge"
-                    :class="getTypeClass(member.tipeMember)"
-                  >
-                    {{ getMemberTypeLabel(member.tipeMember) }}
-                  </span>
-
-                </td>
-
-                <td>
-
-                  <span
-                    class="status-pill-badge"
-                    :class="member.status === 'Aktif'
-                      ? 'status-active'
-                      : 'status-locked'"
-                  >
-                    
-                    <span>{{ member.status || 'Aktif' }}</span>
-                  </span>
-
-                </td>
-
                 <td class="col-action-cell">
-
                   <button
-                    class="view-button"
-                    @click="openMemberDetail(member)"
+                    class="btn-primary btn-sm"
+                    style="padding: 4px 8px; font-size: 11px;"
+                    @click="openMemberDetail(m)"
                   >
-                    View
-                    <span>›</span>
+                    View ›
                   </button>
-
                 </td>
-
               </tr>
-
-              <tr v-if="!members.length">
-
-                <td
-                  colspan="7"
-                  class="empty-state"
-                >
-                  <div>
-                    👥
-                  </div>
-
-                  <strong>
-                    Belum ada data member
-                  </strong>
-
-                  <span>
-                    Data member akan muncul setelah
-                    tersedia di sistem.
-                  </span>
-                </td>
-
-              </tr>
-
             </tbody>
-
           </table>
-
-        </template>
-
-      </div>
-
-      <!-- PAGINATION -->
-
-      <div class="pagination">
-
-        <span>
-          Showing
-          {{
-            total === 0
-              ? 0
-              : ((page - 1) * perPage) + 1
-          }}
-          -
-          {{
-            Math.min(
-              page * perPage,
-              total
-            )
-          }}
-          of {{ total }}
-        </span>
-
-        <div class="pagination-buttons">
-
-          <button
-            :disabled="page <= 1"
-            @click="previousPage"
-          >
-            ← Prev
-          </button>
-
-          <span class="page-number">
-            {{ page }}
-          </span>
-
-          <button
-            :disabled="page >= totalPages"
-            @click="nextPage"
-          >
-            Next →
-          </button>
-
         </div>
-
       </div>
+    
 
-    </section>
-
-    <!-- DEMO BADGE -->
+    <!-- MODALS AND OVERLAYS -->
+<!-- DEMO BADGE -->
 
     <!-- MEMBER DETAIL -->
 
-    <Teleport to="body">
-
-      <div
-        v-if="showDetailModal && selectedMember"
-        class="detail-overlay"
-        @click.self="closeMemberDetail"
-      >
-
-        <div class="detail-modal">
-
-          <div class="detail-header">
-
-            <button
-              class="back-button"
-              @click="closeMemberDetail"
-            >
-              ←
-            </button>
-
-            <div>
-              <span>
-                MEMBER PROFILE
-              </span>
-
-              <h2>
-                Detail Member
-              </h2>
-            </div>
-
-            <button
-              class="close-detail"
-              @click="closeMemberDetail"
-            >
-              ×
-            </button>
-
-          </div>
-
-          <div class="detail-body">
-
-            <div class="profile-section">
-
-              <div class="large-avatar">
-                {{
-                  getInitial(
-                    selectedMember.nama
-                  )
-                }}
-              </div>
-
+        <Teleport to="body">
+      <div v-if="showDetailModal && selectedMember" class="modal-backdrop" @click.self="closeMemberDetail">
+        <div class="modal-card" style="max-width: 500px;">
+          <div class="modal-header">
+            <div class="modal-head-title">
+              <div class="modal-icon-badge" style="background-color: #FFF6E8; border: 1px solid #FDE68A; color: #B45309;">👤</div>
               <div>
-
-                <h2>
-                  {{ selectedMember.nama }}
-                </h2>
-
-                <div class="profile-meta">
-
-                  <span
-                    class="type-badge"
-                    :class="
-                      getTypeClass(
-                        selectedMember.tipeMember
-                      )
-                    "
-                  >
-                    {{ getMemberTypeLabel(selectedMember.tipeMember) }}</span>
-
-                  
-
-                </div>
-
-                <p>
-                  Member sejak
-                  {{
-                    selectedMember.tanggalDaftar
-                    || '2024'
-                  }}
-                </p>
-
+                <h3>Detail Member</h3>
+                <p class="modal-sub">Profil dan informasi kontak member</p>
               </div>
-
             </div>
-
-            <div class="detail-grid">
-
-              <div class="detail-info-card">
-
-                <span>WhatsApp</span>
-
-                <strong>
-                  {{
-                    formatWhatsApp(
-                      selectedMember.whatsapp
-                    )
-                  }}
-                </strong>
-
-                <small>
-                  Nomor kontak utama
-                </small>
-
-              </div>
-
-              <div class="detail-info-card">
-
-                <span>Domisili</span>
-
-                <strong>
-                  {{
-                    selectedMember.domisili
-                    || '-'
-                  }}
-                </strong>
-
-                <small>
-                  Kota / wilayah member
-                </small>
-
-              </div>
-
-              <div class="detail-info-card">
-
-                <span>Total Spend</span>
-
-                <strong>
-                  {{
-                    formatRupiah(
-                      selectedMember.totalSpend
-                    )
-                  }}
-                </strong>
-
-                <small>
-                  Total transaksi member
-                </small>
-
-              </div>
-
-              <div class="detail-info-card">
-
-                <span>Member ID</span>
-
-                <strong>
-                  #{{ selectedMember.id }}
-                </strong>
-
-                <small>
-                  ID member CRM
-                </small>
-
-              </div>
-
-            </div>
-
-            <div class="activity-card">
-
-              <div class="activity-header">
-                <div>
-                  <h3>
-                    Member Overview
-                  </h3>
-
-                  <p>
-                    Informasi ringkas aktivitas member.
-                  </p>
-                </div>
-
-                <span>
-                  ● ACTIVE
-                </span>
-              </div>
-
-              <div class="activity-row">
-
-                <div>
-                  <span>Member Type</span>
-                  <strong>
-                    {{
-                      getMemberTypeLabel(
-                        selectedMember.tipeMember
-                      )
-                    }}
-                  </strong>
-                </div>
-
-                <div>
-                  <span>WhatsApp</span>
-                  <strong>
-                    {{
-                      selectedMember.whatsapp
-                        ? 'Tersedia'
-                        : 'Tidak tersedia'
-                    }}
-                  </strong>
-                </div>
-
-              </div>
-
-            </div>
-
+            <button class="btn-close" @click="closeMemberDetail">×</button>
           </div>
+          <div class="modal-body">
+            <div class="export-preview-box">
+               <div class="preview-logo-box" style="width: 56px; height: 56px; background: #FFF; border: 2px solid #FDE68A;">
+                 <span style="font-size: 24px; font-weight: 900; color: #B45309;">{{ getInitial(selectedMember.nama) }}</span>
+               </div>
+               <div class="preview-meta" style="flex: 1;">
+                 <span class="doc-title" style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 19px;">{{ selectedMember.nama }}</span>
+                 <span class="doc-sub">Member sejak {{ selectedMember.tanggalDaftar || '2024' }}</span>
+                 <span class="doc-tag" style="margin-top: 6px; padding: 2px 8px;">{{ getMemberTypeLabel(selectedMember.tipeMember) }}</span>
+               </div>
+            </div>
 
-          <div class="detail-footer">
+            <div class="ticket-status-grid" style="grid-template-columns: repeat(2, 1fr); margin-top: 10px;">
+              <div class="ticket-stat-card border-green">
+                <span class="t-stat-label">WhatsApp</span>
+                <span class="t-stat-val" style="font-size: 16px;">{{ formatWhatsApp(selectedMember.whatsapp) }}</span>
+                <span class="t-stat-sub">Nomor kontak utama</span>
+              </div>
+              <div class="ticket-stat-card border-amber">
+                <span class="t-stat-label">Domisili</span>
+                <span class="t-stat-val" style="font-size: 16px;">{{ selectedMember.domisili || '-' }}</span>
+                <span class="t-stat-sub">Kota / wilayah</span>
+              </div>
+              <div class="ticket-stat-card border-blue">
+                <span class="t-stat-label">Total Spend</span>
+                <span class="t-stat-val" style="font-size: 16px;">{{ formatRupiah(selectedMember.totalSpend) }}</span>
+                <span class="t-stat-sub">Total transaksi member</span>
+              </div>
+              <div class="ticket-stat-card border-gray">
+                <span class="t-stat-label">Member ID</span>
+                <span class="t-stat-val" style="font-size: 16px;">#{{ selectedMember.id }}</span>
+                <span class="t-stat-sub">ID sistem CRM</span>
+              </div>
+            </div>
 
-            <button
-              class="secondary-detail-button"
-              @click="closeMemberDetail"
-            >
-              Tutup
-            </button>
-
-            <button
-              class="primary-detail-button"
-              :disabled="
-                !selectedMember.whatsapp
-              "
-              @click="
-                selected = [selectedMember.id];
-                closeMemberDetail();
-                openBlast();
-              "
-            >
+            <div class="ticket-stat-card border-all" style="margin-top: 5px;">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                 <span class="t-stat-label">Member Overview</span>
+                 <span class="status-pill pill-used" style="background-color: #ECFDF5; color: #047857;">● ACTIVE</span>
+              </div>
+              <div class="demo-grid-row">
+                 <div>
+                    <span class="t-stat-sub">Member Type</span><br>
+                    <strong style="font-size: 13px;">{{ getMemberTypeLabel(selectedMember.tipeMember) }}</strong>
+                 </div>
+                 <div>
+                    <span class="t-stat-sub">WhatsApp</span><br>
+                    <strong style="font-size: 13px;">{{ selectedMember.whatsapp ? 'Tersedia' : 'Tidak tersedia' }}</strong>
+                 </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer" style="margin-top: 10px;">
+            <button class="btn-sm" style="background: white; color: #6B5A52; border: 1px solid #E5E7EB; border-radius: 6px; cursor: pointer; padding: 0 16px; font-weight: 600;" @click="closeMemberDetail">Tutup</button>
+            <button class="btn-primary btn-sm" style="border-radius: 6px; padding: 0 16px; background: #25D366; border: none; color: white; display: flex; align-items: center; gap: 6px; font-weight: 600; cursor: pointer;" :disabled="!selectedMember.whatsapp" @click="selected = [selectedMember.id]; closeMemberDetail(); openBlast();">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg> Kirim WhatsApp
             </button>
-
           </div>
-
         </div>
-
       </div>
-
     </Teleport>
 
     <!-- BLAST MODAL -->
@@ -1057,20 +678,21 @@ function getTypeClass(type?: string) {
 </template>
 
 <style scoped>
-.crm-page {
-  width: 100%;
-  max-width: 1380px;
-  margin: 0 auto;
-  color: #302019;
-  font-size: 17px;
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Outfit:wght@500;600;700;800;900&family=Jost:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap');
+
+.reports-container {
   display: flex;
   flex-direction: column;
+  gap: 22px;
+  max-width: 1380px;
+  width: 100%;
+  margin: 0 auto;
+  font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
 }
 
 .executive-command-header {
   background: transparent;
-  margin: -24px -36px 24px -36px;
-  padding: 24px 36px;
+  padding: 10px 0 24px 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -1107,611 +729,549 @@ function getTypeClass(type?: string) {
   flex-wrap: wrap;
 }
 
-/* HEADER */
-
-.page-header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 30px;
-  margin-bottom: 28px;
+.btn-download-report {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #FFFFFF;
+  border: 1px solid #E2D9CE;
+  color: #1F120B;
+  padding: 0 16px;
+  height: 42px;
+  border-radius: 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  transition: all 0.2s ease;
 }
 
-.breadcrumb {
+.btn-download-report:hover {
+  background: #FFFDF9;
+  border-color: #D97706;
+  color: #D97706;
+}
+
+/* Tab Navigation */
+.tabs-nav-bar {
   display: flex;
-  gap: 10px;
-  margin-bottom: 12px;
-  color: #8a7c73;
+  align-items: center;
+  background-color: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  padding: 4px;
+  gap: 4px;
+  overflow-x: auto;
+}
+
+.tab-nav-btn {
+  flex: 1;
+  padding: 10px 16px;
   font-size: 13px;
+  font-weight: 500;
+  font-family: inherit;
+  border: none;
+  background: transparent;
+  color: #6B5A52;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.tab-nav-btn:hover {
+  background-color: #F9FAFB;
+  color: var(--color-primary, #2C1A13);
+}
+
+.tab-nav-btn.active {
+  background-color: var(--color-primary, #2C1A13);
+  color: #FFFFFF;
   font-weight: 600;
 }
 
-.breadcrumb span {
-  color: #b3a79f;
+/* Filter Toolbar */
+.filter-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  padding: 10px 16px;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 
-.breadcrumb strong {
-  color: #3f281e;
-}
-
-.title-row {
+.filter-left {
   display: flex;
   align-items: center;
   gap: 16px;
+  flex-wrap: wrap;
 }
 
-.title-icon {
-  width: 58px;
-  height: 58px;
+.filter-group {
   display: flex;
   align-items: center;
-  justify-content: center;
-  border-radius: 16px;
-  background: #ead9ca;
-  font-size: 27px;
-  box-shadow: 0 8px 20px rgba(72, 43, 27, 0.08);
+  gap: 8px;
+  font-size: 12.5px;
+  color: #6B5A52;
 }
 
-.title-row h1 {
-  margin: 0;
-  color: #321c13;
-  font-size: 32px;
-  font-weight: 800;
-  letter-spacing: -0.7px;
+.filter-select {
+  padding: 6px 12px;
+  border: 1px solid #E5E7EB;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 13px;
+  color: var(--color-primary, #2C1A13);
+  background-color: #FFFFFF;
 }
 
-.title-row p {
-  margin: 5px 0 0;
-  color: #81756d;
-  font-size: 14px;
-}
-
-.blast-main-button {
-  flex-shrink: 0;
-  margin-left: auto;
-  min-height: 50px;
+.date-range-inputs {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 0 20px;
-  border: 0;
-  border-radius: 12px;
-  background: #f6a623;
-  color: white;
-  font-size: 17px;
-  font-weight: 800;
-  cursor: pointer;
-  box-shadow: 0 8px 22px rgba(255, 122, 25, 0.22);
-  transition: 0.2s ease;
+  gap: 6px;
+  font-size: 12px;
 }
 
-.blast-main-button:hover:not(:disabled) {
-  transform: translateY(-2px);
-  background: #ed6910;
+.date-input {
+  padding: 5px 8px;
+  border: 1px solid #E5E7EB;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 12px;
 }
 
-.blast-main-button:disabled {
-  opacity: 0.42;
-  cursor: not-allowed;
-  box-shadow: none;
+.data-count-tag {
+  font-size: 12px;
+  color: #6B5A52;
 }
 
-.selected-badge {
-  min-width: 24px;
-  height: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.22);
-  font-size: 11px;
-}
-
-/* STATS */
-
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  margin-bottom: 24px;
-}
-
-.stat-card {
-  min-height: 112px;
-  display: flex;
-  align-items: center;
-  gap: 17px;
-  padding: 21px 24px;
-  border: 1px solid #E2E8F0;
-  border-radius: 14px;
-  background: white;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05), 0 10px 20px rgba(0,0,0,0.015);
-  transition: box-shadow 0.2s ease;
-}
-
-.stat-card:hover {
-  box-shadow: 0 4px 6px rgba(0,0,0,0.04), 0 15px 30px rgba(0,0,0,0.03);
-}
-
-.stat-icon {
-  width: 52px;
-  height: 52px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 14px;
-  font-size: 22px;
-}
-
-.stat-icon.purple {
-  background: #f3ecff;
-}
-
-.stat-icon.green {
-  background: #e0f7e9;
-}
-
-.stat-icon.blue {
-  background: #e6f0ff;
-}
-
-.stat-card > div:last-child {
+/* Tab Content */
+.tab-content {
   display: flex;
   flex-direction: column;
+  gap: 18px;
 }
 
-.stat-card span {
-  color: #44403C;
-  font-size: 16px;
-  font-weight: 700;
+/* KPI Rows */
+.revenue-kpi-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
 }
 
-.stat-card strong {
-  margin-top: 2px;
-  color: #1C1917;
-  font-size: 27px;
-  line-height: 1.2;
+.rev-kpi-card {
+  background-color: #FFFFFF;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.stat-card small {
-  margin-top: 3px;
-  color: #78716C;
-  font-size: 14.5px;
+.rev-label {
+  font-size: 11.5px;
+  color: #6B5A52;
+  text-transform: uppercase;
   font-weight: 500;
 }
 
-/* MAIN CARD */
-
-.members-card {
-  overflow: hidden;
-  border: 1px solid #e6dfd9;
-  border-radius: 18px;
-  background: white;
-  box-shadow: 0 10px 30px rgba(48, 32, 23, 0.055);
-}
-
-.members-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 23px 25px;
-  border-bottom: 1px solid #eee8e3;
-}
-
-.members-header h2 {
-  margin: 0;
-  color: #1C1917;
-  font-size: 20px;
-}
-
-.members-header p {
-  margin: 5px 0 0;
-  color: #44403C;
-  font-size: 15px;
-}
-
-.directory-count {
-  padding: 9px 14px;
-  border-radius: 30px;
-  background: #f6ebe1;
-  color: #66432e;
-  font-size: 15px;
-  font-weight: 800;
-}
-
-/* FILTER */
-
-.filter-area {
-  display: grid;
-  grid-template-columns: 1.7fr 1fr 1fr auto;
-  gap: 11px;
-  padding: 19px 25px;
-  background: white;
-  border-bottom: 1px solid #eee8e3;
-}
-
-.search-box,
-.filter-input,
-.filter-select {
-  height: 44px;
-  box-sizing: border-box;
-  border: 1px solid #ded6cf;
-  border-radius: 10px;
-  background: white;
-  color: #1C1917;
-  font-family: inherit;
-  font-size: 16px;
-  outline: none;
-}
-
-.search-box {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  padding: 0 13px;
-}
-
-.search-box span {
-  font-size: 14px;
-  opacity: 0.65;
-}
-
-.search-box input {
-  width: 100%;
-  border: 0;
-  outline: 0;
-  color: #3d291f;
-  font-family: inherit;
-  font-size: 16px;
-}
-
-.filter-input {
-  width: 100%;
-  padding: 0 13px;
-}
-
-.filter-select {
-  width: 100%;
-  padding: 0 11px;
-}
-
-.search-box:focus-within,
-.filter-input:focus,
-.filter-select:focus {
-  border-color: #9a6b4c;
-  box-shadow: 0 0 0 3px rgba(154,107,76,0.08);
-}
-
-.reset-button {
-  height: 44px;
-  padding: 0 15px;
-  border: 1px solid #ddd4cc;
-  border-radius: 10px;
-  background: white;
-  color: #1C1917;
-  font-family: inherit;
-  font-size: 16px;
+.rev-val {
+  font-size: 22px;
   font-weight: 700;
-  cursor: pointer;
+  color: var(--color-primary, #2C1A13);
 }
 
-.reset-button:hover {
-  background: #f7f1eb;
+.rev-sub {
+  font-size: 11.5px;
+  color: #9CA3AF;
 }
 
-/* SELECTED */
-
-.selected-toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 15px;
-  padding: 13px 25px;
-  background: #fff8f2;
-  border-bottom: 1px solid #f0e2d7;
-}
-
-.selected-toolbar > div {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-}
-
-.selected-toolbar strong {
-  color: #1C1917;
-  font-size: 16px;
-}
-
-.selected-toolbar span {
-  color: #44403C;
-  font-size: 14px;
-}
-
-.send-button {
-  height: 37px;
-  padding: 0 14px;
-  border: 0;
+/* Content Cards */
+.content-card {
+  background-color: #FFFFFF;
+  border: 1px solid #E5E7EB;
   border-radius: 8px;
-  background: #5b3826;
-  color: white;
-  font-family: inherit;
-  font-size: 15px;
+  padding: 18px 20px;
+  box-shadow: 0 1px 3px rgba(44, 26, 19, 0.04);
+}
+
+.card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.card-title {
+  font-size: 16px;
   font-weight: 700;
-  cursor: pointer;
+  color: var(--color-primary, #2C1A13);
+  margin: 0;
 }
 
-/* TABLE */
+.card-subtitle {
+  font-size: 12px;
+  color: #6B5A52;
+}
 
-.table-container {
+.badge-amber {
+  background-color: rgba(242, 151, 39, 0.15);
+  color: #B45309;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 12px;
+}
+
+.chart-box {
+  height: 280px;
+  position: relative;
+}
+
+.chart-box-donut, .chart-box-bar {
+  height: 240px;
+  position: relative;
+}
+
+/* Tables */
+.table-responsive {
   overflow-x: auto;
-  background: white;
 }
 
-table {
+.report-table {
   width: 100%;
   border-collapse: collapse;
+  font-size: 13px;
 }
 
-th {
-    padding: 10px 16px;
-    border-bottom: 1px solid #F3F4F6;
-    background: #FAFAFA;
-    color: #6B7280;
-    text-align: left;
-    font-size: 10.5px;
-    font-weight: 800;
-    letter-spacing: 0.5px;
-    text-transform: uppercase;
-  }
-  
-  td {
-    padding: 10px 16px;
-    border-bottom: 1px solid #F3F4F6;
-    color: #374151;
-    font-size: 13px;
-    font-weight: 500;
-    vertical-align: middle;
-  }
-  
-  tbody tr {
-    transition: background 0.15s ease;
-  }
-  
-  tbody tr:hover {
-    background: #F9FAFB;
-  }
-
-th:first-child,
-td:first-child {
-  width: 42px;
-  padding-left: 20px;
+.report-table th {
+  background-color: #FAF8F5;
+  color: #6B5A52;
+  font-size: 11.5px;
+  text-transform: uppercase;
+  padding: 10px 12px;
+  border-bottom: 1px solid #E5E7EB;
+  text-align: left;
 }
 
-.col-action { 
-  width: 110px; 
-  text-align: center;
-}
-.col-action-cell {
-  text-align: center;
+.report-table td {
+  padding: 11px 12px;
+  border-bottom: 1px solid #F3F4F6;
+  color: var(--color-primary, #2C1A13);
 }
 
-input[type="checkbox"] {
-  width: 16px;
-  height: 16px;
-  accent-color: #5b3826;
-  cursor: pointer;
+.text-right { text-align: right; }
+.font-medium { font-weight: 500; }
+.font-bold { font-weight: 700; }
+.font-mono { font-family: monospace; }
+.text-amber { color: #B45309; }
+.text-cocoa { color: var(--color-primary, #2C1A13); }
+.text-green { color: #047857; }
+.text-blue { color: #1D4ED8; }
+.text-gray { color: #6B7280; }
+.text-red { color: #DC2626; }
+.text-xs { font-size: 11px; }
+.text-muted { color: #9CA3AF; }
+
+/* Status Pills */
+.status-pill {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 12px;
+  text-transform: uppercase;
 }
 
-.member-cell {
+.pill-used { background-color: #ECFDF5; color: #047857; }
+.pill-active { background-color: #EFF6FF; color: #1D4ED8; }
+.pill-expired { background-color: #F3F4F6; color: #6B7280; }
+
+.member-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12.5px;
+  font-weight: 600;
+}
+
+.tag-pr { background-color: #DCE6F5; color: #1A365D; }
+.tag-pp { background-color: #FEF08A; color: #422006; }
+.tag-pt { background-color: #C4DCFB; color: #1A365D; }
+
+.badge-voucher {
+  background-color: #ECFDF5;
+  color: #047857;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* Ticket Status Grid */
+.ticket-status-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+
+.ticket-stat-card {
+  background-color: #FFFFFF;
+  border-radius: 8px;
+  padding: 14px;
+  border: 1px solid #E5E7EB;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.border-green { border-top: 3px solid #10B981; }
+.border-blue { border-top: 3px solid #3B82F6; }
+.border-gray { border-top: 3px solid #9CA3AF; }
+.border-amber { border-top: 3px solid #F29727; }
+.border-all { border-top: 3px solid var(--color-primary, #2C1A13); }
+
+.t-stat-label { font-size: 11px; color: #6B5A52; text-transform: uppercase; font-weight: 500; }
+.t-stat-val { font-size: 22px; font-weight: 700; }
+.t-stat-sub { font-size: 11px; color: #9CA3AF; }
+
+/* Demographic Rows */
+.demo-grid-row {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 18px;
+}
+
+.region-badge {
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+.badge-local { background-color: #FFF6E8; color: #B45309; border: 1px solid #FDE68A; }
+.badge-intercity { background-color: #F3F4F6; color: #4B5563; }
+
+/* Search Head */
+.search-head {
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.search-input {
+  padding: 6px 12px;
+  border: 1px solid #E5E7EB;
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 12.5px;
+  width: 260px;
+}
+
+.member-filter-row {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 8px;
 }
 
-.avatar-disc-staff {
-  width: 36px;
-  height: 36px;
-  background: #F1F5F9;
-  border: 1px solid #E2E8F0;
-  border-radius: 50%;
+.btn-sm {
+  padding: 6px 12px;
+  font-size: 12.5px;
+  height: 34px;
+}
+
+/* Modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(44, 26, 19, 0.65);
+  backdrop-filter: blur(2px);
+  z-index: 1000;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #64748B;
+  padding: 20px;
 }
 
-.member-cell > div:last-child {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-  
-  .member-cell strong {
-    color: #111827;
-    font-size: 13px;
-    font-weight: 700;
-  }
-  
-  .member-cell small {
-    color: #6B7280;
-    font-size: 11px;
-    font-weight: 500;
-  }
-
-.whatsapp-cell {
-  color: #44403C;
-  font-weight: 600;
-  white-space: nowrap;
+.modal-card {
+  background: #FFFFFF;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 480px;
+  padding: 20px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-.type-badge {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 600;
-  }
-
-.type-pr {
-  background: #DCE6F5; /* Light blue matching image 2 */
-  color: #1A365D;
-}
-
-.type-pp {
-  background: #FEF08A; /* Yellow matching image 2 */
-  color: #422006;
-}
-
-.type-pt {
-  background: #C4DCFB; /* Slightly distinct blue */
-  color: #1A365D;
-}
-
-.status-pill-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 11px;
-    font-weight: 600;
-  }
-
-.status-active { background: #D1FAE5; color: #065F46; }
-  .status-locked { background: #F3F4F6; color: #6B7280; }
-
-.status-dot-mini {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: currentColor;
-}
-
-.view-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    background: #FFFFFF;
-    border: 1px solid #EADBCC;
-    color: #5A3A28;
-    padding: 4px 10px;
-    border-radius: 4px;
-    font-size: 11.5px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-
-.view-button:hover {
-  background: #FAF5EE;
-  border-color: #D6C3B1;
-  color: #3D2214;
-}
-
-.view-button span {
-  font-size: 14px;
-}
-
-.empty-state {
-  height: 280px;
-  text-align: center;
-}
-
-.empty-state > div {
-  font-size: 30px;
-  margin-bottom: 10px;
-}
-
-.empty-state strong,
-.empty-state span {
-  display: block;
-}
-
-.empty-state strong {
-  color: #51372a;
-  font-size: 16px;
-}
-
-.empty-state span {
-  margin-top: 5px;
-  color: #aaa09a;
-  font-size: 14px;
-}
-
-/* PAGINATION */
-
-.pagination {
+.modal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: white;
-  padding: 15px 25px;
-  color: #8f857e;
-  font-size: 14px;
+  border-bottom: 1px solid #E5E7EB;
+  padding-bottom: 10px;
 }
 
-.pagination-buttons {
+.modal-header h3 {
+  font-size: 16px;
+  color: var(--color-primary, #2C1A13);
+  margin: 0;
+}
+
+.btn-close {
+  background: transparent;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #6B7280;
+}
+
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.header-badge-row {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 8px;
+  margin-bottom: 2px;
 }
 
-.pagination-buttons button,
-.page-number {
-  height: 34px;
-  padding: 0 11px;
-  border: 1px solid #ddd5cf;
+.brand-mini-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #FFFFFF;
+  border: 1px solid rgba(242, 151, 39, 0.3);
+  padding: 2px 8px 2px 4px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #2C1A13;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.mini-chip-img {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.modal-head-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.modal-icon-badge {
+  font-size: 22px;
+  width: 40px;
+  height: 40px;
   border-radius: 8px;
-  background: white;
-  color: #5a493e;
-  font-family: inherit;
-  font-size: 14px;
-  font-weight: 700;
-}
-
-.pagination-buttons button {
-  cursor: pointer;
-}
-
-.pagination-buttons button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-}
-
-.page-number {
+  background-color: #FFF6E8;
+  border: 1px solid #FDE68A;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-width: 20px;
-  background: #5b3826;
-  border-color: #5b3826;
-  color: white;
+  flex-shrink: 0;
 }
 
-/* DEMO */
-
-.demo-notice {
-  position: fixed;
-  right: 22px;
-  bottom: 20px;
-  z-index: 30;
-  padding: 9px 13px;
-  border: 1px solid #eadfd6;
-  border-radius: 10px;
-  background: rgba(255,255,255,0.96);
-  box-shadow: 0 8px 25px rgba(50,30,20,0.08);
-  color: #7e7168;
-  font-size: 14px;
+.modal-sub {
+  font-size: 12px;
+  color: #6B5A52;
+  margin: 0;
 }
 
-.demo-notice span {
-  color: #d48a2d;
+.export-preview-box {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: linear-gradient(135deg, #FFFDF9 0%, #FFF8EE 100%);
+  border: 1.5px solid rgba(242, 151, 39, 0.3);
+  border-radius: 8px;
+  padding: 12px 14px;
 }
 
+.preview-logo-box {
+  width: 48px;
+  height: 48px;
+  background-color: #FFFFFF;
+  border-radius: 8px;
+  padding: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #E5E7EB;
+  flex-shrink: 0;
+}
+
+.preview-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.preview-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.doc-title {
+  font-size: 13.5px;
+  font-weight: 700;
+  font-family: monospace;
+  letter-spacing: -0.2px;
+}
+
+.doc-sub {
+  font-size: 11px;
+  color: #6B5A52;
+}
+
+.doc-tag {
+  font-size: 10px;
+  font-weight: 600;
+  color: #B45309;
+  background: rgba(242, 151, 39, 0.15);
+  padding: 1px 6px;
+  border-radius: 4px;
+  width: fit-content;
+  margin-top: 2px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  border-top: 1px solid #E5E7EB;
+  padding-top: 12px;
+}
+
+@media (max-width: 1024px) {
+  .revenue-kpi-row,
+  .ticket-status-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .demo-grid-row {
+    grid-template-columns: 1fr;
+  }
+}
 /* DETAIL */
 
 .detail-overlay {
@@ -2253,4 +1813,5 @@ th,
   padding: 0 4px;
   border: 2px solid white;
 }
+
 </style>

@@ -7,16 +7,7 @@
       <div class="hero-image"></div>
       <div class="hero-overlay"></div>
 
-      <!-- Top Back Navigation -->
-      <div class="top-nav-bar">
-        <NuxtLink to="/login" class="btn-back-link">
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="19" y1="12" x2="5" y2="12"></line>
-            <polyline points="12 19 5 12 12 5"></polyline>
-          </svg>
-          <span>Kembali ke Pintu Masuk</span>
-        </NuxtLink>
-      </div>
+      
 
       <div class="hero-content">
         <div class="brand-label">
@@ -55,105 +46,69 @@
     <section class="form-section">
       <div class="form-container">
         <div class="login-card-split">
-          <!-- Left Column: Soft-Toned Intro Panel with Centered Brand Logo -->
-          <div class="card-left-info">
-            <div class="brand-logo-centered">
-              <img :src="logoImg" alt="Kampung Coklat" class="brand-logo-img" />
-            </div>
-
-            <h2 class="info-title">Autentikasi Manager</h2>
-            <p class="info-desc">
-              Masukkan kredensial akun operational manager Anda untuk mengakses monitoring operasional &amp; audit sistem Kampung Coklat.
-            </p>
-
-            <!-- Quick Autofill Button -->
-            <div class="autofill-box">
-              <button type="button" class="btn-autofill" @click="fillManagerCredentials">
-                <span class="bolt-icon">⚡</span>
-                <span>Auto-fill Akun Demo Manager</span>
-              </button>
-            </div>
+          
+          <!-- Left Column: Article Panel with Image -->
+          <div class="card-left-article">
+            
+            <h2 class="article-title">Monitor & Evaluasi Operasional Harian</h2>
+            <p class="article-content">Pantau kinerja dan kelancaran operasional secara real-time. Modul ini dirancang untuk memudahkan evaluasi dan pengambilan keputusan taktis di lapangan.</p>
+            
           </div>
 
-          <!-- Right Column: Clean Login Form -->
+          <!-- Right Column: Clean Form -->
           <div class="card-right-form">
-            <div class="form-header">
-              <h3 class="form-title">Formulir Akses</h3>
-              <p class="form-subtitle">Lengkapi email dan kata sandi manager</p>
+            <div class="form-header-unified">
+              <div class="brand-logo-centered">
+                <img :src="logoImg" alt="Kampung Coklat" class="brand-logo-img" />
+              </div>
+              <h2 class="info-title">Portal Operational Manager</h2>
+              <p class="info-desc">Masukkan kredensial akun Operational Manager Anda</p>
             </div>
 
             <form class="clean-auth-form" @submit.prevent="handleLogin">
-              <!-- Field 1: Email Address -->
               <div class="form-group">
-                <label for="manager-email" class="field-label">Alamat Email Manager</label>
+                <label for="admin-email" class="field-label">Alamat Email</label>
                 <div class="input-wrap">
                   <span class="input-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                      <polyline points="22,6 12,13 2,6" />
-                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" /><polyline points="22,6 12,13 2,6" /></svg>
                   </span>
-                  <input
-                    id="manager-email"
-                    v-model="email"
-                    type="email"
-                    class="field-input"
-                    placeholder="manager@kampungcoklat.id"
-                    required
-                  />
+                  <input id="admin-email" v-model="email" type="email" class="field-input" placeholder="manager@kampungcoklat.id" required />
                 </div>
               </div>
 
-              <!-- Field 2: Password -->
               <div class="form-group">
                 <div class="label-row">
-                  <label for="manager-password" class="field-label">Kata Sandi</label>
+                  <label for="admin-password" class="field-label">Kata Sandi</label>
                   <a href="#" class="help-link" @click.prevent="alertHelp">Bantuan Akses</a>
                 </div>
                 <div class="input-wrap">
                   <span class="input-icon">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                      <rect x="3" y="11" width="18" height="11" rx="2" />
-                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                    </svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></svg>
                   </span>
-                  <input
-                    id="manager-password"
-                    v-model="password"
-                    :type="showPassword ? 'text' : 'password'"
-                    class="field-input"
-                    placeholder="••••••••"
-                    required
-                  />
-                  <button
-                    type="button"
-                    class="btn-toggle-eye"
-                    title="Tampilkan / Sembunyikan Sandi"
-                    @click="showPassword = !showPassword"
-                  >
-                    {{ showPassword ? '🙈' : '👁️' }}
+                  <input id="admin-password" v-model="password" :type="showPassword ? 'text' : 'password'" class="field-input" placeholder="••••••••" required />
+                  <button type="button" class="btn-toggle-eye" title="Tampilkan / Sembunyikan Sandi" @click="showPassword = !showPassword">
+                    <svg v-if="!showPassword" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <svg v-else xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22"/></svg>
                   </button>
                 </div>
               </div>
 
-              <!-- Remember Me Toggle -->
               <div class="remember-row">
                 <label class="checkbox-label">
                   <input v-model="rememberMe" type="checkbox" class="custom-checkbox" />
-                  <span class="checkbox-text">Ingat sesi Manager di perangkat ini</span>
+                  <span class="checkbox-text">Ingat sesi di perangkat ini</span>
                 </label>
               </div>
 
-              <!-- Submit Button -->
               <button type="submit" class="btn-submit-primary" :disabled="isLoading">
                 <span v-if="!isLoading">Masuk Sebagai Operational Manager &rarr;</span>
                 <span v-else class="loading-state">
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="spin-anim">
-                    <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" />
-                  </svg>
-                  <span>Memverifikasi Otoritas...</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="spin-anim"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" /></svg>
+                  <span>Memverifikasi...</span>
                 </span>
               </button>
+              
+              
             </form>
           </div>
         </div>
@@ -201,9 +156,7 @@ const alertHelp = () => {
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Jost:wght@400;500;600;700;800&display=swap');
 
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 .login-role-page {
   min-height: 100vh;
@@ -216,9 +169,6 @@ const alertHelp = () => {
   padding: 0;
 }
 
-/* =========================================================
-   HERO SECTION (GUESTBOOK STYLE)
-========================================================= */
 .role-hero {
   height: 480px;
   position: relative;
@@ -245,42 +195,7 @@ const alertHelp = () => {
   inset: 0;
   width: 100%;
   height: 100%;
-  background: linear-gradient(
-    180deg,
-    rgba(37, 20, 13, 0.78) 0%,
-    rgba(48, 27, 19, 0.58) 50%,
-    rgba(40, 22, 16, 0.86) 100%
-  );
-}
-
-.top-nav-bar {
-  position: absolute;
-  top: 24px;
-  left: 32px;
-  z-index: 10;
-}
-
-.btn-back-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(8px);
-  color: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  padding: 8px 16px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 700;
-  text-decoration: none;
-  transition: all 0.25s ease;
-}
-
-.btn-back-link:hover {
-  background: #f49a24;
-  color: #2c1a13;
-  border-color: #f49a24;
-  transform: translateX(-3px);
+  background: linear-gradient(180deg, rgba(37, 20, 13, 0.78) 0%, rgba(48, 27, 19, 0.58) 50%, rgba(40, 22, 16, 0.86) 100%);
 }
 
 .hero-content {
@@ -349,9 +264,7 @@ const alertHelp = () => {
   height: 100%;
 }
 
-/* =========================================================
-   FORM SECTION WITH DUAL-TONE SPLIT CARD (OVERLAPPING WAVE)
-========================================================= */
+/* FORM SECTION (2 COLUMNS WITH ARTICLE) */
 .form-section {
   background: #fffaf5;
   padding-bottom: 80px;
@@ -370,113 +283,123 @@ const alertHelp = () => {
 .login-card-split {
   width: 100%;
   background: white;
-  border: 1px solid rgba(62, 36, 25, 0.08);
-  border-radius: 28px;
-  padding: 36px 40px;
-  box-shadow:
-    0 30px 80px rgba(48, 28, 20, 0.14),
-    0 10px 25px rgba(48, 28, 20, 0.05);
+  border: 1px solid rgba(44, 26, 19, 0.08);
+  border-radius: 16px;
+  padding: 0;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0,0,0,0.02);
   display: grid;
-  grid-template-columns: 1fr 1.15fr;
-  gap: 36px;
-  align-items: center;
+  grid-template-columns: 1fr 1fr;
+  overflow: hidden;
 }
 
-/* Left Column: Soft Warm Cream Panel */
-.card-left-info {
-  background: linear-gradient(135deg, #FAF7F2 0%, #F3ECE2 100%);
-  border: 1.5px solid #EFE4D6;
-  border-radius: 22px;
-  padding: 36px 30px;
+.card-left-article {
+  background-image: 
+    linear-gradient(145deg, rgba(44, 26, 19, 0.65) 0%, rgba(23, 13, 9, 0.82) 100%),
+    url('~/assets/assets_POS/kamcok1.jpg');
+  background-size: cover;
+  background-position: center;
+  color: white;
+  padding: 48px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.article-icon {
+  width: 48px;
+  height: 48px;
+  background: rgba(245, 158, 11, 0.15);
+  color: #F59E0B;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.article-title {
+  font-family: 'Jost', 'Plus Jakarta Sans', sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0 0 16px 0;
+  line-height: 1.25;
+}
+
+.article-content {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14.5px;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.6;
+  margin: 0 0 28px 0;
+}
+
+.article-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.article-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.9);
+  line-height: 1.4;
+}
+
+.list-icon {
+  color: #F59E0B;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.card-right-form {
+  padding: 48px 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: #FFFFFF;
+}
+
+.form-header-unified {
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  box-shadow: 0 4px 16px rgba(44, 26, 19, 0.03);
+  margin-bottom: 32px;
 }
 
 .brand-logo-centered {
-  margin-bottom: 18px;
+  margin-bottom: 16px;
   display: flex;
   justify-content: center;
 }
 
 .brand-logo-img {
-  max-height: 48px;
+  max-height: 44px;
   width: auto;
   object-fit: contain;
 }
 
 .info-title {
-  font-size: 22px;
+  font-family: 'Jost', 'Plus Jakarta Sans', sans-serif;
+  font-size: 24px;
   font-weight: 800;
-  color: #351f17;
-  margin: 0 0 10px 0;
-  line-height: 1.25;
+  color: #2C1A13;
+  margin: 0 0 6px 0;
 }
 
 .info-desc {
-  font-size: 13.5px;
-  color: #8d7b72;
-  line-height: 1.6;
-  margin: 0 0 24px 0;
-}
-
-.autofill-box {
-  width: 100%;
-}
-
-.btn-autofill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: #ffffff;
-  border: 1.5px solid #e4dad3;
-  color: #432a20;
-  padding: 11px 18px;
-  border-radius: 14px;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  width: 100%;
-  justify-content: center;
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 6px rgba(44, 26, 19, 0.03);
-}
-
-.btn-autofill:hover {
-  background: #fdf4eb;
-  border-color: #e99a32;
-  color: #b45309;
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(233, 154, 50, 0.15);
-}
-
-.bolt-icon {
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 14px;
-}
-
-/* Right Column: Clean White Form */
-.card-right-form {
-  display: flex;
-  flex-direction: column;
-  padding: 8px 12px;
-}
-
-.form-header {
-  margin-bottom: 20px;
-}
-
-.form-title {
-  font-size: 21px;
-  font-weight: 800;
-  color: #351f17;
-  margin: 0 0 4px 0;
-}
-
-.form-subtitle {
-  font-size: 13px;
-  color: #8d7b72;
+  color: #6B7280;
   margin: 0;
 }
 
@@ -489,13 +412,14 @@ const alertHelp = () => {
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .field-label {
+  font-family: 'Plus Jakarta Sans', sans-serif;
   font-size: 13.5px;
   font-weight: 700;
-  color: #432a20;
+  color: #374151;
 }
 
 .label-row {
@@ -505,15 +429,14 @@ const alertHelp = () => {
 }
 
 .help-link {
-  font-size: 12px;
-  font-weight: 700;
-  color: #e99a32;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #F59E0B;
   text-decoration: none;
 }
 
-.help-link:hover {
-  text-decoration: underline;
-}
+.help-link:hover { text-decoration: underline; }
 
 .input-wrap {
   position: relative;
@@ -523,50 +446,49 @@ const alertHelp = () => {
 
 .input-icon {
   position: absolute;
-  left: 16px;
-  color: #a28d82;
+  left: 14px;
+  color: #9CA3AF;
   display: flex;
   align-items: center;
   pointer-events: none;
 }
 
 .field-input {
+  font-family: 'Plus Jakarta Sans', sans-serif;
   width: 100%;
-  padding: 13px 16px 13px 46px;
-  background: #FAF7F2;
-  border: 1px solid #e4dad3;
-  border-radius: 14px;
+  padding: 13px 14px 13px 42px;
+  background: #FFFFFF;
+  border: 1px solid #D1D5DB;
+  border-radius: 10px;
   font-size: 14px;
-  color: #352017;
-  font-family: inherit;
-  font-weight: 600;
+  color: #111827;
+  font-weight: 500;
   outline: none;
   transition: all 0.2s ease;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.01) inset;
 }
 
-.field-input::placeholder {
-  color: #b7aaa3;
-}
-
-.field-input:focus {
-  background: #FFFFFF;
-  border-color: #e99a32;
-  box-shadow: 0 0 0 4px rgba(233, 154, 50, 0.12);
-}
+.field-input::placeholder { color: #9CA3AF; }
+.field-input:focus { border-color: #F59E0B; box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1); }
 
 .btn-toggle-eye {
   position: absolute;
-  right: 14px;
+  right: 12px;
   background: transparent;
   border: none;
   cursor: pointer;
-  font-size: 15px;
-  padding: 4px;
+  padding: 6px;
+  color: #9CA3AF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
+.btn-toggle-eye:hover { color: #F59E0B; }
 
 .remember-row {
   display: flex;
   align-items: center;
+  margin-top: -2px;
 }
 
 .checkbox-label {
@@ -577,39 +499,68 @@ const alertHelp = () => {
 }
 
 .custom-checkbox {
-  accent-color: #e99a32;
-  width: 15px;
-  height: 15px;
+  accent-color: #F59E0B;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  border: 1px solid #D1D5DB;
+  border-radius: 4px;
 }
 
 .checkbox-text {
-  font-size: 12.5px;
-  font-weight: 600;
-  color: #6E442B;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #4B5563;
 }
 
 .btn-submit-primary {
-  background: #351f17;
+  font-family: 'Jost', 'Plus Jakarta Sans', sans-serif;
+  background: #2C1A13;
   color: white;
   border: none;
   padding: 14px 20px;
-  border-radius: 14px;
-  font-size: 14.5px;
+  border-radius: 10px;
+  font-size: 15px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.25s ease;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 4px;
-  box-shadow: 0 4px 14px rgba(53, 31, 23, 0.18);
+  margin-top: 8px;
+  box-shadow: 0 2px 4px rgba(44, 26, 19, 0.1);
 }
 
 .btn-submit-primary:hover:not(:disabled) {
-  background: #e99a32;
+  background: #F59E0B;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(233, 154, 50, 0.3);
 }
+
+.autofill-box-unified {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+  padding-top: 20px;
+  border-top: 1px dashed #E5E7EB;
+}
+
+.btn-autofill-text {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: none;
+  border: none;
+  color: #6B7280;
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-autofill-text:hover { color: #F59E0B; }
 
 .loading-state {
   display: flex;
@@ -617,28 +568,14 @@ const alertHelp = () => {
   gap: 8px;
 }
 
-.spin-anim {
-  animation: spin 0.8s linear infinite;
-}
+.spin-anim { animation: spin 0.8s linear infinite; }
+@keyframes spin { 100% { transform: rotate(360deg); } }
 
-@keyframes spin {
-  100% { transform: rotate(360deg); }
-}
-
-/* Responsive */
 @media (max-width: 860px) {
   .login-card-split {
     grid-template-columns: 1fr;
-    gap: 28px;
-    padding: 28px 20px;
   }
-
-  .role-hero {
-    height: 380px;
-  }
-
-  .form-container {
-    margin-top: -80px;
-  }
+  .role-hero { height: 380px; }
+  .form-container { margin-top: -80px; }
 }
 </style>
