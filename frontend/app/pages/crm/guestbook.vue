@@ -1,5 +1,5 @@
 <template>
-  <CrmMainView />
+  <GuestbookMainView />
 </template>
 
 <script setup lang="ts">
