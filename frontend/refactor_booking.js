@@ -1,4 +1,11 @@
-<script setup lang="ts">
+const fs = require('fs');
+const path = require('path');
+
+const file = path.join(__dirname, 'app', 'pages', 'ticketing_dan_gate', 'self-service', 'booking.vue');
+let content = fs.readFileSync(file, 'utf8');
+
+// The new script block
+const newScript = `<script setup lang="ts">
 import { ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
@@ -126,11 +133,11 @@ const sewaTempatTickets = [
   { id: 'trinitario-hall', name: 'Trinitario Hall', label: 'Hall Klasik', desc: 'Hall bergaya klasik industrial untuk pameran, pementasan seni, maupun acara formal lainnya.', image: trinitario_hall },
   { id: 'wisma-criollo', name: 'Wisma Criollo', label: 'Guest House', desc: 'Penginapan eksklusif di dalam kawasan wisata, dilengkapi fasilitas lengkap untuk rombongan VIP.', image: wisma_criollo }
 ]
-</script>
+</script>`;
 
+const newTemplate = \`
 <template>
   <div class="self-service-page catalog-page">
-    <SelfServiceNavbar activeMenu="fasilitas" />
     <!-- Hero Banner -->
     <section class="hero-banner">
       <div class="hero-overlay"></div>
@@ -157,30 +164,10 @@ const sewaTempatTickets = [
       
       <!-- Category Selection Tabs -->
       <div class="category-tabs">
-        <button class="tab-btn" :class="{ 'active': selectedProduct === 'Tiket Masuk' }" @click="selectedProduct = 'Tiket Masuk'">
-          <div class="tab-icon-box">
-            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2" ry="2"></rect><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-          </div>
-          <span class="tab-text"> Tiket Masuk</span>
-        </button>
-        <button class="tab-btn" :class="{ 'active': selectedProduct === 'Wahana Permainan' }" @click="selectedProduct = 'Wahana Permainan'">
-          <div class="tab-icon-box">
-            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><path d="M6 12h4M8 10v4M15 13h.01M18 11h.01"/></svg>
-          </div>
-          <span class="tab-text"> Wahana</span>
-        </button>
-        <button class="tab-btn" :class="{ 'active': selectedProduct === 'Wisata Edukasi' }" @click="selectedProduct = 'Wisata Edukasi'">
-          <div class="tab-icon-box">
-            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/><path d="M8 7h6M8 11h8"/></svg>
-          </div>
-          <span class="tab-text"> Edukasi</span>
-        </button>
-        <button class="tab-btn" :class="{ 'active': selectedProduct === 'Sewa Tempat' }" @click="selectedProduct = 'Sewa Tempat'">
-          <div class="tab-icon-box">
-            <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-          </div>
-          <span class="tab-text"> Sewa</span>
-        </button>
+        <button class="tab-btn" :class="{ 'active': selectedProduct === 'Tiket Masuk' }" @click="selectedProduct = 'Tiket Masuk'">Tiket Masuk</button>
+        <button class="tab-btn" :class="{ 'active': selectedProduct === 'Wahana Permainan' }" @click="selectedProduct = 'Wahana Permainan'">Wahana Permainan</button>
+        <button class="tab-btn" :class="{ 'active': selectedProduct === 'Wisata Edukasi' }" @click="selectedProduct = 'Wisata Edukasi'">Paket Edukasi</button>
+        <button class="tab-btn" :class="{ 'active': selectedProduct === 'Sewa Tempat' }" @click="selectedProduct = 'Sewa Tempat'">Sewa Tempat</button>
       </div>
 
       <!-- Catalog Grid -->
@@ -256,8 +243,6 @@ const sewaTempatTickets = [
 
     </div>
 
-    <SelfServiceFooter />
-
     <!-- Slide Over Panel (Article Modal) -->
     <div class="slide-over-overlay" :class="{ 'active': showArticleModal }" @click="closeArticleModal">
       <div class="slide-over-panel" :class="{ 'open': showArticleModal }" @click.stop>
@@ -280,7 +265,7 @@ const sewaTempatTickets = [
               <div class="extra-info mt-6">
                 <h4>Informasi Tambahan</h4>
                 <p>Jam operasional: 08:00 - 16:30 WIB</p>
-                <p>Untuk info pemesanan, silakan lihat di Halaman Beranda Pemesanan kami.</p>
+                <p>Untuk reservasi grup, hubungi layanan pelanggan kami melalui halaman kontak.</p>
               </div>
             </div>
             
@@ -291,16 +276,24 @@ const sewaTempatTickets = [
     </div>
   </div>
 </template>
+\`;
 
-<style scoped>
+// Replace script and template blocks
+const styleMatch = content.match(/<style scoped>/);
+if (!styleMatch) throw new Error("Could not find style tag");
+
+const oldStyle = content.substring(styleMatch.index);
+
+// Create new CSS block for slide-over and single grid
+const newCss = \`
 .catalog-page {
   font-family: 'Plus Jakarta Sans', sans-serif;
   background-color: #f8fafc;
 }
 .catalog-container {
-  max-width: 1440px;
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 40px 40px;
+  padding: 0 20px 40px;
 }
 .category-tabs {
   display: flex;
@@ -312,70 +305,24 @@ const sewaTempatTickets = [
 .tab-btn {
   background: white;
   border: 1px solid #e2e8f0;
-  padding: 8px 16px 8px 8px;
-  border-radius: 16px;
+  padding: 12px 24px;
+  border-radius: 30px;
   font-weight: 600;
   color: #64748b;
   cursor: pointer;
   white-space: nowrap;
   transition: all 0.3s;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-.tab-icon-box {
-  width: 36px;
-  height: 36px;
-  background: #f8fafc;
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #64748b;
-  transition: all 0.3s;
 }
 .tab-btn.active {
-  background: white;
-  color: #1e293b;
+  background: #f29727;
+  color: white;
   border-color: #f29727;
-}
-.tab-btn.active .tab-icon-box {
-  background: #fffbeb;
-  color: #f29727;
-}
-@media (max-width: 575px) {
-  .tab-text {
-    display: none;
-  }
-  .tab-btn {
-    padding: 8px;
-    border-radius: 16px;
-    width: 60px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .tab-icon-box {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-  }
-  .category-tabs {
-    justify-content: center;
-    gap: 12px;
-  }
+  box-shadow: 0 4px 12px rgba(242, 151, 39, 0.3);
 }
 .catalog-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-}
-@media (min-width: 576px) {
-  .catalog-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
-}
-@media (min-width: 992px) {
-  .catalog-grid { grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
 }
 
 /* Elegant Card without Price */
@@ -393,12 +340,9 @@ const sewaTempatTickets = [
   box-shadow: 0 12px 25px rgba(0,0,0,0.1);
 }
 .card-image-wrapper {
-  height: 120px;
+  height: 180px;
   overflow: hidden;
   position: relative;
-}
-@media (min-width: 576px) {
-  .card-image-wrapper { height: 180px; }
 }
 .card-image {
   width: 100%;
@@ -406,24 +350,14 @@ const sewaTempatTickets = [
   object-fit: cover;
   transition: transform 0.5s;
 }
-.edukasi-image-wrapper {
-  height: auto;
-}
-.edukasi-image {
-  height: auto;
-  object-fit: contain;
-}
 .elegant-card:hover .card-image {
   transform: scale(1.05);
 }
 .card-content {
-  padding: 12px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   flex: 1;
-}
-@media (min-width: 576px) {
-  .card-content { padding: 20px; }
 }
 .card-price-label {
   font-size: 11px;
@@ -434,14 +368,11 @@ const sewaTempatTickets = [
   margin-bottom: 8px;
 }
 .card-title {
-  font-size: 14px;
+  font-size: 18px;
   font-weight: 800;
   color: #1e293b;
-  margin: 0 0 8px 0;
-  line-height: 1.2;
-}
-@media (min-width: 576px) {
-  .card-title { font-size: 18px; margin: 0 0 12px 0; line-height: 1.3; }
+  margin: 0 0 12px 0;
+  line-height: 1.3;
 }
 .card-divider {
   width: 40px;
@@ -451,17 +382,11 @@ const sewaTempatTickets = [
   margin-bottom: 12px;
 }
 .card-desc {
-  display: none;
-}
-@media (min-width: 576px) {
-  .card-desc {
-    display: block;
-    font-size: 13px;
-    color: #64748b;
-    line-height: 1.6;
-    margin-bottom: 20px;
-    flex: 1;
-  }
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.6;
+  margin-bottom: 20px;
+  flex: 1;
 }
 .card-footer {
   margin-top: auto;
@@ -662,7 +587,6 @@ const sewaTempatTickets = [
   line-height: 1.1;
   margin: 0 0 16px 0;
   text-shadow: 0 4px 12px rgba(0,0,0,0.3);
-  color: #ffffff;
 }
 .hero-subtitle {
   font-size: 16px;
@@ -690,4 +614,8 @@ const sewaTempatTickets = [
   width: 100%;
   height: 100%;
 }
-</style>
+\`
+
+const fullFile = newScript + '\\n\\n' + newTemplate + '\\n\\n<style scoped>\\n' + newCss + '\\n</style>\\n';
+fs.writeFileSync(file, fullFile, 'utf8');
+console.log('File successfully updated!');

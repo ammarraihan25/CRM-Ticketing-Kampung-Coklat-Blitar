@@ -333,46 +333,7 @@ const logout = () => {
 <template>
   <div class="app-wrapper">
       
-    <!-- White Navbar -->
-    <nav class="navbar">
-      <div class="nav-container">
-        <div class="logo">
-          <img src="~/assets/assets_POS/KAMPUNGCOKLAT.png" alt="Kampung Coklat" class="logo-img" />
-        </div>
-        
-        <div class="nav-links">
-          <a href="javascript:void(0)" 
-             class="nav-link" 
-             :class="{ active: activeMenu === 'pesan-tiket' }"
-             @click="scrollToSection('pesan-tiket')">Pesan Tiket</a>
-          
-          <a href="javascript:void(0)" 
-             class="nav-link"
-             :class="{ active: activeMenu === 'fasilitas' }"
-             @click="scrollToSection('fasilitas')">Fasilitas</a>
-          
-          <a href="javascript:void(0)" 
-             class="nav-link"
-             :class="{ active: activeMenu === 'promo' }"
-             @click="scrollToSection('promo')">Promo</a>
-          
-          <a href="javascript:void(0)" 
-             class="nav-link"
-             :class="{ active: activeMenu === 'membership' }"
-             @click="router.push('/ticketing_dan_gate/self-service/membership')">Membership</a>
-        </div>
-
-        <div class="nav-user">
-          <div class="user-info">
-            <span class="user-greeting">Hi, {{ userName }}</span>
-            <span class="user-points">{{ points }} Poin</span>
-          </div>
-          <button class="profile-btn" @click="logout" title="Keluar">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-          </button>
-        </div>
-      </div>
-    </nav>
+    <SelfServiceNavbar :activeMenu="activeMenu" />
 
     <!-- Hero Section with Curved Bottom -->
     <div class="hero-section">
@@ -531,31 +492,12 @@ const logout = () => {
 
       </div>
 
-      <!-- Promo Banner Section -->
-      <div id="promo" class="promo-section mt-12">
-        <div class="promo-banner">
-          <div class="promo-content">
-            <h3>Diskon 20% untuk Rombongan Sekolah!</h3>
-            <p>Gunakan kode voucher <strong>EDUKASI20</strong> saat checkout untuk mendapatkan potongan harga khusus paket wisata edukasi.</p>
-          </div>
-          <button class="promo-btn" @click="scrollToSection('pesan-tiket')">Klaim Promo</button>
-        </div>
-      </div>
+
 
     </div>
 
     <!-- Footer Section (Membership) -->
-    <footer id="membership" class="kc-footer">
-      <div class="footer-bottom">
-        <div class="fb-left">
-          <h4 class="fb-brand">Kampung Coklat</h4>
-          <p class="fb-desc">Destinasi wisata edukasi dan pengalaman cokelat di Blitar.</p>
-        </div>
-        <div class="fb-right">
-          <p>&copy; 2026 Kampung Coklat. All rights reserved.</p>
-        </div>
-      </div>
-    </footer>
+    <SelfServiceFooter />
 
   </div>
 
@@ -1399,20 +1341,16 @@ const logout = () => {
 /* Detailed Tickets Grid */
 .dt-grid {
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
 }
 
 @media (min-width: 576px) {
-  .dt-grid { grid-template-columns: repeat(2, 1fr); }
+  .dt-grid { grid-template-columns: repeat(3, 1fr); gap: 16px; }
 }
 
 @media (min-width: 992px) {
-  .dt-grid { grid-template-columns: repeat(3, 1fr); }
-}
-
-@media (min-width: 1200px) {
-  .dt-grid { grid-template-columns: repeat(4, 1fr); }
+  .dt-grid { grid-template-columns: repeat(4, 1fr); gap: 20px; }
 }
 
 .dt-card {
@@ -1433,9 +1371,14 @@ const logout = () => {
 }
 
 .dt-img-container {
-  height: 180px;
+  height: 120px;
   position: relative;
   overflow: hidden;
+}
+@media (min-width: 576px) {
+  .dt-img-container {
+    height: 180px;
+  }
 }
 
 .dt-img-container.dt-img-edu {
@@ -1462,25 +1405,38 @@ const logout = () => {
 
 
 .dt-body {
-  padding: 20px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
   flex: 1;
 }
+@media (min-width: 576px) {
+  .dt-body { padding: 20px; }
+}
 
 .dt-title {
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 800;
   color: #111827;
-  margin: 0 0 8px 0;
+  margin: 0 0 6px 0;
+  line-height: 1.2;
+}
+@media (min-width: 576px) {
+  .dt-title { font-size: 18px; margin: 0 0 8px 0; line-height: 1.4; }
 }
 
 .dt-desc {
-  font-size: 13px;
-  color: #64748B;
-  margin: 0 0 20px 0;
-  line-height: 1.5;
-  flex: 1;
+  display: none;
+}
+@media (min-width: 576px) {
+  .dt-desc {
+    display: block;
+    font-size: 13px;
+    color: #64748B;
+    margin: 0 0 20px 0;
+    line-height: 1.5;
+    flex: 1;
+  }
 }
 
 .dt-footer {
@@ -1499,21 +1455,27 @@ const logout = () => {
 }
 
 .dt-price-val {
-  font-size: 20px;
+  font-size: 14px;
   font-weight: 900;
   color: #D97706;
 }
+@media (min-width: 576px) {
+  .dt-price-val { font-size: 20px; }
+}
 
 .dt-price-unit {
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 600;
   color: #94A3B8;
 }
+@media (min-width: 576px) {
+  .dt-price-unit { font-size: 12px; }
+}
 
 .dt-btn-add {
-  width: 40px;
-  height: 40px;
-  border-radius: 12px;
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
   background: #0284C7;
   color: white;
   border: none;
@@ -1522,6 +1484,21 @@ const logout = () => {
   justify-content: center;
   cursor: pointer;
   transition: all 0.2s;
+}
+.dt-btn-add svg {
+  width: 14px;
+  height: 14px;
+}
+@media (min-width: 576px) {
+  .dt-btn-add {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+  }
+  .dt-btn-add svg {
+    width: 20px;
+    height: 20px;
+  }
 }
 
 .dt-btn-add:hover {

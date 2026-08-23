@@ -51,19 +51,7 @@ const history = ref([
 <template>
   <div class="membership-wrapper">
     <!-- Navbar -->
-    <nav class="navbar">
-      <div class="nav-container">
-        <div class="logo" @click="router.push('/ticketing_dan_gate/self-service/')" style="cursor: pointer;">
-          <img src="~/assets/assets_POS/KAMPUNGCOKLAT.png" alt="Kampung Coklat" class="logo-img" />
-        </div>
-        <div class="nav-title">
-          <h3>Pengaturan Membership</h3>
-        </div>
-        <div class="nav-action">
-          <button class="back-btn" @click="router.push('/ticketing_dan_gate/self-service/')">Kembali ke Beranda</button>
-        </div>
-      </div>
-    </nav>
+    <SelfServiceNavbar activeMenu="membership" />
 
     <!-- Main Content -->
     <div class="dashboard-container">
@@ -203,6 +191,9 @@ const history = ref([
 
       </main>
     </div>
+    
+    <!-- Footer -->
+    <SelfServiceFooter />
   </div>
 </template>
 
@@ -262,9 +253,9 @@ const history = ref([
 }
 
 .dashboard-container {
-  max-width: 1200px;
+  max-width: 1440px;
   margin: 48px auto;
-  padding: 0 24px;
+  padding: 0 40px;
   display: grid;
   grid-template-columns: 1fr;
   gap: 48px;
