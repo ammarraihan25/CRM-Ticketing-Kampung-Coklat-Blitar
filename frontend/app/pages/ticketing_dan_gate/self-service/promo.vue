@@ -55,9 +55,7 @@ const vouchersList = [
   }
 ]
 
-const goBack = () => {
-  router.push('/ticketing_dan_gate/self-service')
-}
+
 
 const copyCode = (code) => {
   navigator.clipboard.writeText(code)
@@ -77,9 +75,6 @@ const copyCode = (code) => {
         <p class="hero-subtitle">
           Nikmati berbagai penawaran eksklusif dan diskon menarik untuk pengalaman liburan yang lebih hemat.
         </p>
-        <button class="btn-outline-white mt-4" @click="goBack">
-          Kembali ke Beranda
-        </button>
       </div>
       <div class="torn-edge">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
@@ -1101,12 +1096,24 @@ const copyCode = (code) => {
 /* RESPONSIVE (< 768px)                                                      */
 /* ========================================================================= */
 @media (max-width: 768px) {
+  .promo-container {
+    padding: 24px 10px 60px;
+    overflow: hidden;
+  }
   .physical-vouchers-grid {
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
   }
   .pure-voucher-ticket {
-    zoom: 0.65;
+    /* Keep original horizontal shape, scale down using zoom */
+    width: 540px;
     min-width: 540px;
+    min-height: 215px;
+    flex-direction: row;
+    zoom: 0.62; /* 540 * 0.62 = 334.8px, fits perfectly in most mobile screens */
+    margin: 0 auto;
   }
 
   .detail-specs-grid {

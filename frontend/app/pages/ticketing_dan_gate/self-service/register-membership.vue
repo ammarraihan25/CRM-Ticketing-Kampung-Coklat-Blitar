@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { ref, onMounted } from 'vue'
+import { useRouter, useRoute } from 'vue-router'
 import { useState } from '#app'
 
 definePageMeta({
@@ -8,38 +8,34 @@ definePageMeta({
 })
 
 const router = useRouter()
-const isUserLoggedIn = useState('selfServiceAuth', () => false)
+const route = useRoute()
+
+const membershipType = ref(route.query.type || 'Regular')
+const activeMemberships = useState<string[]>('selfServiceMembership', () => [])
+const savedUserName = useState('selfServiceUserName', () => 'Sobat Coklat')
 
 const form = ref({
-  name: '',
-  email: '',
-  phone: '',
-  password: '',
-  passwordConfirm: ''
+  name: savedUserName.value,
+  idNumber: '',
+  address: ''
 })
 
 const isLoading = ref(false)
 
-const handleRegister = () => {
-  if (form.value.password !== form.value.passwordConfirm) {
-    alert("Password tidak cocok!")
-    return
-  }
-  
+const handleRegisterMembership = () => {
   isLoading.value = true
   setTimeout(() => {
     isLoading.value = false
-    isUserLoggedIn.value = true
-    router.push('/ticketing_dan_gate/self-service')
+    const type = membershipType.value as string
+    if (!activeMemberships.value.includes(type)) {
+      activeMemberships.value.push(type)
+    }
+    router.push('/ticketing_dan_gate/self-service/membership')
   }, 1000)
 }
 
-const goToLogin = () => {
-  router.push('/ticketing_dan_gate/self-service/login')
-}
-
 const goBack = () => {
-  router.push('/')
+  router.push('/ticketing_dan_gate/self-service/membership')
 }
 </script>
 
@@ -51,8 +47,8 @@ const goBack = () => {
           
           <!-- Left Column: Article Panel with Image -->
           <div class="card-left-article">
-            <h2 class="article-title">Kampung Coklat</h2>
-            <p class="article-content">Bergabunglah bersama kami dan dapatkan berbagai promo menarik setiap harinya.</p>
+            <h2 class="article-title">Member {{ membershipType }}</h2>
+            <p class="article-content">Lengkapi pendaftaran Anda untuk mendapatkan berbagai keuntungan eksklusif dari Kampung Coklat.</p>
           </div>
 
           <!-- Right Column: Form -->
@@ -65,15 +61,15 @@ const goBack = () => {
 
             <!-- Header -->
             <div class="form-header-unified">
-              <h2 class="info-title">Daftar Akun Baru</h2>
-              <p class="info-desc">Lengkapi data diri Anda untuk menikmati layanan kami</p>
+              <h2 class="info-title">Pendaftaran Keanggotaan</h2>
+              <p class="info-desc">Lengkapi data tambahan untuk aktivasi Member {{ membershipType }}</p>
             </div>
 
             <!-- Form -->
-            <form @submit.prevent="handleRegister" class="clean-auth-form">
+            <form @submit.prevent="handleRegisterMembership" class="clean-auth-form">
               
               <div class="form-group">
-                <label for="name" class="field-label">Nama Lengkap</label>
+                <label for="name" class="field-label">Nama Sesuai Identitas</label>
                 <div class="input-wrap">
                   <span class="input-icon">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
@@ -90,91 +86,48 @@ const goBack = () => {
               </div>
 
               <div class="form-group">
-                <label for="email" class="field-label">Email</label>
+                <label for="idNumber" class="field-label">Nomor Identitas (KTP/KIA)</label>
                 <div class="input-wrap">
                   <span class="input-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                   </span>
                   <input 
-                    type="email" 
-                    id="email" 
-                    v-model="form.email" 
+                    type="text" 
+                    id="idNumber" 
+                    v-model="form.idNumber" 
                     class="field-input"
-                    placeholder="Masukkan alamat email"
+                    placeholder="Masukkan nomor identitas"
                     required
                   />
                 </div>
               </div>
 
               <div class="form-group">
-                <label for="phone" class="field-label">No. WhatsApp</label>
-                <div class="input-wrap">
-                  <span class="input-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                <label for="address" class="field-label">Alamat Lengkap</label>
+                <div class="input-wrap align-top">
+                  <span class="input-icon" style="top: 13px;">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
                   </span>
-                  <input 
-                    type="tel" 
-                    id="phone" 
-                    v-model="form.phone" 
-                    class="field-input"
-                    placeholder="Contoh: 081234567890"
+                  <textarea 
+                    id="address" 
+                    v-model="form.address" 
+                    class="field-input custom-textarea"
+                    placeholder="Masukkan alamat domisili"
                     required
-                  />
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label for="password" class="field-label">Password</label>
-                <div class="input-wrap">
-                  <span class="input-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                  </span>
-                  <input 
-                    type="password" 
-                    id="password" 
-                    v-model="form.password" 
-                    class="field-input"
-                    placeholder="Buat password"
-                    required
-                    minlength="6"
-                  />
-                </div>
-              </div>
-
-              <div class="form-group">
-                <label for="passwordConfirm" class="field-label">Konfirmasi Password</label>
-                <div class="input-wrap">
-                  <span class="input-icon">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-                  </span>
-                  <input 
-                    type="password" 
-                    id="passwordConfirm" 
-                    v-model="form.passwordConfirm" 
-                    class="field-input"
-                    placeholder="Ulangi password"
-                    required
-                    minlength="6"
-                  />
+                    rows="3"
+                  ></textarea>
                 </div>
               </div>
 
               <button type="submit" class="btn-submit-primary" :disabled="isLoading">
-                <span v-if="!isLoading">Daftar &rarr;</span>
+                <span v-if="!isLoading">Daftar Member {{ membershipType }} &rarr;</span>
                 <span v-else class="loading-state">
                   <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="spin-anim"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67" /></svg>
                   <span>Mendaftarkan...</span>
                 </span>
               </button>
+
             </form>
-            
-            <!-- Footer -->
-            <div class="footer-section text-center mt-4">
-              <p class="text-gray text-sm">
-                Sudah punya akun? 
-                <a href="#" @click.prevent="goToLogin" class="text-orange font-bold">Masuk di sini</a>
-              </p>
-            </div>
 
           </div>
         </div>
@@ -263,7 +216,7 @@ const goBack = () => {
 }
 
 .card-right-form {
-  padding: 40px 56px;
+  padding: 60px 56px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -276,8 +229,8 @@ const goBack = () => {
 
 .back-btn-new {
   position: absolute;
-  top: 16px;
-  left: 16px;
+  top: 32px;
+  left: 32px;
   background: #F3F4F6;
   border: none;
   color: #6B7280;
@@ -299,7 +252,7 @@ const goBack = () => {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
 .info-title {
@@ -320,13 +273,13 @@ const goBack = () => {
 .clean-auth-form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 18px;
 }
 
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .field-label {
@@ -341,6 +294,9 @@ const goBack = () => {
   display: flex;
   align-items: center;
 }
+.input-wrap.align-top {
+  align-items: flex-start;
+}
 
 .input-icon {
   position: absolute;
@@ -354,7 +310,7 @@ const goBack = () => {
 .field-input {
   font-family: 'Plus Jakarta Sans', sans-serif;
   width: 100%;
-  padding: 11px 14px 11px 42px;
+  padding: 13px 14px 13px 42px;
   background: #FFFFFF;
   border: 1px solid #D1D5DB;
   border-radius: 10px;
@@ -366,6 +322,10 @@ const goBack = () => {
   box-shadow: 0 1px 2px rgba(0,0,0,0.01) inset;
 }
 
+.custom-textarea {
+  resize: vertical;
+}
+
 .field-input::placeholder { color: #9CA3AF; }
 .field-input:focus { border-color: #F59E0B; box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1); }
 
@@ -374,7 +334,7 @@ const goBack = () => {
   background: #2C1A13;
   color: white;
   border: none;
-  padding: 12px 20px;
+  padding: 14px 20px;
   border-radius: 10px;
   font-size: 15px;
   font-weight: 700;
@@ -383,9 +343,9 @@ const goBack = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 4px;
+  margin-top: 8px;
   box-shadow: 0 2px 4px rgba(44, 26, 19, 0.1);
-  min-height: 44px;
+  min-height: 48px;
 }
 
 .btn-submit-primary:hover:not(:disabled) {
@@ -399,14 +359,6 @@ const goBack = () => {
   cursor: not-allowed;
   box-shadow: none;
 }
-
-.text-center { text-align: center; }
-.mt-4 { margin-top: 16px; }
-.text-sm { font-size: 13px; }
-.font-bold { font-weight: 700; }
-.text-orange { color: #F59E0B; text-decoration: none; }
-.text-orange:hover { text-decoration: underline; }
-.text-gray { color: #6B7280; }
 
 .loading-state {
   display: flex;

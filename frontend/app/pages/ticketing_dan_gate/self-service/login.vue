@@ -19,6 +19,11 @@ const handleLogin = () => {
   setTimeout(() => {
     isLoading.value = false
     isUserLoggedIn.value = true
+    
+    // Set username from email (before @)
+    const username = email.value ? email.value.split('@')[0] : 'Sobat Coklat'
+    useState('selfServiceUserName').value = username
+    
     router.push('/ticketing_dan_gate/self-service')
   }, 1000)
 }
