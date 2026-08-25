@@ -1,47 +1,7 @@
 <template>
   <div class="login-role-page">
     <!-- =========================================================
-         HERO BANNER (GUESTBOOK STYLE WITH ORGANIC WAVE)
-    ========================================================== -->
-    <section class="role-hero">
-      <div class="hero-image"></div>
-      <div class="hero-overlay"></div>
-
-      
-
-      <div class="hero-content">
-        <div class="brand-label">
-          <span class="brand-line"></span>
-          <span>#KAMPUNGCOKLAT</span>
-          <span class="brand-line"></span>
-        </div>
-
-        <h1 class="hero-title">
-          Portal <strong>Kasir Front Office</strong>
-        </h1>
-
-        <p class="hero-desc">
-          Sistem Terpadu CRM, Tiket Masuk, Kasir POS &amp; Manajemen Operasional
-        </p>
-      </div>
-
-      <!-- Organic Wave Divider -->
-      <div class="hero-wave">
-        <svg
-          viewBox="0 0 1440 120"
-          preserveAspectRatio="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M0 55C180 110 360 110 540 65C720 20 900 20 1080 60C1260 100 1350 95 1440 65V120H0Z"
-            fill="#fffaf5"
-          />
-        </svg>
-      </div>
-    </section>
-
-    <!-- =========================================================
-         MAIN LOGIN CARD SECTION (OVERLAPPING ONTO WAVE)
+         MAIN LOGIN CARD SECTION
     ========================================================== -->
     <section class="form-section">
       <div class="form-container">
@@ -159,12 +119,12 @@ const alertHelp = () => {
 * { box-sizing: border-box; }
 
 .login-role-page {
-  min-height: 100vh;
+  height: 100vh;
   width: 100%;
   background: #fffaf5;
   color: #321d16;
   font-family: 'Jost', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  overflow-x: hidden;
+  overflow: hidden;
   margin: 0;
   padding: 0;
 }
@@ -267,13 +227,18 @@ const alertHelp = () => {
 /* FORM SECTION (2 COLUMNS WITH ARTICLE) */
 .form-section {
   background: #fffaf5;
-  padding-bottom: 80px;
   width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .form-container {
-  width: min(940px, calc(100% - 40px));
-  margin: -120px auto 0;
+  width: 100%;
+  max-width: 1040px;
+  padding: 0 24px;
+  margin: 0 auto;
   display: flex;
   justify-content: center;
   position: relative;
@@ -284,12 +249,13 @@ const alertHelp = () => {
   width: 100%;
   background: white;
   border: 1px solid rgba(44, 26, 19, 0.08);
-  border-radius: 16px;
+  border-radius: 24px;
   padding: 0;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0,0,0,0.02);
+  box-shadow: 0 24px 48px rgba(44, 26, 19, 0.08), 0 8px 16px rgba(44, 26, 19, 0.04);
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1.1fr;
   overflow: hidden;
+  min-height: 600px;
 }
 
 .card-left-article {
@@ -299,7 +265,7 @@ const alertHelp = () => {
   background-size: cover;
   background-position: center;
   color: white;
-  padding: 48px 40px;
+  padding: 60px 48px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
@@ -361,7 +327,7 @@ const alertHelp = () => {
 }
 
 .card-right-form {
-  padding: 48px 40px;
+  padding: 60px 56px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -575,7 +541,5 @@ const alertHelp = () => {
   .login-card-split {
     grid-template-columns: 1fr;
   }
-  .role-hero { height: 380px; }
-  .form-container { margin-top: -80px; }
 }
 </style>

@@ -13,12 +13,12 @@ const props = defineProps({
 const router = useRouter()
 const route = useRoute()
 
-const userName = ref('Ahmad')
-const points = ref(450)
+const savedUserName = useState('selfServiceUserName', () => 'Sobat Coklat')
+const userName = ref(savedUserName.value)
 const isMobileMenuOpen = ref(false)
 
-const logout = () => {
-  router.push('/ticketing_dan_gate/self-service/login')
+const goToProfile = () => {
+  router.push('/ticketing_dan_gate/self-service/profile')
 }
 
 const handleMenuClick = (menu: string) => {
@@ -65,31 +65,48 @@ const toggleMobileMenu = () => {
           <a href="javascript:void(0)" 
              class="nav-link" 
              :class="{ active: activeMenu === 'pesan-tiket' }"
-             @click="handleMenuClick('pesan-tiket')">Pesan Tiket</a>
+             @click="handleMenuClick('pesan-tiket')">
+             <div class="nav-icon-wrap">
+               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="M15 5v2"/><path d="M15 11v2"/><path d="M15 17v2"/><path d="M5 5h14a2 2 0 0 1 2 2v3a2 2 0 0 0 0 4v3a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-3a2 2 0 0 0 0-4V7a2 2 0 0 1 2-2z"/></svg>
+             </div>
+             <span>Pesan Tiket</span>
+          </a>
           
           <a href="javascript:void(0)" 
              class="nav-link"
              :class="{ active: activeMenu === 'fasilitas' }"
-             @click="handleMenuClick('fasilitas')">Fasilitas</a>
+             @click="handleMenuClick('fasilitas')">
+             <div class="nav-icon-wrap">
+               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><line x1="6" y1="2" x2="6" y2="4"/><line x1="10" y1="2" x2="10" y2="4"/><line x1="14" y1="2" x2="14" y2="4"/></svg>
+             </div>
+             <span>Fasilitas</span>
+          </a>
           
           <a href="javascript:void(0)" 
              class="nav-link"
              :class="{ active: activeMenu === 'promo' }"
-             @click="handleMenuClick('promo')">Promo</a>
+             @click="handleMenuClick('promo')">
+             <div class="nav-icon-wrap">
+               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+             </div>
+             <span>Promo</span>
+          </a>
           
           <a href="javascript:void(0)" 
              class="nav-link"
              :class="{ active: activeMenu === 'membership' }"
-             @click="handleMenuClick('membership')">Membership</a>
+             @click="handleMenuClick('membership')">
+             <div class="nav-icon-wrap">
+               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="nav-icon"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+             </div>
+             <span>Membership</span>
+          </a>
         </div>
 
         <div class="nav-user">
-          <div class="user-info">
-            <span class="user-greeting">Hi, Sobat Coklat</span>
-            <span class="user-points">{{ points }} Poin</span>
-          </div>
-          <button class="profile-btn" @click="logout" title="Keluar">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+          <button class="profile-nav-btn" @click="goToProfile">
+            <div class="avatar-nav">{{ userName.charAt(0).toUpperCase() }}</div>
+            <span class="username-nav">{{ userName }}</span>
           </button>
         </div>
       </div>
@@ -137,33 +154,39 @@ const toggleMobileMenu = () => {
 }
 .nav-links {
   display: flex;
-  gap: 32px;
+  gap: 12px;
 }
 .nav-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   text-decoration: none;
   color: #475569;
-  font-weight: 600;
-  font-size: 15px;
-  padding: 8px 0;
-  position: relative;
-  transition: color 0.3s;
+  font-weight: 700;
+  font-size: 14px;
+  padding: 8px 18px;
+  border-radius: 30px;
+  transition: all 0.3s ease;
+  background: transparent;
 }
-.nav-link:hover, .nav-link.active {
-  color: #f29727;
+.nav-icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
 }
-.nav-link::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: #f29727;
-  transition: width 0.3s ease;
-  border-radius: 2px;
+.nav-icon {
+  width: 18px;
+  height: 18px;
 }
-.nav-link:hover::after, .nav-link.active::after {
-  width: 100%;
+.nav-link:hover {
+  background: #FEF3C7;
+  color: #B45309;
+}
+.nav-link.active {
+  background: #2C1A13;
+  color: #F59E0B;
+  box-shadow: 0 4px 12px rgba(44, 26, 19, 0.15);
 }
 .nav-user {
   display: flex;
@@ -171,41 +194,37 @@ const toggleMobileMenu = () => {
   gap: 16px;
   margin-left: 32px;
 }
-.user-info {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-}
-.user-greeting {
-  font-size: 13px;
-  font-weight: 700;
-  color: #1e293b;
-}
-.user-points {
-  font-size: 11px;
-  color: #f29727;
-  font-weight: 700;
-  background: #fffbeb;
-  padding: 2px 8px;
-  border-radius: 12px;
-  margin-top: 2px;
-}
-.profile-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: none;
-  background: #f8fafc;
-  color: #64748b;
+.profile-nav-btn {
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 12px;
+  background: white;
+  border: 1px solid #E2E8F0;
+  padding: 6px 16px 6px 6px;
+  border-radius: 30px;
   cursor: pointer;
   transition: all 0.2s;
 }
-.profile-btn:hover {
-  background: #f1f5f9;
-  color: #0f172a;
+.profile-nav-btn:hover {
+  background: #F8FAFC;
+  border-color: #CBD5E1;
+}
+.avatar-nav {
+  width: 32px;
+  height: 32px;
+  background: #FFFBEB;
+  color: #D97706;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 14px;
+}
+.username-nav {
+  font-weight: 700;
+  color: #1E293B;
+  font-size: 14px;
 }
 
 /* Mobile Responsive */
@@ -244,23 +263,27 @@ const toggleMobileMenu = () => {
   }
   .nav-links {
     flex-direction: column;
-    gap: 16px;
+    gap: 10px;
     padding-bottom: 16px;
     border-bottom: 1px solid #f1f5f9;
   }
   .nav-link {
-    display: block;
+    display: flex;
     width: 100%;
-    padding: 12px 0;
-    font-size: 16px;
+    padding: 14px 16px;
+    font-size: 15px;
+    border-radius: 14px;
+    background: #F8FAFC;
+    color: #475569;
   }
-  .nav-link::after {
-    display: none;
+  .nav-link:hover {
+    background: #F1F5F9;
+    color: #1E293B;
   }
-  .nav-link:hover, .nav-link.active {
-    background: #f8fafc;
-    padding-left: 12px;
-    border-radius: 8px;
+  .nav-link.active {
+    background: linear-gradient(135deg, #2C1A13 0%, #442212 100%);
+    color: #F59E0B;
+    box-shadow: 0 6px 15px rgba(44, 26, 19, 0.15);
   }
   .nav-user {
     margin-left: 0;
