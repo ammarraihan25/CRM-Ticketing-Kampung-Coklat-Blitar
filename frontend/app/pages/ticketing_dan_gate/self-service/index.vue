@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useState } from '#app'
 
 definePageMeta({
   layout: false,
   middleware: [
     function (to, from) {
-      const isUserLoggedIn = useState('selfServiceAuth', () => false)
-      if (!isUserLoggedIn.value) {
+      const authCookie = useCookie('selfServiceAuth')
+      if (authCookie.value !== 'true') {
         return navigateTo('/ticketing_dan_gate/self-service/login')
       }
     }
@@ -16,12 +16,13 @@ definePageMeta({
 })
 
 const router = useRouter()
+const route = useRoute()
 
 // Use local state for self-service auth
-const isUserLoggedIn = useState('selfServiceAuth', () => false)
+const isUserLoggedIn = computed(() => useCookie('selfServiceAuth').value === 'true')
 
 // Mock user state (for UI display only)
-const userName = ref('Sobat Coklat')
+const userName = ref(useCookie('selfServiceUserName').value || 'Sobat Coklat')
 const points = ref(150)
 
 // Slides
@@ -53,7 +54,16 @@ const handleQuickBook = () => {
   if (cart.value.length > 0) {
     showMobileCart.value = true
   } else {
-    scrollToSection('pesan-tiket')
+    // Scroll to the selected service category
+    const categoryId = 'cat-' + selectedService.value.replace(/\s+/g, '-')
+    const el = document.getElementById(categoryId)
+    if (el) {
+      activeMenu.value = 'pesan-tiket'
+      const y = el.getBoundingClientRect().top + window.scrollY - 100
+      window.scrollTo({ top: y, behavior: 'smooth' })
+    } else {
+      scrollToSection('pesan-tiket')
+    }
   }
 }
 
@@ -180,16 +190,12 @@ const sliderArticles = ref([
 const currentSlideIndex = ref(0)
 let slideInterval: any
 
-onMounted(() => {
-  slideInterval = setInterval(() => {
-    currentSlideIndex.value = (currentSlideIndex.value + 1) % sliderArticles.value.length
-  }, 5000)
-})
-
-onUnmounted(() => {
-  if (slideInterval) clearInterval(slideInterval)
-})
-
+const voucherCodeInput = ref('')
+const memberWaInput = ref('')
+const appliedVoucher = ref<any>(null)
+const appliedMember = ref<any>(null)
+const voucherError = ref('')
+const memberError = ref('')
 
 // Cart & Payment Logic
 const cart = ref<any[]>([])
@@ -241,17 +247,99 @@ const cartSubtotal = computed(() => {
   return cart.value.reduce((total: number, item: any) => total + (item.price * item.qty), 0)
 })
 
-const appliedDiscountPercent = computed(() => {
-  if (visitType.value === 'Rombongan' && totalCartQuantity.value >= 20) {
-    return 10 // 10% discount for Rombongan
+onMounted(() => {
+  slideInterval = setInterval(() => {
+    currentSlideIndex.value = (currentSlideIndex.value + 1) % sliderArticles.value.length
+  }, 5000)
+
+  if (route.query.voucher) {
+    voucherCodeInput.value = route.query.voucher as string;
+    validateVoucher();
   }
-  return 0
+})
+
+const validateVoucher = async () => {
+  if (!voucherCodeInput.value) return;
+  voucherError.value = '';
+  try {
+    const res = await fetch('http://localhost:3001/api/v1/voucher/validate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: voucherCodeInput.value, whatsapp: appliedMember.value?.whatsapp })
+    });
+    const data = await res.json();
+    if (res.ok && data.success) {
+      appliedVoucher.value = data.data;
+      voucherError.value = '';
+    } else {
+      voucherError.value = data.message || 'Voucher tidak valid';
+      appliedVoucher.value = null;
+    }
+  } catch (error) {
+    voucherError.value = 'Gagal memvalidasi voucher';
+    appliedVoucher.value = null;
+  }
+}
+
+const validateMember = async () => {
+  if (!memberWaInput.value) return;
+  memberError.value = '';
+  try {
+    const res = await fetch(`http://localhost:3001/api/v1/members/${memberWaInput.value}`);
+    const data = await res.json();
+    if (res.ok && data) {
+      appliedMember.value = { ...data, whatsapp: memberWaInput.value };
+      memberError.value = '';
+    } else {
+      memberError.value = data.message || 'Member tidak ditemukan';
+      appliedMember.value = null;
+    }
+  } catch (error) {
+    memberError.value = 'Member tidak ditemukan';
+    appliedMember.value = null;
+  }
+}
+
+const removeVoucher = () => {
+  appliedVoucher.value = null;
+  voucherCodeInput.value = '';
+}
+
+const removeMember = () => {
+  appliedMember.value = null;
+  memberWaInput.value = '';
+  appliedVoucher.value = null;
+  voucherCodeInput.value = '';
+}
+
+const appliedDiscountPercent = computed(() => {
+  let discount = 0;
+  if (visitType.value === 'Rombongan' && totalCartQuantity.value >= 20) {
+    discount += 10 // 10% discount for Rombongan
+  }
+  if (appliedMember.value) {
+    discount += 10 // 10% default discount for Member
+  }
+  if (appliedVoucher.value && appliedVoucher.value.type === 'percentage') {
+    discount += appliedVoucher.value.value;
+  }
+  return Math.min(discount, 100);
 })
 
 const finalTotal = computed(() => {
-  const base = cartSubtotal.value
-  const discount = (base * appliedDiscountPercent.value) / 100
-  return base - discount
+  let base = cartSubtotal.value
+  
+  if (appliedVoucher.value && appliedVoucher.value.type === 'fixed') {
+    base -= appliedVoucher.value.value;
+  }
+  if (appliedVoucher.value && appliedVoucher.value.type === 'free') {
+    // Assuming 'free' means 100% off the lowest item price for 1 qty. For simplicity here, we'll give 15000 off.
+    base -= 15000;
+  }
+  
+  base = Math.max(0, base);
+  const discount = (base * appliedDiscountPercent.value) / 100;
+  return base - discount;
 })
 
 const proceedToPayment = () => {
@@ -280,6 +368,9 @@ const closeTicketModal = () => {
   showTicketModal.value = false
   cart.value = []
   paymentSuccess.value = false
+  // reset voucher and member after successful checkout
+  removeVoucher()
+  removeMember()
 }
 
 const formatDate = (dateString: string) => {
@@ -445,7 +536,7 @@ const logout = () => {
         <!-- Loop per category -->
         <div v-for="(categoryTickets, categoryName) in groupedTickets" :key="categoryName" class="category-block">
           <div class="category-header">
-            <h4 class="category-title">{{ categoryName }}</h4>
+            <h4 class="category-title" :id="'cat-' + categoryName.replace(/\s+/g, '-')">{{ categoryName }}</h4>
             <div class="category-line"></div>
           </div>
 
@@ -660,12 +751,59 @@ const logout = () => {
             
             <div style="padding: 16px; background: #f8fafc; border-radius: 12px; margin-bottom: 20px; font-size: 14px;">
               <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                <span style="color: #64748b; font-weight: 600;">Layanan:</span>
+                <span style="color: #0f172a; font-weight: 700;">{{ selectedService }}</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                 <span style="color: #64748b; font-weight: 600;">Tanggal Kunjungan:</span>
                 <span style="color: #0f172a; font-weight: 700;">{{ bookingDate ? formatDate(bookingDate) : 'Hari Ini' }}</span>
               </div>
-              <div style="display: flex; justify-content: space-between;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
                 <span style="color: #64748b; font-weight: 600;">Tipe Kunjungan:</span>
                 <span style="color: #0f172a; font-weight: 700;">{{ visitType }}</span>
+              </div>
+              <div v-if="visitType === 'Rombongan'" style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                <span style="color: #64748b; font-weight: 600;">Instansi/Sekolah:</span>
+                <span style="color: #0f172a; font-weight: 700;">{{ instansiName || '-' }}</span>
+              </div>
+              <div v-if="visitType === 'Rombongan'" style="display: flex; justify-content: space-between;">
+                <span style="color: #64748b; font-weight: 600;">PIC Rombongan:</span>
+                <span style="color: #0f172a; font-weight: 700;">{{ picName || '-' }}</span>
+              </div>
+            </div>
+
+            <!-- Member & Voucher Integration -->
+            <div style="background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+              <h3 style="font-size: 15px; color: #1e293b; margin-top: 0; margin-bottom: 12px; font-weight: 700;">Promo & Membership</h3>
+              
+              <!-- Membership Input -->
+              <div v-if="!appliedMember" style="margin-bottom: 12px; display: flex; gap: 8px;">
+                <input type="text" v-model="memberWaInput" placeholder="No. WA Member (08...)" class="pm-input" style="flex: 1;" />
+                <button class="pm-btn-primary" style="margin: 0; padding: 0 16px; width: auto;" @click="validateMember">Cek</button>
+              </div>
+              <div v-if="memberError" style="color: #ef4444; font-size: 12px; margin-top: -8px; margin-bottom: 12px;">{{ memberError }}</div>
+              
+              <div v-if="appliedMember" style="background: #d1fae5; border: 1px solid #34d399; padding: 8px 12px; border-radius: 8px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <div style="color: #065f46; font-size: 12px; font-weight: 700;">Member Aktif</div>
+                  <div style="color: #047857; font-size: 14px; font-weight: 800;">{{ appliedMember.nama || appliedMember.whatsapp }}</div>
+                </div>
+                <button @click="removeMember" style="background: none; border: none; color: #ef4444; font-size: 20px; cursor: pointer;">&times;</button>
+              </div>
+              
+              <!-- Voucher Input -->
+              <div v-if="!appliedVoucher" style="display: flex; gap: 8px;">
+                <input type="text" v-model="voucherCodeInput" placeholder="Kode Voucher" class="pm-input" style="flex: 1; text-transform: uppercase;" />
+                <button class="pm-btn-primary" style="margin: 0; padding: 0 16px; width: auto; background: #f59e0b;" @click="validateVoucher">Gunakan</button>
+              </div>
+              <div v-if="voucherError" style="color: #ef4444; font-size: 12px; margin-top: 4px;">{{ voucherError }}</div>
+
+              <div v-if="appliedVoucher" style="background: #fef3c7; border: 1px solid #fbd38d; padding: 8px 12px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                  <div style="color: #92400e; font-size: 12px; font-weight: 700;">Voucher Digunakan</div>
+                  <div style="color: #78350f; font-size: 14px; font-weight: 800; text-transform: uppercase;">{{ appliedVoucher.code }}</div>
+                </div>
+                <button @click="removeVoucher" style="background: none; border: none; color: #ef4444; font-size: 20px; cursor: pointer;">&times;</button>
               </div>
             </div>
 
@@ -680,11 +818,11 @@ const logout = () => {
                 </div>
               </div>
 
-              <!-- Discount for B2B -->
-              <div v-if="typeof discountPercent !== 'undefined' && discountPercent > 0" class="pm-order-item pm-discount-item">
-                <div class="pm-item-row">
-                  <span class="pm-item-name">Diskon ({{ discountPercent }}%)</span>
-                  <span class="pm-item-price">- Rp {{ discountAmount.toLocaleString('id-ID') }}</span>
+              <!-- Discount for Member & Promo & Rombongan -->
+              <div v-if="appliedDiscountPercent > 0 || (appliedVoucher && appliedVoucher.type !== 'percentage')" class="pm-order-item pm-discount-item">
+                <div class="pm-item-row" style="color: #10b981;">
+                  <span class="pm-item-name">Potongan / Diskon <span v-if="appliedDiscountPercent > 0">({{ appliedDiscountPercent }}%)</span></span>
+                  <span class="pm-item-price">- Rp {{ (cartSubtotal - finalTotal).toLocaleString('id-ID') }}</span>
                 </div>
               </div>
             </div>
@@ -704,50 +842,87 @@ const logout = () => {
     </div>
 
     <!-- Ticket/Success Modal -->
-    <div class="modal-overlay" v-if="showTicketModal">
-      <div class="ticket-modal-container">
+    <div class="modal-overlay" v-if="showTicketModal" style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px;">
+      <h2 style="color: white; margin-bottom: 24px; font-size: 28px; font-weight: 900; text-shadow: 0 4px 12px rgba(0,0,0,0.4); text-align: center;">Pembayaran Berhasil!</h2>
+      
+      <div class="voucher-card" style="display: flex; width: 750px; max-width: 100%; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 25px 60px rgba(0,0,0,0.5); position: relative;">
         
-        <div class="ticket-header">
-          <div class="ticket-success-check">
-             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-          </div>
-          <h2>Pembayaran Berhasil!</h2>
-          <p>Terima kasih, berikut adalah E-Tiket Anda</p>
-        </div>
-
-        <div class="ticket-body">
-          <div class="ticket-qr-section">
-            <img :src="'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=TIX-' + Math.floor(Math.random() * 1000000000)" alt="QR Code" class="ticket-qr-image" />
-            <p class="ticket-scan-instruction">Scan QR Code ini di Gate Masuk</p>
+        <!-- Left Side: Details -->
+        <div class="voucher-left" style="flex: 1; padding: 32px; position: relative; background-image: url('https://kampungcoklat.id/wp-content/uploads/2023/12/logo-kampung-coklat-300x126.png'); background-repeat: repeat; background-size: 200px; background-position: center; z-index: 1;">
+          <div style="position: absolute; top:0; left:0; width:100%; height:100%; background: rgba(255,255,255,0.92); z-index: -1;"></div>
+          
+          <div style="display: inline-block; background: #d1fae5; color: #065f46; padding: 8px 20px; border-radius: 30px; font-weight: 800; font-size: 14px; margin-bottom: 20px; border: 1px solid #34d399; letter-spacing: 0.5px;">
+            {{ selectedService.toUpperCase() }}
           </div>
           
-          <div class="ticket-divider">
-            <div class="cutout-left"></div>
-            <div class="cutout-right"></div>
+          <h3 style="color: #064e3b; font-weight: 900; font-size: 22px; margin: 0 0 10px 0; text-transform: uppercase; letter-spacing: 1px;">E-TIKET {{ visitType }}</h3>
+          <p style="color: #4b5563; font-size: 14px; margin-top: 0; margin-bottom: 24px; font-weight: 600; line-height: 1.5;">Diberikan otomatis setelah pembayaran berhasil pada mesin Kiosk Self-Service. Mohon tunjukkan e-tiket ini pada petugas.</p>
+          
+          <div style="border: 2px dashed #d97706; border-radius: 16px; padding: 20px; background: #fffbeb; margin-bottom: 24px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <div>
+                <div style="color: #b45309; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Tanggal Kunjungan</div>
+                <div style="color: #78350f; font-weight: 800; font-size: 16px;">{{ bookingDate ? formatDate(bookingDate) : 'Hari Ini' }}</div>
+              </div>
+              <div v-if="visitType === 'Rombongan'">
+                <div style="color: #b45309; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Instansi / Sekolah</div>
+                <div style="color: #78350f; font-weight: 800; font-size: 16px;">{{ instansiName || '-' }}</div>
+              </div>
+              <div v-if="visitType === 'Rombongan'" style="grid-column: span 2;">
+                <div style="color: #b45309; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">PIC Rombongan</div>
+                <div style="color: #78350f; font-weight: 800; font-size: 16px;">{{ picName || '-' }}</div>
+              </div>
+            </div>
           </div>
-
-          <div class="ticket-details-section">
-            <h3>Rincian Akses ({{ cart.reduce((acc, item) => acc + item.qty, 0) }} Item)</h3>
-            <div class="ticket-items-list">
-              <div v-for="item in cart" :key="item.id || item.packageId || item.name" class="ticket-item">
-                <div class="ticket-item-icon">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#27ae60" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-                </div>
-                <div class="ticket-item-info">
-                  <span class="ticket-item-name">{{ item.name }}</span>
-                  <span class="ticket-item-qty">{{ item.qty }}x Akses Penumpang/Peserta</span>
-                </div>
+          
+          <div>
+            <div style="font-weight: 800; color: #1f2937; margin-bottom: 12px; font-size: 15px;">Rincian Akses ({{ cart.reduce((acc, item) => acc + item.qty, 0) }} Item):</div>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+              <div v-for="item in cart" :key="item.id || item.packageId || item.name" style="background: white; border: 2px solid #e5e7eb; padding: 6px 14px; border-radius: 8px; font-size: 14px; font-weight: 700; color: #374151; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                <span style="color: #059669;">{{ item.qty }}x</span> {{ item.name }}
               </div>
             </div>
           </div>
         </div>
         
-        <div class="ticket-footer" style="display: flex; gap: 10px;">
-          <button type="button" class="pm-btn-secondary" onclick="window.print()" style="margin-top: 0; flex: 1; border: 2px solid #f59e0b; color: #f59e0b; font-weight: 800; padding: 16px; border-radius: 8px; text-transform: uppercase;">CETAK TIKET</button>
-          <button type="button" class="pm-btn-primary" @click="closeTicketModal" style="margin-top: 0; flex: 1;">SELESAI</button>
+        <!-- Divider -->
+        <div class="voucher-divider" style="width: 2px; border-left: 3px dashed #cbd5e1; position: relative; background: #fff; z-index: 2;">
+          <!-- Top Cutout -->
+          <div style="position: absolute; top: -16px; left: -16px; width: 32px; height: 32px; background: rgba(0,0,0,0.6); border-radius: 50%; box-shadow: inset 0 -3px 6px rgba(0,0,0,0.2);"></div>
+          <!-- Bottom Cutout -->
+          <div style="position: absolute; bottom: -16px; left: -16px; width: 32px; height: 32px; background: rgba(0,0,0,0.6); border-radius: 50%; box-shadow: inset 0 3px 6px rgba(0,0,0,0.2);"></div>
         </div>
 
+        <!-- Right Side: QR Code -->
+        <div class="voucher-right" style="width: 240px; background: #064e3b; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 32px 20px; text-align: center; position: relative;">
+          <!-- decorative circle top right -->
+          <div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: rgba(255,255,255,0.05); border-radius: 50%;"></div>
+          
+          <h4 style="margin: 0 0 6px 0; font-size: 16px; font-weight: 900; letter-spacing: 1px;">KAMPUNG COKLAT</h4>
+          <div style="font-size: 12px; font-weight: 700; color: #a7f3d0; margin-bottom: 24px; letter-spacing: 0.5px;">OFFICIAL VOUCHER</div>
+          
+          <div style="color: #fbbf24; font-weight: 900; font-size: 18px; margin-bottom: 16px; border-bottom: 2px solid #fbbf24; padding-bottom: 6px; width: 80%;">E-TIKET</div>
+          
+          <div style="background: white; padding: 12px; border-radius: 16px; margin-bottom: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.2);">
+            <img :src="'https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=TIX-' + Math.floor(Math.random() * 1000000000)" alt="QR Code" style="width: 140px; height: 140px; display: block; border-radius: 4px;" />
+          </div>
+          
+          <div style="font-family: monospace; font-size: 18px; font-weight: 800; letter-spacing: 2px; margin-bottom: 24px;">
+            {{ bookingDate ? formatDate(bookingDate) : 'HARI INI' }}
+          </div>
+          
+          <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+            <div style="background: #d1fae5; color: #065f46; font-size: 13px; font-weight: 800; padding: 6px 16px; border-radius: 30px; display: flex; align-items: center; gap: 6px;">
+              <div style="width: 8px; height: 8px; background: #059669; border-radius: 50%;"></div> Aktif
+            </div>
+            <button onclick="window.print()" style="background: #f59e0b; color: #78350f; border: none; font-size: 13px; font-weight: 800; padding: 6px 16px; border-radius: 30px; cursor: pointer; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+               Cetak
+            </button>
+          </div>
+        </div>
       </div>
+      
+      <button @click="closeTicketModal" style="margin-top: 32px; background: rgba(255,255,255,0.1); border: 2px solid rgba(255,255,255,0.5); color: white; padding: 12px 40px; border-radius: 30px; font-weight: 800; font-size: 16px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.background='white'; this.style.color='#1f2937';" onmouseout="this.style.background='rgba(255,255,255,0.1)'; this.style.color='white';">Tutup E-Tiket</button>
     </div>
 </template>
 
@@ -1967,47 +2142,73 @@ const logout = () => {
 
 .ticket-footer { padding: 0 25px 25px 25px; background: #fff; }
 @media print {
-  @page { margin: 0; }
-  html, body { margin: 0; padding: 0; background: #fff; color: #000; height: auto !important; min-height: auto !important; overflow: visible !important; }
-  body * { visibility: hidden !important; }
-  .ticket-modal-container, .ticket-modal-container * { visibility: visible !important; color: #000 !important; }
-  
-  /* Reset container for thermal printer (approx 80mm / 300px width) */
-  .ticket-modal-container { 
-    position: absolute; left: 0; top: 0; margin: 0; padding: 5px; 
-    border: none; box-shadow: none; width: 100%; max-width: 300px; 
-    height: auto; background: #fff; border-radius: 0; 
+  @page { size: A4 landscape; margin: 0; }
+  *, *::before, *::after {
+    -webkit-print-color-adjust: exact !important; 
+    print-color-adjust: exact !important; 
+  }
+  html, body { 
+    margin: 0 !important; 
+    padding: 0 !important; 
+    background: #fff !important;
+    width: 297mm !important;
+    height: 210mm !important;
   }
   
-  /* Hide non-essential UI elements */
-  .ticket-footer, .pm-layout, .payment-modal-container, .ticket-success-check, .cutout-left, .cutout-right, .ticket-item-icon { display: none !important; }
+  /* Hide all root layout elements except the modal */
+  body > *:not(#__nuxt) { display: none !important; }
+  #__nuxt > *:not(.app-wrapper) { display: none !important; }
+  .app-wrapper > *:not(.modal-overlay) { display: none !important; }
+  .payment-modal-overlay { display: none !important; }
   
-  /* Compact Header */
-  .ticket-header { padding: 10px 0 5px 0 !important; background: transparent !important; color: #000 !important; text-align: center; }
-  .ticket-header h2 { font-size: 16px !important; margin: 0 0 2px 0 !important; color: #000 !important; }
-  .ticket-header p { font-size: 10px !important; margin: 0 !important; color: #000 !important; }
-
-  /* Compact Body */
-  .ticket-body { padding: 5px 0 !important; }
+  /* The overlay must strictly fill A4 size */
+  .modal-overlay { 
+    background: transparent !important; 
+    position: absolute !important; 
+    top: 0 !important;
+    left: 0 !important;
+    display: block !important;
+    width: 297mm !important;
+    height: 210mm !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    z-index: 9999 !important;
+  }
   
-  /* Smaller QR Code */
-  .ticket-qr-section { margin-bottom: 10px !important; text-align: center; }
-  .ticket-qr-image { width: 120px !important; height: 120px !important; border: none !important; box-shadow: none !important; margin: 0 auto; display: block; }
-  .ticket-scan-instruction { font-size: 10px !important; margin-top: 5px !important; }
-
-  /* Divider */
-  .ticket-divider { border-top: 1px dashed #000 !important; margin: 8px 0 !important; }
-
-  /* Ticket Details */
-  .ticket-details-section h3 { font-size: 12px !important; margin: 0 0 5px 0 !important; text-align: center; }
-  .ticket-items-list { max-height: none !important; gap: 4px !important; }
+  /* Hide UI text in overlay */
+  .modal-overlay > h2, .modal-overlay > button { display: none !important; }
   
-  /* Compact Items */
-  .ticket-item { padding: 4px 0 !important; background: transparent !important; border: none !important; border-bottom: 1px dotted #ccc !important; border-radius: 0 !important; align-items: center; justify-content: center; text-align: center; }
-  .ticket-item:last-child { border-bottom: none !important; }
-  .ticket-item-info { width: 100%; align-items: center; gap: 2px !important; }
-  .ticket-item-name { font-size: 12px !important; }
-  .ticket-item-qty { font-size: 10px !important; }
+  /* Force the ticket to exactly 297mm x 210mm */
+  .voucher-card { 
+    display: flex !important;
+    visibility: visible !important; 
+    position: static !important;
+    width: 297mm !important;
+    height: 210mm !important;
+    max-width: none !important;
+    max-height: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    transform: none !important;
+    page-break-inside: avoid !important;
+  }
+  
+  .voucher-left {
+    width: 65% !important;
+    height: 100% !important;
+    flex: none !important;
+  }
+  
+  .voucher-right {
+    width: 35% !important;
+    height: 100% !important;
+    flex: none !important;
+  }
+  
+  /* Hide web-only UI elements in the ticket */
+  button { display: none !important; }
 }
 
 /* Summary Card Styling */
@@ -2087,5 +2288,45 @@ const logout = () => {
 .detail-date strong {
   font-weight: 700;
   color: #b45309;
+}
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  
+  .modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: transparent !important;
+    backdrop-filter: none !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    padding: 0 !important;
+  }
+  
+  .voucher-card, .voucher-card * {
+    visibility: visible;
+  }
+  
+  .voucher-card {
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 0 !important;
+    box-shadow: none !important;
+    transform: none !important;
+    page-break-inside: avoid;
+  }
+  
+  /* Hide close button and text */
+  .modal-overlay > h2, 
+  .modal-overlay > button,
+  .voucher-right button {
+    display: none !important;
+  }
 }
 </style>

@@ -32,10 +32,10 @@ export class PosTransaction {
   @Column({ type: 'decimal', precision: 12, scale: 2 })
   total_amount: number;
 
-  @Column({ type: 'enum', enum: PaymentMethod })
+  @Column({ type: 'varchar' })
   payment_method: PaymentMethod;
 
-  @Column({ type: 'enum', enum: PaymentStatus, default: PaymentStatus.PAID })
+  @Column({ type: 'varchar', default: PaymentStatus.PAID })
   payment_status: PaymentStatus;
 
   @CreateDateColumn()

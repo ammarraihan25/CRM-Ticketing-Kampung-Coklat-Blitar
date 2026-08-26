@@ -139,7 +139,7 @@ const copyCode = (code) => {
               <button 
                 type="button" 
                 class="btn-detail-link"
-                @click="copyCode(v.code)"
+                @click="router.push({ path: '/ticketing_dan_gate/self-service', query: { voucher: v.code } })"
                 title="Gunakan Promo"
               >
                 <span>Gunakan Sekarang</span>

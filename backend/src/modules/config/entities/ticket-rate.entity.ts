@@ -13,7 +13,7 @@ export class TicketRate {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ type: 'enum', enum: TicketCategory, default: TicketCategory.GATE })
+  @Column({ type: 'varchar', default: TicketCategory.GATE })
   category: TicketCategory;
 
   @Column({ type: 'varchar', length: 100 })

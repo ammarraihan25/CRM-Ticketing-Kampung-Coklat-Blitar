@@ -562,13 +562,10 @@ function getTypeClass(type?: string) {
               <option value="b2b">B2B / Travel</option>
             </select>
 
-            <button type="button" class="btn-primary btn-sm" @click="openBlast">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21.2 15c.7-1.2 1-2.5.7-3.9-.6-2-2.4-3.5-4.4-3.5h-.6c-.2-.7-.5-1.4-1-2-1.5-1.8-3.9-2.4-6-1.5-1.8.8-3 2.5-3.1 4.4H6c-2.2 0-4 1.8-4 4 0 1.5.8 2.8 2 3.4" />
-                <path d="m9 18 3 3 3-3" />
-                <path d="M12 12v9" />
-              </svg>
-              <span>Blast WA Promo (UI Trigger)</span>
+            <button type="button" class="whatsapp-box-btn" @click="openBlast">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" class="box-wa-icon" />
+              <span>WA Blast Promo</span>
+              <span v-if="selected.length" class="box-wa-badge">{{ selected.length }}</span>
             </button>
           </div>
         </div>
@@ -649,6 +646,9 @@ function getTypeClass(type?: string) {
              <table class="report-table" style="width: 100%; border-collapse: collapse;">
                <thead>
                  <tr>
+                   <th style="padding: 10px; text-align: left; border-bottom: 1px solid #eee; width: 40px;">
+                     <!-- Optional: Select All for this event could be added here, but leaving blank is fine for simplicity -->
+                   </th>
                    <th style="padding: 10px; text-align: left; border-bottom: 1px solid #eee;">Nama Lengkap</th>
                    <th style="padding: 10px; text-align: left; border-bottom: 1px solid #eee;">WhatsApp</th>
                    <th style="padding: 10px; text-align: left; border-bottom: 1px solid #eee;">Domisili</th>
@@ -657,6 +657,13 @@ function getTypeClass(type?: string) {
                </thead>
                <tbody>
                  <tr v-for="member in selectedEvent.members" :key="member.id">
+                   <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: center;">
+                     <input 
+                       type="checkbox" 
+                       :checked="selected.includes(member.id)" 
+                       @change="toggleGuestBookRecord(member.id)"
+                     >
+                   </td>
                    <td style="padding: 10px; border-bottom: 1px solid #eee;">{{ member.nama }}</td>
                    <td style="padding: 10px; border-bottom: 1px solid #eee;" class="font-mono text-cocoa font-bold">{{ formatWhatsApp(member.whatsapp) }}</td>
                    <td style="padding: 10px; border-bottom: 1px solid #eee;">{{ member.domisili || '-' }}</td>
@@ -670,8 +677,8 @@ function getTypeClass(type?: string) {
           </div>
           <div class="modal-footer" style="margin-top: 10px;">
             <button class="btn-sm" style="background: white; color: #6B5A52; border: 1px solid #E5E7EB; border-radius: 6px; cursor: pointer; padding: 0 16px; font-weight: 600;" @click="closeEventDetail">Tutup</button>
-            <button class="btn-primary btn-sm" style="border-radius: 6px; padding: 0 16px; background: #25D366; border: none; color: white; display: flex; align-items: center; gap: 6px; font-weight: 600; cursor: pointer;" @click="selected = Array.from(new Set([...selected, ...selectedEvent.members.map(m => m.id)])); closeEventDetail(); openBlast();">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg> Kirim WhatsApp ke Semua
+            <button class="btn-primary btn-sm" style="border-radius: 6px; padding: 0 16px; background: #25D366; border: none; color: white; display: flex; align-items: center; gap: 6px; font-weight: 600; cursor: pointer;" @click="closeEventDetail(); openBlast();">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg> Kirim WA ke Terpilih
             </button>
           </div>
         </div>
@@ -683,24 +690,12 @@ function getTypeClass(type?: string) {
     <CrmBlastConfirmModul
       :show="showBlastModal"
       :target-ids="selected"
-      :entries="entries"
+      :members="entries"
       @close="showBlastModal = false"
       @sent="handleBlastSent"
     />
 
-    <!-- FAB WhatsApp Blast -->
-    <button
-      class="fab-whatsapp-blast"
-      @click="openBlast"
-    >
-      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" class="fab-icon" />
-      <span
-        v-if="selected.length"
-        class="fab-badge"
-      >
-        {{ selected.length }}
-      </span>
-    </button>
+    <!-- FAB Removed -->
 
   </div>
 </template>
@@ -1795,46 +1790,47 @@ th,
   letter-spacing: -0.3px;
 }
 
-/* WhatsApp FAB */
-.fab-whatsapp-blast {
-  position: fixed;
-  bottom: 40px;
-  right: 40px;
-  width: 65px;
-  height: 65px;
+/* WhatsApp Box Button */
+.whatsapp-box-btn {
+  height: 38px;
+  padding: 0 16px;
   background-color: #25D366;
-  border-radius: 50%;
+  color: white;
+  border-radius: 8px;
   border: none;
-  box-shadow: 0 6px 16px rgba(37, 211, 102, 0.4);
+  box-shadow: 0 4px 10px rgba(37, 211, 102, 0.2);
   cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: center;
-  z-index: 1000;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  position: relative;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  flex-shrink: 0;
 }
 
-.fab-whatsapp-blast:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.5);
+.whatsapp-box-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(37, 211, 102, 0.35);
 }
 
-.fab-icon {
-  width: 36px;
-  height: 36px;
+.box-wa-icon {
+  width: 18px;
+  height: 18px;
 }
 
-.fab-badge {
+.box-wa-badge {
   position: absolute;
-  top: -4px;
-  right: -4px;
+  top: -6px;
+  right: -6px;
   background-color: #EF4444;
   color: white;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 800;
-  min-width: 22px;
-  height: 22px;
-  border-radius: 11px;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;

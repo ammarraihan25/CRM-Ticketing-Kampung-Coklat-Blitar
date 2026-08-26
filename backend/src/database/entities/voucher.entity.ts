@@ -24,13 +24,13 @@ export class Voucher {
   @JoinColumn({ name: 'whatsapp', referencedColumnName: 'whatsapp' })
   member!: Member;
 
-  @Column({ type: 'enum', enum: VoucherType })
+  @Column({ type: 'varchar' })
   voucher_type!: VoucherType;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   benefit_value!: number;
 
-  @Column({ type: 'enum', enum: StatusClaim, default: StatusClaim.ISSUED })
+  @Column({ type: 'varchar', default: StatusClaim.ISSUED })
   status_claim!: StatusClaim;
 
   @Column({ type: 'date' })

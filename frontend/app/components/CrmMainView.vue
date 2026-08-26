@@ -500,13 +500,10 @@ function getTypeClass(type?: string) {
               <option value="PT">PT - Pengunjung Tour B2B</option>
             </select>
 
-            <button type="button" class="btn-primary btn-sm" @click="openBlast">
-              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21.2 15c.7-1.2 1-2.5.7-3.9-.6-2-2.4-3.5-4.4-3.5h-.6c-.2-.7-.5-1.4-1-2-1.5-1.8-3.9-2.4-6-1.5-1.8.8-3 2.5-3.1 4.4H6c-2.2 0-4 1.8-4 4 0 1.5.8 2.8 2 3.4" />
-                <path d="m9 18 3 3 3-3" />
-                <path d="M12 12v9" />
-              </svg>
-              <span>Blast WA Promo (UI Trigger)</span>
+            <button type="button" class="whatsapp-box-btn" @click="openBlast">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" class="box-wa-icon" />
+              <span>WA Blast Promo</span>
+              <span v-if="selected.length" class="box-wa-badge">{{ selected.length }}</span>
             </button>
           </div>
         </div>
@@ -657,19 +654,7 @@ function getTypeClass(type?: string) {
       @sent="handleBlastSent"
     />
 
-    <!-- FAB WhatsApp Blast -->
-    <button
-      class="fab-whatsapp-blast"
-      @click="openBlast"
-    >
-      <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" class="fab-icon" />
-      <span
-        v-if="selected.length"
-        class="fab-badge"
-      >
-        {{ selected.length }}
-      </span>
-    </button>
+    <!-- FAB Removed -->
 
   </div>
 </template>
@@ -1764,46 +1749,47 @@ th,
   letter-spacing: -0.3px;
 }
 
-/* WhatsApp FAB */
-.fab-whatsapp-blast {
-  position: fixed;
-  bottom: 40px;
-  right: 40px;
-  width: 65px;
-  height: 65px;
+/* WhatsApp Box Button */
+.whatsapp-box-btn {
+  height: 38px;
+  padding: 0 16px;
   background-color: #25D366;
-  border-radius: 50%;
+  color: white;
+  border-radius: 8px;
   border: none;
-  box-shadow: 0 6px 16px rgba(37, 211, 102, 0.4);
+  box-shadow: 0 4px 10px rgba(37, 211, 102, 0.2);
   cursor: pointer;
   display: flex;
   align-items: center;
-  justify-content: center;
-  z-index: 1000;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 13px;
+  position: relative;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  flex-shrink: 0;
 }
 
-.fab-whatsapp-blast:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 24px rgba(37, 211, 102, 0.5);
+.whatsapp-box-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px rgba(37, 211, 102, 0.35);
 }
 
-.fab-icon {
-  width: 36px;
-  height: 36px;
+.box-wa-icon {
+  width: 18px;
+  height: 18px;
 }
 
-.fab-badge {
+.box-wa-badge {
   position: absolute;
-  top: -4px;
-  right: -4px;
+  top: -6px;
+  right: -6px;
   background-color: #EF4444;
   color: white;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: 800;
-  min-width: 22px;
-  height: 22px;
-  border-radius: 11px;
+  min-width: 20px;
+  height: 20px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;

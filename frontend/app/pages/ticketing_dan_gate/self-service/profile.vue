@@ -1,14 +1,13 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
-import { useState } from '#app'
 
 definePageMeta({
   layout: false,
   middleware: [
     function (to, from) {
-      const isUserLoggedIn = useState('selfServiceAuth', () => false)
-      if (!isUserLoggedIn.value) {
+      const authCookie = useCookie('selfServiceAuth')
+      if (authCookie.value !== 'true') {
         return navigateTo('/ticketing_dan_gate/self-service/login')
       }
     }
@@ -16,12 +15,12 @@ definePageMeta({
 })
 
 const router = useRouter()
-const isUserLoggedIn = useState('selfServiceAuth', () => false)
-const savedUserName = useState('selfServiceUserName', () => 'Sobat Coklat')
+const authCookie = useCookie('selfServiceAuth')
+const userCookie = useCookie('selfServiceUserName')
 
-const userName = ref(savedUserName.value)
-const userEmail = useState('selfServiceUserEmail', () => `${userName.value.toLowerCase().replace(/\s/g, '')}@gmail.com`)
-const userPhone = useState('selfServiceUserPhone', () => '+62 812-3456-7890')
+const userName = ref(userCookie.value || 'Sobat Coklat')
+const userEmail = ref(`${userName.value.toLowerCase().replace(/\s/g, '')}@gmail.com`)
+const userPhone = ref('+62 812-3456-7890')
 
 const activeMemberships = useState<string[]>('selfServiceMembership', () => [])
 const membershipType = computed(() => {
@@ -30,7 +29,7 @@ const membershipType = computed(() => {
 })
 
 const logout = () => {
-  isUserLoggedIn.value = false
+  authCookie.value = 'false'
   router.push('/ticketing_dan_gate/self-service/login')
 }
 
