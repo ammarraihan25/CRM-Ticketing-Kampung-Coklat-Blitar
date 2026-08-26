@@ -29,7 +29,7 @@ export class Ride {
   @Column({ type: 'boolean', default: false })
   isFreeTerusan: boolean;
 
-  @Column({ type: 'enum', enum: RideStatus, default: RideStatus.BUKA })
+  @Column({ type: 'varchar', default: RideStatus.BUKA })
   status: RideStatus;
 
   @Column({ type: 'int', default: 1 })
@@ -44,7 +44,7 @@ export class Ride {
   @Column({ type: 'int', default: 0 })
   playedToday: number;
 
-  @Column({ type: 'enum', enum: RideCategory, default: RideCategory.TERUSAN })
+  @Column({ type: 'varchar', default: RideCategory.TERUSAN })
   category: RideCategory;
 
   @CreateDateColumn()

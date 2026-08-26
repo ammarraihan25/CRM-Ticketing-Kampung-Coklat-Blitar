@@ -8,7 +8,8 @@ definePageMeta({
 })
 
 const router = useRouter()
-const isUserLoggedIn = useState('selfServiceAuth', () => false)
+const authCookie = useCookie('selfServiceAuth')
+const userCookie = useCookie('selfServiceUserName')
 
 const form = ref({
   name: '',
@@ -29,7 +30,9 @@ const handleRegister = () => {
   isLoading.value = true
   setTimeout(() => {
     isLoading.value = false
-    isUserLoggedIn.value = true
+    authCookie.value = 'true'
+    userCookie.value = form.value.name || 'Sobat Coklat'
+    
     router.push('/ticketing_dan_gate/self-service')
   }, 1000)
 }

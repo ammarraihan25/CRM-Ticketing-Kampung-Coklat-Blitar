@@ -32,7 +32,7 @@ export class Booking {
   @Column({ type: 'decimal', precision: 12, scale: 2, default: 0 })
   dp_amount!: number;
 
-  @Column({ type: 'enum', enum: BookingStatus, default: BookingStatus.PENDING })
+  @Column({ type: 'varchar', default: BookingStatus.PENDING })
   status!: BookingStatus;
 
   @CreateDateColumn()

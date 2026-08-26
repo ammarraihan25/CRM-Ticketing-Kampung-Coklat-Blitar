@@ -8,7 +8,8 @@ definePageMeta({
 })
 
 const router = useRouter()
-const isUserLoggedIn = useState('selfServiceAuth', () => false)
+const authCookie = useCookie('selfServiceAuth')
+const userCookie = useCookie('selfServiceUserName')
 
 const email = ref('')
 const password = ref('')
@@ -18,11 +19,11 @@ const handleLogin = () => {
   isLoading.value = true
   setTimeout(() => {
     isLoading.value = false
-    isUserLoggedIn.value = true
+    authCookie.value = 'true'
     
     // Set username from email (before @)
     const username = email.value ? email.value.split('@')[0] : 'Sobat Coklat'
-    useState('selfServiceUserName').value = username
+    userCookie.value = username
     
     router.push('/ticketing_dan_gate/self-service')
   }, 1000)

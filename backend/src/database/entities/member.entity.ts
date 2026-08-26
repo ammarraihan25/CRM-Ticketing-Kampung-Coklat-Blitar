@@ -25,10 +25,10 @@ export class Member {
   @Column({ type: 'varchar', length: 100, nullable: true })
   domisili: string;
 
-  @Column({ type: 'enum', enum: TipeMember, default: TipeMember.REGULER })
+  @Column({ type: 'varchar', default: TipeMember.REGULER })
   tipeMember: TipeMember;
 
-  @Column({ type: 'enum', enum: MemberStatus, default: MemberStatus.AKTIF })
+  @Column({ type: 'varchar', default: MemberStatus.AKTIF })
   status: MemberStatus;
 
   @Column({ type: 'decimal', precision: 12, scale: 2, default: 0 })

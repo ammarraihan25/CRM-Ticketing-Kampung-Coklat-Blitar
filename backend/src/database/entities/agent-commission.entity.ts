@@ -24,13 +24,13 @@ export class AgentCommission {
   @JoinColumn({ name: 'whatsapp', referencedColumnName: 'whatsapp' })
   agent!: Member;
 
-  @Column({ type: 'enum', enum: CommissionTrxType })
+  @Column({ type: 'varchar' })
   trx_type!: CommissionTrxType;
 
   @Column({ type: 'decimal', precision: 12, scale: 2 })
   amount!: number;
 
-  @Column({ type: 'enum', enum: CommissionStatus, default: CommissionStatus.PENDING })
+  @Column({ type: 'varchar', default: CommissionStatus.PENDING })
   status!: CommissionStatus;
 
   @CreateDateColumn()

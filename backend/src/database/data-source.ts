@@ -8,12 +8,8 @@ import { join } from 'path';
 dotenv.config();
 
 export const dataSourceOptions: DataSourceOptions & SeederOptions = {
-  type: 'postgres',
-  host: process.env.DB_HOST || 'localhost',
-  port: parseInt(process.env.DB_PORT || '5432', 10),
-  username: process.env.DB_USER || 'postgres',
-  password: process.env.DB_PASSWORD || '',
-  database: process.env.DB_NAME || 'kampung_coklat',
+  type: 'better-sqlite3' as any,
+  database: 'kampung_coklat.sqlite',
   entities: [
     join(__dirname, 'entities', '*.entity{.ts,.js}'),
     join(__dirname, '..', 'crm', 'entities', '*.entity{.ts,.js}'),
@@ -21,7 +17,7 @@ export const dataSourceOptions: DataSourceOptions & SeederOptions = {
   ],
   migrations: [join(__dirname, 'migrations', '*{.ts,.js}')],
   seeds: [join(__dirname, 'seeds', '*.seeder{.ts,.js}')],
-  synchronize: false, // DO NOT USE TRUE IN PRODUCTION! Use migrations instead.
+  synchronize: true, // Auto-create tables for SQLite ease
 };
 
 const dataSource = new DataSource(dataSourceOptions);

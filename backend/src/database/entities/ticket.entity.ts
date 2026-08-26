@@ -26,9 +26,9 @@ export class Ticket {
   @Column({ type: 'varchar', length: 20 })
   paket_id: string;
 
-  @Column({ type: 'enum', enum: StatusTiket, default: StatusTiket.ACTIVE })
+  @Column({ type: 'varchar', default: StatusTiket.ACTIVE })
   status_tiket: StatusTiket;
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'datetime' })
   valid_until: Date;
 }
