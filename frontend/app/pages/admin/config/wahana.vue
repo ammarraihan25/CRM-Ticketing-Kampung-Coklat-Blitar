@@ -44,17 +44,16 @@
             <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
             <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
           </svg>
-          <span>Total {{ ridesList.length }} wahana terdaftar</span>
+          <span>Total {{ filteredRides.length }} wahana terdaftar</span>
         </div>
 
         <div class="control-bar-right">
           <!-- Category Select Pill -->
           <div class="category-dropdown-wrapper">
             <select v-model="rideFilterCategory" class="category-select-pill">
-              <option value="ALL">Semua Kategori Wahana</option>
-              <option value="terusan">Free Tiket Terusan</option>
-              <option value="paid">Tiket Satuan (Add-on)</option>
-              <option value="water">Wahana Air &amp; Kolam</option>
+              <option value="ALL">Semua Kategori</option>
+              <option value="wahana">Fasilitas Wahana</option>
+              <option value="venue">Sewa Tempat</option>
             </select>
             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" class="select-chevron">
               <polyline points="6 9 12 15 18 9"/>
@@ -255,57 +254,16 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, reactive } from 'vue'
-import { useAuth } from '~/composables/useAuth'
+import { useConfigSync } from '~/composables/useConfigSync'
+import { toRaw, computed, ref, reactive } from 'vue'
 import logoImg from '~/assets/assets_POS/KAMPUNGCOKLAT.png'
-
-// Wahana
-import imgAnimalFeeding from '~/assets/assets_POS/POS/wahana/Animal-Feeding_idr.2k.jpg'
-import imgAnimalToys from '~/assets/assets_POS/POS/wahana/animal_toys_idr.15k_freeterusan.png'
-import imgAtv from '~/assets/assets_POS/POS/wahana/atv_idr.25k.jpg'
-import imgBomBomCar from '~/assets/assets_POS/POS/wahana/bom-bom-car_idr.15k_freeterusan.png'
-import imgFlyingFox from '~/assets/assets_POS/POS/wahana/flying-fox_idr.20k.jpg'
-import imgGolfCar from '~/assets/assets_POS/POS/wahana/golf_car_idr.25k.jpg'
-import imgIstanaBalon from '~/assets/assets_POS/POS/wahana/Istana_Balon_idr.10k_freeterusan.png'
-import imgKarausel from '~/assets/assets_POS/POS/wahana/Karausel_idr.15k.png'
-import imgKeretaMonorel from '~/assets/assets_POS/POS/wahana/kereta_monorel_idr.15k_free-terusan.png'
-import imgKeretaLokomotif from '~/assets/assets_POS/POS/wahana/kereta_lokomotif_idr.15k_freeterusan.jpg'
-import imgKolamAnak from '~/assets/assets_POS/POS/wahana/kolam_renang_anak_idr.10k_freeterusan.png'
-import imgKolamDewasa from '~/assets/assets_POS/POS/wahana/kolam_renang_dewasa_idr.10k_freeterusan.jpg'
-import imgMiniGolf from '~/assets/assets_POS/POS/wahana/Mini-Golf_idr.15k_freeterusan.jpg'
-import imgPerahuCeria from '~/assets/assets_POS/POS/wahana/Perahu_ceria_idr.10k_freeterusan.jpg'
-import imgPlayground from '~/assets/assets_POS/POS/wahana/Playground_B_idr.15k_freeterusan.jpg'
-import imgSepedaListrik from '~/assets/assets_POS/POS/wahana/sepeda_listrik_idr.35k.png'
-import imgTerapiIkan from '~/assets/assets_POS/POS/wahana/terapi_ikan_idr.5k_freeterusan.jpg'
-import imgTrampolin from '~/assets/assets_POS/POS/wahana/Trampolin_idr.10k_freeterusan.jpg'
-
-// Sewa Tempat
-import imgBaleCoklat from '~/assets/assets_POS/POS/sewa_tempat/bale_coklat.jpg'
-import imgCoklatCaffe from '~/assets/assets_POS/POS/sewa_tempat/coklat_caffe.jpg'
-import imgCoklatGarden from '~/assets/assets_POS/POS/sewa_tempat/coklat_garden.jpg'
-import imgJogloJatimarto from '~/assets/assets_POS/POS/sewa_tempat/joglo_jatimarto.jpg'
-import imgKampungCoklatHall from '~/assets/assets_POS/POS/sewa_tempat/kampung_coklat_hall.jpg'
-import imgPBK from '~/assets/assets_POS/POS/sewa_tempat/private_business_keep(PBK).png'
-import imgRuangPertemuan from '~/assets/assets_POS/POS/sewa_tempat/ruang_pertemuan_R1.jpeg'
-import imgTamanEdel from '~/assets/assets_POS/POS/sewa_tempat/taman_edel.png'
-import imgTheobromine from '~/assets/assets_POS/POS/sewa_tempat/theobromine_hall.jpg'
-import imgTrinitario from '~/assets/assets_POS/POS/sewa_tempat/trinitario_hall.jpg'
-import imgWismaCriollo from '~/assets/assets_POS/POS/sewa_tempat/wisma_criollo.jpg'
-
-// Paket Edukasi
-import imgEdukasiTK from '~/assets/assets_POS/POS/paket_edukasi/FLYER-PAKET-TK-PAUD.png'
-import imgEdukasiSD from '~/assets/assets_POS/POS/paket_edukasi/FLYER-PAKET-SD.png'
-import imgEdukasiSMP from '~/assets/assets_POS/POS/paket_edukasi/FLYER-PAKET-SMP.png'
-import imgEdukasiSMA from '~/assets/assets_POS/POS/paket_edukasi/FLYER-PAKET-SMA-UNIV-1.png'
-
-// Generic
-import imgPaketMajlis from '~/assets/tickets/paket_majlis.jpg'
 
 definePageMeta({
   layout: 'admin'
 })
 
 const { user, canManageConfig } = useAuth()
+const { ticketRates, rides: ridesList, refetch: fetchConfig } = useConfigSync()
 
 const viewMode = ref<'grid' | 'list'>('grid')
 const rideFilterCategory = ref('ALL')
@@ -315,415 +273,32 @@ const isEditingRide = ref(false)
 
 const activeTicketCategory = ref('gate')
 
-// 1. Ticket Rates Data (Per Jenis Tiket)
-interface TicketRate {
-  id: string
-  category: 'gate' | 'wahana' | 'venue' | 'edukasi' | 'rombongan'
-  name: string
-  imageUrl: string
-  price: number
-  description: string
-  isActive: boolean
-}
-
-const ticketRates = ref<TicketRate[]>([
-  // Gate
-  {
-    id: 'gate-1', category: 'gate', name: 'Tiket Reguler', imageUrl: imgKolamAnak,
-    price: 20000, description: '[PROMO] WEEKDAY\nAkses masuk area wisata Kampung Coklat. Menikmati indahnya kebun kakao dan edukasi dasar.', isActive: true
-  },
-  {
-    id: 'gate-2', category: 'gate', name: 'Tiket Terusan', imageUrl: imgKeretaLokomotif,
-    price: 75000, description: 'ALL ACCESS\nAkses masuk bebas + 5 Wahana Pilihan sepuasnya untuk pengalaman liburan tanpa batas.', isActive: true
-  },
-
-  // Wahana
-  {
-    id: 'wh-1', category: 'wahana', name: 'Animal Feeding', imageUrl: imgAnimalFeeding,
-    price: 2000, description: 'Bermain sambil belajar dan berinteraksi langsung dengan hewan-hewan lucu.', isActive: true
-  },
-  {
-    id: 'wh-2', category: 'wahana', name: 'Animal Toys', imageUrl: imgAnimalToys,
-    price: 15000, description: 'Mainan hewan tunggang yang seru untuk anak-anak mengelilingi area.', isActive: true
-  },
-  {
-    id: 'wh-3', category: 'wahana', name: 'ATV Ride', imageUrl: imgAtv,
-    price: 25000, description: 'Pacu adrenalin Anda di lintasan ATV Kampung Coklat yang menantang.', isActive: true
-  },
-  {
-    id: 'wh-4', category: 'wahana', name: 'Bom-Bom Car', imageUrl: imgBomBomCar,
-    price: 15000, description: 'Mobil listrik tabrakan di arena dengan helm anak & dewasa.', isActive: true
-  },
-  {
-    id: 'wh-5', category: 'wahana', name: 'Flying Fox', imageUrl: imgFlyingFox,
-    price: 20000, description: 'Wahana seluncur tali melintasi kebun kakao.', isActive: true
-  },
-  {
-    id: 'wh-6', category: 'wahana', name: 'Golf Car', imageUrl: imgGolfCar,
-    price: 25000, description: 'Sewa mobil golf keliling area wisata dengan supir.', isActive: true
-  },
-  {
-    id: 'wh-7', category: 'wahana', name: 'Istana Balon', imageUrl: imgIstanaBalon,
-    price: 10000, description: 'Wahana balon raksasa untuk anak-anak melompat & bermain.', isActive: true
-  },
-  {
-    id: 'wh-8', category: 'wahana', name: 'Karausel', imageUrl: imgKarausel,
-    price: 15000, description: 'Wahana kuda putar klasik yang disukai anak-anak.', isActive: true
-  },
-  {
-    id: 'wh-9', category: 'wahana', name: 'Kereta Monorel', imageUrl: imgKeretaMonorel,
-    price: 15000, description: 'Menikmati pemandangan kebun dari atas monorel.', isActive: true
-  },
-  {
-    id: 'wh-10', category: 'wahana', name: 'Kereta Thomas', imageUrl: imgKeretaLokomotif,
-    price: 10000, description: 'Wahana kereta rel mini untuk anak-anak.', isActive: true
-  },
-  {
-    id: 'wh-11', category: 'wahana', name: 'Kolam Renang Anak', imageUrl: imgKolamAnak,
-    price: 10000, description: 'Kolam renang dangkal untuk anak-anak bermain air.', isActive: true
-  },
-  {
-    id: 'wh-12', category: 'wahana', name: 'Kolam Renang Dewasa', imageUrl: imgKolamDewasa,
-    price: 15000, description: 'Kolam renang dewasa dengan fasilitas lengkap.', isActive: true
-  },
-  {
-    id: 'wh-13', category: 'wahana', name: 'Mini Golf', imageUrl: imgMiniGolf,
-    price: 15000, description: 'Bermain golf mini di lapangan hijau buatan.', isActive: true
-  },
-  {
-    id: 'wh-14', category: 'wahana', name: 'Perahu Ceria', imageUrl: imgPerahuCeria,
-    price: 10000, description: 'Wahana perahu kayu melintasi kolam buatan.', isActive: true
-  },
-  {
-    id: 'wh-15', category: 'wahana', name: 'Playground', imageUrl: imgPlayground,
-    price: 15000, description: 'Area bermain anak dengan berbagai macam permainan.', isActive: true
-  },
-  {
-    id: 'wh-16', category: 'wahana', name: 'Sepeda Listrik', imageUrl: imgSepedaListrik,
-    price: 35000, description: 'Sewa sepeda listrik berkeliling area wisata.', isActive: true
-  },
-  {
-    id: 'wh-17', category: 'wahana', name: 'Terapi Ikan', imageUrl: imgTerapiIkan,
-    price: 5000, description: 'Terapi ikan garra rufa untuk kesehatan kulit kaki.', isActive: true
-  },
-  {
-    id: 'wh-18', category: 'wahana', name: 'Trampolin', imageUrl: imgTrampolin,
-    price: 10000, description: 'Wahana trampolin untuk melompat bebas.', isActive: true
-  },
-
-  // Venue
-  {
-    id: 'vn-1', category: 'venue', name: 'Bale Coklat', imageUrl: imgBaleCoklat,
-    price: 500000, description: 'Area semi-outdoor yang luas, cocok untuk gathering komunitas atau acara santai keluarga besar.', isActive: true
-  },
-  {
-    id: 'vn-2', category: 'venue', name: 'Coklat Caffe', imageUrl: imgCoklatCaffe,
-    price: 300000, description: 'Kafe bernuansa alam untuk acara bersantai atau kumpul komunitas.', isActive: true
-  },
-  {
-    id: 'vn-3', category: 'venue', name: 'Coklat Garden', imageUrl: imgCoklatGarden,
-    price: 400000, description: 'Area taman terbuka yang hijau, ideal untuk pesta kebun atau acara outdoor.', isActive: true
-  },
-  {
-    id: 'vn-4', category: 'venue', name: 'Joglo Jatimarto', imageUrl: imgJogloJatimarto,
-    price: 750000, description: 'Pendopo tradisional bernuansa klasik Jawa untuk acara keluarga atau pertemuan.', isActive: true
-  },
-  {
-    id: 'vn-5', category: 'venue', name: 'Kampung Coklat Hall', imageUrl: imgKampungCoklatHall,
-    price: 1500000, description: 'Ruangan indoor eksklusif untuk acara besar pernikahan atau seminar perusahaan.', isActive: true
-  },
-  {
-    id: 'vn-6', category: 'venue', name: 'Private Business Room (PBR)', imageUrl: imgPBK,
-    price: 1000000, description: 'Ruang pertemuan VIP eksklusif untuk rapat bisnis dan negosiasi.', isActive: true
-  },
-  {
-    id: 'vn-7', category: 'venue', name: 'Ruang Pertemuan R1', imageUrl: imgRuangPertemuan,
-    price: 500000, description: 'Ruang rapat skala menengah dengan fasilitas meeting lengkap.', isActive: true
-  },
-  {
-    id: 'vn-8', category: 'venue', name: 'Taman Edel', imageUrl: imgTamanEdel,
-    price: 350000, description: 'Taman eksotis dengan pepohonan rindang untuk acara santai bersama keluarga.', isActive: true
-  },
-  {
-    id: 'vn-9', category: 'venue', name: 'Theobromine Hall', imageUrl: imgTheobromine,
-    price: 1200000, description: 'Hall megah dengan arsitektur menawan untuk perayaan atau konferensi.', isActive: true
-  },
-  {
-    id: 'vn-10', category: 'venue', name: 'Trinitario Hall', imageUrl: imgTrinitario,
-    price: 2000000, description: 'Hall paling luas dan premium dengan dekorasi mewah untuk resepsi.', isActive: true
-  },
-  {
-    id: 'vn-11', category: 'venue', name: 'Wisma Criollo', imageUrl: imgWismaCriollo,
-    price: 850000, description: 'Gedung pertemuan eksklusif bernuansa elegan untuk acara VIP atau korporat.', isActive: true
-  },
-
-  // Edukasi
-  {
-    id: 'ed-1', category: 'edukasi', name: 'Paket Edukasi TK / PAUD', imageUrl: imgEdukasiTK,
-    price: 35000, description: 'Paket Reguler:\n• Pembelajaran Mendalam: Rp 38.000/pax\n• Kokurikuler (Binatang/Tumbuhan): Rp 39.000/pax\n• Fun Cooking: Rp 35.000/pax\n\nPaket Kemah Ceria Prasiaga:\n• Kemah Ceria 1: Rp 50.000 | 2: Rp 37.000 | 3: Rp 32.000\n\nPaket Outbound:\n• Criollo Fun & Edu (P1-P3): Rp 47.000 - Rp 97.000\n• Theo Fun Outbound (P1-P5): Rp 103.000 - Rp 152.000', isActive: true
-  },
-  {
-    id: 'ed-2', category: 'edukasi', name: 'Paket Edukasi SD', imageUrl: imgEdukasiSD,
-    price: 32000, description: 'Paket Reguler:\n• Santripreneur: Rp 32.000/pax\n• Industri Coklat: Rp 35.000/pax\n• Pembelajaran Mendalam: Rp 38.000/pax\n• Fun Cooking: Rp 35.000/pax\n\nPaket Outbound:\n• Criollo Fun & Edu (P1-P3): Rp 47.000 - Rp 97.000\n• Theo Fun Outbound (P1-P5): Rp 103.000 - Rp 152.000', isActive: true
-  },
-  {
-    id: 'ed-3', category: 'edukasi', name: 'Paket Edukasi SMP', imageUrl: imgEdukasiSMP,
-    price: 32000, description: 'Paket Reguler:\n• Santripreneur: Rp 32.000/pax | Industri Coklat: Rp 35.000/pax\n• Kewirausahaan: Rp 37.000/pax | Fun Cooking: Rp 35.000/pax\n• Pembelajaran Mendalam: Rp 40.000/pax\n\nPaket LDKS:\n• Paket A: Rp 165.000 | Paket B: Rp 155.000 | Paket C: Rp 85.000\n\nPaket Outbound:\n• Criollo (P1-P3): Rp 47.000 - Rp 97.000\n• Theo (P1-P5): Rp 103.000 - Rp 152.000', isActive: true
-  },
-  {
-    id: 'ed-4', category: 'edukasi', name: 'Paket Edukasi SMA / Mahasiswa', imageUrl: imgEdukasiSMA,
-    price: 32000, description: 'Paket Reguler:\n• Santripreneur: Rp 32.000/pax | Industri Coklat: Rp 35.000/pax\n• Kewirausahaan: Rp 37.000/pax | Fun Cooking: Rp 35.000/pax\n• Pembelajaran Mendalam: Rp 40.000/pax\n\nPaket LDKS:\n• Paket A: Rp 165.000 | Paket B: Rp 155.000 | Paket C: Rp 85.000\n\nPaket Outbound:\n• Criollo (P1-P3): Rp 47.000 - Rp 97.000\n• Theo (P1-P5): Rp 103.000 - Rp 152.000', isActive: true
-  },
-
-  // Rombongan
-  {
-    id: 'rom-1', category: 'rombongan', name: 'Booking Rombongan Agen', imageUrl: imgPaketMajlis,
-    price: 0, description: 'Pilih tiket khusus rombongan dengan harga berjenjang (tier) berdasarkan jumlah Pax.\n\nFormulir Input Pax dan perhitungan tier harga otomatis akan ditampilkan di sini.', isActive: true
-  }
-])
-
-const getCategoryName = (cat: string) => {
-  switch (cat) {
-    case 'gate': return 'Tiket Masuk (Gate)'
-    case 'wahana': return 'Fasilitas Wahana'
-    case 'venue': return 'Sewa Tempat'
-    case 'edukasi': return 'Wisata Edukasi'
-    case 'rombongan': return 'Booking Rombongan'
-    default: return 'Lainnya'
-  }
-}
-
-const filteredTicketRates = computed(() => {
-  return ticketRates.value.filter(t => t.category === activeTicketCategory.value)
-})
-
-const selectedTicket = ref<TicketRate | null>(null)
-const ticketForm = reactive({
-  name: '',
-  category: 'gate' as 'gate' | 'wahana' | 'venue' | 'edukasi' | 'rombongan',
-  price: 20000,
-  description: '',
-  isActive: true
-})
-
-const openAddTicketModal = () => {
-  selectedTicket.value = null
-  ticketForm.name = ''
-  ticketForm.category = activeTicketCategory.value as 'gate' | 'wahana' | 'venue' | 'edukasi' | 'rombongan'
-  ticketForm.price = 0
-  ticketForm.description = ''
-  ticketForm.isActive = true
-  showTicketModal.value = true
-}
-
-const editTicketPrice = (ticket: TicketRate) => {
-  selectedTicket.value = ticket
-  ticketForm.name = ticket.name
-  ticketForm.category = ticket.category
-  ticketForm.price = ticket.price
-  ticketForm.description = ticket.description
-  ticketForm.isActive = ticket.isActive
-  showTicketModal.value = true
-}
-
-const saveTicketPrice = () => {
-  if (selectedTicket.value) {
-    selectedTicket.value.name = ticketForm.name
-    selectedTicket.value.category = ticketForm.category
-    selectedTicket.value.price = ticketForm.price
-    selectedTicket.value.description = ticketForm.description
-    selectedTicket.value.isActive = ticketForm.isActive
-  } else {
-    ticketRates.value.push({
-      id: `custom-${Date.now()}`,
-      category: ticketForm.category,
-      name: ticketForm.name,
-      imageUrl: imgTicketReguler,
-      price: ticketForm.price,
-      description: ticketForm.description,
-      isActive: ticketForm.isActive
-    })
-  }
-  showTicketModal.value = false
-}
-
-// 2. Rides Catalog Data
-interface RideItem {
-  id: string
-  name: string
-  imageUrl: string
-  price: number
-  isFreeTerusan: boolean
-  status: 'BUKA' | 'MAINTENANCE' | 'TUTUP'
-  capacity: number
-  duration: string
-  description: string
-  playedToday: number
-  category: 'terusan' | 'paid' | 'water'
-}
-
-const ridesList = ref<RideItem[]>([
-  {
-    id: 'ride-1',
-    name: 'Bom-Bom Car Seru',
-    imageUrl: imgBomBomCar,
-    price: 15000,
-    isFreeTerusan: true,
-    status: 'BUKA',
-    capacity: 16,
-    duration: '10 Menit',
-    description: 'Mobil listrik tabrakan arena dengan pengaman helm anak & dewasa.',
-    playedToday: 420,
-    category: 'terusan'
-  },
-  {
-    id: 'ride-2',
-    name: 'Kereta Monorel Gantung',
-    imageUrl: imgKeretaMonorel,
-    price: 15000,
-    isFreeTerusan: true,
-    status: 'BUKA',
-    capacity: 24,
-    duration: '1 Putaran (15 Mnt)',
-    description: 'Menikmati pemandangan kebun kakao dari atas jalur monorel.',
-    playedToday: 680,
-    category: 'terusan'
-  },
-  {
-    id: 'ride-3',
-    name: 'Istana Balon Ceria',
-    imageUrl: imgIstanaBalon,
-    price: 10000,
-    isFreeTerusan: true,
-    status: 'BUKA',
-    capacity: 30,
-    duration: '30 Menit',
-    description: 'Wahana playground balon elastis warna-warni untuk balita dan anak-anak.',
-    playedToday: 350,
-    category: 'terusan'
-  },
-  {
-    id: 'ride-4',
-    name: 'Kolam Renang Anak & Waterboom',
-    imageUrl: imgKolamAnak,
-    price: 10000,
-    isFreeTerusan: true,
-    status: 'BUKA',
-    capacity: 50,
-    duration: 'Sepuasnya',
-    description: 'Wahana air seru dengan seluncuran, ember tumpah, dan air mancur sejuk.',
-    playedToday: 510,
-    category: 'water'
-  },
-  {
-    id: 'ride-5',
-    name: 'ATV Safari Adventure',
-    imageUrl: imgAtv,
-    price: 25000,
-    isFreeTerusan: false,
-    status: 'BUKA',
-    capacity: 8,
-    duration: '15 Menit (4 Lap)',
-    description: 'Trek tanah menantang mengitari perkebunan kakao alam terbuka.',
-    playedToday: 195,
-    category: 'paid'
-  },
-  {
-    id: 'ride-6',
-    name: 'Flying Fox Ekstrem 120M',
-    imageUrl: imgFlyingFox,
-    price: 20000,
-    isFreeTerusan: false,
-    status: 'BUKA',
-    capacity: 4,
-    duration: '1 Kali Luncur',
-    description: 'Meluncur di atas kanopi kebun coklat dengan standar keamanan safety harness ganda.',
-    playedToday: 140,
-    category: 'paid'
-  },
-  {
-    id: 'ride-7',
-    name: 'Mini Golf 9 Holes',
-    imageUrl: imgMiniGolf,
-    price: 15000,
-    isFreeTerusan: true,
-    status: 'BUKA',
-    capacity: 20,
-    duration: '45 Menit',
-    description: 'Padang golf mini dengan berbagai rintangan bukit dan terowongan coklat.',
-    playedToday: 110,
-    category: 'terusan'
-  },
-  {
-    id: 'ride-8',
-    name: 'Perahu Ceria Dayung',
-    imageUrl: imgPerahuCeria,
-    price: 10000,
-    isFreeTerusan: true,
-    status: 'BUKA',
-    capacity: 12,
-    duration: '20 Menit',
-    description: 'Menyusuri danau buatan dengan perahu kayuh angsa bersama keluarga.',
-    playedToday: 260,
-    category: 'water'
-  },
-  {
-    id: 'ride-9',
-    name: 'Playground Taman Kakao',
-    imageUrl: imgPlayground,
-    price: 15000,
-    isFreeTerusan: true,
-    status: 'BUKA',
-    capacity: 40,
-    duration: 'Sepuasnya',
-    description: 'Ayunan, perosotan, dan panjatan seru di bawah rindangnya pohon coklat.',
-    playedToday: 480,
-    category: 'terusan'
-  },
-  {
-    id: 'ride-10',
-    name: 'Terapi Ikan Garra Rufa',
-    imageUrl: imgTerapiIkan,
-    price: 5000,
-    isFreeTerusan: true,
-    status: 'BUKA',
-    capacity: 35,
-    duration: '20 Menit',
-    description: 'Relaksasi alami dengan gigitan lembut ikan terapi pembersih kulit.',
-    playedToday: 620,
-    category: 'water'
-  },
-  {
-    id: 'ride-11',
-    name: 'Golf Car Keliling Kebun',
-    imageUrl: imgGolfCar,
-    price: 25000,
-    isFreeTerusan: false,
-    status: 'BUKA',
-    capacity: 6,
-    duration: '20 Menit',
-    description: 'Tur keliling area 5 hektar Kampung Coklat didampingi pengemudi ramah.',
-    playedToday: 85,
-    category: 'paid'
-  },
-  {
-    id: 'ride-12',
-    name: 'Sepeda Listrik Wisata',
-    imageUrl: imgSepedaListrik,
-    price: 35000,
-    isFreeTerusan: false,
-    status: 'MAINTENANCE',
-    capacity: 10,
-    duration: '30 Menit',
-    description: 'E-bike ramah lingkungan untuk eksplorasi mandiri jalur pedestrian kebun.',
-    playedToday: 45,
-    category: 'paid'
-  }
-])
-
+// Kita satukan data fisik wahana (rides) dengan data tiket (ticketRates)
 const filteredRides = computed(() => {
-  if (rideFilterCategory.value === 'ALL') return ridesList.value
-  return ridesList.value.filter(r => r.category === rideFilterCategory.value)
+  const validCategories = ['wahana', 'venue']
+  const relevantTickets = ticketRates.value.filter(t => validCategories.includes(t.category) && t.isActive)
+  
+  const mapped = relevantTickets.map(t => {
+    const ridePhysical = ridesList.value.find(r => r.name.toLowerCase() === t.name.toLowerCase())
+    return {
+      id: t.id, // ID ini adalah ID Tiket!
+      ridePhysicalId: ridePhysical?.id || null, // Jika null, berarti belum punya entri fisik
+      name: t.name,
+      imageUrl: t.imageUrl,
+      price: t.price,
+      isFreeTerusan: ridePhysical?.isFreeTerusan ?? false,
+      status: ridePhysical?.status || 'BUKA',
+      capacity: ridePhysical?.capacity || 0,
+      duration: ridePhysical?.duration || '-',
+      description: t.description || ridePhysical?.description || '',
+      playedToday: ridePhysical?.playedToday || 0,
+      category: t.category, // 'wahana' atau 'venue'
+      rideCategory: ridePhysical?.category || (t.category === 'wahana' ? 'paid' : 'terusan')
+    }
+  })
+  
+  if (rideFilterCategory.value === 'ALL') return mapped
+  return mapped.filter(r => r.category === rideFilterCategory.value)
 })
 
 const getRideIcon = (name: string) => {
@@ -739,76 +314,211 @@ const getRideIcon = (name: string) => {
   return '🎡'
 }
 
+const toggleRideStatus = async (ride: any) => {
+  const newStatus = ride.status === 'MAINTENANCE' ? 'BUKA' : 'MAINTENANCE'
+  
+  try {
+    if (ride.ridePhysicalId) {
+      // Mesin fisik sudah ada di DB
+      await $fetch(`http://localhost:3001/api/v1/config/rides/${ride.ridePhysicalId}`, {
+        method: 'PUT',
+        body: { status: newStatus }
+      })
+    } else {
+      // Mesin fisik belum terdaftar! Buat baru agar sinkron.
+      await $fetch(`http://localhost:3001/api/v1/config/rides`, {
+        method: 'POST',
+        body: {
+          name: ride.name,
+          price: ride.price,
+          capacity: 20,
+          duration: '15 Menit',
+          isFreeTerusan: false,
+          status: newStatus,
+          imageUrl: ride.imageUrl,
+          category: 'paid'
+        }
+      })
+    }
+    await fetchConfig()
+  } catch (error) {
+    console.error('Failed to toggle status', error)
+  }
+}
+
 const rideForm = reactive({
   id: '',
+  ridePhysicalId: null as string | null,
   name: '',
   price: 15000,
   capacity: 16,
   duration: '15 Menit',
   isFreeTerusan: true,
-  status: 'BUKA' as 'BUKA' | 'MAINTENANCE' | 'TUTUP'
+  status: 'BUKA' as 'BUKA' | 'MAINTENANCE' | 'TUTUP' | string,
+  imageMode: 'url' as 'url' | 'upload',
+  imageUrl: '',
+  imageFile: null as File | null
 })
 
-const toggleRideStatus = (ride: RideItem) => {
-  if (ride.status === 'MAINTENANCE') {
-    ride.status = 'BUKA'
+const onRideFileChange = (e: Event) => {
+  const target = e.target as HTMLInputElement
+  if (target.files && target.files.length > 0) {
+    rideForm.imageFile = target.files[0]
   } else {
-    ride.status = 'MAINTENANCE'
+    rideForm.imageFile = null
   }
 }
 
 const openAddRideModal = () => {
   isEditingRide.value = false
-  rideForm.id = `ride-${Date.now()}`
+  rideForm.id = ''
+  rideForm.ridePhysicalId = null
   rideForm.name = ''
   rideForm.price = 15000
   rideForm.capacity = 20
   rideForm.duration = '15 Menit'
   rideForm.isFreeTerusan = true
   rideForm.status = 'BUKA'
+  rideForm.imageMode = 'url'
+  rideForm.imageUrl = ''
+  rideForm.imageFile = null
   showRideModal.value = true
 }
 
-const editRide = (ride: RideItem) => {
+// Meskipun template mungkin tidak punya tombol edit, kita sediakan logikanya
+const editRide = (ride: any) => {
   isEditingRide.value = true
   rideForm.id = ride.id
+  rideForm.ridePhysicalId = ride.ridePhysicalId
   rideForm.name = ride.name
   rideForm.price = ride.price
   rideForm.capacity = ride.capacity
   rideForm.duration = ride.duration
   rideForm.isFreeTerusan = ride.isFreeTerusan
   rideForm.status = ride.status
+  rideForm.imageMode = 'url'
+  rideForm.imageUrl = ride.imageUrl.startsWith('http') ? ride.imageUrl.replace('http://localhost:3001', '') : ride.imageUrl
+  rideForm.imageFile = null
   showRideModal.value = true
 }
 
-const saveRide = () => {
-  const idx = ridesList.value.findIndex(r => r.id === rideForm.id)
-  if (idx !== -1) {
-    ridesList.value[idx] = {
-      ...ridesList.value[idx],
-      name: rideForm.name,
-      price: rideForm.price,
-      capacity: rideForm.capacity,
-      duration: rideForm.duration,
-      isFreeTerusan: rideForm.isFreeTerusan,
-      status: rideForm.status
+const saveRide = async () => {
+  let finalImageUrl = rideForm.imageUrl
+  
+  if (rideForm.imageMode === 'upload' && rideForm.imageFile) {
+    const formData = new FormData()
+    formData.append('file', toRaw(rideForm.imageFile))
+    try {
+      const uploadRes = await $fetch<{ url: string }>('http://localhost:3001/api/v1/config/upload', {
+        method: 'POST',
+        body: formData
+      })
+      finalImageUrl = uploadRes.url
+    } catch (e) {
+      console.error('File upload failed', e)
+      return
     }
-  } else {
-    ridesList.value.unshift({
-      id: rideForm.id,
+  }
+
+  // 1. Simpan/Update Ticket Rate (sumber utama)
+  const ticketPayload = {
+    name: rideForm.name,
+    category: 'wahana',
+    price: rideForm.price,
+    isActive: true,
+    imageUrl: finalImageUrl
+  }
+  
+  try {
+    if (isEditingRide.value && rideForm.id) {
+      await $fetch(`http://localhost:3001/api/v1/config/tickets/${rideForm.id}`, {
+        method: 'PUT',
+        body: ticketPayload
+      })
+    } else {
+      await $fetch('http://localhost:3001/api/v1/config/tickets', {
+        method: 'POST',
+        body: ticketPayload
+      })
+    }
+    
+    // 2. Simpan/Update Physical Ride
+    const ridePayload = {
       name: rideForm.name,
-      imageUrl: imgKarausel,
       price: rideForm.price,
       capacity: rideForm.capacity,
       duration: rideForm.duration,
       isFreeTerusan: rideForm.isFreeTerusan,
       status: rideForm.status,
-      description: 'Wahana rekreasi baru di kawasan Kampung Coklat.',
-      playedToday: 0,
+      imageUrl: finalImageUrl,
       category: rideForm.isFreeTerusan ? 'terusan' : 'paid'
-    })
+    }
+    
+    if (rideForm.ridePhysicalId) {
+       await $fetch(`http://localhost:3001/api/v1/config/rides/${rideForm.ridePhysicalId}`, {
+         method: 'PUT',
+         body: ridePayload
+       })
+    } else {
+       // Buat baru fisik
+       await $fetch(`http://localhost:3001/api/v1/config/rides`, {
+         method: 'POST',
+         body: ridePayload
+       })
+    }
+
+    await fetchConfig()
+    showRideModal.value = false
+    alert('Wahana berhasil disimpan di kedua tabel secara sinkron!');
+  } catch (error) {
+    console.error('Failed to save unified ride', error)
   }
-  showRideModal.value = false
+}
+
+// Untuk ticket rates Modal (jika masih digunakan di wahana.vue)
+const ticketForm = reactive({
+  id: '',
+  name: '',
+  category: 'gate' as 'gate' | 'wahana' | 'venue' | 'edukasi' | 'rombongan' | string,
+  price: 20000,
+  description: '',
+  isActive: true,
+  imageMode: 'url' as 'url' | 'upload',
+  imageUrl: '',
+  imageFile: null as File | null
+})
+
+const saveTicketPrice = async () => {
+  // Hanya simpan tiket (tanpa fisik)
+  let finalImageUrl = ticketForm.imageUrl
+  if (ticketForm.imageMode === 'upload' && ticketForm.imageFile) {
+    const formData = new FormData()
+    formData.append('file', toRaw(ticketForm.imageFile))
+    const uploadRes = await $fetch<{ url: string }>('http://localhost:3001/api/v1/config/upload', {
+      method: 'POST',
+      body: formData
+    })
+    finalImageUrl = uploadRes.url
+  }
+  const payload = {
+    name: ticketForm.name,
+    category: ticketForm.category,
+    price: ticketForm.price,
+    description: ticketForm.description,
+    isActive: ticketForm.isActive,
+    imageUrl: finalImageUrl
+  }
+  try {
+    if (ticketForm.id) {
+      await $fetch(`http://localhost:3001/api/v1/config/tickets/${ticketForm.id}`, { method: 'PUT', body: payload })
+    } else {
+      await $fetch('http://localhost:3001/api/v1/config/tickets', { method: 'POST', body: payload })
+    }
+    await fetchConfig()
+    showTicketModal.value = false
+  } catch (error) {
+    console.error('Failed to save ticket', error)
+  }
 }
 
 const formatRupiah = (val: number): string => {
@@ -818,6 +528,7 @@ const formatRupiah = (val: number): string => {
     maximumFractionDigits: 0
   }).format(val)
 }
+
 </script>
 
 <style scoped>
