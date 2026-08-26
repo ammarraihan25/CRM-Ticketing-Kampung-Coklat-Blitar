@@ -107,7 +107,7 @@ export class GateService {
       message: 'Akses Diterima: Gate Terbuka',
       data: {
         ticket_id: ticket.ticket_id,
-        nomor_whatsapp: ticket.nomor_whatsapp,
+        whatsapp: ticket.whatsapp,
         paket_id: ticket.paket_id
       }
     };

@@ -2,7 +2,7 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PosTransaction, PaymentStatus } from '../../database/entities/pos-transaction.entity';
-import { Member, TipeMember, MemberTier } from '../../database/entities/member.entity';
+import { Member, TipeMember } from '../../database/entities/member.entity';
 import { Ticket, StatusTiket } from '../../database/entities/ticket.entity';
 import { CheckoutPosDto } from './dto/checkout-pos.dto';
 import { PaymentWebhookDto } from './dto/payment-webhook.dto';
@@ -23,16 +23,15 @@ export class PosService {
   ) {}
 
   async checkout(dto: CheckoutPosDto) {
-    const { nomor_whatsapp, cashier_id, payment_method, items } = dto;
+    const { whatsapp, cashier_id, payment_method, items } = dto;
 
     // 1. Auto-Register Member
-    let member = await this.memberRepository.findOne({ where: { nomor_whatsapp } });
+    let member = await this.memberRepository.findOne({ where: { whatsapp } });
     if (!member) {
       member = this.memberRepository.create({
-        nomor_whatsapp,
-        nama_lengkap: 'Pengunjung POS',
-        tipe_member: TipeMember.REGULER,
-        tier: MemberTier.BRONZE,
+        whatsapp,
+        nama: 'Pengunjung POS',
+        tipeMember: TipeMember.REGULER,
       });
       await this.memberRepository.save(member);
     }
@@ -42,7 +41,7 @@ export class PosService {
 
     // 3. Save Transaksi Header
     const posTrx = this.posTransactionRepository.create({
-      nomor_whatsapp,
+      whatsapp,
       cashier_id,
       total_amount,
       payment_method,
@@ -61,7 +60,7 @@ export class PosService {
         const ticketCode = `KC-${new Date().getFullYear()}-${randomCode}`;
 
         const ticket = this.ticketRepository.create({
-          nomor_whatsapp,
+          whatsapp,
           ticket_code: ticketCode,
           paket_id: item.paket_id,
           status_tiket: StatusTiket.ACTIVE,
@@ -78,7 +77,7 @@ export class PosService {
 
     // 6. Panggil WA Gateway Service Modular
     const ticketCodes = ticketsIssued.map((t) => t.ticket_code);
-    this.waGatewayService.sendTicketNotification(nomor_whatsapp, ticketCodes);
+    this.waGatewayService.sendTicketNotification(whatsapp, ticketCodes);
 
     return {
       status: 'SUCCESS',

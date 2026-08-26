@@ -21,7 +21,7 @@ export class CheckoutItemDto {
 export class CheckoutPosDto {
   @IsNotEmpty()
   @IsString()
-  nomor_whatsapp: string;
+  whatsapp: string;
 
   @IsNotEmpty()
   @IsString()

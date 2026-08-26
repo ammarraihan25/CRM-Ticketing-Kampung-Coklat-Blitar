@@ -20,10 +20,10 @@ export class PosTransaction {
   pos_trx_id: string;
 
   @Column({ type: 'varchar', length: 20 })
-  nomor_whatsapp: string;
+  whatsapp: string;
 
   @ManyToOne(() => Member)
-  @JoinColumn({ name: 'nomor_whatsapp' })
+  @JoinColumn({ name: 'whatsapp', referencedColumnName: 'whatsapp' })
   member: Member;
 
   @Column({ type: 'varchar', length: 50 })

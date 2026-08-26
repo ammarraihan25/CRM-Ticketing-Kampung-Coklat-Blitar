@@ -73,59 +73,67 @@ const navigateTo = (path: string) => {
   router.push('/ticketing_dan_gate/self-service' + path)
 }
 
-const entryTickets = [
-  { id: 'tiket-reguler', name: 'Tiket Masuk Reguler', label: 'Tiket Utama', desc: 'Akses masuk bebas mengeksplorasi area umum Kampung Coklat. Menikmati taman rindang, spot foto, restoran, dan berbagai fasilitas umum lainnya.', image: imgKolamDewasa },
-  { id: 'tiket-terusan', name: 'Tiket Masuk Terusan', label: 'Paket Spesial', desc: 'Termasuk akses ke puluhan wahana permainan secara gratis dan tanpa batas (Unlimited). Sangat direkomendasikan untuk liburan keluarga seharian penuh.', image: imgKolamDewasa }
-]
+import { useConfigSync } from '~/composables/useConfigSync'
 
-const wahanaTickets = [
-  { id: 'animal-feeding', name: 'Animal Feeding', label: 'Edukasi Hewan', desc: 'Bermain sambil belajar dan berinteraksi langsung dengan hewan-hewan lucu di area kami.', image: imgAnimalFeeding },
-  { id: 'animal-toys', name: 'Animal Toys', label: 'Wahana Anak', subLabel: 'Free Untuk Tiket Terusan', desc: 'Mainan hewan tunggang yang seru untuk anak-anak berkeliling di jalur aman yang disediakan.', image: imgAnimalToys },
-  { id: 'atv', name: 'ATV Ride', label: 'Petualangan', desc: 'Pacu adrenalin Anda di lintasan ATV Kampung Coklat yang menantang namun tetap aman dipandu instruktur.', image: imgAtv },
-  { id: 'bom-bom-car', name: 'Bom Bom Car', label: 'Wahana Keluarga', subLabel: 'Free Untuk Tiket Terusan', desc: 'Serunya tabrakan aman dan menyenangkan di arena bom bom car yang dilengkapi sistem keamanan canggih.', image: imgBomBomCar },
-  { id: 'flying-fox', name: 'Flying Fox', label: 'Petualangan', desc: 'Meluncur bebas melintasi rindangnya kebun kakao dari ketinggian, rasakan sensasi terbang yang aman.', image: imgFlyingFox },
-  { id: 'golf-car', name: 'Golf Car', label: 'Transportasi', desc: 'Berkeliling area wisata yang luas dengan nyaman bersama keluarga tanpa perlu lelah berjalan.', image: imgGolfCar },
-  { id: 'istana-balon', name: 'Istana Balon', label: 'Wahana Anak', subLabel: 'Free Untuk Tiket Terusan', desc: 'Arena melompat bebas berbahan balon tebal yang sangat disukai balita dan anak-anak prasekolah.', image: imgIstanaBalon },
-  { id: 'karausel', name: 'Karausel', label: 'Wahana Keluarga', desc: 'Wahana komidi putar klasik dengan lampu-lampu indah dan musik menyenangkan yang selalu digemari sepanjang masa.', image: imgKarausel },
-  { id: 'kereta-lokomotif', name: 'Kereta Lokomotif', label: 'Wahana Keluarga', subLabel: 'Free Untuk Tiket Terusan', desc: 'Keliling area wisata bersama keluarga dengan kereta lokomotif santai melintasi perkebunan.', image: imgKeretaLokomotif },
-  { id: 'kereta-monorel', name: 'Kereta Monorel', label: 'Wahana Keluarga', subLabel: 'Free Untuk Tiket Terusan', desc: 'Menikmati pemandangan seluruh kawasan Kampung Coklat dari ketinggian rel monorel kami.', image: imgKeretaMonorel },
-  { id: 'kolam-pemancingan', name: 'Kolam Pemancingan', label: 'Wahana Keluarga', desc: 'Bersantai sejenak sambil memancing ikan di kolam yang asri dan sejuk. Cocok untuk semua umur.', image: imgKolamPemancingan },
-  { id: 'kolam-renang-anak', name: 'Kolam Renang Anak', label: 'Wahana Anak', subLabel: 'Free Untuk Tiket Terusan', desc: 'Berenang dan bermain air aman di kolam khusus dengan kedalaman yang didesain untuk anak-anak.', image: imgKolamRenangAnak },
-  { id: 'kursi-pijat', name: 'Kursi Pijat', label: 'Relaksasi', desc: 'Istirahatkan tubuh Anda dengan pijatan refleksi 15 menit setelah lelah berjalan berkeliling.', image: imgKursiPijat },
-  { id: 'mini-golf', name: 'Mini Golf', label: 'Wahana Keluarga', subLabel: 'Free Untuk Tiket Terusan', desc: 'Coba ketangkasan dan fokus Anda dalam memasukkan bola di area mini golf yang didesain apik.', image: imgMiniGolf },
-  { id: 'mini-jeep', name: 'Mini Jeep', label: 'Wahana Anak', desc: 'Biarkan si kecil mengemudikan jeep mininya sendiri melintasi trek aman layaknya petualang kecil.', image: imgMiniJeep },
-  { id: 'mini-swinger', name: 'Mini Swinger', label: 'Wahana Anak', desc: 'Ayunan berputar yang dirancang khusus untuk memberikan keseruan aman bagi si kecil.', image: imgMiniSwinger },
-  { id: 'panahan', name: 'Panahan', label: 'Ketangkasan', subLabel: 'Free Untuk Tiket Terusan', desc: 'Latih konsentrasi dan ketepatan membidik target di area panahan kami dengan pengawasan profesional.', image: imgPanahan },
-  { id: 'pancingan-anak', name: 'Pancingan Anak', label: 'Wahana Anak', subLabel: 'Free Untuk Tiket Terusan', desc: 'Permainan memancing magnet yang seru dan melatih kesabaran serta motorik halus anak.', image: imgPancinganAnak },
-  { id: 'perahu-ceria', name: 'Perahu Ceria', label: 'Wahana Anak', subLabel: 'Free Untuk Tiket Terusan', desc: 'Mendayung perahu kecil khusus anak-anak dengan gembira di kolam dangkal yang aman.', image: imgPerahuCeria },
-  { id: 'perahu-dayung', name: 'Perahu Dayung', label: 'Wahana Keluarga', subLabel: 'Free Untuk Tiket Terusan', desc: 'Nikmati suasana kolam asri dan romantis dengan mendayung perahu bersama.', image: imgPerahuDayung },
-  { id: 'playground', name: 'Playground', label: 'Wahana Anak', subLabel: 'Free Untuk Tiket Terusan', desc: 'Arena bermain anak yang luas, dilengkapi dengan perosotan, jembatan tali, dan ayunan interaktif.', image: imgPlayground },
-  { id: 'sepeda-listrik', name: 'Sepeda Listrik', label: 'Transportasi', desc: 'Eksplorasi area wisata lebih jauh dengan santai dan ramah lingkungan menggunakan sepeda listrik.', image: imgSepedaListrik },
-  { id: 'sepeda-udara', name: 'Sepeda Udara', label: 'Petualangan', desc: 'Sensasi unik mengayuh sepeda di atas tali gantung dengan pemandangan menakjubkan dari udara.', image: imgSepedaUdara },
-  { id: 'terapi-ikan', name: 'Terapi Ikan', label: 'Relaksasi', subLabel: 'Free Untuk Tiket Terusan', desc: 'Rasakan geli dan relaksasi dari pijatan halus ribuan ikan terapi di kolam kami.', image: imgTerapiIkan },
-  { id: 'trampolin', name: 'Trampolin', label: 'Wahana Anak', subLabel: 'Free Untuk Tiket Terusan', desc: 'Melompat bebas dan tinggi untuk menyalurkan energi si kecil di wahana trampolin tertutup jaring.', image: imgTrampolin }
-]
+const { ticketRates, rides } = useConfigSync()
 
-const edukasiTickets = [
-  { id: 'paket-tk-paud', name: 'Paket Edukasi TK/PAUD', label: 'Edukasi Sekolah', desc: '<strong>Fasilitas:</strong><br/>- Tiket Masuk<br/>- Menghias Coklat<br/>- Biji Coklat<br/>- Perahu Ceria<br/>- Tour Guide<br/><br/>Berlaku untuk anak dan pendamping.', image: paket_tk },
-  { id: 'paket-sd', name: 'Paket Edukasi SD', label: 'Edukasi Sekolah', desc: '<strong>Fasilitas:</strong><br/>- Tiket Masuk<br/>- Biji Coklat<br/>- Edukasi Pembibitan<br/>- Ice Breaking<br/>- Makan Siang Spesial<br/>- Tour Guide', image: paket_sd },
-  { id: 'paket-smp', name: 'Paket Edukasi SMP', label: 'Edukasi Menengah', desc: '<strong>Fasilitas:</strong><br/>- Tiket Masuk<br/>- Biji Coklat<br/>- Edukasi Pasca Panen<br/>- Fun Game Kebersamaan<br/>- Makan Siang Spesial<br/>- Tour Guide', image: paket_smp },
-  { id: 'paket-sma-univ', name: 'Paket Edukasi SMA & Univ', label: 'Edukasi Lanjut', desc: '<strong>Fasilitas:</strong><br/>- Tiket Masuk<br/>- Presentasi Industri Coklat<br/>- Edukasi Pengolahan Biji Kakao<br/>- Makan Siang Spesial<br/>- Sertifikat<br/>- Tour Guide', image: paket_sma }
-]
+const entryTickets = computed(() => {
+  return ticketRates.value
+    .filter(t => t.category === 'gate' && t.isActive)
+    .map(t => ({
+      id: t.id,
+      name: t.name,
+      label: 'Tiket Utama',
+      price: t.price,
+      desc: t.description || 'Akses masuk bebas mengeksplorasi area umum Kampung Coklat.',
+      image: t.imageUrl || imgKolamDewasa
+    }))
+})
 
-const sewaTempatTickets = [
-  { id: 'bale-coklat', name: 'Bale Coklat', label: 'Venue Terbuka', desc: 'Area santai berbentuk gazebo panjang berbahan bambu, cocok untuk reuni atau kumpul keluarga besar.', image: bale_coklat },
-  { id: 'coklat-caffe', name: 'Coklat Caffe', label: 'Cafe & Resto', desc: 'Kafe bertema coklat dengan menu lengkap, bisa direservasi sebagian area untuk acara kasual Anda.', image: coklat_caffe },
-  { id: 'coklat-garden', name: 'Coklat Garden', label: 'Outdoor Garden', desc: 'Taman rindang dengan dekorasi alami, sangat pas untuk acara garden party atau intimate wedding.', image: coklat_garden },
-  { id: 'joglo-jatimarto', name: 'Joglo Jatimarto', label: 'Pendopo Tradisional', desc: 'Bangunan pendopo berarsitektur Jawa kental, memberikan nuansa klasik dan sejuk untuk pertemuan.', image: joglo_jatimarto },
-  { id: 'kampung-coklat-hall', name: 'Kampung Coklat Hall', label: 'Hall Utama', desc: 'Hall indoor terbesar kami, ber-AC, dengan panggung megah untuk resepsi pernikahan skala besar.', image: kampung_coklat_hall },
-  { id: 'pbk', name: 'Private Business Keep', label: 'Meeting Room VIP', desc: 'Ruang meeting VIP kedap suara, dilengkapi proyektor dan fasilitas presentasi bisnis yang mumpuni.', image: pbk },
-  { id: 'ruang-pertemuan', name: 'Ruang Pertemuan R1', label: 'Meeting Room', desc: 'Ruangan sedang untuk seminar atau workshop dengan kapasitas hingga 50 orang.', image: ruang_pertemuan },
-  { id: 'taman-edel', name: 'Taman Edel', label: 'Venue Semi-Outdoor', desc: 'Taman semi terbuka dengan peneduh alami, memberikan kesan sejuk walau di siang hari.', image: taman_edel },
-  { id: 'theobromine-hall', name: 'Theobromine Hall', label: 'Hall Eksekutif', desc: 'Gedung eksklusif untuk acara korporat, gathering, dan pesta tertutup dengan akustik ruangan sangat baik.', image: theobromine_hall },
-  { id: 'trinitario-hall', name: 'Trinitario Hall', label: 'Hall Klasik', desc: 'Hall bergaya klasik industrial untuk pameran, pementasan seni, maupun acara formal lainnya.', image: trinitario_hall },
-  { id: 'wisma-criollo', name: 'Wisma Criollo', label: 'Guest House', desc: 'Penginapan eksklusif di dalam kawasan wisata, dilengkapi fasilitas lengkap untuk rombongan VIP.', image: wisma_criollo }
-]
+const wahanaTickets = computed(() => {
+  return ticketRates.value
+    .filter(t => t.category === 'wahana' && t.isActive)
+    .map(t => {
+      const rideData = rides.value.find(r => r.name.toLowerCase() === t.name.toLowerCase())
+      const isMaintenance = rideData?.status === 'MAINTENANCE'
+      return {
+        id: t.id,
+        name: t.name,
+        label: 'Wahana',
+        subLabel: isMaintenance ? 'SEDANG MAINTENANCE' : 'Free Untuk Tiket Terusan',
+        price: t.price,
+        desc: t.description || 'Wahana permainan seru',
+        image: t.imageUrl || imgAnimalFeeding,
+        isMaintenance
+      }
+    })
+})
+
+const edukasiTickets = computed(() => {
+  return ticketRates.value
+    .filter(t => t.category === 'edukasi' && t.isActive)
+    .map(t => ({
+      id: t.id,
+      name: t.name,
+      label: 'Edukasi Sekolah',
+      price: t.price,
+      desc: t.description || 'Paket wisata edukasi untuk pelajar',
+      image: t.imageUrl || paket_tk
+    }))
+})
+
+const sewaTempatTickets = computed(() => {
+  return ticketRates.value
+    .filter(t => t.category === 'venue' && t.isActive)
+    .map(t => ({
+      id: t.id,
+      name: t.name,
+      label: 'Sewa Venue',
+      price: t.price,
+      desc: t.description || 'Fasilitas sewa venue acara',
+      image: t.imageUrl || bale_coklat
+    }))
+})
 </script>
 
 <template>

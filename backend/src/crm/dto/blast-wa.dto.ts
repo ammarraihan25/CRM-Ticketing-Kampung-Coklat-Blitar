@@ -1,9 +1,9 @@
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
-import { MemberTier } from '../../database/entities/member.entity';
+import { IsOptional, IsString, IsNotEmpty } from 'class-validator';
 
 export class BlastWaDto {
-  @IsEnum(MemberTier, { message: 'target_tier must be one of: Bronze, Silver, Gold' })
-  target_tier: MemberTier;
+  @IsString()
+  @IsOptional()
+  target_tier?: string;
 
   @IsString()
   @IsNotEmpty({ message: 'pesan_promo is required' })

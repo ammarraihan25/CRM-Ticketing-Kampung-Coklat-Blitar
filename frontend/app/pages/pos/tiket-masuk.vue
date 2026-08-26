@@ -8,10 +8,22 @@ definePageMeta({
 import imgKolamDewasa from '~/assets/assets_POS/POS/wahana/kolam_renang_dewasa_idr.10k_freeterusan.jpg'
 import imgKereta from '~/assets/assets_POS/POS/wahana/kereta_si_choco_idr.15k.jpg'
 
-const entryTickets = [
-  { id: 'reg', name: 'Tiket Reguler', label: '[PROMO] WEEKDAY', price: 20000, desc: 'Akses masuk area wisata Kampung Coklat. Menikmati indahnya kebun kakao dan edukasi dasar.', image: imgKolamDewasa },
-  { id: 'ter', name: 'Tiket Terusan', label: 'ALL ACCESS', price: 75000, desc: 'Akses masuk bebas + 5 Wahana Pilihan sepuasnya untuk pengalaman liburan tanpa batas.', image: imgKereta }
-]
+import { useConfigSync } from '~/composables/useConfigSync'
+
+const { ticketRates } = useConfigSync()
+
+const entryTickets = computed(() => {
+  return ticketRates.value
+    .filter(t => t.category === 'gate' && t.isActive)
+    .map(t => ({
+      id: t.id,
+      name: t.name,
+      label: 'TIKET GATE',
+      price: t.price,
+      desc: t.description || 'Akses masuk area Kampung Coklat',
+      image: t.imageUrl || imgKolamDewasa
+    }))
+})
 
 const bookingData = ref({
   nama: '',

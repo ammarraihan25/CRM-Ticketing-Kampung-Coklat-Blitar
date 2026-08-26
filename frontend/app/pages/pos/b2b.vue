@@ -53,59 +53,67 @@ import theobromine_hall from '~/assets/assets_POS/POS/sewa_tempat/theobromine_ha
 import trinitario_hall from '~/assets/assets_POS/POS/sewa_tempat/trinitario_hall.jpg'
 import wisma_criollo from '~/assets/assets_POS/POS/sewa_tempat/wisma_criollo.jpg'
 
-const entryTickets = [
-  { id: 'reg', name: 'Tiket Reguler', label: '[PROMO] WEEKDAY', price: 20000, desc: 'Akses masuk area wisata Kampung Coklat. Menikmati indahnya kebun kakao dan edukasi dasar.', image: imgKolamDewasa },
-  { id: 'ter', name: 'Tiket Terusan', label: 'ALL ACCESS', price: 75000, desc: 'Akses masuk bebas + 5 Wahana Pilihan sepuasnya untuk pengalaman liburan tanpa batas.', image: imgKereta }
-]
+import { useConfigSync } from '~/composables/useConfigSync'
 
-const wahanaTickets = [
-  { id: 'animal-feeding', name: 'Animal Feeding', label: 'IDR. 2K / Orang', price: 2000, desc: 'Bermain sambil belajar dan berinteraksi langsung dengan hewan-hewan lucu.', image: imgAnimalFeeding },
-  { id: 'animal-toys', name: 'Animal Toys', label: 'IDR. 15K / Orang', subLabel: 'Free Untuk Tiket Terusan', price: 15000, desc: 'Mainan hewan tunggang yang seru untuk anak-anak mengelilingi area.', image: imgAnimalToys },
-  { id: 'atv', name: 'ATV Ride', label: 'IDR. 25K / Orang', price: 25000, desc: 'Pacu adrenalin Anda di lintasan ATV Kampung Coklat yang menantang.', image: imgAtv },
-  { id: 'bom-bom-car', name: 'Bom Bom Car', label: 'IDR. 15K / Orang', subLabel: 'Free Untuk Tiket Terusan', price: 15000, desc: 'Serunya tabrakan aman dan menyenangkan di arena bom bom car kami.', image: imgBomBomCar },
-  { id: 'flying-fox', name: 'Flying Fox', label: 'IDR. 20K / Orang', price: 20000, desc: 'Meluncur bebas melintasi rindangnya kebun kakao dari ketinggian.', image: imgFlyingFox },
-  { id: 'golf-car', name: 'Golf Car', label: 'IDR. 25K / Orang', price: 25000, desc: 'Berkeliling area wisata yang luas dengan nyaman tanpa perlu lelah berjalan.', image: imgGolfCar },
-  { id: 'istana-balon', name: 'Istana Balon', label: 'IDR. 10K / Orang', subLabel: 'Free Untuk Tiket Terusan', price: 10000, desc: 'Arena melompat bebas yang sangat disukai balita dan anak-anak.', image: imgIstanaBalon },
-  { id: 'karausel', name: 'Karausel', label: 'IDR. 15K / Orang', price: 15000, desc: 'Wahana komidi putar klasik dengan lampu-lampu indah yang selalu digemari.', image: imgKarausel },
-  { id: 'kereta-lokomotif', name: 'Kereta Lokomotif', label: 'IDR. 15K / Orang', subLabel: 'Free Untuk Tiket Terusan', price: 15000, desc: 'Keliling area wisata bersama keluarga dengan kereta lokomotif santai.', image: imgKeretaLokomotif },
-  { id: 'kereta-monorel', name: 'Kereta Monorel', label: 'IDR. 15K / Orang', subLabel: 'Free Untuk Tiket Terusan', price: 15000, desc: 'Melihat pemandangan Kampung Coklat dari atas rel monorel kami.', image: imgKeretaMonorel },
-  { id: 'kolam-pemancingan', name: 'Kolam Pemancingan', label: 'GRATIS', price: 0, desc: 'Bersantai sejenak sambil memancing ikan di kolam yang asri dan sejuk.', image: imgKolamPemancingan },
-  { id: 'kolam-renang-anak', name: 'Kolam Renang Anak', label: 'IDR. 10K / Orang', subLabel: 'Free Untuk Tiket Terusan', price: 10000, desc: 'Berenang dan bermain air aman di kolam khusus yang didesain untuk anak-anak.', image: imgKolamRenangAnak },
-  { id: 'kursi-pijat', name: 'Kursi Pijat', label: 'IDR. 15K / 15 Menit', price: 15000, desc: 'Istirahatkan tubuh Anda dengan pijatan refleksi 15 menit setelah berkeliling.', image: imgKursiPijat },
-  { id: 'mini-golf', name: 'Mini Golf', label: 'IDR. 15K / Orang', subLabel: 'Free Untuk Tiket Terusan', price: 15000, desc: 'Coba ketangkasan dan fokus Anda dalam memasukkan bola di area mini golf.', image: imgMiniGolf },
-  { id: 'mini-jeep', name: 'Mini Jeep', label: 'IDR. 25K / Orang', price: 25000, desc: 'Biarkan si kecil mengemudikan jeep mininya sendiri melintasi trek aman.', image: imgMiniJeep },
-  { id: 'mini-swinger', name: 'Mini Swinger', label: 'IDR. 15K / Orang', price: 15000, desc: 'Ayunan berputar yang dirancang khusus untuk memberikan keseruan aman.', image: imgMiniSwinger },
-  { id: 'panahan', name: 'Panahan', label: 'IDR. 15K / Orang', subLabel: 'Free Untuk Tiket Terusan', price: 15000, desc: 'Latih konsentrasi dan ketepatan membidik target di area panahan kami.', image: imgPanahan },
-  { id: 'pancingan-anak', name: 'Pancingan Anak', label: 'IDR. 10K / Orang', subLabel: 'Free Untuk Tiket Terusan', price: 10000, desc: 'Permainan memancing magnet yang seru dan melatih kesabaran anak.', image: imgPancinganAnak },
-  { id: 'perahu-ceria', name: 'Perahu Ceria', label: 'IDR. 10K / Orang', subLabel: 'Free Untuk Tiket Terusan', price: 10000, desc: 'Mendayung perahu kecil khusus anak-anak dengan gembira di kolam aman.', image: imgPerahuCeria },
-  { id: 'perahu-dayung', name: 'Perahu Dayung', label: 'IDR. 15K / Orang', subLabel: 'Free Untuk Tiket Terusan', price: 15000, desc: 'Nikmati suasana kolam asri dan romantis dengan mendayung perahu bersama.', image: imgPerahuDayung },
-  { id: 'playground', name: 'Playground', label: 'IDR. 15K / Orang', subLabel: 'Free Untuk Tiket Terusan', price: 15000, desc: 'Arena bermain anak yang luas, dilengkapi dengan perosotan dan ayunan interaktif.', image: imgPlayground },
-  { id: 'sepeda-listrik', name: 'Sepeda Listrik', label: 'IDR. 35K / Orang', price: 35000, desc: 'Eksplorasi area wisata lebih jauh dengan santai menggunakan sepeda listrik.', image: imgSepedaListrik },
-  { id: 'sepeda-udara', name: 'Sepeda Udara', label: 'IDR. 20K / Orang', price: 20000, desc: 'Sensasi unik mengayuh sepeda di atas tali gantung dengan pemandangan menakjubkan.', image: imgSepedaUdara },
-  { id: 'terapi-ikan', name: 'Terapi Ikan', label: 'IDR. 5K / Orang', subLabel: 'Free Untuk Tiket Terusan', price: 5000, desc: 'Rasakan geli dan relaksasi dari pijatan halus ribuan ikan terapi di kolam kami.', image: imgTerapiIkan },
-  { id: 'trampolin', name: 'Trampolin', label: 'IDR. 10K / Orang', subLabel: 'Free Untuk Tiket Terusan', price: 10000, desc: 'Melompat bebas dan tinggi untuk menyalurkan energi si kecil di wahana trampolin.', image: imgTrampolin }
-]
+const { ticketRates, rides } = useConfigSync()
 
-const edukasiTickets = [
-  { id: 'edu_1', name: 'Paket Edukasi TK / PAUD', label: 'Wisata Edukasi', price: 35000, desc: `<div class="desc-article"><strong>Paket Reguler:</strong><ul><li>Pembelajaran Mendalam: Rp 38.000/pax</li><li>Kokurikuler (Binatang/Tumbuhan): Rp 39.000/pax</li><li>Fun Cooking: Rp 35.000/pax</li></ul><strong>Paket Kemah Ceria Prasiaga:</strong><ul><li>Kemah Ceria 1: Rp 50.000 | 2: Rp 37.000 | 3: Rp 32.000</li></ul><strong>Paket Outbound:</strong><ul><li>Criollo Fun & Edu (P1-P3): Rp 47.000 - Rp 97.000</li><li>Thea Fun Outbound (P1-P5): Rp 103.000 - Rp 152.000</li></ul></div>`, image: paket_tk },
-  { id: 'edu_2', name: 'Paket Edukasi SD', label: 'Wisata Edukasi', price: 32000, desc: `<div class="desc-article"><strong>Paket Reguler:</strong><ul><li>Santripreneur: Rp 32.000/pax</li><li>Industri Coklat: Rp 35.000/pax</li><li>Pembelajaran Mendalam: Rp 38.000/pax</li><li>Fun Cooking: Rp 35.000/pax</li></ul><strong>Paket Outbound:</strong><ul><li>Criollo Fun & Edu (P1-P3): Rp 47.000 - Rp 97.000</li><li>Thea Fun Outbound (P1-P5): Rp 103.000 - Rp 152.000</li></ul></div>`, image: paket_sd },
-  { id: 'edu_3', name: 'Paket Edukasi SMP', label: 'Wisata Edukasi', price: 32000, desc: `<div class="desc-article"><strong>Paket Reguler:</strong><ul><li>Santripreneur: Rp 32.000/pax | Industri Coklat: Rp 35.000/pax</li><li>Kewirausahaan: Rp 37.000/pax | Fun Cooking: Rp 35.000/pax</li><li>Pembelajaran Mendalam: Rp 40.000/pax</li></ul><strong>Paket LDKS:</strong><ul><li>Paket A: Rp 185.000 | Paket B: Rp 135.000 | Paket C: Rp 55.000</li></ul><strong>Paket Outbound:</strong><ul><li>Criollo (P1-P3): Rp 47.000 - Rp 97.000</li><li>Thea (P1-P5): Rp 103.000 - Rp 152.000</li></ul></div>`, image: paket_smp },
-  { id: 'edu_4', name: 'Paket Edukasi SMA / Mahasiswa', label: 'Wisata Edukasi', price: 32000, desc: `<div class="desc-article"><strong>Paket Reguler:</strong><ul><li>Santripreneur: Rp 32.000/pax | Industri Coklat: Rp 35.000/pax</li><li>Kewirausahaan: Rp 37.000/pax | KC Berdampak: Rp 37.000/pax</li><li>Pembelajaran Mendalam: Rp 50.000/pax</li></ul><strong>Paket LDKS:</strong><ul><li>Paket A: Rp 185.000 | Paket B: Rp 135.000 | Paket C: Rp 55.000</li></ul><strong>Paket Outbound:</strong><ul><li>Criollo (P1-P3): Rp 47.000 - Rp 97.000</li><li>Thea (P1-P5): Rp 103.000 - Rp 152.000</li></ul></div>`, image: paket_sma }
-]
+const entryTickets = computed(() => {
+  return ticketRates.value
+    .filter(t => t.category === 'gate' && t.isActive)
+    .map(t => ({
+      id: t.id,
+      name: t.name,
+      label: 'TIKET GATE',
+      price: t.price,
+      desc: t.description || 'Akses masuk area Kampung Coklat',
+      image: t.imageUrl || imgKolamDewasa
+    }))
+})
 
-const hallTickets = [
-  { id: 'sewa_1', name: 'Bale Coklat', label: 'Sewa Tempat', price: 500000, desc: 'Area semi-outdoor yang luas, cocok untuk gathering komunitas atau acara santai keluarga besar.', image: bale_coklat },
-  { id: 'sewa_2', name: 'Coklat Caffe', label: 'Sewa Tempat', price: 300000, desc: 'Kafe bernuansa alam untuk acara bersantai atau kumpul komunitas.', image: coklat_caffe },
-  { id: 'sewa_3', name: 'Coklat Garden', label: 'Sewa Tempat', price: 400000, desc: 'Area taman terbuka yang hijau, ideal untuk pesta kebun atau acara outdoor.', image: coklat_garden },
-  { id: 'sewa_4', name: 'Joglo Jatimarto', label: 'Sewa Tempat', price: 750000, desc: 'Pendopo tradisional bernuansa klasik Jawa untuk acara keluarga atau pertemuan.', image: joglo_jatimarto },
-  { id: 'sewa_5', name: 'Kampung Coklat Hall', label: 'Sewa Tempat', price: 1500000, desc: 'Ruangan indoor eksklusif untuk acara besar, pernikahan, atau seminar perusahaan.', image: kampung_coklat_hall },
-  { id: 'sewa_6', name: 'Private Business Keep (PBK)', label: 'Sewa Tempat', price: 1000000, desc: 'Ruangan privat eksklusif untuk pertemuan bisnis tingkat eksekutif.', image: pbk },
-  { id: 'sewa_7', name: 'Ruang Pertemuan R1', label: 'Sewa Tempat', price: 500000, desc: 'Ruang rapat berkapasitas sedang dengan fasilitas meeting lengkap.', image: ruang_pertemuan },
-  { id: 'sewa_8', name: 'Taman Edel', label: 'Sewa Tempat', price: 350000, desc: 'Taman asri nan sejuk untuk acara komunitas atau bersantai bersama keluarga.', image: taman_edel },
-  { id: 'sewa_9', name: 'Theobromine Hall', label: 'Sewa Tempat', price: 1200000, desc: 'Hall menengah untuk acara resepsi, seminar, atau pertemuan perusahaan.', image: theobromine_hall },
-  { id: 'sewa_10', name: 'Trinitario Hall', label: 'Sewa Tempat', price: 2000000, desc: 'Hall eksklusif berkapasitas besar dengan desain interior modern dan elegan.', image: trinitario_hall },
-  { id: 'sewa_11', name: 'Wisma Criollo', label: 'Sewa Tempat', price: 850000, desc: 'Gedung pertemuan eksklusif bernuansa hangat untuk acara privat atau korporat.', image: wisma_criollo }
-]
+const wahanaTickets = computed(() => {
+  return ticketRates.value
+    .filter(t => t.category === 'wahana' && t.isActive)
+    .map(t => {
+      const rideData = rides.value.find(r => r.name.toLowerCase() === t.name.toLowerCase())
+      const isMaintenance = rideData?.status === 'MAINTENANCE'
+      return {
+        id: t.id,
+        name: t.name,
+        label: `IDR ${t.price}`,
+        subLabel: isMaintenance ? 'SEDANG MAINTENANCE' : 'Tersedia',
+        price: t.price,
+        desc: t.description || 'Fasilitas Wahana Kampung Coklat',
+        image: t.imageUrl || imgAnimalFeeding,
+        isMaintenance
+      }
+    })
+})
+
+const edukasiTickets = computed(() => {
+  return ticketRates.value
+    .filter(t => t.category === 'edukasi' && t.isActive)
+    .map(t => ({
+      id: t.id,
+      name: t.name,
+      label: 'Wisata Edukasi',
+      price: t.price,
+      desc: t.description || 'Paket edukasi Kampung Coklat',
+      image: t.imageUrl || paket_tk
+    }))
+})
+
+const hallTickets = computed(() => {
+  return ticketRates.value
+    .filter(t => t.category === 'venue' && t.isActive)
+    .map(t => ({
+      id: t.id,
+      name: t.name,
+      label: 'Sewa Tempat',
+      price: t.price,
+      desc: t.description || 'Fasilitas sewa tempat / hall di Kampung Coklat.',
+      image: t.imageUrl || bale_coklat
+    }))
+})
 
 const cart = ref<any[]>([])
 
@@ -162,6 +170,10 @@ const allProducts = computed(() => {
 })
 
 const addToCart = (product: any) => {
+  if (product.isMaintenance) {
+    alert(`Maaf, wahana ${product.name} sedang dalam perbaikan (Maintenance) dan tidak dapat dipesan saat ini.`)
+    return
+  }
   const existing = cart.value.find(item => item.id === product.id)
   if (existing) {
     existing.qty += 1
@@ -364,7 +376,7 @@ const finishTransaction = () => {
                     <span class="price-currency">Rp</span> {{ product.price.toLocaleString('id-ID') }}
                   </div>
                   <div v-else></div> <!-- spacer for flex layout if price is on top -->
-                  <button class="btn-outline-primary" @click="addToCart(product)">+ Tambahkan</button>
+                  <button class="btn-outline-primary" :disabled="product.isMaintenance" :style="product.isMaintenance ? 'opacity: 0.5; cursor: not-allowed; border-color: #ccc; color: #ccc;' : ''" @click="addToCart(product)">{{ product.isMaintenance ? 'MAINTENANCE' : '+ Tambahkan' }}</button>
                 </div>
               </div>
               

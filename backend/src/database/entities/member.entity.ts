@@ -1,4 +1,4 @@
-import { Entity, PrimaryColumn, Column, CreateDateColumn, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from 'typeorm';
 
 export enum TipeMember {
   REGULER = 'PR',
@@ -6,35 +6,37 @@ export enum TipeMember {
   TRAVEL = 'PT',
 }
 
-export enum MemberTier {
-  BRONZE = 'Bronze',
-  SILVER = 'Silver',
-  GOLD = 'Gold',
+export enum MemberStatus {
+  AKTIF = 'Aktif',
+  TIDAK_AKTIF = 'Tidak Aktif',
 }
 
 @Entity('members')
 export class Member {
-  @PrimaryColumn({ type: 'varchar', length: 20 })
-  nomor_whatsapp: string; // Primary Key E.164 (misal: 628123456789)
+  @PrimaryGeneratedColumn()
+  id: number;
 
   @Column({ type: 'varchar', length: 100 })
-  nama_lengkap: string;
+  nama: string;
+
+  @Column({ type: 'varchar', length: 20, unique: true })
+  whatsapp: string;
 
   @Column({ type: 'varchar', length: 100, nullable: true })
   domisili: string;
 
   @Column({ type: 'enum', enum: TipeMember, default: TipeMember.REGULER })
-  tipe_member: TipeMember;
+  tipeMember: TipeMember;
 
-  @Column({ type: 'int', default: 0 })
-  current_points: number;
+  @Column({ type: 'enum', enum: MemberStatus, default: MemberStatus.AKTIF })
+  status: MemberStatus;
 
   @Column({ type: 'decimal', precision: 12, scale: 2, default: 0 })
-  total_spend: number;
+  totalSpend: number;
 
-  @Column({ type: 'enum', enum: MemberTier, default: MemberTier.BRONZE })
-  tier: MemberTier;
+  @Column({ type: 'varchar', length: 50, nullable: true })
+  tanggalDaftar: string;
 
   @CreateDateColumn()
-  created_at: Date;
+  createdAt: Date;
 }

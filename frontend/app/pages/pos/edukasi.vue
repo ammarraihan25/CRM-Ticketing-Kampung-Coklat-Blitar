@@ -10,12 +10,22 @@ import paket_sd from '~/assets/assets_POS/POS/paket_edukasi/FLYER-PAKET-SD.png'
 import paket_smp from '~/assets/assets_POS/POS/paket_edukasi/FLYER-PAKET-SMP.png'
 import paket_sma from '~/assets/assets_POS/POS/paket_edukasi/FLYER-PAKET-SMA-UNIV-1.png'
 
-const edukasiTickets = [
-  { id: 'edu_1', name: 'Paket Edukasi TK / PAUD', label: 'Wisata Edukasi', price: 35000, desc: `<div class="desc-article"><strong>Paket Reguler:</strong><ul><li>Pembelajaran Mendalam: Rp 38.000/pax</li><li>Kokurikuler (Binatang/Tumbuhan): Rp 39.000/pax</li><li>Fun Cooking: Rp 35.000/pax</li></ul><strong>Paket Kemah Ceria Prasiaga:</strong><ul><li>Kemah Ceria 1: Rp 50.000 | 2: Rp 37.000 | 3: Rp 32.000</li></ul><strong>Paket Outbound:</strong><ul><li>Criollo Fun & Edu (P1-P3): Rp 47.000 - Rp 97.000</li><li>Thea Fun Outbound (P1-P5): Rp 103.000 - Rp 152.000</li></ul></div>`, image: paket_tk },
-  { id: 'edu_2', name: 'Paket Edukasi SD', label: 'Wisata Edukasi', price: 32000, desc: `<div class="desc-article"><strong>Paket Reguler:</strong><ul><li>Santripreneur: Rp 32.000/pax</li><li>Industri Coklat: Rp 35.000/pax</li><li>Pembelajaran Mendalam: Rp 38.000/pax</li><li>Fun Cooking: Rp 35.000/pax</li></ul><strong>Paket Outbound:</strong><ul><li>Criollo Fun & Edu (P1-P3): Rp 47.000 - Rp 97.000</li><li>Thea Fun Outbound (P1-P5): Rp 103.000 - Rp 152.000</li></ul></div>`, image: paket_sd },
-  { id: 'edu_3', name: 'Paket Edukasi SMP', label: 'Wisata Edukasi', price: 32000, desc: `<div class="desc-article"><strong>Paket Reguler:</strong><ul><li>Santripreneur: Rp 32.000/pax | Industri Coklat: Rp 35.000/pax</li><li>Kewirausahaan: Rp 37.000/pax | Fun Cooking: Rp 35.000/pax</li><li>Pembelajaran Mendalam: Rp 40.000/pax</li></ul><strong>Paket LDKS:</strong><ul><li>Paket A: Rp 185.000 | Paket B: Rp 135.000 | Paket C: Rp 55.000</li></ul><strong>Paket Outbound:</strong><ul><li>Criollo (P1-P3): Rp 47.000 - Rp 97.000</li><li>Thea (P1-P5): Rp 103.000 - Rp 152.000</li></ul></div>`, image: paket_smp },
-  { id: 'edu_4', name: 'Paket Edukasi SMA / Mahasiswa', label: 'Wisata Edukasi', price: 32000, desc: `<div class="desc-article"><strong>Paket Reguler:</strong><ul><li>Santripreneur: Rp 32.000/pax | Industri Coklat: Rp 35.000/pax</li><li>Kewirausahaan: Rp 37.000/pax | KC Berdampak: Rp 37.000/pax</li><li>Pembelajaran Mendalam: Rp 50.000/pax</li></ul><strong>Paket LDKS:</strong><ul><li>Paket A: Rp 185.000 | Paket B: Rp 135.000 | Paket C: Rp 55.000</li></ul><strong>Paket Outbound:</strong><ul><li>Criollo (P1-P3): Rp 47.000 - Rp 97.000</li><li>Thea (P1-P5): Rp 103.000 - Rp 152.000</li></ul></div>`, image: paket_sma }
-]
+import { useConfigSync } from '~/composables/useConfigSync'
+
+const { ticketRates } = useConfigSync()
+
+const edukasiTickets = computed(() => {
+  return ticketRates.value
+    .filter(t => t.category === 'edukasi' && t.isActive)
+    .map(t => ({
+      id: t.id,
+      name: t.name,
+      label: 'Wisata Edukasi',
+      price: t.price,
+      desc: t.description || 'Paket edukasi Kampung Coklat',
+      image: t.imageUrl || paket_tk
+    }))
+})
 
 const bookingData = ref({
   instansi: '',

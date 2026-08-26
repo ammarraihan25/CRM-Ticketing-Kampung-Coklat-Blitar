@@ -1,14 +1,14 @@
-import { IsString, IsNotEmpty, IsEnum, IsOptional } from 'class-validator';
-import { TipeMember } from '../../../database/entities/member.entity';
+import { IsString, IsNotEmpty, IsEnum, IsOptional, IsNumber } from 'class-validator';
+import { TipeMember, MemberStatus } from '../../../database/entities/member.entity';
 
 export class CreateMemberDto {
   @IsString()
   @IsNotEmpty()
-  nomor_whatsapp!: string;
+  whatsapp!: string;
 
   @IsString()
   @IsNotEmpty()
-  nama_lengkap!: string;
+  nama!: string;
 
   @IsString()
   @IsOptional()
@@ -16,5 +16,17 @@ export class CreateMemberDto {
 
   @IsEnum(TipeMember)
   @IsOptional()
-  tipe_member?: TipeMember;
+  tipeMember?: TipeMember;
+
+  @IsEnum(MemberStatus)
+  @IsOptional()
+  status?: MemberStatus;
+
+  @IsNumber()
+  @IsOptional()
+  totalSpend?: number;
+
+  @IsString()
+  @IsOptional()
+  tanggalDaftar?: string;
 }

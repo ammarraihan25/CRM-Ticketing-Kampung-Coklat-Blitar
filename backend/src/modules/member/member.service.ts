@@ -21,10 +21,10 @@ export class MemberService {
   ) {}
 
   async create(createMemberDto: CreateMemberDto) {
-    const { nomor_whatsapp } = createMemberDto;
+    const { whatsapp } = createMemberDto;
 
     // Check if member exists
-    const existingMember = await this.memberRepo.findOneBy({ nomor_whatsapp });
+    const existingMember = await this.memberRepo.findOneBy({ whatsapp });
     if (existingMember) {
       throw new BadRequestException({
         success: false,
@@ -35,9 +35,8 @@ export class MemberService {
 
     const newMember = this.memberRepo.create({
       ...createMemberDto,
-      tipe_member: createMemberDto.tipe_member || TipeMember.REGULER,
-      current_points: 0,
-      total_spend: 0
+      tipeMember: createMemberDto.tipeMember || TipeMember.REGULER,
+      totalSpend: 0
     });
 
     await this.memberRepo.save(newMember);
@@ -52,11 +51,11 @@ export class MemberService {
     };
   }
 
-  async findAll(tipe_member?: TipeMember, domisili?: string) {
+  async findAll(tipeMember?: TipeMember, domisili?: string) {
     const query = this.memberRepo.createQueryBuilder('member');
 
-    if (tipe_member) {
-      query.andWhere('member.tipe_member = :tipe_member', { tipe_member });
+    if (tipeMember) {
+      query.andWhere('member.tipeMember = :tipeMember', { tipeMember });
     }
 
     if (domisili) {
@@ -64,7 +63,7 @@ export class MemberService {
       query.andWhere('member.domisili ILIKE :domisili', { domisili: `%${domisili}%` });
     }
 
-    const members = await query.orderBy('member.created_at', 'DESC').getMany();
+    const members = await query.orderBy('member.createdAt', 'DESC').getMany();
 
     return {
       success: true,
@@ -73,8 +72,8 @@ export class MemberService {
     };
   }
 
-  async findOne(nomor_whatsapp: string) {
-    const member = await this.memberRepo.findOneBy({ nomor_whatsapp });
+  async findOne(whatsapp: string) {
+    const member = await this.memberRepo.findOneBy({ whatsapp });
 
     if (!member) {
       throw new NotFoundException({
@@ -86,17 +85,17 @@ export class MemberService {
 
     // Fetch related data
     const active_vouchers = await this.voucherRepo.find({
-      where: { nomor_whatsapp, status_claim: 'ISSUED' as any } // Cast to any due to strict TS enum check if missing
+      where: { whatsapp, status_claim: 'ISSUED' as any } // Cast to any due to strict TS enum check if missing
     });
 
     const recent_transactions = await this.posTrxRepo.find({
-      where: { nomor_whatsapp },
+      where: { whatsapp },
       order: { created_at: 'DESC' },
       take: 5
     });
 
     const tickets = await this.ticketRepo.find({
-      where: { nomor_whatsapp },
+      where: { whatsapp },
       order: { valid_until: 'DESC' },
       take: 5
     });

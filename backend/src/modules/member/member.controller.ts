@@ -15,14 +15,14 @@ export class MemberController {
 
   @Get()
   findAll(
-    @Query('tipe_member') tipe_member?: TipeMember,
+    @Query('tipeMember') tipeMember?: TipeMember,
     @Query('domisili') domisili?: string
   ) {
-    return this.memberService.findAll(tipe_member, domisili);
+    return this.memberService.findAll(tipeMember, domisili);
   }
 
-  @Get(':nomor_whatsapp')
-  findOne(@Param('nomor_whatsapp') nomor_whatsapp: string) {
-    return this.memberService.findOne(nomor_whatsapp);
+  @Get(':whatsapp')
+  findOne(@Param('whatsapp') whatsapp: string) {
+    return this.memberService.findOne(whatsapp);
   }
 }

@@ -1,5 +1,6 @@
-import { DataSource, DataSourceOptions } from 'typeorm';
-import { SeederOptions } from 'typeorm-extension';
+import { DataSource } from 'typeorm';
+import type { DataSourceOptions } from 'typeorm';
+import type { SeederOptions } from 'typeorm-extension';
 import * as dotenv from 'dotenv';
 import { join } from 'path';
 
@@ -16,6 +17,7 @@ export const dataSourceOptions: DataSourceOptions & SeederOptions = {
   entities: [
     join(__dirname, 'entities', '*.entity{.ts,.js}'),
     join(__dirname, '..', 'crm', 'entities', '*.entity{.ts,.js}'),
+    join(__dirname, '..', 'modules', 'config', 'entities', '*.entity{.ts,.js}'),
   ],
   migrations: [join(__dirname, 'migrations', '*{.ts,.js}')],
   seeds: [join(__dirname, 'seeds', '*.seeder{.ts,.js}')],
