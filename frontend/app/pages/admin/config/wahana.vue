@@ -59,19 +59,6 @@
               <polyline points="6 9 12 15 18 9"/>
             </svg>
           </div>
-
-          <!-- Add Wahana Button -->
-          <button 
-            v-if="canManageConfig"
-            type="button" 
-            class="btn-add-wahana-pill"
-            @click="openAddRideModal"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
-            </svg>
-            <span>Tambah Wahana Baru</span>
-          </button>
         </div>
       </div>
 
@@ -91,9 +78,9 @@
               loading="lazy"
             />
 
-            <!-- Top-Left Category Tag Ribbon -->
-            <div class="wahana-top-ribbon" :class="ride.isFreeTerusan ? 'ribbon-terusan' : 'ribbon-paid'">
-              <span>{{ ride.isFreeTerusan ? 'TIKET TERUSAN' : 'TIKET SATUAN' }}</span>
+            <!-- Top-Left Category Tag Ribbon (Only for Terusan) -->
+            <div v-if="ride.isFreeTerusan" class="wahana-top-ribbon ribbon-terusan">
+              <span>TIKET TERUSAN</span>
             </div>
 
             <!-- Top-Right Status Toggle Pill -->

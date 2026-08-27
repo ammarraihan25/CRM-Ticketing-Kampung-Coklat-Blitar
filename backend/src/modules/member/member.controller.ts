@@ -21,8 +21,8 @@ export class MemberController {
     return this.memberService.findAll(tipeMember, domisili);
   }
 
-  @Get(':whatsapp')
-  findOne(@Param('whatsapp') whatsapp: string) {
-    return this.memberService.findOne(whatsapp);
+  @Get(':identifier')
+  findOne(@Param('identifier') identifier: string) {
+    return this.memberService.findOne(identifier);
   }
 }

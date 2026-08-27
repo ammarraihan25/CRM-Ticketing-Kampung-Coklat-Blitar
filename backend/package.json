@@ -22,7 +22,7 @@
     "migration:generate": "npm run typeorm -- migration:generate src/database/migrations/SchemaUpdate -d src/database/data-source.ts",
     "migration:run": "npm run typeorm -- migration:run -d src/database/data-source.ts",
     "migration:revert": "npm run typeorm -- migration:revert -d src/database/data-source.ts",
-    "seed:run": "typeorm-extension seed:run -d src/database/data-source.ts"
+    "seed:run": "ts-node src/database/seed.ts"
   },
   "dependencies": {
     "@fastify/multipart": "^10.1.1",

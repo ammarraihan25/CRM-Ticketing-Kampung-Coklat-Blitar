@@ -1,4 +1,5 @@
 import { IsString, IsNumber, IsBoolean, IsOptional, IsEnum, Max, Min } from 'class-validator';
+import { PartialType } from '@nestjs/mapped-types';
 import { TicketCategory } from './entities/ticket-rate.entity';
 import { RideStatus, RideCategory } from './entities/ride.entity';
 
@@ -26,7 +27,7 @@ export class CreateTicketRateDto {
   isActive: boolean;
 }
 
-export class UpdateTicketRateDto extends CreateTicketRateDto {}
+export class UpdateTicketRateDto extends PartialType(CreateTicketRateDto) {}
 
 export class CreateRideDto {
   @IsString()
@@ -61,4 +62,4 @@ export class CreateRideDto {
   category: RideCategory;
 }
 
-export class UpdateRideDto extends CreateRideDto {}
+export class UpdateRideDto extends PartialType(CreateRideDto) {}

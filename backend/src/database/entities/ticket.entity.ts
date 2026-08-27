@@ -29,6 +29,6 @@ export class Ticket {
   @Column({ type: 'varchar', default: StatusTiket.ACTIVE })
   status_tiket: StatusTiket;
 
-  @Column({ type: 'datetime' })
+  @Column({ type: 'timestamp' })
   valid_until: Date;
 }

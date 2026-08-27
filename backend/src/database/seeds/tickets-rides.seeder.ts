@@ -17,7 +17,7 @@ export default class TicketsRidesSeeder implements Seeder {
       },
       {
         category: TicketCategory.GATE, name: 'Tiket Terusan', imageUrl: '/uploads/images/assets_POS/POS/wahana/kereta_lokomotif_idr.15k_freeterusan.jpg',
-        price: 75000, description: 'ALL ACCESS\nAkses masuk bebas + 5 Wahana Pilihan sepuasnya untuk pengalaman liburan tanpa batas.', isActive: true
+        price: 35000, description: 'ALL ACCESS\nAkses masuk bebas + 5 Wahana Pilihan sepuasnya untuk pengalaman liburan tanpa batas.', isActive: true
       },
       // Wahana
       {

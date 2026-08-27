@@ -72,8 +72,18 @@ export class MemberService {
     };
   }
 
-  async findOne(whatsapp: string) {
-    const member = await this.memberRepo.findOneBy({ whatsapp });
+  async findOne(identifier: string) {
+    let member;
+    if (identifier.toUpperCase().startsWith('KC-')) {
+      // Extract the ID number
+      const idNum = parseInt(identifier.substring(3));
+      if (!isNaN(idNum)) {
+        member = await this.memberRepo.findOneBy({ id: idNum });
+      }
+    } else {
+      // Treat as whatsapp
+      member = await this.memberRepo.findOneBy({ whatsapp: identifier });
+    }
 
     if (!member) {
       throw new NotFoundException({
@@ -85,17 +95,17 @@ export class MemberService {
 
     // Fetch related data
     const active_vouchers = await this.voucherRepo.find({
-      where: { whatsapp, status_claim: 'ISSUED' as any } // Cast to any due to strict TS enum check if missing
+      where: { whatsapp: member.whatsapp, status_claim: 'ISSUED' as any } // Cast to any due to strict TS enum check if missing
     });
 
     const recent_transactions = await this.posTrxRepo.find({
-      where: { whatsapp },
+      where: { whatsapp: member.whatsapp },
       order: { created_at: 'DESC' },
       take: 5
     });
 
     const tickets = await this.ticketRepo.find({
-      where: { whatsapp },
+      where: { whatsapp: member.whatsapp },
       order: { valid_until: 'DESC' },
       take: 5
     });

@@ -9,6 +9,7 @@ import imgKolamDewasa from '~/assets/assets_POS/POS/wahana/kolam_renang_dewasa_i
 import imgKereta from '~/assets/assets_POS/POS/wahana/kereta_si_choco_idr.15k.jpg'
 
 import { useConfigSync } from '~/composables/useConfigSync'
+import QrcodeVue from 'qrcode.vue'
 
 const { ticketRates } = useConfigSync()
 
@@ -39,12 +40,28 @@ const paymentMethod = ref('cash')
 const cashReceived = ref(0)
 const showPaymentModal = ref(false)
 const showSuccessModal = ref(false)
+const isProcessing = ref(false)
+const transactionResult = ref<any>(null)
 
 const memberStatus = ref('idle')
-const checkMemberId = () => {
-  if (bookingData.value.memberId === 'KC-12345') {
-    memberStatus.value = 'valid'
-  } else {
+const checkMemberId = async () => {
+  if (!bookingData.value.memberId) {
+    memberStatus.value = 'invalid'
+    return
+  }
+  
+  try {
+    const member: any = await $fetch(`http://localhost:3001/api/v1/members/${bookingData.value.memberId}`)
+    if (member && member.data) {
+      memberStatus.value = 'valid'
+      // Auto-fill nama
+      if (member.data.nama) {
+        bookingData.value.nama = member.data.nama
+      }
+    } else {
+      memberStatus.value = 'invalid'
+    }
+  } catch (e) {
     memberStatus.value = 'invalid'
   }
 }
@@ -99,19 +116,57 @@ const processCheckout = () => {
   showPaymentModal.value = true
 }
 
-const processPayment = () => {
+const processPayment = async () => {
    if (paymentMethod.value === 'cash' && cashReceived.value < grandTotal.value) {
      alert('Uang yang diterima kurang!')
      return
    }
-   showPaymentModal.value = false
-   showSuccessModal.value = true
+
+   try {
+     isProcessing.value = true
+     
+     const items = cart.value.map(item => ({
+       paket_id: item.id,
+       harga: item.price,
+       qty: item.qty
+     }))
+
+     // Jika memberId atau telepon kosong, fallback string random agar backend tidak gagal
+     const validWhatsapp = bookingData.value.telepon || bookingData.value.memberId || `08${Math.floor(Math.random()*100000000)}`
+
+     const payload = {
+       whatsapp: validWhatsapp,
+       cashier_id: 'CASHIER-POS-01',
+       payment_method: paymentMethod.value === 'cash' ? 'CASH' : 'QRIS',
+       items: items
+     }
+
+     const res: any = await $fetch('http://localhost:3001/api/v1/pos/checkout', {
+       method: 'POST',
+       body: payload
+     })
+
+     if (res && res.status === 'SUCCESS') {
+       transactionResult.value = res.data
+       showPaymentModal.value = false
+       showSuccessModal.value = true
+     } else {
+       alert('Gagal memproses pembayaran')
+     }
+   } catch (error) {
+     console.error(error)
+     alert('Terjadi kesalahan saat memproses pembayaran ke server')
+   } finally {
+     isProcessing.value = false
+   }
 }
 
 const finishTransaction = () => {
    cart.value = []
-   bookingData.value = { telepon: '', nama: '', tanggal: new Date().toISOString().split('T')[0] }
+   bookingData.value = { memberId: '', telepon: '', nama: '', tanggal: new Date().toISOString().split('T')[0] }
    cashReceived.value = 0
+   memberStatus.value = 'idle'
+   transactionResult.value = null
    showSuccessModal.value = false
 }
 </script>
@@ -227,9 +282,9 @@ const finishTransaction = () => {
               <span>Total Tagihan</span>
               <span class="total-price">Rp {{ grandTotal.toLocaleString('id-ID') }}</span>
             </div>
-            <button class="btn-checkout-premium" @click="processCheckout" :disabled="cart.length === 0">
-              Proses Pembayaran
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
+            <button class="btn-checkout-premium" @click="processCheckout" :disabled="cart.length === 0 || isProcessing">
+              {{ isProcessing ? 'Memproses...' : 'Proses Pembayaran' }}
+              <svg v-if="!isProcessing" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>
             </button>
           </div>
         </div>
@@ -345,7 +400,9 @@ const finishTransaction = () => {
               </label>
             </div>
 
-            <button class="pm-btn-primary" @click="processPayment">BAYAR & CETAK STRUK</button>
+            <button class="pm-btn-primary" @click="processPayment" :disabled="isProcessing">
+              {{ isProcessing ? 'Memproses...' : 'BAYAR & CETAK STRUK' }}
+            </button>
             <button class="pm-btn-secondary" @click="showPaymentModal = false">Batal</button>
           </div>
 
@@ -405,9 +462,14 @@ const finishTransaction = () => {
         </div>
 
         <div class="ticket-body">
-          <div class="ticket-qr-section">
-            <img :src="'https://api.qrserver.com/v1/create-qr-code/?size=160x160&data=TIX-' + Math.floor(Math.random() * 1000000000)" alt="QR Code" class="ticket-qr-image" />
-            <p class="ticket-scan-instruction">Scan QR Code ini di Gate Masuk</p>
+          <div class="ticket-qr-section" v-if="transactionResult && transactionResult.tickets">
+            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-bottom: 10px;">
+              <div v-for="(t, idx) in transactionResult.tickets" :key="t.ticket_code" style="text-align: center;">
+                 <QrcodeVue :value="t.ticket_code" :size="120" level="H" class="ticket-qr-image" />
+                 <p style="font-size: 11px; margin-top: 6px; font-weight: bold; color: #555;">{{ t.ticket_code }}</p>
+              </div>
+            </div>
+            <p class="ticket-scan-instruction">Scan QR Code tiket ini di Gate Masuk</p>
           </div>
           
           <div class="ticket-divider">

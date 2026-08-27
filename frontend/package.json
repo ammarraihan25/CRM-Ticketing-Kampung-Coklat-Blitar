@@ -12,6 +12,7 @@
   "dependencies": {
     "chart.js": "^4.5.1",
     "nuxt": "^4.5.2",
+    "qrcode.vue": "^3.10.0",
     "vue": "^3.5.41",
     "vue-qrcode-reader": "^5.7.3",
     "vue-router": "^5.2.0"

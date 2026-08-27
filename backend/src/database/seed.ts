@@ -1,0 +1,1 @@
+import dataSource from './data-source'; import { runSeeders } from 'typeorm-extension'; import TicketsRidesSeeder from './seeds/tickets-rides.seeder'; async function bootstrap() { await dataSource.initialize(); await runSeeders(dataSource, { seeds: [TicketsRidesSeeder] }); console.log('Seeding completed!'); process.exit(0); } bootstrap();
