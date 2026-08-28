@@ -2,6 +2,9 @@
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useState } from '#app'
+import { useCrmNonMember } from '~/composables/useCrmNonMember'
+
+const { addVisitor } = useCrmNonMember()
 
 definePageMeta({
   layout: false,
@@ -358,6 +361,17 @@ const getCartTotal = () => {
 const processPayment = () => {
   transactionId.value = 'TRX-' + Math.floor(Math.random() * 100000000).toString().padStart(8, '0')
   paymentSuccess.value = true
+  
+  if (!appliedMember.value) {
+    addVisitor({
+      nama: useCookie('selfServiceUserName').value || 'Sobat Coklat',
+      whatsapp: useCookie('selfServiceUserPhone').value || '-',
+      domisili: 'Online',
+      source: 'Self-Service',
+      totalSpend: finalTotal.value
+    })
+  }
+
   setTimeout(() => {
     showPaymentModal.value = false
     showTicketModal.value = true

@@ -334,6 +334,11 @@ const handleReject = () => {
   font-family: 'Plus Jakarta Sans', sans-serif;
   width: 100%;
   margin: 0;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .page-header {
@@ -353,7 +358,7 @@ const handleReject = () => {
 
 .page-subtitle {
   color: #6B7280;
-  font-size: 14px;
+  font-size: 12px;
   margin: 0;
 }
 
@@ -367,7 +372,7 @@ const handleReject = () => {
   padding: 10px 16px;
   border-radius: 8px;
   font-weight: 600;
-  font-size: 13.5px;
+  font-size: 12px;
   cursor: pointer;
   transition: all 0.2s;
 }
@@ -430,7 +435,7 @@ const handleReject = () => {
   gap: 6px;
 }
 .metric-unit {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 600;
   color: #9CA3AF;
 }
@@ -440,9 +445,13 @@ const handleReject = () => {
 .table-card {
   background: white;
   border-radius: 12px;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.02);
   border: 1px solid #E5E7EB;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
   overflow: hidden;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .table-toolbar {
@@ -469,26 +478,29 @@ const handleReject = () => {
 .search-icon {
   position: absolute;
   left: 14px;
-  color: #94A3B8;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #8BA3CB;
   pointer-events: none;
 }
 
 .search-input {
-  padding: 10px 16px 10px 38px;
-  background-color: #F8FAFC;
-  border: 1.5px solid #CBD5E1;
+  padding: 8px 16px 8px 36px;
+  background-color: #FFFFFF;
+  border: 1px solid #CBD5E1;
   border-radius: 99px;
-  font-size: 13.5px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 400;
   color: #1E293B;
-  min-width: 320px;
+  min-width: 240px;
   outline: none;
   transition: all 0.25s ease;
-  box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+  box-sizing: border-box;
+  height: 38px;
 }
 
 .search-input::placeholder {
-  color: #94A3B8;
+  color: #8BA3CB;
   font-weight: 400;
 }
 
@@ -500,6 +512,9 @@ const handleReject = () => {
 
 .table-responsive {
   overflow-x: auto;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .membership-table {
@@ -508,23 +523,25 @@ const handleReject = () => {
 }
 
 .membership-table th {
-  background: #F9FAFB;
-  padding: 14px 24px;
+  background-color: #F9FAFB;
+  padding: 14px 20px;
   text-align: left;
-  font-size: 11.5px;
+  font-size: 10.5px;
   font-weight: 700;
   color: #6B7280;
   text-transform: uppercase;
   letter-spacing: 0.5px;
-  border-bottom: 1px solid #E5E7EB;
+  border-bottom: 2px solid #E5E7EB;
+  white-space: nowrap;
 }
 
 .membership-table td {
-  padding: 16px 24px;
-  font-size: 14px;
+  padding: 16px 20px;
+  border-bottom: 1px solid #F3F4F6;
+  font-size: 12px;
   color: #374151;
-  border-bottom: 1px solid #E5E7EB;
   vertical-align: middle;
+  white-space: nowrap;
 }
 
 .membership-table tr:last-child td { border-bottom: none; }
@@ -551,7 +568,7 @@ const handleReject = () => {
 }
 
 .font-bold { font-weight: 700; color: #111827; }
-.font-mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; }
+.font-mono { font-family: inherit; font-size: inherit !important; letter-spacing: 0px; }
 .text-gray { color: #6B7280; font-size: 13px; }
 .text-center { text-align: center; color: #6B7280; padding: 40px !important; }
 
@@ -668,7 +685,7 @@ const handleReject = () => {
   margin: 0 0 4px 0;
 }
 .panel-subtitle {
-  font-size: 13.5px;
+  font-size: 12px;
   color: #64748B;
   margin: 0;
 }
@@ -699,7 +716,7 @@ const handleReject = () => {
   color: #1E3A8A;
 }
 .guestbook-alert .gb-icon { color: #2563EB; flex-shrink: 0; margin-top: 2px; }
-.guestbook-alert strong { display: block; font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+.guestbook-alert strong { display: block; font-size: 12px; font-weight: 700; margin-bottom: 4px; }
 .guestbook-alert p { font-size: 13px; margin: 0; opacity: 0.9; }
 
 
@@ -753,7 +770,7 @@ const handleReject = () => {
   text-align: center;
 }
 .ktp-inner p {
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 700;
   color: #334155;
   margin: 0 0 6px 0;
@@ -810,6 +827,6 @@ const handleReject = () => {
   padding: 16px;
   border-radius: 8px;
   text-align: center;
-  font-size: 14px;
+  font-size: 12px;
 }
 </style>

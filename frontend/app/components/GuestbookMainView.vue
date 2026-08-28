@@ -516,29 +516,53 @@ function getTypeClass(type?: string) {
     </header>
     
       <!-- GuestBookRecord Overview Counters -->
-      <div class="revenue-kpi-row">
-        <div class="rev-kpi-card">
-          <span class="rev-label">Total Database GuestBookRecord CRM</span>
-          <div class="rev-val text-cocoa">{{ totalGuestBookRecord.toLocaleString('id-ID') }} Kontak</div>
-          <span class="rev-sub">Primary Key: No. WhatsApp</span>
+      <div class="metrics-grid">
+        <div class="metric-card mc-border-blue">
+          <div class="metric-icon bg-blue-light text-blue">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          </div>
+          <div class="metric-content">
+            <p class="metric-label">TOTAL GUESTBOOK CRM</p>
+            <h2 class="metric-value">{{ totalGuestBookRecord.toLocaleString('id-ID') }} <span class="metric-unit">Kontak</span></h2>
+          </div>
         </div>
-        <div class="rev-kpi-card">
-          <span class="rev-label">GuestBookRecord Reguler (PR)</span>
-          <div class="rev-val">{{ totalGuestBookRecordPR.toLocaleString('id-ID') }}</div>
-          <span class="rev-sub">52% dari total basis data</span>
+
+        <div class="metric-card mc-border-orange">
+          <div class="metric-icon bg-orange-light text-orange">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><polyline points="16 11 18 13 22 9"></polyline></svg>
+          </div>
+          <div class="metric-content">
+            <p class="metric-label">GUESTBOOK REGULER (PR)</p>
+            <h2 class="metric-value">{{ totalGuestBookRecordPR.toLocaleString('id-ID') }} <span class="metric-unit">Guest</span></h2>
+          </div>
         </div>
-        <div class="rev-kpi-card">
-          <span class="rev-label">Jamaah Pengajian (PP)</span>
-          <div class="rev-val text-amber">{{ totalGuestBookRecordPP.toLocaleString('id-ID') }}</div>
-          <span class="rev-sub">33% via Digital Guest Book</span>
+
+        <div class="metric-card mc-border-green">
+          <div class="metric-icon bg-green-light text-green">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v2" />
+              <path d="M12 4c-3 0-5 3-5 6v8H5v2h14v-2h-2v-8c0-3-2-6-5-6z" />
+              <path d="M10 20v-4a2 2 0 0 1 4 0v4" />
+            </svg>
+          </div>
+          <div class="metric-content">
+            <p class="metric-label">Jamaah Pengajian (PP)</p>
+            <h2 class="metric-value">{{ totalGuestBookRecordPP.toLocaleString('id-ID') }} <span class="metric-unit">Jamaah</span></h2>
+          </div>
         </div>
-        <div class="rev-kpi-card">
-          <span class="rev-label">Agen Tour / B2B (PT)</span>
-          <div class="rev-val">{{ totalGuestBookRecordPT.toLocaleString('id-ID') }}</div>
-          <span class="rev-sub">15% kemitraan rombongan</span>
+
+        <div class="metric-card mc-border-red">
+          <div class="metric-icon bg-red-light text-red">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/>
+            </svg>
+          </div>
+          <div class="metric-content">
+            <p class="metric-label">Agen Tour / B2B (PT)</p>
+            <h2 class="metric-value">{{ totalGuestBookRecordPT.toLocaleString('id-ID') }} <span class="metric-unit">Agen</span></h2>
+          </div>
         </div>
       </div>
-
       <!-- GuestBookRecord CRM Table with Filter & Blast WA Action Placeholder -->
       <div class="content-card">
         <div class="card-head search-head">
@@ -548,13 +572,15 @@ function getTypeClass(type?: string) {
           </div>
 
           <div class="member-filter-row">
-            <input
-              v-model="filters.search"
-              type="text"
-              class="filter-select"
-              placeholder="Cari nama atau WA..."
-              style="width: 200px"
-            />
+            <div class="search-box">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input
+                v-model="filters.search"
+                type="text"
+                class="search-input"
+                placeholder="Cari nama atau WA..."
+              />
+            </div>
             <select v-model="filters.tipeKunjungan" class="filter-select">
               <option value="">Semua Tujuan Kunjungan</option>
               <option value="pengajian">Pengajian</option>
@@ -711,6 +737,9 @@ function getTypeClass(type?: string) {
   width: 100%;
   margin: 0 auto;
   font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .executive-command-header {
@@ -847,13 +876,18 @@ function getTypeClass(type?: string) {
 }
 
 .filter-select {
-  padding: 6px 12px;
-  border: 1px solid #E5E7EB;
-  border-radius: 6px;
+  padding: 8px 16px;
+  border: 1px solid #CBD5E1;
+  border-radius: 99px;
   font-family: inherit;
-  font-size: 13px;
-  color: var(--color-primary, #2C1A13);
+  font-size: 14px;
+  color: #8BA3CB;
   background-color: #FFFFFF;
+  outline: none;
+  cursor: pointer;
+  appearance: auto;
+  box-sizing: border-box;
+  height: 38px;
 }
 
 .date-range-inputs {
@@ -925,6 +959,10 @@ function getTypeClass(type?: string) {
   border-radius: 8px;
   padding: 18px 20px;
   box-shadow: 0 1px 3px rgba(44, 26, 19, 0.04);
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .card-head {
@@ -968,6 +1006,9 @@ function getTypeClass(type?: string) {
 /* Tables */
 .table-responsive {
   overflow-x: auto;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
 }
 
 .report-table {
@@ -977,25 +1018,43 @@ function getTypeClass(type?: string) {
 }
 
 .report-table th {
-  background-color: #FAF8F5;
-  color: #6B5A52;
-  font-size: 11.5px;
+  background-color: #F9FAFB;
+  color: #6B7280;
+  font-size: 10.5px !important;
+  font-weight: 700;
   text-transform: uppercase;
-  padding: 10px 12px;
-  border-bottom: 1px solid #E5E7EB;
+  letter-spacing: 0.5px;
+  padding: 14px 16px;
+  border-bottom: 2px solid #E5E7EB;
   text-align: left;
+  
+  white-space: nowrap;
 }
 
 .report-table td {
-  padding: 11px 12px;
+  padding: 16px 16px;
   border-bottom: 1px solid #F3F4F6;
-  color: var(--color-primary, #2C1A13);
+  color: #374151;
+  vertical-align: middle;
+  font-size: 12px !important;
+  
+  white-space: nowrap;
+}
+
+.report-table .col-action,
+.report-table .col-action-cell,
+.report-table .checkbox-column {
+  text-align: center !important;
+}
+.report-table td:first-child,
+.report-table th:first-child {
+  text-align: center !important;
 }
 
 .text-right { text-align: right; }
 .font-medium { font-weight: 500; }
 .font-bold { font-weight: 700; }
-.font-mono { font-family: monospace; }
+.font-mono { font-family: inherit; font-size: inherit !important; letter-spacing: 0px; }
 .text-amber { color: #B45309; }
 .text-cocoa { color: var(--color-primary, #2C1A13); }
 .text-green { color: #047857; }
@@ -1024,7 +1083,7 @@ function getTypeClass(type?: string) {
   justify-content: center;
   padding: 6px 12px;
   border-radius: 6px;
-  font-size: 12.5px;
+  font-size: 11.5px;
   font-weight: 600;
 }
 
@@ -1091,14 +1150,44 @@ function getTypeClass(type?: string) {
   gap: 12px;
 }
 
-.search-input {
-  padding: 6px 12px;
-  border: 1px solid #E5E7EB;
-  border-radius: 6px;
-  font-family: inherit;
-  font-size: 12.5px;
-  width: 260px;
+.search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
 }
+.search-icon {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #8BA3CB;
+  pointer-events: none;
+}
+.search-input {
+  padding: 8px 16px 8px 36px;
+  background-color: #FFFFFF;
+  border: 1px solid #CBD5E1;
+  border-radius: 99px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #1E293B;
+  min-width: 240px;
+  outline: none;
+  transition: all 0.25s ease;
+  box-sizing: border-box;
+  height: 38px;
+}
+
+.search-input::placeholder {
+  color: #8BA3CB;
+  font-weight: 400;
+}
+.search-input:focus {
+  background-color: #FFFFFF;
+  border-color: #D97706;
+  box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.1);
+}
+
 
 .member-filter-row {
   display: flex;
@@ -1838,4 +1927,80 @@ th,
   border: 2px solid white;
 }
 
+
+/* Metrics Grid Sync */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.metric-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  border: 1px solid #E5E7EB;
+  border-left-width: 4px;
+}
+.metric-card.mc-border-orange { border-left-color: #F59E0B; }
+.metric-card.mc-border-green { border-left-color: #10B981; }
+.metric-card.mc-border-blue { border-left-color: #3B82F6; }
+.metric-card.mc-border-red { border-left-color: #EF4444; }
+
+.metric-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bg-orange-light { background: #FEF3C7; } .text-orange { color: #D97706; }
+.bg-green-light { background: #D1FAE5; } .text-green { color: #059669; }
+.bg-blue-light { background: #DBEAFE; } .text-blue { color: #2563EB; }
+.bg-red-light { background: #FEE2E2; } .text-red { color: #DC2626; }
+
+.metric-content {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.metric-label {
+  font-size: 11.5px;
+  font-weight: 700;
+  color: #6B7280;
+  margin: 0 0 4px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.metric-value {
+  font-size: 28px;
+  font-weight: 800;
+  color: #111827;
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.metric-unit {
+  font-size: 14px;
+  font-weight: 600;
+  color: #9CA3AF;
+}
+
+@media (max-width: 1024px) {
+  .metrics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
 </style>
