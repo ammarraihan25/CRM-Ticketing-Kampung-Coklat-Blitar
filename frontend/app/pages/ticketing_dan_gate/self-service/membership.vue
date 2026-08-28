@@ -3,6 +3,11 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useState } from '#app'
 
+// Import images directly for the tiers
+import imgPengajian from '~/assets/assets_member/member pengajian.png'
+import imgRegular from '~/assets/assets_member/member regular.png'
+import imgTour from '~/assets/assets_member/member tour.png'
+
 definePageMeta({
   layout: false
 })
@@ -13,6 +18,36 @@ const activeMemberships = useState<string[]>('selfServiceMembership', () => [])
 const goToRegisterMembership = (type: string) => {
   router.push(`/ticketing_dan_gate/self-service/register-membership?type=${type}`)
 }
+
+const tiers = [
+  {
+    id: 'Pengajian',
+    title: 'Member Pengajian',
+    desc1: 'Member Pengajian adalah kartu anggota atau membership card yang dikeluarkan oleh program loyalitas Kampung Coklat. Kartu ini memberikan berbagai keuntungan dan promosi eksklusif bagi pemegangnya.',
+    desc2: 'Tujuan utama dari Member Pengajian adalah untuk meningkatkan pengalaman pelanggan melalui akses area pengajian, info kajian rutin, serta diskon yang hanya tersedia bagi anggota.',
+    promoTitle: 'Promo Spesial',
+    promoDesc: 'Nikmati diskon <strong>10%</strong> untuk F&B dan Tiket setiap hari.',
+    image: imgPengajian,
+  },
+  {
+    id: 'Regular',
+    title: 'Member Regular',
+    desc1: 'Member Regular adalah kartu anggota atau membership card yang dikeluarkan oleh program loyalitas Kampung Coklat. Kartu ini memberikan berbagai keuntungan dan promosi eksklusif bagi pemegangnya.',
+    desc2: 'Tujuan utama dari Member Regular adalah untuk meningkatkan pengalaman pelanggan melalui berbagai fasilitas, diskon, dan layanan khusus prioritas dasar yang hanya tersedia bagi anggota.',
+    promoTitle: 'Promo Spesial',
+    promoDesc: 'Nikmati diskon <strong>15%</strong> untuk F&B dan Tiket setiap hari.',
+    image: imgRegular,
+  },
+  {
+    id: 'Tour',
+    title: 'Member Tour VIP',
+    desc1: 'Member Tour VIP adalah kartu anggota atau membership card yang dikeluarkan oleh program loyalitas Kampung Coklat. Kartu ini memberikan berbagai keuntungan dan promosi eksklusif bagi pemegangnya.',
+    desc2: 'Tujuan utama dari Member Tour VIP adalah untuk meningkatkan pengalaman pelanggan melalui akses jalur cepat (Fast Track), gratis pendamping tour, dan layanan khusus yang hanya tersedia bagi anggota.',
+    promoTitle: 'Promo Spesial',
+    promoDesc: 'Nikmati diskon <strong>20%</strong> untuk F&B dan Tiket setiap hari.',
+    image: imgTour,
+  }
+]
 </script>
 
 <template>
@@ -20,132 +55,59 @@ const goToRegisterMembership = (type: string) => {
     <!-- Navbar -->
     <SelfServiceNavbar activeMenu="membership" />
 
+    <!-- Hero Banner -->
+    <section class="hero-banner">
+      <div class="hero-overlay"></div>
+      <div class="hero-content">
+        <span class="hashtag">#KAMPUNGCOKLAT</span>
+        <h1 class="hero-title">Membership Card</h1>
+        <p class="hero-subtitle">
+          Nikmati berbagai keuntungan dan promosi eksklusif bagi pemegang Membership Card, kartu anggota loyalitas dari Kampung Coklat.
+        </p>
+      </div>
+      <div class="torn-edge">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+          <path fill="#ffffff" d="M 0,130 L 0,20 C 50,20 50,110 100,110 C 150,110 150,15 200,15 C 250,15 250,80 300,80 C 350,80 350,25 400,25 C 437,25 437,100 475,100 C 512,100 512,10 550,10 C 600,10 600,90 650,90 C 700,90 700,30 750,30 C 800,30 800,115 850,115 C 900,115 900,20 950,20 C 987,20 987,70 1025,70 C 1062,70 1062,15 1100,15 C 1125,15 1125,95 1150,95 C 1175,95 1175,25 1200,25 L 1200,130 Z"></path>
+        </svg>
+      </div>
+    </section>
+
     <!-- Main Content -->
     <div class="membership-container">
-      <div class="membership-header">
-        <h1 class="page-title">Pilihan Keanggotaan Eksklusif</h1>
-        <p class="page-subtitle">Tingkatkan pengalaman Anda di Kampung Coklat. Pilih tier yang sesuai dan nikmati berbagai keuntungan premium yang kami sediakan khusus untuk Anda.</p>
+      <div class="marketing-intro">
+        <h2 class="marketing-title">Lebih dari Sekadar Liburan Biasa</h2>
+        <p class="marketing-text">
+          Jadikan setiap momen kunjungan Anda di Kampung Coklat lebih istimewa. Program loyalitas kami dirancang khusus untuk memberikan kenyamanan ekstra, layanan prioritas, dan berbagai penawaran eksklusif yang hanya bisa dinikmati oleh member. Pilih <i>tier</i> keanggotaan Anda sekarang dan nikmati pengalaman liburan tanpa batas!
+        </p>
       </div>
 
-      <div class="tier-info-grid">
-        <!-- Member Pengajian (BLUE THEME) -->
-        <div class="tier-card theme-blue">
-          <div class="card-gradient-top"></div>
-          <div class="tc-content">
-            <div class="tc-header">
-              <span class="tier-badge">Member Pengajian</span>
-              <div class="discount-display">
-                <span class="disc-val">10%</span>
-                <span class="disc-lbl">Diskon</span>
-              </div>
+      <div class="tier-list">
+        <div class="tier-item" v-for="tier in tiers" :key="tier.id">
+          <div class="tier-content">
+            <div class="tier-text">
+              <h2 class="tier-title">{{ tier.title }}</h2>
+              <p class="tier-desc">{{ tier.desc1 }}</p>
+              <p class="tier-desc">{{ tier.desc2 }}</p>
             </div>
             
-            <div class="tc-divider"></div>
-            
-            <ul class="tc-benefits">
-              <li>
-                <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="check-icon"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-                <span>Diskon 10% F&amp;B dan Tiket</span>
-              </li>
-              <li>
-                <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="check-icon"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-                <span>Akses Area Pengajian</span>
-              </li>
-              <li>
-                <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="check-icon"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-                <span>Info Kajian Rutin</span>
-              </li>
-            </ul>
-            
-            <button 
-              class="btn-tier" 
-              :class="{'is-registered': activeMemberships.includes('Pengajian')}"
-              @click="goToRegisterMembership('Pengajian')"
-              :disabled="activeMemberships.includes('Pengajian')"
-            >
-              {{ activeMemberships.includes('Pengajian') ? 'Anda terdaftar sebagai member' : 'Daftar Member' }}
-            </button>
+            <div class="tier-actions">
+              <div class="promo-box">
+                <h3 class="promo-title">{{ tier.promoTitle }}</h3>
+                <p class="promo-desc" v-html="tier.promoDesc"></p>
+              </div>
+              
+              <button 
+                class="btn-register"
+                :class="{'is-registered': activeMemberships.includes(tier.id)}"
+                @click="goToRegisterMembership(tier.id)"
+                :disabled="activeMemberships.includes(tier.id)"
+              >
+                {{ activeMemberships.includes(tier.id) ? 'Sudah Terdaftar' : 'Daftar Membership' }}
+              </button>
+            </div>
           </div>
-        </div>
-
-        <!-- Member Regular (ORANGE THEME) - HIGHLIGHTED -->
-        <div class="tier-card theme-orange highlighted">
-          <div class="popular-tag">Paling Diminati</div>
-          <div class="card-gradient-top"></div>
-          <div class="tc-content">
-            <div class="tc-header">
-              <span class="tier-badge">Member Regular</span>
-              <div class="discount-display">
-                <span class="disc-val">15%</span>
-                <span class="disc-lbl">Diskon</span>
-              </div>
-            </div>
-            
-            <div class="tc-divider"></div>
-            
-            <ul class="tc-benefits">
-              <li>
-                <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="check-icon"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-                <span>Diskon 15% F&amp;B dan Tiket</span>
-              </li>
-              <li>
-                <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="check-icon"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-                <span>Promo Reguler Khusus</span>
-              </li>
-              <li>
-                <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="check-icon"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-                <span>Layanan Prioritas Dasar</span>
-              </li>
-            </ul>
-            
-            <button 
-              class="btn-tier" 
-              :class="{'is-registered': activeMemberships.includes('Regular')}"
-              @click="goToRegisterMembership('Regular')"
-              :disabled="activeMemberships.includes('Regular')"
-            >
-              {{ activeMemberships.includes('Regular') ? 'Anda terdaftar sebagai member' : 'Daftar Member' }}
-            </button>
-          </div>
-        </div>
-
-        <!-- Member Tour (PURPLE THEME) -->
-        <div class="tier-card theme-purple">
-          <div class="card-gradient-top"></div>
-          <div class="tc-content">
-            <div class="tc-header">
-              <span class="tier-badge">Member Tour VIP</span>
-              <div class="discount-display">
-                <span class="disc-val">20%</span>
-                <span class="disc-lbl">Diskon</span>
-              </div>
-            </div>
-            
-            <div class="tc-divider"></div>
-            
-            <ul class="tc-benefits">
-              <li>
-                <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="check-icon"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-                <span>Diskon 20% F&amp;B dan Tiket</span>
-              </li>
-              <li>
-                <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="check-icon"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-                <span>Akses Jalur Cepat (Fast Track)</span>
-              </li>
-              <li>
-                <div class="icon-wrap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="check-icon"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
-                <span>Gratis Pendamping Tour</span>
-              </li>
-            </ul>
-            
-            <button 
-              class="btn-tier" 
-              :class="{'is-registered': activeMemberships.includes('Tour')}"
-              @click="goToRegisterMembership('Tour')"
-              :disabled="activeMemberships.includes('Tour')"
-            >
-              {{ activeMemberships.includes('Tour') ? 'Anda terdaftar sebagai member' : 'Daftar Member' }}
-            </button>
+          <div class="tier-image">
+            <img :src="tier.image" :alt="tier.name" />
           </div>
         </div>
       </div>
@@ -157,329 +119,257 @@ const goToRegisterMembership = (type: string) => {
 </template>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
 
 .membership-wrapper {
-  background-color: #F8FAFC;
-  background-image: 
-    radial-gradient(at 0% 0%, rgba(219, 234, 254, 0.5) 0px, transparent 50%),
-    radial-gradient(at 100% 100%, rgba(254, 243, 199, 0.5) 0px, transparent 50%);
+  background-color: #ffffff;
   min-height: 100vh;
-  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
-  color: #334155;
   display: flex;
   flex-direction: column;
 }
 
 .membership-container {
   max-width: 1200px;
-  margin: 80px auto;
+  margin: 0 auto 100px; /* Reduced top margin since we have the banner and marketing text */
   padding: 0 24px;
   flex: 1;
 }
 
-.membership-header {
+.marketing-intro {
   text-align: center;
-  margin-bottom: 72px;
+  max-width: 800px;
+  margin: 60px auto 80px; /* Top margin provides space after the wavy banner */
 }
 
-.page-title {
-  font-size: 44px;
-  font-weight: 900;
-  color: #0F172A;
-  margin: 0 0 20px 0;
-  letter-spacing: -0.03em;
-}
-
-.page-subtitle {
-  font-size: 18px;
-  color: #64748B;
-  max-width: 650px;
-  margin: 0 auto;
-  line-height: 1.6;
-}
-
-.tier-info-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 32px;
-  align-items: center; /* helps with highlighted middle card */
-}
-@media (min-width: 992px) {
-  .tier-info-grid { 
-    grid-template-columns: repeat(3, 1fr); 
-    gap: 40px;
-  }
-}
-
-/* CARDS */
-.tier-card {
-  background: white;
-  border-radius: 28px;
-  border: 1px solid #F1F5F9;
-  padding: 40px 32px;
-  position: relative;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  overflow: hidden;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.03);
-  display: flex;
-  flex-direction: column;
-}
-.tier-card:hover {
-  transform: translateY(-10px);
-  box-shadow: 0 20px 40px rgba(0,0,0,0.08);
-}
-
-.card-gradient-top {
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 6px;
-  z-index: 0;
-}
-
-/* Card Content Z-Index */
-.tc-content {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-
-/* Highlighted (Middle) */
-.tier-card.highlighted {
-  border: 1px solid rgba(217, 119, 6, 0.2);
-  transform: scale(1.03);
-  box-shadow: 0 20px 50px rgba(217, 119, 6, 0.08);
-}
-.tier-card.highlighted:hover {
-  transform: scale(1.03) translateY(-10px);
-  box-shadow: 0 30px 60px rgba(217, 119, 6, 0.12);
-}
-.popular-tag {
-  position: absolute;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  background: linear-gradient(135deg, #F59E0B, #D97706);
-  color: white;
-  font-size: 13px;
+.marketing-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 36px;
   font-weight: 800;
-  padding: 6px 16px;
-  border-radius: 0 0 12px 12px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  z-index: 3;
-  box-shadow: 0 4px 12px rgba(217,119,6,0.3);
+  color: #3D2214;
+  margin: 0 0 16px 0;
+  letter-spacing: -0.5px;
 }
 
-/* THEMES */
-.theme-blue .card-gradient-top { background: linear-gradient(90deg, #60A5FA, #3B82F6); }
-.theme-blue .tier-badge { color: #1D4ED8; background: #DBEAFE; border: 1px solid #BFDBFE; }
-.theme-blue .icon-wrap { background: #EFF6FF; }
-.theme-blue .check-icon { color: #3B82F6; }
-
-.theme-orange .card-gradient-top { background: linear-gradient(90deg, #FBBF24, #D97706); }
-.theme-orange .tier-badge { color: #B45309; background: #FEF3C7; border: 1px solid #FDE68A; }
-.theme-orange .icon-wrap { background: #FFFBEB; }
-.theme-orange .check-icon { color: #F59E0B; }
-
-.theme-purple .card-gradient-top { background: linear-gradient(90deg, #A78BFA, #8B5CF6); }
-.theme-purple .tier-badge { color: #6D28D9; background: #EDE9FE; border: 1px solid #DDD6FE; }
-.theme-purple .icon-wrap { background: #F5F3FF; }
-.theme-purple .check-icon { color: #8B5CF6; }
-
-/* Header Elements */
-.tc-header {
-  margin-bottom: 24px;
-}
-.tier-badge {
-  display: inline-block;
-  font-size: 13px;
-  font-weight: 800;
-  padding: 6px 14px;
-  border-radius: 20px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-bottom: 20px;
-}
-.discount-display {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-}
-.disc-val {
-  font-size: 56px;
-  font-weight: 900;
-  color: #0F172A;
-  line-height: 1;
-  letter-spacing: -1.5px;
-}
-.disc-lbl {
-  font-size: 18px;
-  font-weight: 700;
+.marketing-text {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 16.5px;
   color: #64748B;
+  line-height: 1.8;
+  margin: 0;
 }
 
-.tc-divider {
-  height: 1px;
-  background: #F1F5F9;
-  margin: 0 0 24px 0;
-}
-
-/* Benefits List */
-.tc-benefits {
-  list-style: none;
-  padding: 0;
-  margin: 0 0 40px 0;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  flex: 1;
-}
-.tc-benefits li {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  font-size: 15px;
-  color: #334155;
-  font-weight: 600;
-}
-.icon-wrap {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
+/* Hero Section */
+.hero-banner {
+  position: relative;
+  min-height: 380px;
+  background-image: url('~/assets/assets_POS/POS/sewa_tempat/bale_coklat.jpg');
+  background-size: cover;
+  background-position: center;
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-shrink: 0;
+  overflow: hidden;
 }
-.check-icon {
-  width: 14px;
-  height: 14px;
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.7));
 }
-
-/* Action Button */
-.btn-tier {
-  width: 100%;
-  padding: 16px;
-  border-radius: 16px;
-  border: 2px solid #E2E8F0;
-  font-size: 16px;
-  font-weight: 800;
-  cursor: pointer;
-  transition: all 0.3s;
-  background: white;
-  color: #0F172A;
-}
-.btn-tier:hover {
-  background: #F8FAFC;
-  border-color: #CBD5E1;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-}
-
-.theme-orange .btn-tier:not(.is-registered) {
-  background: linear-gradient(135deg, #F59E0B, #D97706);
-  border: none;
+.hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
   color: white;
-  box-shadow: 0 8px 20px rgba(217,119,6,0.25);
-  padding: 18px; /* account for border removal */
+  max-width: 800px;
+  padding: 0 20px;
 }
-.theme-orange .btn-tier:not(.is-registered):hover {
-  background: linear-gradient(135deg, #FBBF24, #B45309);
-  box-shadow: 0 12px 25px rgba(217,119,6,0.35);
+.hashtag {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 2px;
+  color: #f29727;
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 12px;
+}
+.hero-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 42px;
+  font-weight: 800;
+  line-height: 1.1;
+  margin: 0 0 16px 0;
+  color: #ffffff;
+  text-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+.hero-subtitle {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 16px;
+  color: #e2e8f0;
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+.torn-edge {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  width: 100%;
+  height: 60px;
+  z-index: 2;
+}
+.torn-edge svg {
+  width: 100%;
+  height: 100%;
 }
 
-.btn-tier.is-registered {
-  background: #ECFDF5;
-  color: #10B981;
-  border: 2px solid #A7F3D0;
-  box-shadow: none;
-  cursor: default;
-}
-.btn-tier.is-registered:hover {
-  transform: none;
-  background: #ECFDF5;
-  border-color: #A7F3D0;
+.tier-list {
+  display: flex;
+  flex-direction: column;
+  gap: 100px;
 }
 
-/* ========================================================================= */
-/* RESPONSIVE (< 768px)                                                      */
-/* ========================================================================= */
-@media (max-width: 768px) {
-  .membership-container {
-    margin: 40px auto;
-    padding: 0 16px;
+.tier-item {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+}
+
+.tier-content {
+  width: 55%;
+  display: flex;
+  flex-direction: column;
+}
+
+.tier-image {
+  width: 40%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+
+.tier-image {
+  width: 40%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+
+.tier-image img {
+  width: 100%;
+  max-width: 520px;
+  height: auto;
+  object-fit: contain;
+  /* drop-shadow hugs the actual non-transparent pixels of the PNG */
+  filter: drop-shadow(0 12px 28px rgba(0,0,0,0.15));
+}
+
+.tier-title {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: #d66b3b;
+  margin: 0 0 16px 0;
+}
+
+.tier-desc {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 15.5px;
+  color: #64748B;
+  line-height: 1.6;
+  margin: 0 0 16px 0;
+}
+
+.tier-actions {
+  margin-top: auto;
+  padding-top: 24px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.promo-box {
+  background-color: #fdfdf7;
+  border: 1px solid #e8e4cd;
+  padding: 20px 24px;
+  margin-bottom: 24px;
+  width: 100%;
+  border-radius: 8px;
+}
+
+.promo-title {
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  font-size: 18px;
+  color: #5a4f44;
+  margin: 0 0 6px 0;
+  font-weight: bold;
+}
+
+.promo-desc {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 13.5px;
+  color: #64748B;
+  margin: 0;
+}
+
+.btn-register {
+  background-color: #d66b3b;
+  color: #ffffff;
+  border: none;
+  padding: 14px 32px;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-register:hover:not(:disabled) {
+  background-color: #b95a31;
+}
+
+.btn-register:disabled,
+.btn-register.is-registered {
+  background-color: #cbd5e1;
+  color: #f1f5f9;
+  cursor: not-allowed;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
+  .marketing-intro {
+    margin: 40px auto 60px;
   }
-  .membership-header {
-    margin-bottom: 40px;
-  }
-  .page-title {
+  .marketing-title {
     font-size: 28px;
-    margin-bottom: 12px;
   }
-  .page-subtitle {
-    font-size: 14px;
-  }
-  .tier-info-grid {
-    gap: 20px;
-  }
-  .tier-card {
-    padding: 24px 20px;
-    border-radius: 20px;
-  }
-  .tier-card.highlighted {
-    transform: none;
-    padding-top: 44px;
-  }
-  .tier-card.highlighted:hover {
-    transform: translateY(-5px);
-  }
-  .popular-tag {
-    font-size: 11px;
-    padding: 5px 14px;
-  }
-  .tc-header {
-    margin-bottom: 16px;
-  }
-  .tier-badge {
-    font-size: 11px;
-    padding: 4px 10px;
-    margin-bottom: 12px;
-  }
-  .disc-val {
-    font-size: 40px;
-  }
-  .disc-lbl {
+  .marketing-text {
     font-size: 15px;
   }
-  .tc-divider {
-    margin: 0 0 16px 0;
+  .tier-item {
+    flex-direction: column;
+    gap: 40px;
   }
-  .tc-benefits {
-    gap: 12px;
-    margin-bottom: 24px;
+  .tier-content, .tier-image {
+    width: 100%;
   }
-  .tc-benefits li {
-    font-size: 13px;
-    gap: 12px;
+  .tier-image {
+    justify-content: center;
+    order: -1;
   }
-  .icon-wrap {
-    width: 24px;
-    height: 24px;
+}
+
+@media (max-width: 768px) {
+  .membership-container {
+    margin: 40px auto 80px;
   }
-  .check-icon {
-    width: 12px;
-    height: 12px;
+  .main-title {
+    font-size: 32px;
   }
-  .btn-tier {
-    padding: 12px;
-    font-size: 14px;
-    border-radius: 12px;
-  }
-  .theme-orange .btn-tier:not(.is-registered) {
-    padding: 14px;
+  .main-subtitle {
+    font-size: 15px;
   }
 }
 </style>

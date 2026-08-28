@@ -2,6 +2,18 @@
 import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 
+import imgPengajian from '~/assets/assets_member/member pengajian.png'
+import imgRegular from '~/assets/assets_member/member regular.png'
+import imgTour from '~/assets/assets_member/member tour.png'
+
+const getMembershipImage = (type: string) => {
+  const t = type.toLowerCase()
+  if (t === 'pengajian') return imgPengajian
+  if (t === 'regular' || t === 'reguler') return imgRegular
+  if (t === 'tour') return imgTour
+  return imgRegular
+}
+
 definePageMeta({
   layout: false,
   middleware: [
@@ -18,9 +30,27 @@ const router = useRouter()
 const authCookie = useCookie('selfServiceAuth')
 const userCookie = useCookie('selfServiceUserName')
 
-const userName = ref(userCookie.value || 'Sobat Coklat')
+const savedUserName = useState('selfServiceUserName', () => userCookie.value || 'Sobat Coklat')
+const userName = ref(savedUserName.value)
 const userEmail = ref(`${userName.value.toLowerCase().replace(/\s/g, '')}@gmail.com`)
 const userPhone = ref('+62 812-3456-7890')
+
+const userPhoto = useState<string | null>('selfServiceUserPhoto', () => null)
+const photoInput = ref<HTMLInputElement | null>(null)
+
+const triggerPhotoUpload = () => {
+  if (photoInput.value) {
+    photoInput.value.click()
+  }
+}
+
+const handlePhotoUpload = (event: Event) => {
+  const target = event.target as HTMLInputElement
+  if (target.files && target.files.length > 0) {
+    const file = target.files[0]
+    userPhoto.value = URL.createObjectURL(file)
+  }
+}
 
 const activeMemberships = useState<string[]>('selfServiceMembership', () => [])
 const membershipType = computed(() => {
@@ -53,6 +83,7 @@ const startEdit = () => {
 const saveEdit = () => {
   userName.value = editForm.value.name
   savedUserName.value = editForm.value.name // sync with global state
+  userCookie.value = editForm.value.name // sync with cookie
   userEmail.value = editForm.value.email
   userPhone.value = editForm.value.phone
   isEditing.value = false
@@ -73,11 +104,23 @@ const cancelEdit = () => {
       <!-- Sidebar Profile -->
       <aside class="sidebar">
         <div class="profile-card premium-profile">
-          <div class="avatar-ring">
-            <div class="avatar">{{ userName.charAt(0).toUpperCase() }}</div>
+          <div class="profile-banner"></div>
+          <div class="avatar-container">
+            <div class="avatar-ring">
+              <div class="avatar">
+                <img v-if="userPhoto" :src="userPhoto" class="avatar-img" />
+                <span v-else>{{ userName.charAt(0).toUpperCase() }}</span>
+              </div>
+            </div>
+            <button class="edit-photo-badge" @click="triggerPhotoUpload" title="Ubah Foto Profil">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+            </button>
+            <input type="file" ref="photoInput" @change="handlePhotoUpload" style="display:none" accept="image/*" />
           </div>
-          <h4 class="profile-name">{{ userName }}</h4>
-          <span class="profile-tier">{{ membershipType }}</span>
+          <div class="profile-info">
+            <h4 class="profile-name">{{ userName }}</h4>
+            <span class="profile-tier">{{ membershipType }}</span>
+          </div>
         </div>
 
         <div class="sidebar-menu mt-6">
@@ -102,18 +145,33 @@ const cancelEdit = () => {
             </div>
 
             <!-- View Mode -->
-            <div v-if="!isEditing" class="data-list mt-2">
-              <div class="data-item">
-                <span class="data-label">Nama Lengkap</span>
-                <span class="data-value">{{ userName }}</span>
+            <div v-if="!isEditing" class="data-list mt-4">
+              <div class="data-item modern-data-item">
+                <div class="di-icon bg-blue-50 text-blue-600">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                </div>
+                <div class="di-content">
+                  <span class="data-label">Nama Lengkap</span>
+                  <span class="data-value">{{ userName }}</span>
+                </div>
               </div>
-              <div class="data-item">
-                <span class="data-label">Email</span>
-                <span class="data-value">{{ userEmail }}</span>
+              <div class="data-item modern-data-item">
+                <div class="di-icon bg-orange-50 text-orange-600">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+                </div>
+                <div class="di-content">
+                  <span class="data-label">Email</span>
+                  <span class="data-value">{{ userEmail }}</span>
+                </div>
               </div>
-              <div class="data-item">
-                <span class="data-label">No. WhatsApp</span>
-                <span class="data-value">{{ userPhone }}</span>
+              <div class="data-item modern-data-item">
+                <div class="di-icon bg-green-50 text-green-600">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                </div>
+                <div class="di-content">
+                  <span class="data-label">No. WhatsApp</span>
+                  <span class="data-value">{{ userPhone }}</span>
+                </div>
               </div>
             </div>
 
@@ -140,23 +198,23 @@ const cancelEdit = () => {
 
           <div class="card-glass premium-glass" style="height: 100%;">
             <h2 class="pane-title" style="font-size: 20px;">Statistik Kunjungan</h2>
-            <div class="stats-grid mt-2">
-              <div class="stat-box-modern">
-                <div class="stat-icon bg-orange-100 text-orange-600">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            <div class="stats-grid mt-4">
+              <div class="stat-card-gradient orange-grad">
+                <div class="sc-header">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                 </div>
-                <div class="stat-content">
-                  <span class="stat-num">12</span>
-                  <span class="stat-label">Total Visit</span>
+                <div class="sc-body">
+                  <span class="sc-num">12</span>
+                  <span class="sc-label">Total Visit</span>
                 </div>
               </div>
-              <div class="stat-box-modern">
-                <div class="stat-icon bg-blue-100 text-blue-600">
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              <div class="stat-card-gradient blue-grad">
+                <div class="sc-header">
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                 </div>
-                <div class="stat-content">
-                  <span class="stat-num">3</span>
-                  <span class="stat-label">Bulan Ini</span>
+                <div class="sc-body">
+                  <span class="sc-num">3</span>
+                  <span class="sc-label">Bulan Ini</span>
                 </div>
               </div>
             </div>
@@ -178,43 +236,32 @@ const cancelEdit = () => {
           </div>
           
           <div v-if="activeMemberships.length > 0" class="memberships-list">
-            <div v-for="(membership, index) in activeMemberships" :key="membership" class="member-card-premium" :class="membership.toLowerCase()">
+            <div v-for="(membership, index) in activeMemberships" :key="membership" class="digital-card-container">
+              <!-- Graphic Left -->
+              <div class="dc-graphic">
+                <img :src="getMembershipImage(membership)" class="dc-img" alt="Membership Card Graphic" />
+              </div>
               
-              <!-- Background Elements for Premium Look -->
-              <div class="card-glow"></div>
-              <div class="card-pattern"></div>
-              <div class="card-glare"></div>
-
-              <div class="mc-header">
-                <span class="mc-brand">KAMPUNG COKLAT VIP</span>
-                <div class="mc-tier">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 4px;"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
-                  Member {{ membership }}
+              <!-- Data Right -->
+              <div class="dc-data">
+                <div class="dc-header">
+                  <h3 class="dc-brand">KAMPUNG COKLAT VIP</h3>
+                  <div class="dc-status-badge">Active</div>
                 </div>
-              </div>
 
-              <div class="mc-chip-row">
-                <!-- Smart Chip SVG -->
-                <svg width="40" height="30" viewBox="0 0 40 30" fill="none" class="smart-chip">
-                  <rect width="40" height="30" rx="4" fill="#D4AF37" />
-                  <path d="M10 0v30M30 0v30M0 10h40M0 20h40" stroke="#B8860B" stroke-width="1.5" opacity="0.6"/>
-                  <rect x="15" y="8" width="10" height="14" rx="2" fill="#B8860B" opacity="0.8"/>
-                </svg>
-                <!-- Wireless Icon -->
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform: rotate(90deg); margin-left: 12px;"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg>
-              </div>
-
-              <div class="mc-body">
-                <div class="mc-info">
-                  <p class="mc-id-label">CARD NUMBER</p>
-                  <p class="mc-id-number">KC-{{ (index+1)*1234 }} {{ Math.floor(Math.random() * 9000 + 1000) }} {{ Math.floor(Math.random() * 9000 + 1000) }}</p>
-                  <h3 class="mc-cardholder">{{ userName }}</h3>
-                  <div class="mc-status-premium">Active</div>
-                </div>
-                
-                <div class="mc-qr-premium">
-                  <div class="qr-corners"></div>
-                  <svg width="50" height="50" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h6v6H3V3m2 2v2h2V5H5m8-2h6v6h-6V3m2 2v2h2V5h-2M3 15h6v6H3v-6m2 2v2h2v-2H5m8-2h2v2h-2v-2m-2 2h2v2h-2v-2m4 0h2v2h-2v-2m2-4h2v2h-2v-2m-4 6h2v2h-2v-2m-2-2h2v2h-2v-2m-2-4h2v2h-2v-2m4-2h2v2h-2v-2m-6 2h2v2H9v-2m-2 4h2v2H7v-2M15 9h2v2h-2V9m-4 4h2v2h-2v-2m2-2h2v2h-2V9M9 9h2v2H9V9m4-6h2v2h-2V3z"/></svg>
+                <div class="dc-info-row">
+                  <div class="dc-details">
+                    <p class="dc-label">CARD NUMBER</p>
+                    <p class="dc-number">KC-{{ (index+1)*1234 }} {{ Math.floor(Math.random() * 9000 + 1000) }} {{ Math.floor(Math.random() * 9000 + 1000) }}</p>
+                    <p class="dc-label mt-4">CARDHOLDER</p>
+                    <h3 class="dc-name">{{ userName }}</h3>
+                  </div>
+                  
+                  <div class="dc-qr-wrapper">
+                    <div class="dc-qr-box">
+                      <svg class="dc-qr-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h6v6H3V3m2 2v2h2V5H5m8-2h6v6h-6V3m2 2v2h2V5h-2M3 15h6v6H3v-6m2 2v2h2v-2H5m8-2h2v2h-2v-2m-2 2h2v2h-2v-2m4 0h2v2h-2v-2m2-4h2v2h-2v-2m-4 6h2v2h-2v-2m-2-2h2v2h-2v-2m-2-4h2v2h-2v-2m4-2h2v2h-2v-2m-6 2h2v2H9v-2m-2 4h2v2H7v-2M15 9h2v2h-2V9m-4 4h2v2h-2v-2m2-2h2v2h-2V9M9 9h2v2H9V9m4-6h2v2h-2V3z"/></svg>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -267,43 +314,84 @@ const cancelEdit = () => {
 .premium-profile {
   background: white;
   border-radius: 24px;
-  padding: 40px 24px;
+  padding: 0 0 32px 0;
   text-align: center;
   box-shadow: 0 20px 40px -10px rgba(0,0,0,0.05);
   border: 1px solid rgba(255,255,255,0.8);
   position: relative;
   overflow: hidden;
 }
-.premium-profile::before {
+.profile-banner {
+  height: 120px;
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
+  position: relative;
+}
+.profile-banner::after {
   content: '';
   position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 120px;
-  background: linear-gradient(135deg, #FDF4E3 0%, #FEF3C7 100%);
-  z-index: 0;
+  bottom: 0; left: 0; right: 0;
+  height: 40px;
+  background: white;
+  border-radius: 100% 100% 0 0;
+}
+.avatar-container {
+  position: relative;
+  display: inline-block;
+  margin-top: -65px;
+  margin-bottom: 16px;
+  z-index: 2;
 }
 .avatar-ring {
-  position: relative;
-  z-index: 1;
-  padding: 6px;
-  border: 4px solid white;
+  padding: 8px;
   border-radius: 50%;
   display: inline-block;
-  margin-bottom: 16px;
-  box-shadow: 0 8px 20px rgba(217, 119, 6, 0.15);
-  background: #FFFBEB;
+  box-shadow: 0 10px 25px rgba(217, 119, 6, 0.2);
+  background: white;
 }
 .avatar {
-  width: 90px;
-  height: 90px;
+  width: 110px;
+  height: 110px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #F59E0B, #D97706);
+  background: linear-gradient(135deg, #0F172A, #334155);
   color: white;
-  font-size: 36px;
+  font-size: 44px;
   font-weight: 900;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.edit-photo-badge {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: white;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  color: #D97706;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  z-index: 3;
+}
+.edit-photo-badge:hover {
+  background: #F8FAFC;
+  transform: scale(1.05);
+  color: #B45309;
+}
+.profile-info {
+  padding: 0 24px;
 }
 .profile-name {
   position: relative;
@@ -318,9 +406,10 @@ const cancelEdit = () => {
   z-index: 1;
   font-size: 14px;
   font-weight: 700;
-  color: #D97706;
-  background: #FEF3C7;
-  padding: 4px 12px;
+  color: #EA580C;
+  background: #FFF7ED;
+  border: 1px solid #FFEDD5;
+  padding: 6px 14px;
   border-radius: 20px;
   display: inline-block;
 }
@@ -383,156 +472,137 @@ const cancelEdit = () => {
   border-radius: 20px;
 }
 
-/* PREMIUM MEMBER CARD */
+/* DIGITAL MEMBER CARD (Matched with Membership Page) */
 .memberships-list {
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
-.member-card-premium {
-  position: relative;
+
+.digital-card-container {
+  display: flex;
+  flex-direction: row;
+  background-color: white;
   border-radius: 20px;
-  padding: 32px;
-  color: white;
-  overflow: hidden;
-  box-shadow: 0 20px 40px -10px rgba(0,0,0,0.25);
+  box-shadow: 0 16px 32px rgba(0,0,0,0.06);
+  border: 1px solid #F1F5F9;
+  transition: transform 0.3s ease;
+  padding: 24px;
+  gap: 32px;
+  align-items: center;
+}
+
+.digital-card-container:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.12);
+}
+
+.dc-graphic {
+  flex: 0 0 42%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.dc-img {
+  width: 100%;
+  max-width: 400px;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 12px 28px rgba(0,0,0,0.15));
+}
+
+.dc-data {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  border: 1px solid rgba(255,255,255,0.2);
-}
-.member-card-premium:hover {
-  transform: translateY(-5px) scale(1.01);
-  box-shadow: 0 30px 50px -15px rgba(0,0,0,0.3);
-}
-.card-glow {
-  position: absolute;
-  top: -50%; left: -50%;
-  width: 200%; height: 200%;
-  background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.15) 0%, transparent 60%);
-  pointer-events: none;
-  z-index: 0;
-}
-.card-pattern {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.05) 1px, transparent 0);
-  background-size: 24px 24px;
-  z-index: 0;
-}
-.card-glare {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: linear-gradient(105deg, transparent 20%, rgba(255,255,255,0.1) 25%, transparent 30%);
-  z-index: 0;
+  gap: 20px;
 }
 
-/* Card Themes */
-.member-card-premium.pengajian {
-  background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%);
-}
-.member-card-premium.regular {
-  background: linear-gradient(135deg, #78350F 0%, #D97706 100%);
-}
-.member-card-premium.tour {
-  background: linear-gradient(135deg, #4C1D95 0%, #8B5CF6 100%);
-}
-
-.mc-header {
+.dc-header {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  position: relative;
-  z-index: 2;
+  align-items: flex-start;
+  border-bottom: 1px dashed #E2E8F0;
+  padding-bottom: 16px;
 }
-.mc-brand {
-  font-weight: 900;
-  letter-spacing: 3px;
-  font-size: 15px;
-  opacity: 0.95;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-.mc-tier {
-  display: flex;
-  align-items: center;
-  background: rgba(0,0,0,0.25);
-  border: 1px solid rgba(255,255,255,0.1);
-  padding: 6px 14px;
-  border-radius: 20px;
-  font-weight: 700;
+
+.dc-brand {
   font-size: 13px;
-  backdrop-filter: blur(8px);
-  box-shadow: inset 0 1px 1px rgba(255,255,255,0.1);
+  font-weight: 900;
+  letter-spacing: 1.5px;
+  color: #64748B;
+  margin: 0;
 }
 
-.mc-chip-row {
-  display: flex;
-  align-items: center;
-  position: relative;
-  z-index: 2;
-  margin-top: 4px;
-}
-
-.mc-body {
+.dc-info-row {
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
-  position: relative;
-  z-index: 2;
 }
-.mc-info {
+
+.dc-details {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
 }
-.mc-id-label {
-  font-size: 10px;
-  font-weight: 700;
-  opacity: 0.7;
-  margin: 0 0 4px 0;
-  letter-spacing: 1px;
-}
-.mc-id-number {
-  margin: 0 0 16px 0;
-  font-family: 'Space Mono', monospace;
-  font-size: 20px;
-  letter-spacing: 2.5px;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-}
-.mc-cardholder {
-  font-size: 18px;
-  font-weight: 700;
-  margin: 0 0 6px 0;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-.mc-status-premium {
-  display: inline-block;
+
+.dc-status-badge {
   background: #10B981;
   color: white;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 800;
   padding: 4px 10px;
-  border-radius: 6px;
+  border-radius: 8px;
   text-transform: uppercase;
   letter-spacing: 1px;
-  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.4);
-  align-self: flex-start;
 }
-.mc-qr-premium {
-  background: rgba(255,255,255,0.95);
-  padding: 8px;
-  border-radius: 12px;
+
+.dc-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #94A3B8;
+  margin: 0 0 4px 0;
+  letter-spacing: 1.5px;
+}
+
+.dc-number {
+  font-family: 'Space Mono', monospace;
+  font-size: 18px;
+  letter-spacing: 2px;
   color: #0F172A;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-  position: relative;
+  margin: 0;
+  font-weight: 700;
 }
-.qr-corners {
-  position: absolute;
-  top: 4px; left: 4px; right: 4px; bottom: 4px;
-  border: 1px dashed rgba(15, 23, 42, 0.2);
-  border-radius: 8px;
-  pointer-events: none;
+
+.dc-name {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0F172A;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.dc-qr-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.dc-qr-box {
+  background: white;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid #E2E8F0;
+  color: #0F172A;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+}
+
+.dc-qr-icon {
+  width: 48px;
+  height: 48px;
 }
 
 /* GRIDS */
@@ -577,29 +647,52 @@ const cancelEdit = () => {
 .data-list {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 16px;
 }
-.data-item {
+.modern-data-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: #F8FAFC;
+  border-radius: 16px;
+  border: 1px solid #F1F5F9;
+  transition: all 0.3s ease;
+}
+.modern-data-item:hover {
+  background: white;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.03);
+  transform: translateY(-2px);
+  border-color: #E2E8F0;
+}
+.di-icon {
+  width: 44px; height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bg-blue-50 { background: #EFF6FF; }
+.text-blue-600 { color: #2563EB; }
+.bg-orange-50 { background: #FFF7ED; }
+.text-orange-600 { color: #EA580C; }
+.bg-green-50 { background: #F0FDF4; }
+.text-green-600 { color: #16A34A; }
+.di-content {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding-bottom: 16px;
-  border-bottom: 1px dashed #E2E8F0;
-}
-.data-item:last-child {
-  border-bottom: none;
-  padding-bottom: 0;
+  gap: 2px;
 }
 .data-label {
-  font-size: 12px;
-  color: #94A3B8;
+  font-size: 11px;
+  color: #64748B;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 .data-value {
-  font-size: 16px;
-  color: #1E293B;
+  font-size: 15px;
+  color: #0F172A;
   font-weight: 700;
 }
 
@@ -665,54 +758,57 @@ const cancelEdit = () => {
   grid-template-columns: 1fr 1fr;
   gap: 16px;
 }
-.stat-box-modern {
-  background: #F8FAFC;
+.stat-card-gradient {
   padding: 20px;
-  border-radius: 16px;
+  border-radius: 20px;
+  color: white;
   display: flex;
-  align-items: center;
-  gap: 16px;
-  border: 1px solid #F1F5F9;
-  transition: transform 0.2s;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+  transition: transform 0.3s ease;
 }
-.stat-box-modern:hover {
-  transform: translateY(-2px);
-  background: #F1F5F9;
+.stat-card-gradient:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.1);
 }
-.stat-icon {
-  width: 48px; height: 48px;
+.orange-grad {
+  background: linear-gradient(135deg, #F97316 0%, #EA580C 100%);
+}
+.blue-grad {
+  background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);
+}
+.sc-header {
+  background: rgba(255,255,255,0.2);
+  width: 44px; height: 44px;
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.bg-orange-100 { background: #FFEDD5; }
-.text-orange-600 { color: #EA580C; }
-.bg-blue-100 { background: #DBEAFE; }
-.text-blue-600 { color: #2563EB; }
-
-.stat-content {
+.sc-body {
   display: flex;
   flex-direction: column;
+  gap: 2px;
 }
-.stat-num {
-  font-size: 24px;
+.sc-num {
+  font-size: 28px;
   font-weight: 900;
-  color: #0F172A;
-  line-height: 1.2;
+  line-height: 1;
 }
-.stat-label {
+.sc-label {
   font-size: 13px;
-  color: #64748B;
   font-weight: 600;
+  opacity: 0.9;
 }
 
 .last-visit-modern {
   display: flex;
   align-items: center;
-  background: #F1F5F9;
-  padding: 16px;
-  border-radius: 12px;
+  background: #F8FAFC;
+  padding: 16px 20px;
+  border-radius: 16px;
+  border: 1px solid #E2E8F0;
   font-size: 14px;
 }
 .lvm-dot {
@@ -772,35 +868,125 @@ const cancelEdit = () => {
     padding: 24px 20px;
   }
   .premium-profile {
-    padding: 32px 20px 24px;
+    padding: 0 0 24px 0;
+  }
+  .data-list {
+    gap: 12px;
+  }
+  .modern-data-item {
+    padding: 12px;
+    gap: 12px;
+    border-radius: 12px;
+  }
+  .di-icon {
+    width: 36px; height: 36px;
+    border-radius: 10px;
+  }
+  .di-icon svg {
+    width: 18px; height: 18px;
+  }
+  .data-label {
+    font-size: 10px;
+  }
+  .data-value {
+    font-size: 14px;
   }
   .stats-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: 1fr 1fr;
     gap: 12px;
   }
-  .member-card-premium {
-    padding: 24px 20px;
-    gap: 16px;
+  .stat-card-gradient {
+    padding: 16px;
+    gap: 8px;
+    border-radius: 16px;
   }
-  .mc-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 12px;
+  .sc-header {
+    width: 32px; height: 32px;
+    border-radius: 8px;
   }
-  .mc-body {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 24px;
+  .sc-header svg {
+    width: 18px; height: 18px;
   }
-  .mc-id-number {
-    font-size: 14px;
-    letter-spacing: 1px;
+  .sc-num {
+    font-size: 20px;
   }
-  .mc-cardholder {
-    font-size: 16px;
+  .sc-label {
+    font-size: 11px;
   }
-  .mc-qr-premium {
-    align-self: center;
+  .last-visit-modern {
+    padding: 12px 16px;
+    font-size: 12px;
+  }
+  .digital-card-container {
+    flex-direction: row;
+    padding: 12px;
+    gap: 8px;
+    border-radius: 12px;
+  }
+  .dc-graphic {
+    flex: 0 0 40%;
+    width: auto;
+  }
+  .dc-img {
+    max-width: 100%;
+  }
+  .dc-data {
+    gap: 8px;
+    padding: 0;
+  }
+  .dc-header {
+    padding-bottom: 6px;
+    flex-direction: row;
+    gap: 4px;
+    align-items: center;
+  }
+  .dc-brand {
+    font-size: 8px;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+  .dc-status-badge {
+    font-size: 7px;
+    padding: 2px 4px;
+  }
+  .dc-info-row {
+    flex-direction: row;
+    align-items: flex-end;
+    gap: 6px;
+  }
+  .dc-details {
+    min-width: 0;
+    flex: 1;
+  }
+  .dc-number {
+    font-size: 9px;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+  .dc-name {
+    font-size: 10px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .dc-label {
+    font-size: 7px;
+    margin-bottom: 2px;
+  }
+  .dc-label.mt-4 {
+    margin-top: 4px;
+  }
+  .dc-qr-wrapper {
+    align-self: flex-end;
+    flex: 0 0 auto;
+  }
+  .dc-qr-box {
+    padding: 4px;
+    border-radius: 6px;
+  }
+  .dc-qr-icon {
+    width: 22px;
+    height: 22px;
   }
 }
 </style>
