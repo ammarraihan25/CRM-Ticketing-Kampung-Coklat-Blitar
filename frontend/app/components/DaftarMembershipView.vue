@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 
 
 
@@ -70,6 +70,27 @@ const getStatusClass = (status: MembershipStatus) => {
 const countPending = computed(() => membershipList.value.filter(m => m.status === 'Pending').length)
 const countApproved = computed(() => membershipList.value.filter(m => m.status === 'Approved').length)
 const countTotal = computed(() => membershipList.value.length)
+
+// Search & Debounce
+const searchQuery = ref('')
+const debouncedSearch = ref('')
+let debounceTimer: ReturnType<typeof setTimeout> | null = null
+
+watch(searchQuery, (newVal) => {
+  if (debounceTimer) clearTimeout(debounceTimer)
+  debounceTimer = setTimeout(() => {
+    debouncedSearch.value = newVal
+  }, 400)
+})
+
+const filteredMembershipList = computed(() => {
+  if (!debouncedSearch.value) return membershipList.value
+  const q = debouncedSearch.value.toLowerCase()
+  return membershipList.value.filter(m => 
+    m.name.toLowerCase().includes(q) || 
+    m.idNumber.toLowerCase().includes(q)
+  )
+})
 
 // Modal State
 const isModalOpen = ref(false)
@@ -156,7 +177,7 @@ const handleReject = () => {
         <h2 class="table-title">Daftar Antrean Verifikasi</h2>
         <div class="search-box">
           <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-          <input type="text" placeholder="Cari nama atau No. Identitas..." class="search-input" />
+          <input v-model="searchQuery" type="text" placeholder="Cari nama atau No. Identitas..." class="search-input" />
         </div>
       </div>
       
@@ -174,10 +195,13 @@ const handleReject = () => {
             </tr>
           </thead>
           <tbody>
-            <tr v-if="membershipList.length === 0">
-              <td colspan="7" class="text-center">Belum ada data pendaftaran membership.</td>
+            <tr v-if="filteredMembershipList.length === 0">
+              <td colspan="7" class="text-center">
+                <span v-if="searchQuery">Tidak ada hasil ditemukan untuk "{{ searchQuery }}"</span>
+                <span v-else>Belum ada data pendaftaran membership.</span>
+              </td>
             </tr>
-            <tr v-for="member in membershipList" :key="member.id">
+            <tr v-for="member in filteredMembershipList" :key="member.id">
               <td class="font-bold">#{{ member.id }}</td>
               <td>
                 <div class="info-group">
@@ -444,21 +468,34 @@ const handleReject = () => {
 
 .search-icon {
   position: absolute;
-  left: 12px;
-  color: #9CA3AF;
+  left: 14px;
+  color: #94A3B8;
+  pointer-events: none;
 }
 
 .search-input {
-  padding: 10px 12px 10px 36px;
-  border: 1px solid #D1D5DB;
-  border-radius: 8px;
+  padding: 10px 16px 10px 38px;
+  background-color: #F8FAFC;
+  border: 1.5px solid #CBD5E1;
+  border-radius: 99px;
   font-size: 13.5px;
-  min-width: 280px;
+  font-weight: 500;
+  color: #1E293B;
+  min-width: 320px;
   outline: none;
+  transition: all 0.25s ease;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.search-input::placeholder {
+  color: #94A3B8;
+  font-weight: 400;
 }
 
 .search-input:focus {
+  background-color: #FFFFFF;
   border-color: #D97706;
+  box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.1);
 }
 
 .table-responsive {

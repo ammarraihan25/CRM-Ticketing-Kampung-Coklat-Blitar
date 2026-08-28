@@ -453,27 +453,52 @@ function getTypeClass(type?: string) {
       </div>
     </header>
     
-      <!-- Member Overview Counters -->
-      <div class="revenue-kpi-row">
-        <div class="rev-kpi-card">
-          <span class="rev-label">Total Database Member CRM</span>
-          <div class="rev-val text-cocoa">{{ totalMember.toLocaleString('id-ID') }} Kontak</div>
-          <span class="rev-sub">Primary Key: No. WhatsApp</span>
+      <!-- Metrics Cards (Synced with Daftar Membership) -->
+      <div class="metrics-grid">
+        <div class="metric-card mc-border-blue">
+          <div class="metric-icon bg-blue-light text-blue">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+          </div>
+          <div class="metric-content">
+            <p class="metric-label">Total Member CRM</p>
+            <h2 class="metric-value">{{ totalMember.toLocaleString('id-ID') }} <span class="metric-unit">Kontak</span></h2>
+          </div>
         </div>
-        <div class="rev-kpi-card">
-          <span class="rev-label">Member Reguler (PR)</span>
-          <div class="rev-val">{{ totalMemberPR.toLocaleString('id-ID') }}</div>
-          <span class="rev-sub">52% dari total basis data</span>
+
+        <div class="metric-card mc-border-orange">
+          <div class="metric-icon bg-orange-light text-orange">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><polyline points="16 11 18 13 22 9"></polyline></svg>
+          </div>
+          <div class="metric-content">
+            <p class="metric-label">Member Reguler (PR)</p>
+            <h2 class="metric-value">{{ totalMemberPR.toLocaleString('id-ID') }} <span class="metric-unit">Member</span></h2>
+          </div>
         </div>
-        <div class="rev-kpi-card">
-          <span class="rev-label">Jamaah Pengajian (PP)</span>
-          <div class="rev-val text-amber">{{ totalMemberPP.toLocaleString('id-ID') }}</div>
-          <span class="rev-sub">33% via Digital Guest Book</span>
+
+        <div class="metric-card mc-border-green">
+          <div class="metric-icon bg-green-light text-green">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2v2" />
+              <path d="M12 4c-3 0-5 3-5 6v8H5v2h14v-2h-2v-8c0-3-2-6-5-6z" />
+              <path d="M10 20v-4a2 2 0 0 1 4 0v4" />
+            </svg>
+          </div>
+          <div class="metric-content">
+            <p class="metric-label">Jamaah Pengajian (PP)</p>
+            <h2 class="metric-value">{{ totalMemberPP.toLocaleString('id-ID') }} <span class="metric-unit">Jamaah</span></h2>
+          </div>
         </div>
-        <div class="rev-kpi-card">
-          <span class="rev-label">Agen Tour / B2B (PT)</span>
-          <div class="rev-val">{{ totalMemberPT.toLocaleString('id-ID') }}</div>
-          <span class="rev-sub">15% kemitraan rombongan</span>
+
+        <div class="metric-card mc-border-red">
+          <div class="metric-icon bg-red-light text-red">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M8 6v6"/><path d="M15 6v6"/><path d="M2 12h19.6"/><path d="M18 18h3s.5-1.7.8-2.8c.1-.4.2-.8.2-1.2 0-.4-.1-.8-.2-1.2l-1.4-5C20.1 6.8 19.1 6 18 6H4a2 2 0 0 0-2 2v10h3"/><circle cx="7" cy="18" r="2"/><path d="M9 18h5"/><circle cx="16" cy="18" r="2"/>
+            </svg>
+          </div>
+          <div class="metric-content">
+            <p class="metric-label">Agen Tour / B2B (PT)</p>
+            <h2 class="metric-value">{{ totalMemberPT.toLocaleString('id-ID') }} <span class="metric-unit">Agen</span></h2>
+          </div>
         </div>
       </div>
 
@@ -486,13 +511,15 @@ function getTypeClass(type?: string) {
           </div>
 
           <div class="member-filter-row">
-            <input
-              v-model="filters.search"
-              type="text"
-              class="filter-select"
-              placeholder="Cari nama atau WA..."
-              style="width: 200px"
-            />
+            <div class="search-box">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+              <input
+                v-model="filters.search"
+                type="text"
+                class="search-input"
+                placeholder="Cari nama atau WA..."
+              />
+            </div>
             <select v-model="filters.tipeMember" class="filter-select">
               <option value="">Semua Segmen (PR, PP, PT)</option>
               <option value="PR">PR - Pengunjung Reguler</option>
@@ -661,6 +688,41 @@ function getTypeClass(type?: string) {
 
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800;900&family=Outfit:wght@500;600;700;800;900&family=Jost:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;800;900&display=swap');
+
+/* Search Bar Pill Design Sync */
+.search-box {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.search-icon {
+  position: absolute;
+  left: 14px;
+  color: #94A3B8;
+  pointer-events: none;
+}
+.search-input {
+  padding: 10px 16px 10px 38px;
+  background-color: #F8FAFC;
+  border: 1.5px solid #CBD5E1;
+  border-radius: 99px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: #1E293B;
+  min-width: 240px;
+  outline: none;
+  transition: all 0.25s ease;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+}
+.search-input::placeholder {
+  color: #94A3B8;
+  font-weight: 400;
+}
+.search-input:focus {
+  background-color: #FFFFFF;
+  border-color: #D97706;
+  box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.1);
+}
 
 .reports-container {
   display: flex;
@@ -842,38 +904,73 @@ function getTypeClass(type?: string) {
   gap: 18px;
 }
 
-/* KPI Rows */
-.revenue-kpi-row {
+/* Metrics Grid Sync */
+.metrics-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
+  gap: 20px;
+  margin-bottom: 24px;
 }
-
-.rev-kpi-card {
-  background-color: #FFFFFF;
+.metric-card {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
   border: 1px solid #E5E7EB;
-  border-radius: 8px;
-  padding: 16px;
+  border-left-width: 4px;
+}
+.metric-card.mc-border-orange { border-left-color: #F59E0B; }
+.metric-card.mc-border-green { border-left-color: #10B981; }
+.metric-card.mc-border-blue { border-left-color: #3B82F6; }
+.metric-card.mc-border-red { border-left-color: #EF4444; }
+
+.metric-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.bg-orange-light { background: #FEF3C7; } .text-orange { color: #D97706; }
+.bg-green-light { background: #D1FAE5; } .text-green { color: #059669; }
+.bg-blue-light { background: #DBEAFE; } .text-blue { color: #2563EB; }
+.bg-red-light { background: #FEE2E2; } .text-red { color: #DC2626; }
+
+.metric-content {
+  min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  justify-content: center;
 }
 
-.rev-label {
+.metric-label {
   font-size: 11.5px;
-  color: #6B5A52;
-  text-transform: uppercase;
-  font-weight: 500;
-}
-
-.rev-val {
-  font-size: 22px;
   font-weight: 700;
-  color: var(--color-primary, #2C1A13);
+  color: #6B7280;
+  margin: 0 0 4px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  line-height: 1.3;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
-
-.rev-sub {
-  font-size: 11.5px;
+.metric-value {
+  font-size: 28px;
+  font-weight: 800;
+  color: #111827;
+  margin: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+}
+.metric-unit {
+  font-size: 14px;
+  font-weight: 600;
   color: #9CA3AF;
 }
 
@@ -1050,14 +1147,7 @@ function getTypeClass(type?: string) {
   gap: 12px;
 }
 
-.search-input {
-  padding: 6px 12px;
-  border: 1px solid #E5E7EB;
-  border-radius: 6px;
-  font-family: inherit;
-  font-size: 12.5px;
-  width: 260px;
-}
+
 
 .member-filter-row {
   display: flex;
@@ -1245,7 +1335,7 @@ function getTypeClass(type?: string) {
 }
 
 @media (max-width: 1024px) {
-  .revenue-kpi-row,
+  .metrics-grid,
   .ticket-status-grid {
     grid-template-columns: repeat(2, 1fr);
   }
