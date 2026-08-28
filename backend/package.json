@@ -89,5 +89,13 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "overrides": {
+    "@nestjs/serve-static": {
+      "@fastify/static": "$@fastify/static"
+    },
+    "typeorm": {
+      "better-sqlite3": "$better-sqlite3"
+    }
   }
 }

@@ -13,8 +13,8 @@ const props = defineProps({
 const router = useRouter()
 const route = useRoute()
 
-const savedUserName = useState('selfServiceUserName', () => 'Sobat Coklat')
-const userName = ref(savedUserName.value)
+const userName = useState('selfServiceUserName', () => 'Sobat Coklat')
+const userPhoto = useState<string | null>('selfServiceUserPhoto', () => null)
 const isMobileMenuOpen = ref(false)
 
 const goToProfile = () => {
@@ -105,7 +105,10 @@ const toggleMobileMenu = () => {
 
         <div class="nav-user">
           <button class="profile-nav-btn" @click="goToProfile">
-            <div class="avatar-nav">{{ userName.charAt(0).toUpperCase() }}</div>
+            <div class="avatar-nav">
+              <img v-if="userPhoto" :src="userPhoto" class="avatar-nav-img" />
+              <span v-else>{{ userName.charAt(0).toUpperCase() }}</span>
+            </div>
             <span class="username-nav">{{ userName }}</span>
           </button>
         </div>
@@ -199,31 +202,41 @@ const toggleMobileMenu = () => {
   align-items: center;
   gap: 12px;
   background: white;
-  border: 1px solid #E2E8F0;
+  border: 1px solid #F1F5F9;
   padding: 6px 16px 6px 6px;
   border-radius: 30px;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.02);
 }
 .profile-nav-btn:hover {
   background: #F8FAFC;
-  border-color: #CBD5E1;
+  border-color: #E2E8F0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  transform: translateY(-1px);
 }
 .avatar-nav {
-  width: 32px;
-  height: 32px;
-  background: #FFFBEB;
-  color: #D97706;
+  width: 34px;
+  height: 34px;
+  background: linear-gradient(135deg, #0F172A, #334155);
+  color: white;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 800;
-  font-size: 14px;
+  font-size: 15px;
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.2);
+  overflow: hidden;
+}
+.avatar-nav-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 .username-nav {
   font-weight: 700;
-  color: #1E293B;
+  color: #0F172A;
   font-size: 14px;
 }
 
