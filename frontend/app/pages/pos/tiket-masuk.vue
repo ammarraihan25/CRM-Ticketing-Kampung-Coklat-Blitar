@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { useCrmNonMember } from '~/composables/useCrmNonMember'
+const { addVisitor } = useCrmNonMember()
+
 import { ref, computed } from 'vue'
 
 definePageMeta({
@@ -117,6 +120,16 @@ const processCheckout = () => {
 }
 
 const processPayment = async () => {
+  if (!bookingData.value.isMember) {
+    addVisitor({
+      nama: bookingData.value.nama || 'Pelanggan POS',
+      whatsapp: bookingData.value.telepon || '-',
+      domisili: 'Offline',
+      source: 'POS',
+      totalSpend: grandTotal.value
+    })
+  }
+
    if (paymentMethod.value === 'cash' && cashReceived.value < grandTotal.value) {
      alert('Uang yang diterima kurang!')
      return

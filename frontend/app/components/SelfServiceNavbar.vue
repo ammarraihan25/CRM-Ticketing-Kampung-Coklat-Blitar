@@ -123,9 +123,11 @@ const toggleMobileMenu = () => {
   position: sticky;
   top: 0;
   z-index: 100;
-  background: white;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
   padding: 12px 0;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
 }
 .nav-container {
   max-width: 1440px;
@@ -139,6 +141,10 @@ const toggleMobileMenu = () => {
 .logo-img {
   height: 45px;
   object-fit: contain;
+  transition: transform 0.3s ease;
+}
+.logo-img:hover {
+  transform: scale(1.05);
 }
 .hamburger-btn {
   display: none;
@@ -169,7 +175,7 @@ const toggleMobileMenu = () => {
   font-size: 14px;
   padding: 8px 18px;
   border-radius: 30px;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   background: transparent;
 }
 .nav-icon-wrap {
@@ -177,19 +183,30 @@ const toggleMobileMenu = () => {
   align-items: center;
   justify-content: center;
   color: inherit;
+  transition: transform 0.3s ease;
 }
 .nav-icon {
   width: 18px;
   height: 18px;
 }
 .nav-link:hover {
-  background: #FEF3C7;
-  color: #B45309;
+  background: #F8FAFC;
+  color: #0F172A;
+  transform: translateY(-2px);
+}
+.nav-link:hover .nav-icon-wrap {
+  transform: scale(1.1);
+  color: #D97706;
 }
 .nav-link.active {
-  background: #2C1A13;
-  color: #F59E0B;
-  box-shadow: 0 4px 12px rgba(44, 26, 19, 0.15);
+  background: #FFF7ED;
+  color: #D97706;
+  box-shadow: inset 0 2px 4px rgba(217, 119, 6, 0.05);
+  border: 1px solid #FFEDD5;
+  transform: translateY(0);
+}
+.nav-link.active .nav-icon-wrap {
+  color: #EA580C;
 }
 .nav-user {
   display: flex;
@@ -202,22 +219,22 @@ const toggleMobileMenu = () => {
   align-items: center;
   gap: 12px;
   background: white;
-  border: 1px solid #F1F5F9;
+  border: 1px solid #E2E8F0;
   padding: 6px 16px 6px 6px;
   border-radius: 30px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
 }
 .profile-nav-btn:hover {
   background: #F8FAFC;
-  border-color: #E2E8F0;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  transform: translateY(-1px);
+  border-color: #CBD5E1;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  transform: translateY(-2px);
 }
 .avatar-nav {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
   background: linear-gradient(135deg, #0F172A, #334155);
   color: white;
   border-radius: 50%;
@@ -235,9 +252,9 @@ const toggleMobileMenu = () => {
   object-fit: cover;
 }
 .username-nav {
-  font-weight: 700;
+  font-weight: 800;
   color: #0F172A;
-  font-size: 14px;
+  font-size: 15px;
 }
 
 /* Mobile Responsive */

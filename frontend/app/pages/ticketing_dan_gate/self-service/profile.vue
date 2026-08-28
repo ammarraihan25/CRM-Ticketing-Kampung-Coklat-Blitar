@@ -619,8 +619,9 @@ const cancelEdit = () => {
 
 .premium-glass {
   background: white;
-  border: 1px solid #F1F5F9;
-  border-radius: 20px;
+  border: 1px solid #E2E8F0;
+  border-radius: 24px;
+  box-shadow: 0 15px 40px -10px rgba(0, 0, 0, 0.08);
 }
 .glass-header {
   display: flex;
@@ -656,14 +657,15 @@ const cancelEdit = () => {
   padding: 16px;
   background: #F8FAFC;
   border-radius: 16px;
-  border: 1px solid #F1F5F9;
+  border: 1px solid #E2E8F0;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
   transition: all 0.3s ease;
 }
 .modern-data-item:hover {
   background: white;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.03);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.06);
   transform: translateY(-2px);
-  border-color: #E2E8F0;
+  border-color: #CBD5E1;
 }
 .di-icon {
   width: 44px; height: 44px;
@@ -747,10 +749,13 @@ const cancelEdit = () => {
   font-size: 14px;
   cursor: pointer;
   transition: all 0.2s;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.02);
 }
 .btn-cancel:hover {
   background: #E2E8F0;
   color: #0F172A;
+  border-color: #CBD5E1;
 }
 
 .stats-grid {
@@ -765,12 +770,12 @@ const cancelEdit = () => {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-  transition: transform 0.3s ease;
+  box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 .stat-card-gradient:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+  transform: translateY(-6px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
 }
 .orange-grad {
   background: linear-gradient(135deg, #F97316 0%, #EA580C 100%);

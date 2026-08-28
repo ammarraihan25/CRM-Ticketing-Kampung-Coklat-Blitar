@@ -1,30 +1,12 @@
 <script setup lang="ts">
-import type { Member } from '~/composables/useCrmApi'
+import { ref, computed } from 'vue'
+import { useCrmNonMember } from '~/composables/useCrmNonMember'
+import type { NonMemberVisitor } from '~/composables/useCrmNonMember'
 
-
-const { getMembers } = useCrmApi()
-
-/* =========================================================
-   TYPES
-========================================================= */
-
-type CrmMember = Member & {
-  id: number
-  nama: string
-  whatsapp?: string
-  domisili?: string
-  tipeMember?: string
-  status?: string
-  totalSpend?: number
-  tanggalDaftar?: string
-}
-
-/* =========================================================
-   STATE
-========================================================= */
+const { visitors } = useCrmNonMember()
 
 const filters = ref({
-  tipeMember: '',
+  source: '',
   domisili: '',
   search: ''
 })
@@ -32,412 +14,89 @@ const filters = ref({
 const page = ref(1)
 const perPage = 10
 
-const members = ref<CrmMember[]>([])
-const total = ref(0)
-
 const selected = ref<number[]>([])
-
-const isLoading = ref(false)
-const isDemoData = ref(false)
-
-const showBlastModal = ref(false)
-
 const showDetailModal = ref(false)
-const selectedMember = ref<CrmMember | null>(null)
+const selectedVisitor = ref<NonMemberVisitor | null>(null)
 
-/* =========================================================
-   DEMO DATA
-   Dipakai sementara kalau API belum punya data.
-========================================================= */
+// Filtering logic
+const totalVisitor = computed(() => visitors.value.length)
+const totalVisitorPR = computed(() => visitors.value.filter(m => m.source === 'POS').length)
+const totalVisitorPP = computed(() => visitors.value.filter(m => m.source === 'Self-Service').length)
+const totalVisitorPT = computed(() => visitors.value.length - totalVisitorPR.value - totalVisitorPP.value)
 
-const demoMembers: CrmMember[] = [
-  {
-    id: 1,
-    nama: 'Callista Danis',
-    whatsapp: '628123456789',
-    domisili: 'Blitar',
-    tipeMember: 'PR',
-    status: 'Aktif',
-    totalSpend: 4250000,
-    tanggalDaftar: '12 Oktober 2022'
-  },
-  {
-    id: 2,
-    nama: 'Budi Santoso',
-    whatsapp: '6285711223344',
-    domisili: 'Kediri',
-    tipeMember: 'PP',
-    status: 'Aktif',
-    totalSpend: 2750000,
-    tanggalDaftar: '18 Januari 2023'
-  },
-  {
-    id: 3,
-    nama: 'Siti Khadijah',
-    whatsapp: '6281999887766',
-    domisili: 'Malang',
-    tipeMember: 'PT',
-    status: 'Tidak Aktif',
-    totalSpend: 1850000,
-    tanggalDaftar: '03 Maret 2023'
-  },
-  {
-    id: 4,
-    nama: 'Rizky Maulana',
-    whatsapp: '6282255512345',
-    domisili: 'Surabaya',
-    tipeMember: 'PR',
-    status: 'Aktif',
-    totalSpend: 3250000,
-    tanggalDaftar: '20 April 2023'
-  },
-  {
-    id: 5,
-    nama: 'Nadia Putri',
-    whatsapp: '6281334567890',
-    domisili: 'Tulungagung',
-    tipeMember: 'PP',
-    status: 'Aktif',
-    totalSpend: 4100000,
-    tanggalDaftar: '11 Mei 2023'
-  },
-  {
-    id: 6,
-    nama: 'Fajar Hidayat',
-    whatsapp: '6285788812345',
-    domisili: 'Kediri',
-    tipeMember: 'PR',
-    status: 'Aktif',
-    totalSpend: 2150000,
-    tanggalDaftar: '09 Juni 2023'
-  },
-  {
-    id: 7,
-    nama: 'Aulia Rahma',
-    whatsapp: '6281239988776',
-    domisili: 'Blitar',
-    tipeMember: 'PT',
-    status: 'Aktif',
-    totalSpend: 5600000,
-    tanggalDaftar: '21 Juli 2023'
-  },
-  {
-    id: 8,
-    nama: 'Dimas Pratama',
-    whatsapp: '6282145678901',
-    domisili: 'Malang',
-    tipeMember: 'PR',
-    status: 'Tidak Aktif',
-    totalSpend: 1250000,
-    tanggalDaftar: '14 Agustus 2023'
-  }
-]
-
-/* =========================================================
-   LOAD DATA
-========================================================= */
-
-async function loadMembers() {
-  isLoading.value = true
-
-  try {
-    const res = await getMembers({
-      page: page.value,
-      ...filters.value
-    })
-
-    const apiData = Array.isArray(res?.data)
-      ? res.data
-      : []
-
-    if (apiData.length > 0) {
-      members.value = apiData as CrmMember[]
-      total.value = Number(res.total ?? apiData.length)
-      isDemoData.value = false
-    } else {
-      useDemoData()
-    }
-  } catch (error) {
-    console.warn('API member belum tersedia. Menggunakan data demo.', error)
-
-    useDemoData()
-  } finally {
-    isLoading.value = false
-  }
-}
-
-/* =========================================================
-   DEMO DATA FILTER
-========================================================= */
-
-function useDemoData() {
-  let data = [...demoMembers]
-
-  if (filters.value.tipeMember) {
-    data = data.filter(
-      member =>
-        member.tipeMember === filters.value.tipeMember
-    )
-  }
-
-  if (filters.value.domisili) {
-    const keyword =
-      filters.value.domisili.toLowerCase()
-
-    data = data.filter(member =>
-      member.domisili
-        ?.toLowerCase()
-        .includes(keyword)
-    )
-  }
-
-  if (filters.value.search) {
-    const keyword =
-      filters.value.search.toLowerCase()
-
-    data = data.filter(member =>
-      member.nama
-        ?.toLowerCase()
-        .includes(keyword) ||
-      member.whatsapp
-        ?.toLowerCase()
-        .includes(keyword)
-    )
-  }
-
-  total.value = data.length
-
-  const start =
-    (page.value - 1) * perPage
-
-  members.value =
-    data.slice(start, start + perPage)
-
-  isDemoData.value = true
-}
-
-/* =========================================================
-   WATCH
-========================================================= */
-
-watch(
-  filters,
-  () => {
-    page.value = 1
-    loadMembers()
-  },
-  { deep: true }
-)
-
-watch(page, () => {
-  if (isDemoData.value) {
-    useDemoData()
-  } else {
-    loadMembers()
-  }
+const filteredMembers = computed(() => {
+  return visitors.value.filter(m => {
+    let match = true
+    if (filters.value.search && !m.nama.toLowerCase().includes(filters.value.search.toLowerCase())) match = false
+    if (filters.value.source && m.source !== filters.value.source) match = false
+    if (filters.value.domisili && m.domisili !== filters.value.domisili) match = false
+    return match
+  })
 })
 
-onMounted(() => {
-  loadMembers()
+const paginatedMembers = computed(() => {
+  const start = (page.value - 1) * perPage
+  return filteredMembers.value.slice(start, start + perPage)
 })
 
-/* =========================================================
-   SELECTION
-========================================================= */
+const total = computed(() => filteredMembers.value.length)
+const totalPages = computed(() => Math.ceil(total.value / perPage))
 
-const allSelected = computed(() => {
-  return (
-    members.value.length > 0 &&
-    members.value.every(member =>
-      selected.value.includes(member.id)
-    )
-  )
-})
-
-function toggleMember(id: number) {
-  if (selected.value.includes(id)) {
-    selected.value =
-      selected.value.filter(item => item !== id)
-  } else {
-    selected.value = [
-      ...selected.value,
-      id
-    ]
-  }
-}
-
-function toggleAll() {
-  if (allSelected.value) {
-    selected.value = selected.value.filter(
-      id =>
-        !members.value.some(
-          member => member.id === id
-        )
-    )
-  } else {
-    const ids = members.value.map(
-      member => member.id
-    )
-
-    selected.value = Array.from(
-      new Set([
-        ...selected.value,
-        ...ids
-      ])
-    )
-  }
-}
-
-/* =========================================================
-   DETAIL MEMBER
-========================================================= */
-
-function openMemberDetail(member: CrmMember) {
-  selectedMember.value = member
+function openVisitorDetail(member: NonMemberVisitor) {
+  selectedVisitor.value = member
   showDetailModal.value = true
 }
 
-function closeMemberDetail() {
+function closeVisitorDetail() {
   showDetailModal.value = false
-  selectedMember.value = null
+  selectedVisitor.value = null
 }
 
-/* =========================================================
-   BLAST
-========================================================= */
-
-function openBlast() {
-  if (!selected.value.length) {
-    window.alert('Pilih minimal satu member terlebih dahulu.')
-    return
-  }
-
-  showBlastModal.value = true
-}
-
-function handleBlastSent() {
-  showBlastModal.value = false
-  selected.value = []
-}
-
-/* =========================================================
-   FILTER
-========================================================= */
-
-function resetFilter() {
-  filters.value = {
-    tipeMember: '',
-    domisili: '',
-    search: ''
+function toggleSelectAll() {
+  if (selected.value.length === paginatedMembers.value.length) {
+    selected.value = []
+  } else {
+    selected.value = paginatedMembers.value.map(m => m.id)
   }
 }
 
-/* =========================================================
-   PAGINATION
-========================================================= */
+function toggleSelect(id: number) {
+  const index = selected.value.indexOf(id)
+  if (index === -1) {
+    selected.value.push(id)
+  } else {
+    selected.value.splice(index, 1)
+  }
+}
 
-const totalPages = computed(() => {
-  return Math.max(
-    1,
-    Math.ceil(total.value / perPage)
-  )
+
+const allSelected = computed(() => {
+  return paginatedMembers.value.length > 0 && selected.value.length === paginatedMembers.value.length
 })
 
-function previousPage() {
-  if (page.value > 1) {
-    page.value--
-  }
+function formatWhatsApp(wa: string | undefined) {
+  if (!wa) return '-';
+  return wa;
 }
 
-function nextPage() {
-  if (page.value < totalPages.value) {
-    page.value++
-  }
+function formatRupiah(val: number | undefined) {
+  if (val === undefined) return 'Rp 0';
+  return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val)
 }
 
-/* =========================================================
-   STATISTICS
-========================================================= */
-
-
-const totalMemberPR = computed(() => members.value.filter(m => m.tipeMember === 'PR').length)
-const totalMemberPP = computed(() => members.value.filter(m => m.tipeMember === 'PP').length)
-const totalMemberPT = computed(() => members.value.filter(m => m.tipeMember === 'PT').length)
-
-const totalMember = computed(() =>
-  total.value
-)
-
-const totalAktif = computed(() =>
-  members.value.filter(
-    member =>
-      member.status === 'Aktif'
-  ).length
-)
-
-const totalWhatsApp = computed(() =>
-  members.value.filter(
-    member =>
-      !!member.whatsapp
-  ).length
-)
-
-/* =========================================================
-   HELPERS
-========================================================= */
-
-function getInitial(name?: string) {
-  if (!name) return '?'
-
-  return name
-    .split(' ')
-    .map(word => word.charAt(0))
-    .slice(0, 2)
-    .join('')
-    .toUpperCase()
+function getInitial(nama: string | undefined) {
+  if (!nama) return 'C';
+  return nama.charAt(0).toUpperCase();
 }
 
-function formatWhatsApp(value?: string) {
-  if (!value) return '-'
-
-  if (value.startsWith('62')) {
-    return `+${value}`
-  }
-
-  return value
+function getVisitorTypeLabel(source: string | undefined) {
+  if (source === 'POS') return 'POS Kasir';
+  if (source === 'Self-Service') return 'Self-Service';
+  return 'Lainnya';
 }
 
-function formatRupiah(value?: number) {
-  if (!value) return 'Rp 0'
-
-  return new Intl.NumberFormat(
-    'id-ID',
-    {
-      style: 'currency',
-      currency: 'IDR',
-      maximumFractionDigits: 0
-    }
-  ).format(value)
-}
-
-function getMemberTypeLabel(
-  type?: string
-) {
-  const labels: Record<string, string> = {
-    PR: 'Pengunjung Reguler',
-    PP: 'Pengunjung Pengajian',
-    PT: 'Pengunjung Tour'
-  }
-
-  return labels[type || ''] || type || '-'
-}
-
-function getTypeClass(type?: string) {
-  if (type === 'PR') return 'type-pr'
-  if (type === 'PP') return 'type-pp'
-  if (type === 'PT') return 'type-pt'
-
-  return ''
+function formatCurrency(val: number) {
+  return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val)
 }
 </script>
 
@@ -446,22 +105,22 @@ function getTypeClass(type?: string) {
     <!-- HEADER PATTERN KAMPUNG COKLAT -->
     <header class="executive-command-header">
       <div class="brand-text-wrapper">
-        <h1 class="header-main-title">Data Member</h1>
+        <h1 class="header-main-title">Data Visitor</h1>
         <div class="header-meta-clean-line">
           Kelola data dan hubungan dengan member Kampung Coklat.
         </div>
       </div>
     </header>
     
-      <!-- Metrics Cards (Synced with Daftar Membership) -->
+      <!-- Metrics Cards (Synced with Daftar Visitorship) -->
       <div class="metrics-grid">
         <div class="metric-card mc-border-blue">
           <div class="metric-icon bg-blue-light text-blue">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
           </div>
           <div class="metric-content">
-            <p class="metric-label">Total Member CRM</p>
-            <h2 class="metric-value">{{ totalMember.toLocaleString('id-ID') }} <span class="metric-unit">Kontak</span></h2>
+            <p class="metric-label">Total Visitor CRM</p>
+            <h2 class="metric-value">{{ totalVisitor.toLocaleString('id-ID') }} <span class="metric-unit">Kontak</span></h2>
           </div>
         </div>
 
@@ -470,8 +129,8 @@ function getTypeClass(type?: string) {
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><polyline points="16 11 18 13 22 9"></polyline></svg>
           </div>
           <div class="metric-content">
-            <p class="metric-label">Member Reguler (PR)</p>
-            <h2 class="metric-value">{{ totalMemberPR.toLocaleString('id-ID') }} <span class="metric-unit">Member</span></h2>
+            <p class="metric-label">Pengunjung POS Kasir</p>
+            <h2 class="metric-value">{{ totalVisitorPR.toLocaleString('id-ID') }} <span class="metric-unit">Visitor</span></h2>
           </div>
         </div>
 
@@ -484,8 +143,8 @@ function getTypeClass(type?: string) {
             </svg>
           </div>
           <div class="metric-content">
-            <p class="metric-label">Jamaah Pengajian (PP)</p>
-            <h2 class="metric-value">{{ totalMemberPP.toLocaleString('id-ID') }} <span class="metric-unit">Jamaah</span></h2>
+            <p class="metric-label">Pengunjung Self-Service</p>
+            <h2 class="metric-value">{{ totalVisitorPP.toLocaleString('id-ID') }} <span class="metric-unit">Visitor</span></h2>
           </div>
         </div>
 
@@ -496,17 +155,17 @@ function getTypeClass(type?: string) {
             </svg>
           </div>
           <div class="metric-content">
-            <p class="metric-label">Agen Tour / B2B (PT)</p>
-            <h2 class="metric-value">{{ totalMemberPT.toLocaleString('id-ID') }} <span class="metric-unit">Agen</span></h2>
+            <p class="metric-label">Lainnya</p>
+            <h2 class="metric-value">{{ totalVisitorPT.toLocaleString('id-ID') }} <span class="metric-unit">Visitor</span></h2>
           </div>
         </div>
       </div>
 
-      <!-- Member CRM Table with Filter & Blast WA Action Placeholder -->
+      <!-- Visitor CRM Table with Filter & Blast WA Action Placeholder -->
       <div class="content-card">
         <div class="card-head search-head">
           <div>
-            <h3 class="card-title">Direktori Database Member Loyalitas CRM</h3>
+            <h3 class="card-title">Direktori Database Visitor Loyalitas CRM</h3>
             <span class="card-subtitle">Profil WhatsApp, asal kota domisili, dan riwayat kunjungan</span>
           </div>
 
@@ -520,7 +179,7 @@ function getTypeClass(type?: string) {
                 placeholder="Cari nama atau WA..."
               />
             </div>
-            <select v-model="filters.tipeMember" class="filter-select">
+            <select v-model="filters.source" class="filter-select">
               <option value="">Semua Segmen (PR, PP, PT)</option>
               <option value="PR">PR - Pengunjung Reguler</option>
               <option value="PP">PP - Jamaah Pengajian</option>
@@ -546,10 +205,10 @@ function getTypeClass(type?: string) {
                     @change="toggleAll"
                   >
                 </th>
-                <th>Nama Member</th>
+                <th>Nama Visitor</th>
                 <th>Nomor WhatsApp (PK)</th>
                 <th>Domisili (Kota/Kab)</th>
-                <th>Tipe Member</th>
+                <th>Tipe Visitor</th>
                 <th>Total Transaksi GTV</th>
                 <th>Tanggal Registrasi</th>
                 <th>Status Voucher</th>
@@ -557,20 +216,20 @@ function getTypeClass(type?: string) {
               </tr>
             </thead>
             <tbody>
-              <tr v-for="m in members" :key="m.id">
+              <tr v-for="m in paginatedMembers" :key="m.id">
                 <td>
                   <input
                     type="checkbox"
                     :checked="selected.includes(m.id)"
-                    @change="toggleMember(m.id)"
+                    @change="toggleVisitor(m.id)"
                   >
                 </td>
                 <td class="font-medium">{{ m.nama }}</td>
                 <td class="font-mono text-cocoa font-bold">{{ formatWhatsApp(m.whatsapp) }}</td>
                 <td>{{ m.domisili }}</td>
-                <td><span class="member-tag" :class="`tag-${(m.tipeMember || 'pr').toLowerCase()}`">{{ getMemberTypeLabel(m.tipeMember) }}</span></td>
+                <td><span class="member-tag" :class="`tag-${(m.source || 'pr').toLowerCase()}`">{{ getVisitorTypeLabel(m.source) }}</span></td>
                 <td>{{ formatRupiah(m.totalSpend) }}</td>
-                <td>{{ m.tanggalDaftar || '-' }}</td>
+                <td>{{ m.tanggalKunjungan || '-' }}</td>
                 <td>
                   <span v-if="m.status === 'Aktif'" class="badge-voucher">Voucher Aktif</span>
                   <span v-else class="text-xs text-muted">Tidak ada</span>
@@ -579,7 +238,7 @@ function getTypeClass(type?: string) {
                   <button
                     class="btn-primary btn-sm"
                     style="padding: 4px 10px; font-size: 11px; border-radius: 6px; font-weight: 600;"
-                    @click="openMemberDetail(m)"
+                    @click="openVisitorDetail(m)"
                   >
                     View ›
                   </button>
@@ -597,73 +256,73 @@ function getTypeClass(type?: string) {
     <!-- MEMBER DETAIL -->
 
         <Teleport to="body">
-      <div v-if="showDetailModal && selectedMember" class="modal-backdrop" @click.self="closeMemberDetail">
+      <div v-if="showDetailModal && selectedVisitor" class="modal-backdrop" @click.self="closeVisitorDetail">
         <div class="modal-card" style="max-width: 500px;">
           <div class="modal-header">
             <div class="modal-head-title">
               <div class="modal-icon-badge" style="background-color: #FFF6E8; border: 1px solid #FDE68A; color: #B45309;">👤</div>
               <div>
-                <h3>Detail Member</h3>
+                <h3>Detail Visitor</h3>
                 <p class="modal-sub">Profil dan informasi kontak member</p>
               </div>
             </div>
-            <button class="btn-close" @click="closeMemberDetail">×</button>
+            <button class="btn-close" @click="closeVisitorDetail">×</button>
           </div>
           <div class="modal-body">
             <div class="export-preview-box">
                <div class="preview-logo-box" style="width: 56px; height: 56px; background: #FFF; border: 2px solid #FDE68A;">
-                 <span style="font-size: 24px; font-weight: 900; color: #B45309;">{{ getInitial(selectedMember.nama) }}</span>
+                 <span style="font-size: 24px; font-weight: 900; color: #B45309;">{{ getInitial(selectedVisitor.nama) }}</span>
                </div>
                <div class="preview-meta" style="flex: 1;">
-                 <span class="doc-title" style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 19px;">{{ selectedMember.nama }}</span>
-                 <span class="doc-sub">Member sejak {{ selectedMember.tanggalDaftar || '2024' }}</span>
-                 <span class="doc-tag" style="margin-top: 6px; padding: 2px 8px;">{{ getMemberTypeLabel(selectedMember.tipeMember) }}</span>
+                 <span class="doc-title" style="font-family: 'Plus Jakarta Sans', sans-serif; font-size: 19px;">{{ selectedVisitor.nama }}</span>
+                 <span class="doc-sub">Visitor sejak {{ selectedVisitor.tanggalKunjungan || '2024' }}</span>
+                 <span class="doc-tag" style="margin-top: 6px; padding: 2px 8px;">{{ getVisitorTypeLabel(selectedVisitor.source) }}</span>
                </div>
             </div>
 
             <div class="ticket-status-grid" style="grid-template-columns: repeat(2, 1fr); margin-top: 10px;">
               <div class="ticket-stat-card border-green">
                 <span class="t-stat-label">WhatsApp</span>
-                <span class="t-stat-val" style="font-size: 16px;">{{ formatWhatsApp(selectedMember.whatsapp) }}</span>
+                <span class="t-stat-val" style="font-size: 16px;">{{ formatWhatsApp(selectedVisitor.whatsapp) }}</span>
                 <span class="t-stat-sub">Nomor kontak utama</span>
               </div>
               <div class="ticket-stat-card border-amber">
                 <span class="t-stat-label">Domisili</span>
-                <span class="t-stat-val" style="font-size: 16px;">{{ selectedMember.domisili || '-' }}</span>
+                <span class="t-stat-val" style="font-size: 16px;">{{ selectedVisitor.domisili || '-' }}</span>
                 <span class="t-stat-sub">Kota / wilayah</span>
               </div>
               <div class="ticket-stat-card border-blue">
                 <span class="t-stat-label">Total Spend</span>
-                <span class="t-stat-val" style="font-size: 16px;">{{ formatRupiah(selectedMember.totalSpend) }}</span>
+                <span class="t-stat-val" style="font-size: 16px;">{{ formatRupiah(selectedVisitor.totalSpend) }}</span>
                 <span class="t-stat-sub">Total transaksi member</span>
               </div>
               <div class="ticket-stat-card border-gray">
-                <span class="t-stat-label">Member ID</span>
-                <span class="t-stat-val" style="font-size: 16px;">#{{ selectedMember.id }}</span>
+                <span class="t-stat-label">Visitor ID</span>
+                <span class="t-stat-val" style="font-size: 16px;">#{{ selectedVisitor.id }}</span>
                 <span class="t-stat-sub">ID sistem CRM</span>
               </div>
             </div>
 
             <div class="ticket-stat-card border-all" style="margin-top: 5px;">
               <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                 <span class="t-stat-label">Member Overview</span>
+                 <span class="t-stat-label">Visitor Overview</span>
                  <span class="status-pill pill-used" style="background-color: #ECFDF5; color: #047857;">● ACTIVE</span>
               </div>
               <div class="demo-grid-row">
                  <div>
-                    <span class="t-stat-sub">Member Type</span><br>
-                    <strong style="font-size: 13px;">{{ getMemberTypeLabel(selectedMember.tipeMember) }}</strong>
+                    <span class="t-stat-sub">Visitor Type</span><br>
+                    <strong style="font-size: 13px;">{{ getVisitorTypeLabel(selectedVisitor.source) }}</strong>
                  </div>
                  <div>
                     <span class="t-stat-sub">WhatsApp</span><br>
-                    <strong style="font-size: 13px;">{{ selectedMember.whatsapp ? 'Tersedia' : 'Tidak tersedia' }}</strong>
+                    <strong style="font-size: 13px;">{{ selectedVisitor.whatsapp ? 'Tersedia' : 'Tidak tersedia' }}</strong>
                  </div>
               </div>
             </div>
           </div>
           <div class="modal-footer" style="margin-top: 10px;">
-            <button class="btn-sm" style="background: white; color: #6B5A52; border: 1px solid #E5E7EB; border-radius: 6px; cursor: pointer; padding: 0 16px; font-weight: 600;" @click="closeMemberDetail">Tutup</button>
-            <button class="btn-primary btn-sm" style="border-radius: 6px; padding: 0 16px; background: #25D366; border: none; color: white; display: flex; align-items: center; gap: 6px; font-weight: 600; cursor: pointer;" :disabled="!selectedMember.whatsapp" @click="selected = [selectedMember.id]; closeMemberDetail(); openBlast();">
+            <button class="btn-sm" style="background: white; color: #6B5A52; border: 1px solid #E5E7EB; border-radius: 6px; cursor: pointer; padding: 0 16px; font-weight: 600;" @click="closeVisitorDetail">Tutup</button>
+            <button class="btn-primary btn-sm" style="border-radius: 6px; padding: 0 16px; background: #25D366; border: none; color: white; display: flex; align-items: center; gap: 6px; font-weight: 600; cursor: pointer;" :disabled="!selectedVisitor.whatsapp" @click="selected = [selectedVisitor.id]; closeVisitorDetail(); openBlast();">
               <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg> Kirim WhatsApp
             </button>
           </div>
@@ -676,7 +335,7 @@ function getTypeClass(type?: string) {
     <CrmBlastConfirmModul
       :show="showBlastModal"
       :target-ids="selected"
-      :members="members"
+      :paginatedMembers="paginatedMembers"
       @close="showBlastModal = false"
       @sent="handleBlastSent"
     />
@@ -1770,7 +1429,7 @@ function getTypeClass(type?: string) {
     grid-template-columns: 1fr;
   }
 
-  .members-header {
+  .paginatedMembers-header {
     align-items: flex-start;
     flex-direction: column;
   }
@@ -1820,7 +1479,7 @@ function getTypeClass(type?: string) {
 
 .breadcrumb,
 .stat-card span,
-.members-header p,
+.paginatedMembers-header p,
 .directory-count,
 .reset-button,
 .selected-toolbar strong,
@@ -1870,7 +1529,7 @@ th,
   font-size: 34px;
 }
 
-.members-header h2,
+.paginatedMembers-header h2,
 .detail-header h2 {
   margin: 3px 0 0;
   color: #111827;
