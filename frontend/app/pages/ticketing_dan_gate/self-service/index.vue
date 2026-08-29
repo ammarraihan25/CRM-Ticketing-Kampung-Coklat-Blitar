@@ -405,6 +405,7 @@ const selectVoucherOption = (voucher: any) => {
 // Cart & Payment Logic
 const cart = ref<any[]>([])
 const showPaymentModal = ref(false)
+const showMobileOrderDetails = ref(false)
 const paymentSuccess = ref(false)
 const showMobileCart = ref(false)
 const paymentMethod = ref('transfer')
@@ -700,7 +701,7 @@ const printTicket = () => {
         <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
         <style>
           @page {
-            size: landscape;
+            size: landscape A4;
             margin: 6mm;
           }
           * {
@@ -719,22 +720,27 @@ const printTicket = () => {
             display: flex;
             align-items: center;
             justify-content: center;
+            overflow: hidden;
           }
           .ticket-pass-card {
             display: flex;
-            width: 860px;
-            max-width: 96vw;
+            flex-direction: row;
+            width: 256mm;
+            max-width: 256mm;
+            max-height: 170mm;
             background: #FFFFFF;
-            border-radius: 20px;
+            border-radius: 16px;
             border: 2px solid #CBD5E1;
             overflow: hidden;
             box-shadow: none;
             position: relative;
             margin: auto;
+            page-break-inside: avoid;
+            break-inside: avoid;
           }
           .tpc-main {
             flex: 6.4;
-            padding: 22px 26px;
+            padding: 18px 22px;
             display: flex;
             flex-direction: column;
             gap: 10px;
@@ -1433,8 +1439,27 @@ const logout = () => {
             </div>
           </div>
 
-          <!-- Right Column: Order Summary & Integrated Promo/Membership -->
-          <div class="pm-right-panel">
+          <!-- Mobile Toggle Detail Pesanan Button (Shown on mobile only) -->
+          <div class="pm-mobile-detail-toggle-bar">
+            <button type="button" class="pm-mobile-detail-toggle-btn" :class="{ 'active': showMobileOrderDetails }" @click="showMobileOrderDetails = !showMobileOrderDetails">
+              <div class="pm-mdt-left">
+                <div class="pm-mdt-icon">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                </div>
+                <div class="pm-mdt-info">
+                  <span class="pm-mdt-title">Detail Pesanan & Diskon</span>
+                  <span class="pm-mdt-badge">{{ totalCartQuantity }} Tiket • Rp {{ getCartTotal().toLocaleString('id-ID') }}</span>
+                </div>
+              </div>
+              <div class="pm-mdt-action">
+                <span>{{ showMobileOrderDetails ? 'Sembunyikan' : 'Lihat Detail' }}</span>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" class="pm-mdt-arrow" :class="{ 'rotate': showMobileOrderDetails }"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </div>
+            </button>
+          </div>
+
+          <!-- Right Column: Order Summary & Integrated Promo/Membership (Collapsible on mobile) -->
+          <div class="pm-right-panel" :class="{ 'mobile-visible': showMobileOrderDetails }">
             <div class="pm-section-header">
               <div class="pm-icon-circle bg-emerald">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
@@ -1662,6 +1687,15 @@ const logout = () => {
                   Rp {{ getCartTotal().toLocaleString('id-ID') }}
                 </div>
               </div>
+
+              <!-- Mobile Pay & Cancel Buttons (Shown on mobile screens only) -->
+              <div class="pm-mobile-action-buttons">
+                <button class="pm-btn-primary" @click="processPayment">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                  <span>BAYAR & CETAK STRUK SEKARANG</span>
+                </button>
+                <button class="pm-btn-secondary" @click="showPaymentModal = false">Batal & Kembali ke Katalog</button>
+              </div>
             </div>
           </div>
         </div>
@@ -1786,7 +1820,7 @@ const logout = () => {
           </div>
         </div>
 
-      </div>
+      </div><!-- end .ticket-pass-card -->
 
       <!-- Action Buttons (Hidden in Print) -->
       <div class="ticket-modal-actions no-print">
@@ -3085,12 +3119,14 @@ const logout = () => {
   display: flex;
   align-items: center;
   gap: 14px;
+  min-width: 0;
 }
 
 .pm-logo {
   height: 36px;
   object-fit: contain;
   filter: drop-shadow(0 2px 4px rgba(44, 26, 19, 0.12));
+  flex-shrink: 0;
 }
 
 .pm-main-heading {
@@ -3122,6 +3158,7 @@ const logout = () => {
   cursor: pointer;
   transition: all 0.2s ease;
   line-height: 1;
+  flex-shrink: 0;
 }
 
 .pm-close-btn:hover {
@@ -3136,13 +3173,6 @@ const logout = () => {
   flex: 1;
   overflow: hidden;
   background: #F8FAFC;
-}
-
-@media (max-width: 900px) {
-  .pm-layout {
-    flex-direction: column;
-    overflow-y: auto;
-  }
 }
 
 .pm-left-panel {
@@ -3162,6 +3192,294 @@ const logout = () => {
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+}
+
+.pm-mobile-action-buttons {
+  display: none;
+}
+
+.pm-mobile-detail-toggle-bar {
+  display: none;
+}
+
+/* RESPONSIVE MOBILE & TABLET MODAL */
+@media (max-width: 900px) {
+  .payment-modal-container {
+    width: 96vw;
+    max-width: 96vw;
+    height: 94vh;
+    max-height: 94vh;
+    border-radius: 20px;
+  }
+
+  .pm-modal-top-bar {
+    padding: 12px 16px;
+  }
+
+  .pm-logo {
+    height: 28px;
+  }
+
+  .pm-main-heading {
+    font-size: 14.5px;
+  }
+
+  .pm-sub-heading {
+    font-size: 10.5px;
+    line-height: 1.3;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .pm-close-btn {
+    width: 28px;
+    height: 28px;
+    font-size: 18px;
+  }
+
+  .pm-layout {
+    flex-direction: column;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .pm-left-panel {
+    flex: none;
+    width: 100%;
+    overflow: visible;
+    border-right: none;
+    border-bottom: 1.5px solid #E2E8F0;
+    padding: 16px;
+    box-sizing: border-box;
+  }
+
+  /* Mobile Detail Pesanan Toggle Button */
+  .pm-mobile-detail-toggle-bar {
+    display: block;
+    padding: 12px 16px;
+    background: #F8FAFC;
+    border-bottom: 1.5px solid #E2E8F0;
+    box-sizing: border-box;
+  }
+
+  .pm-mobile-detail-toggle-btn {
+    width: 100%;
+    background: #FFFFFF;
+    border: 1.5px solid #E2E8F0;
+    border-radius: 14px;
+    padding: 10px 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    transition: all 0.25s ease;
+  }
+
+  .pm-mobile-detail-toggle-btn:hover,
+  .pm-mobile-detail-toggle-btn.active {
+    border-color: #10B981;
+    background: #F0FDF4;
+  }
+
+  .pm-mdt-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-align: left;
+  }
+
+  .pm-mdt-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: #D1FAE5;
+    color: #059669;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .pm-mdt-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .pm-mdt-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: #1E293B;
+  }
+
+  .pm-mdt-badge {
+    font-size: 11px;
+    font-weight: 700;
+    color: #059669;
+  }
+
+  .pm-mdt-action {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+    font-weight: 800;
+    color: #059669;
+  }
+
+  .pm-mdt-arrow {
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .pm-mdt-arrow.rotate {
+    transform: rotate(180deg);
+  }
+
+  /* Right Panel is hidden by default on mobile, revealed when toggle clicked */
+  .pm-right-panel {
+    display: none;
+    flex: none;
+    width: 100%;
+    overflow: visible;
+    padding: 16px;
+    box-sizing: border-box;
+    background: #F8FAFC;
+    border-bottom: 2px solid #E2E8F0;
+  }
+
+  .pm-right-panel.mobile-visible {
+    display: flex;
+    animation: pmSlideDown 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @keyframes pmSlideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .pm-left-footer {
+    display: flex;
+    margin-top: 18px;
+  }
+
+  .pm-mobile-action-buttons {
+    display: none;
+  }
+
+  .pm-section-header {
+    margin-bottom: 14px;
+    gap: 10px;
+  }
+
+  .pm-icon-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+  }
+
+  .pm-panel-title {
+    font-size: 14.5px;
+  }
+
+  .pm-panel-subtitle {
+    font-size: 11px;
+  }
+
+  .pm-method-header {
+    padding: 12px 14px;
+  }
+
+  .pm-method-title {
+    font-size: 13px;
+  }
+
+  .pm-method-desc {
+    font-size: 11px;
+  }
+
+  .pm-bank-option {
+    padding: 8px 12px;
+  }
+
+  .pm-bank-name {
+    font-size: 12px;
+    gap: 8px;
+  }
+
+  .bank-logo {
+    font-size: 9.5px;
+    padding: 2px 6px;
+  }
+
+  .pm-member-active-card {
+    padding: 10px 12px;
+    gap: 8px;
+  }
+
+  .pm-member-left {
+    gap: 8px;
+  }
+
+  .pm-member-name {
+    font-size: 12px;
+  }
+
+  .pm-items-scroll {
+    max-height: 180px;
+  }
+
+  .pm-total-card {
+    padding: 12px 16px;
+  }
+
+  .pm-total-title {
+    font-size: 13.5px;
+  }
+
+  .pm-total-value {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pm-brand-title {
+    gap: 8px;
+  }
+
+  .pm-main-heading {
+    font-size: 13.5px;
+  }
+
+  .pm-sub-heading {
+    display: none;
+  }
+
+  .pm-left-panel, .pm-right-panel {
+    padding: 14px 12px;
+  }
+
+  .pm-member-title-row {
+    flex-wrap: wrap;
+  }
+
+  .pm-total-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .pm-total-value {
+    align-self: flex-end;
+  }
 }
 
 .pm-section-header {
@@ -4305,6 +4623,7 @@ const logout = () => {
   animation: modalFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+
 .tpc-main {
   flex: 6.5;
   padding: 26px 30px;
@@ -4674,14 +4993,61 @@ const logout = () => {
   background: #FFFFFF;
   color: #1E293B;
 }
+
+/* =====================================================
+   MOBILE TICKET — use zoom to scale card proportionally
+   860px × 0.43 ≈ 370px → fits 390px screen with 10px padding
+   zoom affects layout flow, so no margin tricks needed
+   ===================================================== */
+@media (max-width: 640px) {
+  .ticket-modal-backdrop {
+    padding: 10px !important;
+    justify-content: flex-start !important;
+    align-items: flex-start !important;
+    overflow-x: hidden !important;
+  }
+
+  .ticket-modal-top-header {
+    margin-bottom: 10px !important;
+    gap: 10px !important;
+    width: 100% !important;
+  }
+
+  .tmt-title { font-size: 17px !important; }
+  .tmt-subtitle { font-size: 11px !important; }
+  .tmt-check-icon { width: 34px !important; height: 34px !important; }
+
+  /* Scale entire card proportionally — same shape as desktop/print */
+  .ticket-pass-card {
+    width: 860px !important;
+    max-width: none !important;
+    zoom: 0.43 !important;
+    border-radius: 24px !important;
+  }
+
+  /* Action buttons stay full-width at natural size */
+  .ticket-modal-actions {
+    flex-direction: column !important;
+    gap: 8px !important;
+    margin-top: 12px !important;
+    width: 100% !important;
+  }
+
+  .tma-btn-print,
+  .tma-btn-close {
+    width: 100% !important;
+    justify-content: center !important;
+    padding: 12px 20px !important;
+    font-size: 13px !important;
+  }
+}
 </style>
 
 <!-- Global Print Styles for Perfect 1-Page E-Ticket Printing -->
-<!-- Global Print Styles for Perfect 1-Page E-Ticket Printing -->
 <style>
 @page {
-  size: landscape;
-  margin: 8mm;
+  size: landscape A4;
+  margin: 6mm;
 }
 
 @media print {
@@ -4695,8 +5061,8 @@ const logout = () => {
     margin: 0 !important;
     padding: 0 !important;
     background: #FFFFFF !important;
-    color: #000000 !important;
     height: 100% !important;
+    overflow: hidden !important;
   }
 
   body * {
@@ -4709,22 +5075,24 @@ const logout = () => {
   }
 
   #printable-ticket-card {
-    position: absolute !important;
+    position: fixed !important;
     top: 50% !important;
     left: 50% !important;
     transform: translate(-50%, -50%) !important;
     margin: 0 !important;
     display: flex !important;
     flex-direction: row !important;
-    width: 860px !important;
-    max-width: 95vw !important;
+    width: 256mm !important;
     height: auto !important;
+    max-height: 170mm !important;
     border: 2px solid #CBD5E1 !important;
-    border-radius: 20px !important;
+    border-radius: 16px !important;
     box-shadow: none !important;
     background: #FFFFFF !important;
     overflow: hidden !important;
     z-index: 9999999 !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
   }
 }
 </style>
