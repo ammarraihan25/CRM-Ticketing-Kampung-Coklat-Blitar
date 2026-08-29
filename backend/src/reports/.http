@@ -1,0 +1,3 @@
+### Cashier Shift Summary
+GET http://localhost:3000/reports/shift-summary?cashier_id=KSR-001&date=2026-08-19
+Accept: application/json

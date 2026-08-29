@@ -1,0 +1,34 @@
+### 1. Checkout (Ganti Payment Method ke QRIS)
+POST http://localhost:3000/pos/checkout
+Content-Type: application/json
+
+{
+  "nomor_whatsapp": "628123456789",
+  "cashier_id": "KASIR-01",
+  "payment_method": "QRIS",
+  "items": [
+    {
+      "paket_id": "PAKET-REGULER",
+      "harga": 20000,
+      "qty": 2
+    }
+  ]
+}
+
+### 2. Generate QRIS Code (Gunakan pos_trx_id dari Step 1)
+POST http://localhost:3000/pos/qris/generate
+Content-Type: application/json
+
+{
+  "pos_trx_id": "a7b1c8bb-d52d-42c9-b69a-05769d6ec944",
+  "amount": 40000
+}
+
+### 3. Simulasi Webhook Pembayaran Lunas (Simulasi dari QRIS Simulator)
+POST http://localhost:3000/pos/webhook/payment
+Content-Type: application/json
+
+{
+  "pos_trx_id": "a7b1c8bb-d52d-42c9-b69a-05769d6ec944",
+  "transaction_status": "settlement"
+}

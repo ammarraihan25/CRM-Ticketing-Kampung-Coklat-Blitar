@@ -1,0 +1,1 @@
+import dataSource from './src/database/data-source'; import { runSeeders } from 'typeorm-extension'; async function bootstrap() { await dataSource.initialize(); await runSeeders(dataSource); process.exit(0); } bootstrap();
