@@ -302,10 +302,11 @@
                 </div>
                 <div class="form-group">
                   <label>Tipe Diskon</label>
-                  <select v-model="form.discountType" class="filter-select full-width">
-                    <option value="percentage">Potongan Persentase (%)</option>
-                    <option value="free">Free Ticket (100% Gratis)</option>
-                  </select>
+                  <AppSelect 
+                    v-model="form.discountType" 
+                    :options="discountTypeOptions" 
+                    placeholder="Pilih Tipe Diskon"
+                  />
                 </div>
               </div>
 
@@ -333,12 +334,11 @@
                 </div>
                 <div class="form-group">
                   <label>Target Segmen Member</label>
-                  <select v-model="form.targetSegment" class="filter-select full-width">
-                    <option value="ALL">Semua Pengunjung</option>
-                    <option value="PP">PP - Jamaah Pengajian</option>
-                    <option value="PR">PR - Pengunjung Reguler</option>
-                    <option value="PT">PT - Agen Tour B2B</option>
-                  </select>
+                  <AppSelect 
+                    v-model="form.targetSegment" 
+                    :options="targetSegmentOptions" 
+                    placeholder="Pilih Target Segmen"
+                  />
                 </div>
               </div>
 
@@ -386,10 +386,23 @@
 import { ref, reactive, computed } from 'vue'
 import { useAuth } from '~/composables/useAuth'
 import logoImg from '~/assets/assets_POS/KAMPUNGCOKLAT.png'
+import AppSelect from '~/components/shared/AppSelect.vue'
 
 definePageMeta({
   layout: 'admin'
 })
+
+const discountTypeOptions = [
+  { value: 'percentage', label: 'Potongan Persentase (%)' },
+  { value: 'free', label: 'Free Ticket (100% Gratis)' }
+]
+
+const targetSegmentOptions = [
+  { value: 'ALL', label: 'Semua Pengunjung' },
+  { value: 'PP', label: 'PP - Jamaah Pengajian' },
+  { value: 'PR', label: 'PR - Pengunjung Reguler' },
+  { value: 'PT', label: 'PT - Agen Tour B2B' }
+]
 
 const { user, canManageConfig } = useAuth()
 

@@ -35,9 +35,24 @@ import slide3 from '~/assets/assets_POS/slide/slide3.jpg'
 import slide4 from '~/assets/assets_POS/slide/slide4.jpg'
 
 // Booking Widget State
+import AppDatePicker from '~/components/shared/AppDatePicker.vue'
+import AppSelect from '~/components/shared/AppSelect.vue'
+
 const selectedService = ref('Tiket Masuk')
 const bookingDate = ref('')
 const visitType = ref('Regular')
+
+const serviceOptions = [
+  { value: 'Tiket Masuk', label: 'Tiket Masuk' },
+  { value: 'Wahana Permainan', label: 'Wahana Permainan' },
+  { value: 'Wisata Edukasi', label: 'Wisata Edukasi' },
+  { value: 'Sewa Tempat', label: 'Sewa Hall / Tempat' }
+]
+
+const visitTypeOptions = [
+  { value: 'Regular', label: 'Regular (Individu/Keluarga)' },
+  { value: 'Rombongan', label: 'Rombongan (>20 Org)' }
+]
 const instansiName = ref('')
 const picName = ref('')
 
@@ -1076,13 +1091,12 @@ const logout = () => {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z"></path><path d="M13 5v2"></path><path d="M13 17v2"></path><path d="M13 11v2"></path></svg>
             <span>LAYANAN</span>
           </label>
-          <div class="input-container">
-            <select v-model="selectedService">
-              <option value="Tiket Masuk">Tiket Masuk</option>
-              <option value="Wahana Permainan">Wahana Permainan</option>
-              <option value="Wisata Edukasi">Wisata Edukasi</option>
-              <option value="Sewa Tempat">Sewa Hall / Tempat</option>
-            </select>
+          <div class="input-container" style="min-width: 170px;">
+            <AppSelect 
+              v-model="selectedService" 
+              :options="serviceOptions" 
+              placeholder="Pilih Layanan"
+            />
           </div>
         </div>
         
@@ -1093,8 +1107,11 @@ const logout = () => {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
             <span>TANGGAL KUNJUNGAN</span>
           </label>
-          <div class="input-container">
-            <input type="date" v-model="bookingDate" />
+          <div class="input-container" style="min-width: 170px;">
+            <AppDatePicker 
+              v-model="bookingDate" 
+              placeholder="Pilih Tanggal"
+            />
           </div>
         </div>
 
@@ -1105,11 +1122,12 @@ const logout = () => {
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
             <span>TIPE KUNJUNGAN</span>
           </label>
-          <div class="input-container">
-            <select v-model="visitType">
-              <option value="Regular">Regular (Individu/Keluarga)</option>
-              <option value="Rombongan">Rombongan (&gt;20 Org)</option>
-            </select>
+          <div class="input-container" style="min-width: 170px;">
+            <AppSelect 
+              v-model="visitType" 
+              :options="visitTypeOptions" 
+              placeholder="Pilih Tipe"
+            />
           </div>
         </div>
 

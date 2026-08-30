@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import AppDatePicker from '~/components/shared/AppDatePicker.vue'
+
 definePageMeta({
   layout: false
 })
@@ -256,22 +258,13 @@ async function handleVerify() {
 
               <!-- TANGGAL LAHIR -->
               <div class="form-group">
-
                 <label for="tanggal_lahir">
                   Tanggal Lahir (Untuk reward ulang tahun)
                 </label>
-
-                <div class="input-wrapper">
-
-                  <input
-                    id="tanggal_lahir"
-                    v-model="form.tanggal_lahir"
-                    type="date"
-                    required
-                  />
-
-                </div>
-
+                <AppDatePicker 
+                  v-model="form.tanggal_lahir" 
+                  placeholder="Pilih Tanggal Lahir"
+                />
               </div>
 
 

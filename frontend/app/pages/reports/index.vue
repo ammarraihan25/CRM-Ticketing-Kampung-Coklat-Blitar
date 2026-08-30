@@ -217,11 +217,13 @@
           </div>
 
           <div class="ticket-filter-row">
-            <select v-model="ticketChannelFilter" class="filter-select">
-              <option value="ALL">Semua Kanal Penjualan</option>
-              <option value="POS">POS Kasir Loket</option>
-              <option value="Self-Service">Pemesanan Mandiri (Kiosk)</option>
-            </select>
+            <div style="min-width: 210px;">
+              <AppSelect 
+                v-model="ticketChannelFilter" 
+                :options="ticketChannelOptions" 
+                placeholder="Semua Kanal Penjualan"
+              />
+            </div>
 
             <div class="search-input-box">
               <input 
@@ -317,13 +319,13 @@
           </div>
 
           <div class="member-filter-row">
-            <select v-model="memberSegmentFilter" class="filter-select">
-              <option value="ALL">Semua Segmen CRM</option>
-              <option value="PR">PR - Pengunjung Reguler (50%)</option>
-              <option value="PP">PP - Jamaah Pengajian (25%)</option>
-              <option value="PT">PT - Pengunjung Tour B2B (25%)</option>
-              <option value="NON_MEMBER">Buku Tamu / Walk-in POS</option>
-            </select>
+            <div style="min-width: 230px;">
+              <AppSelect 
+                v-model="memberSegmentFilter" 
+                :options="memberSegmentOptions" 
+                placeholder="Semua Segmen CRM"
+              />
+            </div>
 
             <button type="button" class="btn-primary btn-sm" @click="handleBlastWaPlaceholder">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -469,10 +471,11 @@
 
           <div class="form-group">
             <label>Cakupan Modul Laporan:</label>
-            <select v-model="exportScope" class="filter-select full-width">
-              <option value="current">Halaman Aktif ({{ reportTabs.find(t => t.id === activeTab)?.label }})</option>
-              <option value="all">Seluruh Modul (GTV + Tiket/Gate + CRM + Demografi)</option>
-            </select>
+            <AppSelect 
+              v-model="exportScope" 
+              :options="exportScopeOptions" 
+              placeholder="Pilih Cakupan Modul"
+            />
           </div>
 
           <div class="form-group">
@@ -536,6 +539,25 @@ const isExporting = ref(false)
 const ticketSearchQuery = ref('')
 const ticketChannelFilter = ref('ALL')
 const memberSegmentFilter = ref('ALL')
+
+const ticketChannelOptions = [
+  { value: 'ALL', label: 'Semua Kanal Penjualan' },
+  { value: 'POS', label: 'POS Kasir Loket' },
+  { value: 'Self-Service', label: 'Pemesanan Mandiri (Kiosk)' }
+]
+
+const memberSegmentOptions = [
+  { value: 'ALL', label: 'Semua Segmen CRM' },
+  { value: 'PR', label: 'PR - Pengunjung Reguler (50%)' },
+  { value: 'PP', label: 'PP - Jamaah Pengajian (25%)' },
+  { value: 'PT', label: 'PT - Pengunjung Tour B2B (25%)' },
+  { value: 'NON_MEMBER', label: 'Buku Tamu / Walk-in POS' }
+]
+
+const exportScopeOptions = computed(() => [
+  { value: 'current', label: `Halaman Aktif (${reportTabs.find(t => t.id === activeTab.value)?.label || 'Aktif'})` },
+  { value: 'all', label: 'Seluruh Modul (GTV + Tiket/Gate + CRM + Demografi)' }
+])
 
 const reportTabs = [
   { id: 'revenue' as TabType, label: 'Revenue Report (GTV)' },

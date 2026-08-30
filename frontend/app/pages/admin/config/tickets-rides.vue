@@ -129,13 +129,11 @@
           <div class="modal-body">
             <div class="form-group">
               <label>Kategori Utama</label>
-              <select v-model="ticketForm.category" class="filter-select full-width">
-                <option value="gate">Tiket Masuk (Gate)</option>
-                <option value="wahana">Fasilitas Wahana</option>
-                <option value="venue">Sewa Tempat / Venue</option>
-                <option value="edukasi">Paket Edukasi</option>
-                <option value="rombongan">Booking Rombongan</option>
-              </select>
+              <AppSelect 
+                v-model="ticketForm.category" 
+                :options="ticketCategoryFormOptions" 
+                placeholder="Pilih Kategori Utama"
+              />
             </div>
 
             <div class="form-group">
@@ -151,10 +149,13 @@
             <div class="form-group">
               <label>Gambar Tiket</label>
               <div class="image-upload-group">
-                <select v-model="ticketForm.imageMode" class="filter-select" style="margin-bottom: 8px;">
-                  <option value="url">URL Gambar</option>
-                  <option value="upload">Upload File</option>
-                </select>
+                <div style="margin-bottom: 8px;">
+                  <AppSelect 
+                    v-model="ticketForm.imageMode" 
+                    :options="imageModeOptions" 
+                    placeholder="Pilih Sumber Gambar"
+                  />
+                </div>
                 <input v-if="ticketForm.imageMode === 'url'" v-model="ticketForm.imageUrl" type="text" class="input-control" placeholder="http://... atau /uploads/..." />
                 <input v-else type="file" class="input-control" accept="image/*" @change="onTicketFileChange" />
               </div>
@@ -167,10 +168,11 @@
 
             <div class="form-group">
               <label>Status Tiket</label>
-              <select v-model="ticketForm.isActive" class="filter-select full-width">
-                <option :value="true">Aktif (Tampil di POS)</option>
-                <option :value="false">Non-Aktif (Disembunyikan)</option>
-              </select>
+              <AppSelect 
+                v-model="ticketForm.isActive" 
+                :options="ticketActiveOptions" 
+                placeholder="Pilih Status"
+              />
             </div>
           </div>
           <div class="modal-footer">
@@ -201,10 +203,13 @@
             <div class="form-group">
               <label>Gambar Wahana</label>
               <div class="image-upload-group">
-                <select v-model="rideForm.imageMode" class="filter-select" style="margin-bottom: 8px;">
-                  <option value="url">URL Gambar</option>
-                  <option value="upload">Upload File</option>
-                </select>
+                <div style="margin-bottom: 8px;">
+                  <AppSelect 
+                    v-model="rideForm.imageMode" 
+                    :options="imageModeOptions" 
+                    placeholder="Pilih Sumber Gambar"
+                  />
+                </div>
                 <input v-if="rideForm.imageMode === 'url'" v-model="rideForm.imageUrl" type="text" class="input-control" placeholder="http://... atau /uploads/..." />
                 <input v-else type="file" class="input-control" accept="image/*" @change="onRideFileChange" />
               </div>
@@ -228,11 +233,11 @@
               </div>
               <div class="form-group">
                 <label>Status Operasional</label>
-                <select v-model="rideForm.status" class="filter-select full-width">
-                  <option value="BUKA">BUKA (Normal)</option>
-                  <option value="MAINTENANCE">MAINTENANCE (Servis)</option>
-                  <option value="TUTUP">TUTUP (Off)</option>
-                </select>
+                <AppSelect 
+                  v-model="rideForm.status" 
+                  :options="rideStatusOptions" 
+                  placeholder="Pilih Status"
+                />
               </div>
             </div>
 
@@ -257,10 +262,35 @@
 import { ref, computed, reactive, toRaw } from 'vue'
 import { useAuth } from '~/composables/useAuth'
 import logoImg from '~/assets/assets_POS/KAMPUNGCOKLAT.png'
+import AppSelect from '~/components/shared/AppSelect.vue'
 
 definePageMeta({
   layout: 'admin'
 })
+
+const ticketCategoryFormOptions = [
+  { value: 'gate', label: 'Tiket Masuk (Gate)' },
+  { value: 'wahana', label: 'Fasilitas Wahana' },
+  { value: 'venue', label: 'Sewa Tempat / Venue' },
+  { value: 'edukasi', label: 'Paket Edukasi' },
+  { value: 'rombongan', label: 'Booking Rombongan' }
+]
+
+const imageModeOptions = [
+  { value: 'url', label: 'URL Gambar' },
+  { value: 'upload', label: 'Upload File' }
+]
+
+const ticketActiveOptions = [
+  { value: true, label: 'Aktif (Tampil di POS)' },
+  { value: false, label: 'Non-Aktif (Disembunyikan)' }
+]
+
+const rideStatusOptions = [
+  { value: 'BUKA', label: 'BUKA (Normal)' },
+  { value: 'MAINTENANCE', label: 'MAINTENANCE (Servis)' },
+  { value: 'TUTUP', label: 'TUTUP (Off)' }
+]
 
 const { user, canManageConfig } = useAuth()
 

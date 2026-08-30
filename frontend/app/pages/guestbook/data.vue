@@ -1,8 +1,30 @@
 <script setup lang="ts">
+import AppSelect from '~/components/shared/AppSelect.vue'
 
 definePageMeta({
   layout: 'admin'
 })
+
+const typeFilterOptions = [
+  { value: '', label: 'Semua Tipe' },
+  { value: 'pengajian', label: 'Pengajian' },
+  { value: 'hall', label: 'Hall / Event' },
+  { value: 'b2b', label: 'B2B / Travel' }
+]
+
+const ageFilterOptions = [
+  { value: '', label: 'Semua Kategori Umur' },
+  { value: 'Anak-Anak', label: 'Anak-Anak (< 12 th)' },
+  { value: 'Remaja', label: 'Remaja (12–24 th)' },
+  { value: 'Dewasa', label: 'Dewasa (25–49 th)' },
+  { value: 'Lansia', label: 'Lansia (50+ th)' }
+]
+
+const statusFilterOptions = [
+  { value: '', label: 'Semua Status' },
+  { value: 'terverifikasi', label: 'Terverifikasi' },
+  { value: 'terdaftar', label: 'Terdaftar' }
+]
 
 type VisitType =
   | 'pengajian'
@@ -419,81 +441,31 @@ function resetFilter() {
 
 
           <!-- TYPE -->
-
-          <select
-            v-model="selectedType"
-            class="filter-select"
-          >
-
-            <option value="">
-              Semua Tipe
-            </option>
-
-            <option value="pengajian">
-              Pengajian
-            </option>
-
-            <option value="hall">
-              Hall / Event
-            </option>
-
-            <option value="b2b">
-              B2B / Travel
-            </option>
-
-          </select>
-
+          <div style="min-width: 150px;">
+            <AppSelect
+              v-model="selectedType"
+              :options="typeFilterOptions"
+              placeholder="Semua Tipe"
+            />
+          </div>
 
           <!-- KATEGORI UMUR -->
-
-          <select
-            v-model="selectedAge"
-            class="filter-select"
-          >
-
-            <option value="">
-              Semua Kategori Umur
-            </option>
-
-            <option value="Anak-Anak">
-              Anak-Anak (< 12 th)
-            </option>
-
-            <option value="Remaja">
-              Remaja (12-24 th)
-            </option>
-
-            <option value="Dewasa">
-              Dewasa (25-49 th)
-            </option>
-
-            <option value="Lansia">
-              Lansia (50+ th)
-            </option>
-
-          </select>
-
+          <div style="min-width: 185px;">
+            <AppSelect
+              v-model="selectedAge"
+              :options="ageFilterOptions"
+              placeholder="Semua Kategori Umur"
+            />
+          </div>
 
           <!-- STATUS -->
-
-          <select
-            v-model="selectedStatus"
-            class="filter-select"
-          >
-
-            <option value="">
-              Semua Status
-            </option>
-
-            <option value="terverifikasi">
-              Terverifikasi
-            </option>
-
-            <option value="terdaftar">
-              Terdaftar
-            </option>
-
-          </select>
+          <div style="min-width: 150px;">
+            <AppSelect
+              v-model="selectedStatus"
+              :options="statusFilterOptions"
+              placeholder="Semua Status"
+            />
+          </div>
 
 
           <button

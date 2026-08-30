@@ -1,5 +1,14 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
+import AppSelect from '~/components/shared/AppSelect.vue'
+
+const ageCategoryOptions = [
+  { value: '', label: 'Semua Kategori Umur' },
+  { value: 'Anak-Anak', label: 'Anak-Anak (< 12 th)' },
+  { value: 'Remaja', label: 'Remaja (12–24 th)' },
+  { value: 'Dewasa', label: 'Dewasa (25–49 th)' },
+  { value: 'Lansia', label: 'Lansia (50+ th)' }
+]
 
 
 
@@ -194,13 +203,13 @@ const handleReject = () => {
       <div class="table-toolbar" style="display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap;">
         <h2 class="table-title">Daftar Antrean Verifikasi</h2>
         <div style="display: flex; align-items: center; gap: 10px;">
-          <select v-model="selectedAgeCategory" style="padding: 8px 14px; border: 1.5px solid #E5E7EB; border-radius: 8px; font-size: 13px; outline: none; background: #fff; color: #4B5563; font-weight: 500;">
-            <option value="">Semua Kategori Umur</option>
-            <option value="Anak-Anak">Anak-Anak (< 12 th)</option>
-            <option value="Remaja">Remaja (12-24 th)</option>
-            <option value="Dewasa">Dewasa (25-49 th)</option>
-            <option value="Lansia">Lansia (50+ th)</option>
-          </select>
+          <div style="min-width: 195px;">
+            <AppSelect 
+              v-model="selectedAgeCategory" 
+              :options="ageCategoryOptions" 
+              placeholder="Semua Kategori Umur"
+            />
+          </div>
           <div class="search-box">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
             <input v-model="searchQuery" type="text" placeholder="Cari nama atau No. Identitas..." class="search-input" />

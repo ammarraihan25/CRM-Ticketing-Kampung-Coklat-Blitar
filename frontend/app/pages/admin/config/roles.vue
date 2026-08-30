@@ -273,12 +273,11 @@
             <div class="form-row">
               <div class="form-group">
                 <label>Role Pengguna</label>
-                <select v-model="userForm.role" class="filter-select full-width">
-                  <option value="admin">Super Admin</option>
-                  <option value="manager">Operational Manager</option>
-                  <option value="kasir">Kasir Front Office</option>
-                  <option value="owner">Owner / Direksi</option>
-                </select>
+                <AppSelect 
+                  v-model="userForm.role" 
+                  :options="staffRoleOptions" 
+                  placeholder="Pilih Role Pengguna"
+                />
               </div>
 
               <div class="form-group">
@@ -289,10 +288,11 @@
 
             <div class="form-group">
               <label>Status Akun</label>
-              <select v-model="userForm.isActive" class="filter-select full-width">
-                <option :value="true">Aktif (Dapat Login)</option>
-                <option :value="false">Nonaktif / Terkunci</option>
-              </select>
+              <AppSelect 
+                v-model="userForm.isActive" 
+                :options="staffActiveOptions" 
+                placeholder="Pilih Status"
+              />
             </div>
           </div>
           <div class="modal-footer">
@@ -309,10 +309,23 @@
 import { ref, reactive, watch } from 'vue'
 import { useAuth, type UserRole, type RbacPermissionItem } from '~/composables/useAuth'
 import logoImg from '~/assets/assets_POS/KAMPUNGCOKLAT.png'
+import AppSelect from '~/components/shared/AppSelect.vue'
 
 definePageMeta({
   layout: 'admin'
 })
+
+const staffRoleOptions = [
+  { value: 'admin', label: 'Super Admin' },
+  { value: 'manager', label: 'Operational Manager' },
+  { value: 'kasir', label: 'Kasir Front Office' },
+  { value: 'owner', label: 'Owner / Direksi' }
+]
+
+const staffActiveOptions = [
+  { value: true, label: 'Aktif (Dapat Login)' },
+  { value: false, label: 'Nonaktif / Terkunci' }
+]
 
 const { user, currentRole, setRole, canManageConfig, rbacMatrix, updateRbacMatrix } = useAuth()
 

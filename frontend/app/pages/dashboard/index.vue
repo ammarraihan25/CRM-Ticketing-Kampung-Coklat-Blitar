@@ -14,12 +14,12 @@
 
         <!-- 2. Right: Clean Dropdown & Controls -->
         <div class="controls-hero-col">
-          <div class="period-dropdown-wrapper">
-            <select v-model="selectedPeriod" class="period-select-clean" @change="refreshCharts">
-              <option v-for="opt in periodOptions" :key="opt.value" :value="opt.value">
-                {{ opt.label }}
-              </option>
-            </select>
+          <div class="period-dropdown-wrapper" style="min-width: 170px;">
+            <AppSelect 
+              v-model="selectedPeriod" 
+              :options="periodOptions" 
+              @change="refreshCharts"
+            />
           </div>
         </div>
     </header>
@@ -560,6 +560,7 @@
 import { ref, reactive, computed, onMounted, watch, nextTick } from 'vue'
 import { Chart, registerables } from 'chart.js'
 import logoImg from '~/assets/assets_POS/KAMPUNGCOKLAT.png'
+import AppSelect from '~/components/shared/AppSelect.vue'
 
 // Subcomponents
 import KpiCard from '~/components/dashboard/KpiCard.vue'

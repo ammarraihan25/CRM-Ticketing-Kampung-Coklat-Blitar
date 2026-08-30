@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import AppSelect from '~/components/shared/AppSelect.vue'
 
 const filters = defineModel<{
   tipeMember: string
@@ -13,12 +14,14 @@ const filters = defineModel<{
 })
 
 const tipeOptions = [
-  'Member Pengajian',
-  'Member Reguler',
-  'Member Tour'
+  { value: '', label: 'Semua Tipe Member' },
+  { value: 'Member Pengajian', label: 'Member Pengajian' },
+  { value: 'Member Reguler', label: 'Member Reguler' },
+  { value: 'Member Tour', label: 'Member Tour' }
 ]
 
 const umurOptions = [
+  { value: '', label: 'Semua Kategori Umur' },
   { value: 'Anak-Anak', label: 'Anak-Anak (< 12 th)' },
   { value: 'Remaja', label: 'Remaja / Pelajar (12-24 th)' },
   { value: 'Dewasa', label: 'Dewasa / Keluarga (25-49 th)' },
@@ -40,31 +43,12 @@ const umurOptions = [
         Tipe Member
       </label>
 
-      <div class="input-wrapper">
-
-        <span class="input-icon">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-        </span>
-
-        <select
+      <div>
+        <AppSelect
           v-model="filters.tipeMember"
-          class="input"
-        >
-
-          <option value="">
-            Semua Tipe Member
-          </option>
-
-          <option
-            v-for="tipe in tipeOptions"
-            :key="tipe"
-            :value="tipe"
-          >
-            {{ tipe }}
-          </option>
-
-        </select>
-
+          :options="tipeOptions"
+          placeholder="Semua Tipe Member"
+        />
       </div>
 
     </div>
@@ -78,31 +62,12 @@ const umurOptions = [
         Segmentasi Umur
       </label>
 
-      <div class="input-wrapper">
-
-        <span class="input-icon">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-        </span>
-
-        <select
+      <div>
+        <AppSelect
           v-model="filters.kategoriUmur"
-          class="input"
-        >
-
-          <option value="">
-            Semua Kategori Umur
-          </option>
-
-          <option
-            v-for="opt in umurOptions"
-            :key="opt.value"
-            :value="opt.value"
-          >
-            {{ opt.label }}
-          </option>
-
-        </select>
-
+          :options="umurOptions"
+          placeholder="Semua Kategori Umur"
+        />
       </div>
 
     </div>
