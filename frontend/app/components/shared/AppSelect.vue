@@ -3,6 +3,7 @@
     class="custom-select-wrapper" 
     ref="selectRef" 
     :class="[customClass, { 'is-open': isOpen, 'is-disabled': disabled, 'has-value': !!modelValue }]"
+    style="position: relative; display: block; width: 100%;"
   >
     <!-- Trigger Button -->
     <div 
@@ -199,13 +200,11 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap');
-
 .custom-select-wrapper {
-  position: relative;
-  display: inline-block;
+  position: relative !important;
+  display: block !important;
   width: 100%;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  box-sizing: border-box;
   user-select: none;
 }
 

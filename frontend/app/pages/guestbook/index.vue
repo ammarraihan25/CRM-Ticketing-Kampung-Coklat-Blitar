@@ -233,6 +233,7 @@ function resetForm() {
                 <label for="tanggalKunjungan">Tanggal Kunjungan</label>
                 <AppDatePicker 
                   v-model="form.tanggalKunjungan" 
+                  size="lg"
                   placeholder="Pilih Tanggal Kunjungan..." 
                 />
               </div>
@@ -348,6 +349,7 @@ function resetForm() {
 
       <AppDatePicker 
         v-model="form.tanggalLahir" 
+        size="lg"
         placeholder="Pilih Tanggal Lahir..." 
       />
 

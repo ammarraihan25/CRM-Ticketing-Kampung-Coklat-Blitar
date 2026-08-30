@@ -1,9 +1,17 @@
 <template>
-  <div class="custom-datepicker-wrapper" ref="wrapperRef" :class="{ 'is-open': isOpen, 'is-disabled': disabled }">
+  <div 
+    class="custom-datepicker-wrapper" 
+    ref="wrapperRef" 
+    :class="[
+      { 'is-open': isOpen, 'is-disabled': disabled },
+      `size-${size}`
+    ]"
+    style="position: relative; display: block; width: 100%;"
+  >
     <!-- Trigger Input -->
     <div 
       class="datepicker-trigger" 
-      :class="[customClass, { 'has-value': !!modelValue, 'is-focused': isOpen }]"
+      :class="[customClass, `trigger-${size}`, { 'has-value': !!modelValue, 'is-focused': isOpen }]"
       @click="togglePicker"
       tabindex="0"
       @keydown.space.prevent="togglePicker"
@@ -11,7 +19,7 @@
       @keydown.esc="closePicker"
     >
       <div class="trigger-left">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="calendar-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="calendar-icon">
           <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
           <line x1="16" y1="2" x2="16" y2="6"></line>
           <line x1="8" y1="2" x2="8" y2="6"></line>
@@ -35,7 +43,7 @@
             <line x1="6" y1="6" x2="18" y2="18"></line>
           </svg>
         </button>
-        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="chevron-indicator" :class="{ 'is-flipped': isOpen }">
+        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" class="chevron-indicator" :class="{ 'is-flipped': isOpen }">
           <polyline points="6 9 12 15 18 9"></polyline>
         </svg>
       </div>
@@ -43,7 +51,12 @@
 
     <!-- Calendar Popover Menu -->
     <Transition name="fade-slide">
-      <div v-if="isOpen" class="calendar-popover" :class="popoverPlacement">
+      <div 
+        v-if="isOpen" 
+        class="calendar-popover" 
+        :class="popoverPlacement"
+        style="position: absolute; top: calc(100% + 6px); z-index: 99999;"
+      >
         <!-- Calendar Header -->
         <div class="calendar-header">
           <button type="button" class="nav-month-btn" @click.stop="prevMonth" title="Bulan Sebelumnya">
@@ -119,6 +132,7 @@ const props = withDefaults(defineProps<{
   min?: string
   max?: string
   customClass?: string
+  size?: 'sm' | 'md' | 'lg'
   popoverPlacement?: 'bottom-left' | 'bottom-right'
 }>(), {
   modelValue: '',
@@ -126,6 +140,7 @@ const props = withDefaults(defineProps<{
   clearable: true,
   disabled: false,
   customClass: '',
+  size: 'md',
   popoverPlacement: 'bottom-left'
 })
 
@@ -362,13 +377,11 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Outfit:wght@500;600;700&display=swap');
-
 .custom-datepicker-wrapper {
-  position: relative;
-  display: inline-block;
+  position: relative !important;
+  display: block !important;
   width: 100%;
-  font-family: 'Plus Jakarta Sans', sans-serif;
+  box-sizing: border-box;
 }
 
 .custom-datepicker-wrapper.is-disabled {
@@ -391,6 +404,30 @@ onUnmounted(() => {
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
   user-select: none;
+  box-sizing: border-box;
+}
+
+.datepicker-trigger.trigger-lg {
+  min-height: 62px;
+  height: 62px;
+  padding: 0 20px;
+  border-radius: 16px;
+  border-color: #e4dad3;
+}
+
+.datepicker-trigger.trigger-lg .date-text {
+  font-size: 17px;
+}
+
+.datepicker-trigger.trigger-lg .calendar-icon {
+  width: 22px;
+  height: 22px;
+}
+
+.datepicker-trigger.trigger-sm {
+  min-height: 36px;
+  padding: 4px 10px;
+  border-radius: 8px;
 }
 
 .datepicker-trigger:hover {
