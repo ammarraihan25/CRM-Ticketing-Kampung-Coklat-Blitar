@@ -257,3 +257,25 @@ input[type="date"]::-webkit-calendar-picker-indicator:hover {
   transform: scale(1.15);
   opacity: 1;
 }
+
+/* Popover and Custom Select Anchor Guarantees */
+.custom-datepicker-wrapper,
+.custom-select-wrapper {
+  position: relative !important;
+  display: block !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+.calendar-popover {
+  position: absolute !important;
+  top: calc(100% + 6px) !important;
+  z-index: 99999 !important;
+}
+
+.select-menu {
+  position: absolute !important;
+  top: calc(100% + 6px) !important;
+  z-index: 99999 !important;
+}
+

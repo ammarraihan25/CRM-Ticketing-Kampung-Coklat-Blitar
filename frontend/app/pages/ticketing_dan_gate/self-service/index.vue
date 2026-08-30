@@ -235,7 +235,8 @@ const defaultCatalogTickets = [
 ]
 
 const availableTickets = computed(() => {
-  const active = ticketRates.value.filter(t => t.isActive)
+  const allowedCategories = ['gate', 'wahana', 'edukasi', 'venue']
+  const active = ticketRates.value.filter(t => t.isActive && allowedCategories.includes(t.category))
   if (active.length > 0) {
     return active.map(t => {
       let label = ''
@@ -246,7 +247,7 @@ const availableTickets = computed(() => {
 
       return {
         id: t.id,
-        category: categoryMap[t.category] || 'Lainnya',
+        category: categoryMap[t.category],
         name: t.name,
         label: label,
         subLabel: t.category === 'wahana' ? 'Tersedia' : '',

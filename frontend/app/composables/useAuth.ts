@@ -117,13 +117,13 @@ const mockUsers: Record<UserRole, UserProfile> = {
     department: 'Dewan Eksekutif'
   },
   kasir: {
-    id: 'USR-KAS-04',
-    name: 'Siti Rahmawati',
-    email: 'kasir.gate1@kampungcoklat.id',
+    id: 'USR-POS-01',
+    name: 'Siti Aminah',
+    email: 'kasir1@kampungcoklat.id',
     role: 'kasir',
-    roleTitle: 'Front Office Cashier',
-    avatar: '🧾',
-    department: 'Front Office POS'
+    roleTitle: 'Kasir Front Office',
+    avatar: '🧕',
+    department: 'Ticketing & POS Terminal 1'
   }
 }
 

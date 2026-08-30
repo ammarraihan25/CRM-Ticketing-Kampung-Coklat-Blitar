@@ -263,6 +263,7 @@ async function handleVerify() {
                 </label>
                 <AppDatePicker 
                   v-model="form.tanggal_lahir" 
+                  size="lg"
                   placeholder="Pilih Tanggal Lahir"
                 />
               </div>
