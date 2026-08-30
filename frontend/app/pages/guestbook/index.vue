@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { GuestBookPayload } from '~/composables/useGuestBookApi'
+import AppDatePicker from '~/components/shared/AppDatePicker.vue'
 
 definePageMeta({
   layout: false
@@ -230,9 +231,10 @@ function resetForm() {
 
               <div class="form-group">
                 <label for="tanggalKunjungan">Tanggal Kunjungan</label>
-                <div class="input-wrapper">
-                  <input id="tanggalKunjungan" v-model="form.tanggalKunjungan" type="date" required />
-                </div>
+                <AppDatePicker 
+                  v-model="form.tanggalKunjungan" 
+                  placeholder="Pilih Tanggal Kunjungan..." 
+                />
               </div>
 
               <p v-if="errorMessage" class="error-text">{{ errorMessage }}</p>
@@ -340,23 +342,18 @@ function resetForm() {
     ================================================== -->
 
     <div class="form-group">
-
       <label for="tanggalLahir">
         Tanggal Lahir
       </label>
 
-      <div class="input-wrapper">
-        <input
-          id="tanggalLahir"
-          v-model="form.tanggalLahir"
-          type="date"
-        />
-      </div>
+      <AppDatePicker 
+        v-model="form.tanggalLahir" 
+        placeholder="Pilih Tanggal Lahir..." 
+      />
 
-      <span class="input-hint">
+      <span class="input-hint" style="margin-top: 6px; display: block;">
         Opsional: Dapatkan voucher promo & reward di hari ulang tahun Anda.
       </span>
-
     </div>
 
 

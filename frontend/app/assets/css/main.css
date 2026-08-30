@@ -178,3 +178,112 @@ p {
 .input::placeholder {
   color: var(--color-muted);
 }
+
+/* ========================================================================= */
+/* PREMIUM GLOBAL STYLING FOR SELECT & DATEPICKER INPUTS                     */
+/* ========================================================================= */
+
+select,
+.filter-select,
+.pos-form-select,
+.category-select-pill,
+.period-select-clean {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: #FFFFFF;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23D97706' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 14px 14px;
+  padding: 8px 34px 8px 14px;
+  border: 1.5px solid #E5E7EB;
+  border-radius: 9px;
+  font-family: var(--font-family);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #1F2937;
+  cursor: pointer;
+  outline: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+select:hover,
+.filter-select:hover,
+.pos-form-select:hover,
+.category-select-pill:hover,
+.period-select-clean:hover {
+  border-color: #D97706;
+  background-color: #FFFDF9;
+}
+
+select:focus,
+.filter-select:focus,
+.pos-form-select:focus,
+.category-select-pill:focus,
+.period-select-clean:focus {
+  border-color: #D97706;
+  box-shadow: 0 0 0 3.5px rgba(217, 119, 6, 0.14);
+  background-color: #FFFFFF;
+}
+
+select option {
+  background: #FFFFFF;
+  color: #1F2937;
+  padding: 10px 14px;
+  font-weight: 500;
+}
+
+select option:checked {
+  background: #FEF3C7;
+  color: #92400E;
+  font-weight: 700;
+}
+
+/* Premium Date Inputs */
+input[type="date"],
+.date-input,
+.pos-form-input[type="date"] {
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: #FFFFFF;
+  border: 1.5px solid #E5E7EB;
+  border-radius: 9px;
+  padding: 8px 14px;
+  font-family: var(--font-family);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #1F2937;
+  outline: none;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+input[type="date"]:hover,
+.date-input:hover,
+.pos-form-input[type="date"]:hover {
+  border-color: #D97706;
+  background-color: #FFFDF9;
+}
+
+input[type="date"]:focus,
+.date-input:focus,
+.pos-form-input[type="date"]:focus {
+  border-color: #D97706;
+  box-shadow: 0 0 0 3.5px rgba(217, 119, 6, 0.14);
+  background-color: #FFFFFF;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(48%) sepia(85%) saturate(1450%) hue-rotate(15deg) brightness(95%) contrast(90%);
+  opacity: 0.85;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  transform: scale(1.15);
+  opacity: 1;
+}

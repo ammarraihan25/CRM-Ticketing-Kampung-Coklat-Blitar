@@ -16,8 +16,17 @@ import imgKereta from '~/assets/assets_POS/POS/wahana/kereta_si_choco_idr.15k.jp
 
 import { useConfigSync } from '~/composables/useConfigSync'
 import QrcodeVue from 'qrcode.vue'
+import AppDatePicker from '~/components/shared/AppDatePicker.vue'
+import AppSelect from '~/components/shared/AppSelect.vue'
 
 const { ticketRates } = useConfigSync()
+
+const ageCategoryOptions = [
+  { value: 'Anak-Anak', label: 'Anak-Anak (< 12 Tahun)' },
+  { value: 'Remaja', label: 'Remaja / Pelajar (12 - 24 Tahun)' },
+  { value: 'Dewasa', label: 'Dewasa / Keluarga (25 - 49 Tahun)' },
+  { value: 'Lansia', label: 'Lansia / Senior (50+ Tahun)' }
+]
 
 const defaultEntryTickets = [
   {
@@ -751,12 +760,11 @@ const finishTransaction = () => {
             <span>Kategori Usia (Segmentasi CRM)</span>
             <span class="pos-label-req">*</span>
           </label>
-          <select v-model="bookingData.kategoriUmur" class="pos-form-select">
-            <option value="Anak-Anak">Anak-Anak (&lt; 12 Tahun)</option>
-            <option value="Remaja">Remaja / Pelajar (12 - 24 Tahun)</option>
-            <option value="Dewasa">Dewasa / Keluarga (25 - 49 Tahun)</option>
-            <option value="Lansia">Lansia / Senior (50+ Tahun)</option>
-          </select>
+          <AppSelect 
+            v-model="bookingData.kategoriUmur" 
+            :options="ageCategoryOptions"
+            placeholder="Pilih Kategori Usia"
+          />
         </div>
 
         <!-- Tanggal Lahir (Opsional) -->
@@ -765,7 +773,10 @@ const finishTransaction = () => {
             <span>Tanggal Lahir</span>
             <span class="pos-label-optional">(Opsional)</span>
           </label>
-          <input type="date" v-model="bookingData.tanggalLahir" class="pos-form-input" />
+          <AppDatePicker 
+            v-model="bookingData.tanggalLahir" 
+            placeholder="Pilih Tanggal Lahir"
+          />
         </div>
 
         <!-- Tanggal Kunjungan -->
@@ -774,7 +785,10 @@ const finishTransaction = () => {
             <span>Tanggal Kunjungan</span>
             <span class="pos-label-req">*</span>
           </label>
-          <input type="date" v-model="bookingData.tanggal" class="pos-form-input" />
+          <AppDatePicker 
+            v-model="bookingData.tanggal" 
+            placeholder="Pilih Tanggal Kunjungan"
+          />
         </div>
       </div>
     </div>

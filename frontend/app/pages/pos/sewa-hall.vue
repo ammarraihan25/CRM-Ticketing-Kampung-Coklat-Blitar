@@ -7,6 +7,7 @@ const { addVisitor } = useCrmNonMember()
 const { addPosTransaction } = usePosTransactions()
 
 import { ref, computed } from 'vue'
+import AppDatePicker from '~/components/shared/AppDatePicker.vue'
 
 definePageMeta({
   layout: 'pos'
@@ -687,7 +688,10 @@ const finishTransaction = () => {
             <span>Tanggal Acara</span>
             <span class="pos-label-req">*</span>
           </label>
-          <input type="date" v-model="bookingData.tanggal" class="pos-form-input" />
+          <AppDatePicker 
+            v-model="bookingData.tanggal" 
+            placeholder="Pilih Tanggal Acara"
+          />
         </div>
 
         <!-- Jam Acara -->

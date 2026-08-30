@@ -51,21 +51,25 @@
     <!-- Filter Bar (Global for Reports) -->
     <div class="filter-toolbar">
       <div class="filter-left">
-        <div class="filter-group">
-          <label>Rentang Waktu:</label>
-          <select v-model="selectedPeriod" class="filter-select" @change="handleFilterChange">
-            <option value="today">Hari Ini (Real-Time)</option>
-            <option value="this_week">Minggu Ini (7 Hari Terakhir)</option>
-            <option value="this_month">Bulan Ini (Agustus 2026)</option>
-            <option value="last_month">Bulan Lalu (Juli 2026)</option>
-            <option value="custom">Kustom Rentang Tanggal</option>
-          </select>
+        <div class="filter-group" style="display: flex; align-items: center; gap: 8px;">
+          <label style="font-size: 13px; font-weight: 700; color: #4B5563;">Rentang Waktu:</label>
+          <div style="min-width: 220px;">
+            <AppSelect 
+              v-model="selectedPeriod" 
+              :options="periodOptions" 
+              @change="handleFilterChange"
+            />
+          </div>
         </div>
 
-        <div v-if="selectedPeriod === 'custom'" class="date-range-inputs">
-          <input type="date" class="date-input" value="2026-08-01" />
-          <span>s/d</span>
-          <input type="date" class="date-input" value="2026-08-19" />
+        <div v-if="selectedPeriod === 'custom'" class="date-range-inputs" style="display: flex; align-items: center; gap: 8px;">
+          <div style="width: 170px;">
+            <AppDatePicker v-model="customStartDate" placeholder="Mulai..." />
+          </div>
+          <span style="font-size: 12px; font-weight: 700; color: #9CA3AF;">s/d</span>
+          <div style="width: 170px;">
+            <AppDatePicker v-model="customEndDate" placeholder="Selesai..." />
+          </div>
         </div>
       </div>
 
@@ -500,6 +504,8 @@
 import { ref, computed, onMounted, nextTick, watch } from 'vue'
 import { Chart, registerables } from 'chart.js'
 import logoImg from '~/assets/assets_POS/KAMPUNGCOKLAT.png'
+import AppDatePicker from '~/components/shared/AppDatePicker.vue'
+import AppSelect from '~/components/shared/AppSelect.vue'
 
 definePageMeta({
   layout: 'admin'
@@ -511,6 +517,17 @@ type TabType = 'revenue' | 'tickets' | 'members' | 'demographics'
 
 const activeTab = ref<TabType>('revenue')
 const selectedPeriod = ref('this_month')
+const customStartDate = ref('2026-08-01')
+const customEndDate = ref('2026-08-19')
+
+const periodOptions = [
+  { value: 'today', label: 'Hari Ini (Real-Time)' },
+  { value: 'this_week', label: 'Minggu Ini (7 Hari Terakhir)' },
+  { value: 'this_month', label: 'Bulan Ini (Agustus 2026)' },
+  { value: 'last_month', label: 'Bulan Lalu (Juli 2026)' },
+  { value: 'custom', label: 'Kustom Rentang Tanggal' }
+]
+
 const showExportModal = ref(false)
 const exportFormat = ref<'pdf' | 'excel'>('pdf')
 const exportScope = ref('current')

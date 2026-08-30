@@ -1,8 +1,23 @@
 <script setup lang="ts">
 import type { Member } from '~/composables/useCrmApi'
-
+import AppSelect from '~/components/shared/AppSelect.vue'
 
 const { getMembers } = useCrmApi()
+
+const tipeMemberOptions = [
+  { value: '', label: 'Semua Segmen (PR, PP, PT)' },
+  { value: 'PR', label: 'PR - Pengunjung Reguler' },
+  { value: 'PP', label: 'PP - Jamaah Pengajian' },
+  { value: 'PT', label: 'PT - Pengunjung Tour B2B' }
+]
+
+const kategoriUmurOptions = [
+  { value: '', label: 'Semua Kategori Umur' },
+  { value: 'Anak-Anak', label: 'Anak-Anak (< 12 th)' },
+  { value: 'Remaja', label: 'Remaja (12–24 th)' },
+  { value: 'Dewasa', label: 'Dewasa (25–49 th)' },
+  { value: 'Lansia', label: 'Lansia (50+ th)' }
+]
 
 /* =========================================================
    TYPES
@@ -552,20 +567,21 @@ function getTypeClass(type?: string) {
                 placeholder="Cari nama atau WA..."
               />
             </div>
-            <select v-model="filters.tipeMember" class="filter-select">
-              <option value="">Semua Segmen (PR, PP, PT)</option>
-              <option value="PR">PR - Pengunjung Reguler</option>
-              <option value="PP">PP - Jamaah Pengajian</option>
-              <option value="PT">PT - Pengunjung Tour B2B</option>
-            </select>
+            <div class="filter-select-container" style="min-width: 210px;">
+              <AppSelect 
+                v-model="filters.tipeMember" 
+                :options="tipeMemberOptions"
+                placeholder="Semua Segmen"
+              />
+            </div>
 
-            <select v-model="filters.kategoriUmur" class="filter-select">
-              <option value="">Semua Kategori Umur</option>
-              <option value="Anak-Anak">Anak-Anak (< 12 th)</option>
-              <option value="Remaja">Remaja (12-24 th)</option>
-              <option value="Dewasa">Dewasa (25-49 th)</option>
-              <option value="Lansia">Lansia (50+ th)</option>
-            </select>
+            <div class="filter-select-container" style="min-width: 195px;">
+              <AppSelect 
+                v-model="filters.kategoriUmur" 
+                :options="kategoriUmurOptions"
+                placeholder="Semua Kategori Umur"
+              />
+            </div>
 
             <button type="button" class="whatsapp-box-btn" @click="openBlast">
               <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" class="box-wa-icon" />

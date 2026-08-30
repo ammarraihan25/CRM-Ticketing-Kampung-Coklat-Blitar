@@ -7,10 +7,19 @@ const { addVisitor } = useCrmNonMember()
 const { addPosTransaction } = usePosTransactions()
 
 import { ref, computed } from 'vue'
+import AppDatePicker from '~/components/shared/AppDatePicker.vue'
+import AppSelect from '~/components/shared/AppSelect.vue'
 
 definePageMeta({
   layout: 'pos'
 })
+
+const ageCategoryOptions = [
+  { value: 'Anak-Anak', label: 'Anak-Anak (< 12 Tahun)' },
+  { value: 'Remaja', label: 'Remaja / Pelajar (12 - 24 Tahun)' },
+  { value: 'Dewasa', label: 'Dewasa / Keluarga (25 - 49 Tahun)' },
+  { value: 'Lansia', label: 'Lansia / Senior (50+ Tahun)' }
+]
 
 import imgAnimalFeeding from '~/assets/assets_POS/POS/wahana/Animal-Feeding_idr.2k.jpg'
 import imgAnimalToys from '~/assets/assets_POS/POS/wahana/animal_toys_idr.15k_freeterusan.png'
@@ -689,12 +698,11 @@ const handlePrintTicket = () => {
             <span>Kategori Usia (Segmentasi CRM)</span>
             <span class="pos-label-req">*</span>
           </label>
-          <select v-model="bookingData.kategoriUmur" class="pos-form-select">
-            <option value="Anak-Anak">Anak-Anak (&lt; 12 Tahun)</option>
-            <option value="Remaja">Remaja / Pelajar (12 - 24 Tahun)</option>
-            <option value="Dewasa">Dewasa / Keluarga (25 - 49 Tahun)</option>
-            <option value="Lansia">Lansia / Senior (50+ Tahun)</option>
-          </select>
+          <AppSelect 
+            v-model="bookingData.kategoriUmur" 
+            :options="ageCategoryOptions"
+            placeholder="Pilih Kategori Usia"
+          />
         </div>
 
         <!-- Tanggal Lahir (Opsional) -->
@@ -703,7 +711,10 @@ const handlePrintTicket = () => {
             <span>Tanggal Lahir</span>
             <span class="pos-label-optional">(Opsional)</span>
           </label>
-          <input type="date" v-model="bookingData.tanggalLahir" class="pos-form-input" />
+          <AppDatePicker 
+            v-model="bookingData.tanggalLahir" 
+            placeholder="Pilih Tanggal Lahir"
+          />
         </div>
 
         <!-- Tanggal Kunjungan -->
@@ -712,7 +723,10 @@ const handlePrintTicket = () => {
             <span>Tanggal Kunjungan</span>
             <span class="pos-label-req">*</span>
           </label>
-          <input type="date" v-model="bookingData.tanggal" class="pos-form-input" />
+          <AppDatePicker 
+            v-model="bookingData.tanggal" 
+            placeholder="Pilih Tanggal Kunjungan"
+          />
         </div>
       </div>
     </div>
