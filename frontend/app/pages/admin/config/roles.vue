@@ -12,13 +12,18 @@
 
     <!-- Role Warning if not Admin -->
     <div v-if="!canManageConfig" class="role-warning-banner">
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-        <line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
-      </svg>
-      <div>
-        <strong>Akses Terbatas:</strong> Anda sedang masuk sebagai <u>{{ user.roleTitle }}</u>. Penambahan akun staf dan perubahan hak akses permission hanya dapat dikelola oleh Super Admin.
+      <div class="rwb-text-col">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+          <line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
+        </svg>
+        <div>
+          <strong>Akses Terbatas:</strong> Anda sedang masuk sebagai <u>{{ user.roleTitle }}</u>. Penambahan akun staf dan perubahan hak akses permission hanya dapat dikelola oleh Super Admin.
+        </div>
       </div>
+      <button type="button" class="btn-return-admin" @click="setRole('admin')">
+        ⚡ Beralih ke Super Admin
+      </button>
     </div>
 
     <!-- ========================================================================= -->
@@ -105,11 +110,12 @@
                   class="btn-action-edit"
                   :disabled="!canManageConfig"
                   @click="editUser(u)"
+                  title="Edit data akun staf"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
                     <path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
                   </svg>
-                  <span>Edit Akun</span>
+                  <span>Edit</span>
                 </button>
               </td>
             </tr>
@@ -210,13 +216,14 @@
               </td>
               <td class="text-center">
                 <template v-if="!isEditingMatrix">
-                  <span class="matrix-tag" :class="item.kasir ? 'tag-pos' : 'tag-locked'">
-                    <span>{{ item.kasir ? 'POS Kasir' : 'Terkunci' }}</span>
+                  <span class="matrix-tag" :class="item.kasir === 'READ' ? 'tag-read' : item.kasir ? (item.id === 'pos_terminal' ? 'tag-pos' : 'tag-full') : 'tag-locked'">
+                    <span>{{ item.kasir === 'READ' ? 'Read-Only' : item.kasir ? (item.id === 'pos_terminal' ? 'POS Kasir' : 'Full Akses') : 'Terkunci' }}</span>
                   </span>
                 </template>
                 <template v-else>
-                  <select v-model="item.kasir" class="matrix-inline-select" :class="item.kasir ? 'select-pos' : 'select-locked'">
-                    <option :value="true">POS Kasir</option>
+                  <select v-model="item.kasir" class="matrix-inline-select" :class="item.kasir === 'READ' ? 'select-read' : item.kasir ? (item.id === 'pos_terminal' ? 'select-pos' : 'select-full') : 'select-locked'">
+                    <option :value="true">{{ item.id === 'pos_terminal' ? 'POS Kasir (Full)' : 'Full Akses' }}</option>
+                    <option value="READ">Read-Only</option>
                     <option :value="false">Terkunci</option>
                   </select>
                 </template>
@@ -299,15 +306,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
-import { useAuth, type UserRole } from '~/composables/useAuth'
+import { ref, reactive, watch } from 'vue'
+import { useAuth, type UserRole, type RbacPermissionItem } from '~/composables/useAuth'
 import logoImg from '~/assets/assets_POS/KAMPUNGCOKLAT.png'
 
 definePageMeta({
   layout: 'admin'
 })
 
-const { user, canManageConfig } = useAuth()
+const { user, currentRole, setRole, canManageConfig, rbacMatrix, updateRbacMatrix } = useAuth()
 
 interface StaffAccount {
   id: string
@@ -373,64 +380,21 @@ const usersList = ref<StaffAccount[]>([
   }
 ])
 
-const permissionMatrix = ref([
-  {
-    module: 'Dashboard Finansial & GTV',
-    description: 'Akses ringkasan eksekutif, grafik tren, dan metrik revenue',
-    admin: true,
-    manager: 'READ',
-    kasir: false,
-    owner: 'READ'
-  },
-  {
-    module: 'Audit Rekonsiliasi Shift Kasir',
-    description: 'Approval selisih kas fisik dan validasi serah terima shift',
-    admin: true,
-    manager: true,
-    kasir: false,
-    owner: 'READ'
-  },
-  {
-    module: 'Konfigurasi Tarif Tiket & Wahana',
-    description: 'Ubah harga tiket masuk, paket edukasi, dan status operasional',
-    admin: true,
-    manager: 'READ',
-    kasir: false,
-    owner: 'READ'
-  },
-  {
-    module: 'Pengaturan Diskon & Promo CRM',
-    description: 'Pembuatan voucher diskon, free ticket majlis (PP), dan blast WA',
-    admin: true,
-    manager: 'READ',
-    kasir: false,
-    owner: 'READ'
-  },
-  {
-    module: 'Terminal Transaksi POS Kasir',
-    description: 'Input penjualan tiket, cetak barcode wristband, refund & void',
-    admin: true,
-    manager: false,
-    kasir: true,
-    owner: false
-  },
-  {
-    module: 'Laporan & Ekspor Data (PDF / Excel)',
-    description: 'Download riwayat transaksi, demografi, dan log audit staf',
-    admin: true,
-    manager: true,
-    kasir: false,
-    owner: 'READ'
-  },
-  {
-    module: 'Manajemen Role & Staf (RBAC)',
-    description: 'Tambah staf baru, ganti role pengguna, dan reset password',
-    admin: true,
-    manager: false,
-    kasir: false,
-    owner: false
+const permissionMatrix = ref<RbacPermissionItem[]>([])
+
+const syncMatrixFromAuth = () => {
+  if (rbacMatrix.value && Array.isArray(rbacMatrix.value) && rbacMatrix.value.length > 0) {
+    permissionMatrix.value = JSON.parse(JSON.stringify(rbacMatrix.value))
   }
-])
+}
+
+syncMatrixFromAuth()
+
+watch(rbacMatrix, () => {
+  if (!isEditingMatrix.value) {
+    syncMatrixFromAuth()
+  }
+}, { deep: true })
 
 const showUserModal = ref(false)
 const isEditing = ref(false)
@@ -488,8 +452,13 @@ const cancelEditMatrix = () => {
 }
 
 const saveMatrix = () => {
-  isEditingMatrix.value = false
-  // Logic to save to backend would go here
+  try {
+    isEditingMatrix.value = false
+    updateRbacMatrix(permissionMatrix.value)
+    alert('[SUKSES] Matriks hak akses role (RBAC) berhasil diperbarui dan disinkronkan ke seluruh menu & hak akses sistem!')
+  } catch (err) {
+    console.error('Error saving matrix:', err)
+  }
 }
 
 const editUser = (u: StaffAccount) => {
@@ -691,14 +660,44 @@ const saveUser = () => {
 .role-warning-banner {
   display: flex;
   align-items: center;
-  gap: 12px;
-  background: #FEF3C7;
-  border: 1.5px solid #F59E0B;
+  justify-content: space-between;
+  gap: 16px;
+  background: #FFFBEB;
+  border: 1.5px solid #FDE68A;
   color: #92400E;
-  padding: 12px 16px;
-  border-radius: 14px;
-  font-size: 13px;
+  padding: 14px 20px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(180, 83, 9, 0.06);
+}
+
+.rwb-text-col {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.btn-return-admin {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #3D2214;
+  color: #FFFFFF;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 12.5px;
   font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 6px rgba(61, 34, 20, 0.18);
+}
+
+.btn-return-admin:hover {
+  background: #502D1A;
+  transform: translateY(-1px);
 }
 
 /* ========================================================================= */

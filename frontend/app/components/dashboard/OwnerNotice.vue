@@ -61,6 +61,14 @@
         <button 
           type="button"
           class="switch-btn" 
+          :class="{ active: activeRole === 'kasir' }"
+          @click="selectRole('kasir')"
+        >
+          Kasir
+        </button>
+        <button 
+          type="button"
+          class="switch-btn" 
           :class="{ active: activeRole === 'owner' }"
           @click="selectRole('owner')"
         >
@@ -83,6 +91,7 @@ const roleLabel = computed(() => {
   switch (activeRole.value) {
     case 'owner': return '👑 Mode Eksekutif: Owner'
     case 'manager': return '📋 Mode Operasional: Manager'
+    case 'kasir': return '🧾 Mode Kasir: Front Office'
     default: return '⚡ Mode Penuh: Administrator'
   }
 })

@@ -6,9 +6,9 @@
     <header class="executive-command-header">
       <!-- Left: Clean Title & Subtitle -->
       <div class="brand-text-wrapper">
-        <h1 class="header-main-title">Dashboard</h1>
+        <h1 class="header-main-title">{{ currentRole === 'owner' ? 'Executive Dashboard' : (currentRole === 'kasir' ? 'Dashboard Kasir POS' : 'Dashboard Overview') }}</h1>
         <div class="header-meta-clean-line">
-          Selamat datang kembali, Ticketing Admin &mdash; Dashboard Kampung Coklat
+          Selamat datang kembali, <strong>{{ user.name }}</strong> ({{ user.roleTitle }}) &mdash; Sistem Terpadu Kampung Coklat
         </div>
       </div>
 
@@ -21,71 +21,95 @@
               </option>
             </select>
           </div>
-
-
-          <button type="button" class="btn-download-report">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-              <polyline points="7 10 12 15 17 10" />
-              <line x1="12" y1="15" x2="12" y2="3" />
-            </svg>
-            Unduh Laporan
-          </button>
         </div>
     </header>
 
     <!-- Section Title: Ringkasan Penjualan -->
     <div class="section-header-title">
-      <div class="section-icon-dash"></div>
-      <h2>Ringkasan Penjualan</h2>
+      <h2>Ringkasan Penjualan &amp; Distribusi Kanal</h2>
     </div>
 
-    <!-- 4 KPI Cards Grid (GTV, Tiket Terjual, Pengunjung Gate In, Member Baru) -->
+    <!-- 2 Segmen Kanal Penjualan: POS Kasir vs Self-Service -->
+    <section class="sales-channel-segment-banner">
+      <div class="channel-segment-card channel-card-pos">
+        <div class="channel-icon-pill bg-orange-soft">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+        </div>
+        <div class="channel-content">
+          <div class="channel-title-row">
+            <span class="channel-name">POS KASIR LOKET (FRONT OFFICE)</span>
+            <span class="channel-pct-badge pct-orange">64.0% Omzet</span>
+          </div>
+          <div class="channel-main-val">Rp 31.200.000</div>
+          <div class="channel-sub-info">
+            <span><strong>1.560</strong> Tiket terjual</span>
+            <span class="channel-dot">&bull;</span>
+            <span>5 Loket Kasir Operasional</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="channel-segment-card channel-card-self">
+        <div class="channel-icon-pill bg-blue-soft">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 17l6-6-6-6"/><path d="M12 19h8"/><rect x="2" y="3" width="20" height="18" rx="2"/></svg>
+        </div>
+        <div class="channel-content">
+          <div class="channel-title-row">
+            <span class="channel-name">PEMESANAN MANDIRI (SELF-SERVICE KIOSK)</span>
+            <span class="channel-pct-badge pct-blue">36.0% Omzet</span>
+          </div>
+          <div class="channel-main-val">Rp 17.550.000</div>
+          <div class="channel-sub-info">
+            <span><strong>890</strong> Tiket terjual</span>
+            <span class="channel-dot">&bull;</span>
+            <span>Kiosk Digital, Web Booking &amp; QRIS</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4 KPI Cards Grid (Role-Aware) -->
     <section class="kpi-cards-grid-4">
-      <!-- 1. Total GTV -->
+      <!-- 1. Total GTV / Omzet Shift -->
       <KpiCard
-        title="TOTAL GTV (PENDAPATAN)"
-        :value="formatRupiah(currentMetrics.totalGtv)"
+        :title="currentRole === 'kasir' ? 'OMZET SHIFT ANDA' : (currentRole === 'owner' ? 'TOTAL GROSS REVENUE (GTV)' : 'TOTAL GTV (PENDAPATAN)')"
+        :value="currentRole === 'kasir' ? formatRupiah(currentShiftData.totalOmzet) : formatRupiah(currentMetrics.totalGtv)"
         theme="orange"
         icon="currency"
         tag="REALTIME"
-
-        :comparison="currentMetrics.gtvComparison"
-        subtitle="Gross Transaction Value"
+        :comparison="currentRole === 'kasir' ? `${currentShiftData.terminalName} Aktif` : currentMetrics.gtvComparison"
+        :subtitle="currentRole === 'kasir' ? 'Kas masuk shift saat ini' : 'Gross Transaction Value (POS + Self-Service)'"
       />
 
       <!-- 2. Total Tiket Terjual -->
       <KpiCard
-        title="TOTAL TIKET TERJUAL"
-        :value="`${currentMetrics.totalTickets.toLocaleString('id-ID')} Tiket`"
+        :title="currentRole === 'kasir' ? 'TIKET TERBIT SHIFT' : 'TOTAL TIKET TERJUAL'"
+        :value="currentRole === 'kasir' ? `${currentShiftData.totalTicketsSold} Tiket` : `${currentMetrics.totalTickets.toLocaleString('id-ID')} Tiket`"
         theme="black"
         icon="ticket"
-
-        :comparison="currentMetrics.ticketsComparison"
-        subtitle="Reguler, Rombongan &amp; Paket"
+        :comparison="currentRole === 'kasir' ? `${currentShiftData.totalTransactions} Transaksi loket` : currentMetrics.ticketsComparison"
+        :subtitle="currentRole === 'kasir' ? 'Loket kasir aktif Anda' : 'POS: 1.560 | Self-Service: 890'"
       />
 
-      <!-- 3. Total Pengunjung (Gate In) -->
+      <!-- 3. Total Pengunjung / Kas Fisik -->
       <KpiCard
-        title="TOTAL PENGUNJUNG (GATE IN)"
-        :value="`${currentMetrics.totalVisitors.toLocaleString('id-ID')} Pax`"
+        :title="currentRole === 'kasir' ? 'KAS FISIK (TUNAI)' : (currentRole === 'owner' ? 'TRAFIK WISATAWAN' : 'TOTAL PENGUNJUNG')"
+        :value="currentRole === 'kasir' ? formatRupiah(currentShiftData.cashReceived) : `${currentMetrics.totalVisitors.toLocaleString('id-ID')} Pax`"
         theme="brown"
-        icon="users"
-
-        :comparison="currentMetrics.visitorsComparison"
-        subtitle="Scan barcode turnstile"
+        :icon="currentRole === 'kasir' ? 'currency' : 'users'"
+        :comparison="currentRole === 'kasir' ? 'Uang fisik dalam laci kasir' : currentMetrics.visitorsComparison"
+        :subtitle="currentRole === 'kasir' ? 'Perlu rekonsiliasi akhir shift' : 'Scan barcode turnstile (Gate In)'"
       />
 
-      <!-- 4. Member Baru Terdaftar -->
+      <!-- 4. Member Baru / Non-Tunai QRIS -->
       <KpiCard
-        title="MEMBER BARU TERDAFTAR"
-        :value="`+${currentMetrics.newMembers}`"
+        :title="currentRole === 'kasir' ? 'NON-TUNAI / QRIS' : (currentRole === 'owner' ? 'AKUISISI MEMBER LOYALITAS' : 'MEMBER BARU TERDAFTAR')"
+        :value="currentRole === 'kasir' ? formatRupiah(currentShiftData.nonCashReceived) : `+${currentMetrics.newMembers}`"
         theme="green"
-        icon="user-plus"
-        tag="ACQUISITION"
-
-        :comparison="currentMetrics.newMembersComparison"
-        subtitle="Guestbook PP &amp; POS Kasir"
+        :icon="currentRole === 'kasir' ? 'currency' : 'user-plus'"
+        :tag="currentRole === 'kasir' ? 'DIGITAL' : 'ACQUISITION'"
+        :comparison="currentRole === 'kasir' ? 'QRIS & EDC terverifikasi' : currentMetrics.newMembersComparison"
+        :subtitle="currentRole === 'kasir' ? 'Rekening merchant terpusat' : 'Guestbook PP & POS Kasir'"
       />
     </section>
 
@@ -97,15 +121,14 @@
         <div class="bento-card-header">
           <div class="header-title-group">
             <div class="title-with-badge">
-              <h3 class="bento-card-title">Tren Pendapatan &amp; Tiket</h3>
+              <h3 class="bento-card-title">Tren Pendapatan &amp; Tiket (POS vs Self-Service)</h3>
             </div>
             <span class="bento-card-subtitle">
-              {{ currentPeriodDetail.label }}: Distribusi fluktuasi omzet dan volume tiket tervalidasi gerbang.
+              {{ currentPeriodDetail.label }}: Distribusi omzet gabungan loket kasir POS &amp; pemesanan mandiri self-service.
             </span>
           </div>
 
           <div class="header-right-controls">
-            <!-- Custom Legend Badges removed per user request -->
             <!-- Segmented Chart Toggle -->
             <div class="chart-type-pill">
               <button 
@@ -142,20 +165,19 @@
               </svg>
             </div>
             <div class="highlight-meta">
-              <span class="highlight-label">Rata-rata Transaksi</span>
+              <span class="highlight-label">Rata-rata Transaksi POS</span>
               <span class="highlight-val text-amber">Rp 20.000 / tiket</span>
             </div>
           </div>
           <div class="highlight-bento-box">
-            <div class="highlight-icon-circle bg-cocoa-soft">
+            <div class="highlight-icon-circle bg-blue-soft">
               <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                <circle cx="12" cy="12" r="10"/>
-                <polyline points="12 6 12 12 16 14"/>
+                <path d="M4 17l6-6-6-6"/><path d="M12 19h8"/><rect x="2" y="3" width="20" height="18" rx="2"/>
               </svg>
             </div>
             <div class="highlight-meta">
-              <span class="highlight-label">Jam Kunjungan Teramai</span>
-              <span class="highlight-val text-cocoa">10:00 - 14:00 WIB</span>
+              <span class="highlight-label">Rata-rata Self-Service</span>
+              <span class="highlight-val text-blue">Rp 35.000 / tiket</span>
             </div>
           </div>
           <div class="highlight-bento-box">
@@ -178,8 +200,8 @@
       <div class="split-right-col">
         <div class="bento-card recent-tx-card">
           <div class="tx-card-header">
-            <h3 class="bento-card-title">Transaksi Terakhir</h3>
-            <a href="#" class="tx-view-all">Lihat Semua</a>
+            <h3 class="bento-card-title">Transaksi Terakhir (POS &amp; Self-Service)</h3>
+            <NuxtLink to="/reports" class="tx-view-all">Lihat Semua ›</NuxtLink>
           </div>
           
           <div class="tx-table-wrapper">
@@ -187,47 +209,35 @@
               <thead>
                 <tr>
                   <th>WAKTU</th>
-                  <th>TIPE</th>
+                  <th>KANAL</th>
+                  <th>TIPE TIKET</th>
                   <th>QTY</th>
                   <th>TOTAL</th>
                   <th>STATUS</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td>10:45 AM</td>
-                  <td class="td-type">Tiket Terusan</td>
-                  <td>4</td>
-                  <td class="td-total">Rp 300.000</td>
-                  <td><span class="status-badge lunas">Lunas</span></td>
-                </tr>
-                <tr>
-                  <td>10:42 AM</td>
-                  <td class="td-type">B2B - SDN 1 Blitar</td>
-                  <td>150</td>
-                  <td class="td-total">Rp 3.000.000</td>
-                  <td><span class="status-badge lunas">Lunas</span></td>
-                </tr>
-                <tr>
-                  <td>10:35 AM</td>
-                  <td class="td-type">Tiket Reguler</td>
-                  <td>2</td>
-                  <td class="td-total">Rp 40.000</td>
-                  <td><span class="status-badge lunas">Lunas</span></td>
-                </tr>
-                <tr>
-                  <td>10:15 AM</td>
-                  <td class="td-type">Sewa Hall A</td>
-                  <td>1</td>
-                  <td class="td-total">Rp 2.500.000</td>
-                  <td><span class="status-badge dp">DP 50%</span></td>
-                </tr>
-                <tr>
-                  <td>09:50 AM</td>
-                  <td class="td-type">Paket Edukasi Basic</td>
-                  <td>20</td>
-                  <td class="td-total">Rp 500.000</td>
-                  <td><span class="status-badge lunas">Lunas</span></td>
+                <tr v-for="tx in recentTransactions" :key="tx.id">
+                  <td>{{ tx.time }}</td>
+                  <td>
+                    <span 
+                      class="channel-pill-tag"
+                      :class="tx.channel === 'Self-Service' ? 'channel-self' : 'channel-pos'"
+                    >
+                      {{ tx.channel || 'POS' }}
+                    </span>
+                  </td>
+                  <td class="td-type font-medium">{{ tx.type }}</td>
+                  <td>{{ tx.qty }}</td>
+                  <td class="td-total">{{ formatRupiah(tx.total) }}</td>
+                  <td>
+                    <span 
+                      class="status-badge" 
+                      :class="tx.status === 'LUNAS' ? 'lunas' : (tx.status === 'PENDING' ? 'dp' : 'batal')"
+                    >
+                      {{ tx.status === 'LUNAS' ? 'Lunas' : (tx.status === 'PENDING' ? 'DP / Pending' : tx.status) }}
+                    </span>
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -237,7 +247,8 @@
     </section>
 
     <!-- Member Segmentation & Ticket Sales Grid -->
-    <section class="crm-ticket-grid">
+    <!-- Member Segmentation & Ticket Sales Grid (Visible based on RBAC diskon_promo permission) -->
+    <section v-if="canAccessModule('diskon_promo')" class="crm-ticket-grid">
       <!-- Member Segmentation Concentric Radial Rings Card -->
       <div class="bento-card radial-rings-card-elevated">
         <div class="bento-card-header">
@@ -265,14 +276,14 @@
             <div class="rings-bottom-metric">
               <div class="rings-bottom-total-row">
                 <span class="bottom-total-label">Total Member:</span>
-                <span class="bottom-total-val">{{ memberSegmentTotal.toLocaleString('id-ID') }}</span>
+                <span class="bottom-total-val">{{ memberSegmentTotal.toLocaleString('id-ID') }} Kontak</span>
               </div>
             </div>
 
             <!-- Active badge below SVG -->
             <span class="bottom-active-badge" style="margin-top: 10px;">
               <span class="hub-live-dot"></span>
-              <span>92% Aktif Terdaftar</span>
+              <span>100% Aktif Terdaftar</span>
             </span>
           </div>
 
@@ -289,7 +300,7 @@
               <div class="legend-modern-header">
                 <span class="legend-color-indicator" :style="{ backgroundColor: seg.color }"></span>
                 <span class="legend-modern-title">{{ seg.title }}</span>
-                <span class="legend-modern-pct">{{ seg.percentage }}%</span>
+                <span class="legend-modern-pct">{{ seg.percentage }}% ({{ seg.count }} Kontak)</span>
               </div>
               <div class="legend-modern-desc">
                 {{ seg.desc }}
@@ -305,37 +316,37 @@
           <div class="crm-matrix-card">
             <div class="matrix-card-header">
               <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
-              <span>Member Baru</span>
+              <span>Member Reguler (PR)</span>
             </div>
             <div class="matrix-card-body">
-              <span class="matrix-main-val">+215 Org</span>
-              <span class="matrix-sub-pct text-green">+18.4%</span>
+              <span class="matrix-main-val">4 Member</span>
+              <span class="matrix-sub-pct text-green">50.0% Total Kontak</span>
             </div>
           </div>
           <div class="crm-matrix-card">
             <div class="matrix-card-header">
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-              <span>Retensi Repeat</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 21h18M3 7v14M21 7v14M6 7V4a1 1 0 011-1h10a1 1 0 011 1v3M9 21v-6h6v6"/></svg>
+              <span>Jamaah Pengajian (PP)</span>
             </div>
             <div class="matrix-card-body">
-              <span class="matrix-main-val">74.8%</span>
-              <span class="matrix-sub-badge">Tinggi</span>
+              <span class="matrix-main-val">2 Jamaah</span>
+              <span class="matrix-sub-badge" style="background: #ECFDF5; color: #047857;">25.0% Majelis Taklim</span>
             </div>
           </div>
           <div class="crm-matrix-card">
             <div class="matrix-card-header">
-              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-              <span>Rata-rata Transaksi</span>
+              <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+              <span>Agen Tour / B2B (PT)</span>
             </div>
             <div class="matrix-card-body">
-              <span class="matrix-main-val">Rp 45.000</span>
-              <span class="matrix-sub-sub">/ member</span>
+              <span class="matrix-main-val">2 Agen</span>
+              <span class="matrix-sub-sub" style="color: #DC2626; font-weight: 700;">25.0% Kemitraan Biro</span>
             </div>
           </div>
         </div>
 
         <div class="crm-card-footer">
-          <NuxtLink to="/reports" class="btn-see-more">
+          <NuxtLink to="/dashboard/crm" class="btn-see-more">
             <span>Buka Direktori WhatsApp Member</span>
             <span class="arrow-sym">&rarr;</span>
           </NuxtLink>
@@ -351,19 +362,21 @@
         <TicketSalesTable :ticket-items="currentTicketBreakdown" />
       </div>
 
-      <div class="shift-wrapper">
+      <div v-if="canAccessModule('audit_shift')" class="shift-wrapper">
         <ShiftSummaryCard 
           :shift-data="currentShiftData" 
           :shifts-list="allShiftList"
-          :is-read-only="currentRole === 'owner'"
+          :is-read-only="!canWriteModule('audit_shift')"
           @view-details="handleViewShiftLog"
           @close-shift="handleCloseShift"
         />
       </div>
     </section>
 
-    <!-- Demografi Asal Pengunjung -->
-    <section class="demographic-full-section">
+
+
+    <!-- Demografi Asal Pengunjung (Integrated with CRM Domisili) -->
+    <section v-if="canAccessModule('diskon_promo') || canAccessModule('laporan_ekspor')" class="demographic-full-section">
       <div class="bento-card demographic-card-luxury">
         <div class="bento-card-header demo-header-wrap">
           <div class="header-title-left">
@@ -375,16 +388,18 @@
               </svg>
             </div>
             <div class="header-text-group">
-              <div style="display: flex; align-items: center; gap: 8px;">
-                <h3 class="bento-card-title">Demografi Asal Pengunjung</h3>
-              </div>
+              <h3 class="bento-card-title">Demografi Asal Pengunjung</h3>
               <span class="bento-card-subtitle">
-                Peta sebaran asal daerah wisatawan berbasis data integrasi transaksi POS Kasir &amp; kontak CRM WhatsApp
+                Peta sebaran asal daerah wisatawan berbasis integrasi kata kunci domisili kontak CRM WhatsApp (PR, PP, PT) &amp; Guestbook
               </span>
             </div>
           </div>
 
-
+          <div class="demo-header-right" style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <NuxtLink to="/dashboard/crm" class="tx-view-all">
+              Buka Direktori CRM Domisili ›
+            </NuxtLink>
+          </div>
         </div>
 
         <div 
@@ -402,7 +417,7 @@
           <div class="map-controls-floating">
             <div class="coords-indicator">
               <span class="pulse-gold-dot"></span>
-              <span>8.1620° S, 112.1670° E &bull; Jawa Timur</span>
+              <span>8.1620° S, 112.1670° E &bull; Jawa Timur (Episentrum Blitar)</span>
             </div>
             <div class="map-zoom-buttons-group">
               <button type="button" class="map-btn" title="Perbesar Peta" @click.stop="handleMapZoomIn">
@@ -454,7 +469,7 @@
                 <span class="pin-city">{{ city.name }}</span>
                 <span class="pin-divider">&bull;</span>
                 <span class="pin-visitors">{{ city.pax }} Pax</span>
-                <span class="pin-share">({{ city.percentage }}%)</span>
+                <span class="pin-share">({{ city.crmCount }} Kontak CRM)</span>
               </div>
             </div>
           </div>
@@ -553,6 +568,8 @@ import TicketSalesTable, { type TicketCategoryItem } from '~/components/dashboar
 import ShiftSummaryCard, { type ShiftInfo } from '~/components/dashboard/ShiftSummaryCard.vue'
 
 import { useAuth, type UserRole } from '~/composables/useAuth'
+import { usePosTransactions } from '~/composables/usePosTransactions'
+import { useConfigSync } from '~/composables/useConfigSync'
 
 // Register Chart.js modules
 Chart.register(...registerables)
@@ -562,8 +579,34 @@ definePageMeta({
   layout: 'admin'
 })
 
-// Current Role
-const { currentRole } = useAuth()
+// Current Role & User Profile from useAuth
+const { currentRole, user, canAccessModule, canWriteModule } = useAuth()
+const { transactions: posTransactions } = usePosTransactions()
+const { ticketRates, rides: ridesSyncList } = useConfigSync()
+
+const recentTransactions = computed(() => {
+  if (posTransactions.value && posTransactions.value.length > 0) {
+    return posTransactions.value.slice(0, 6).map(tx => ({
+      id: tx.id,
+      time: tx.time,
+      channel: tx.channel || (tx.type.includes('Terusan') || tx.payment.includes('QRIS') ? 'Self-Service' : 'POS'),
+      type: tx.type || tx.category,
+      qty: tx.qty,
+      total: tx.total,
+      status: tx.status
+    }))
+  }
+  return [
+    { id: 'TRX-2045', time: '14:02', channel: 'Self-Service', type: 'Tiket Terusan', qty: 4, total: 300000, status: 'LUNAS' as const },
+    { id: 'TRX-2044', time: '13:55', channel: 'POS', type: 'Tiket Reguler', qty: 2, total: 40000, status: 'LUNAS' as const },
+    { id: 'TRX-2043', time: '13:40', channel: 'POS', type: 'Golf Car & Bom Bom', qty: 3, total: 150000, status: 'LUNAS' as const },
+    { id: 'TRX-2042', time: '13:15', channel: 'Self-Service', type: 'Tiket Reguler', qty: 5, total: 100000, status: 'LUNAS' as const },
+    { id: 'TRX-2041', time: '12:50', channel: 'Self-Service', type: 'Tiket Terusan', qty: 2, total: 150000, status: 'LUNAS' as const },
+    { id: 'TRX-2040', time: '12:30', channel: 'POS', type: 'Paket Edukasi', qty: 25, total: 875000, status: 'LUNAS' as const }
+  ]
+})
+
+
 
 // CRM Segment Hover State
 const activeHoverSegment = ref<string | null>(null)
@@ -645,15 +688,19 @@ const doMapTouch = (e: TouchEvent) => {
 }
 
 // -------------------------------------------------------------------------
-// REGIONAL DEMOGRAPHIC ORIGIN CITIES
+// REGIONAL DEMOGRAPHIC ORIGIN CITIES (SINKRON DENGAN DOMISILI CRM)
 // -------------------------------------------------------------------------
 interface OriginCityData {
   id: string
   name: string
+  keyword: string
   region: string
   pax: number
   percentage: number
   gtv: number
+  crmCount: number
+  crmSpend: number
+  crmSegments: string
   character: string
   color: string
   dotClass: string
@@ -665,11 +712,96 @@ interface OriginCityData {
 const activeHoverCity = ref<string | null>(null)
 
 const originCitiesList = computed<OriginCityData[]>(() => [
-  { id: 'blitar-kota', name: 'Kota Blitar', region: 'Pusat Kota & Wisatawan Lokal', pax: 940, percentage: 38.4, gtv: 18800000, character: 'Wisatawan Keluarga & Repeat Member', color: '#D97706', dotClass: 'dot-gold', badgeClass: 'bubble-gold', travelTime: '< 15 Menit', position: { top: '34%', left: '45%' } },
-  { id: 'blitar-kab', name: 'Kab. Blitar', region: 'Wlingi, Kanigoro & Sekitar', pax: 580, percentage: 23.7, gtv: 11600000, character: 'Keluarga, Anak & Santri Akhir Pekan', color: '#F59E0B', dotClass: 'dot-amber', badgeClass: 'bubble-amber', travelTime: '20 - 40 Menit', position: { top: '72%', left: '62%' } },
-  { id: 'kediri', name: 'Kediri Raya', region: 'Koridor Mataraman Utara', pax: 390, percentage: 15.9, gtv: 7800000, character: 'Wisata Edukasi & Rombongan Komunitas', color: '#2563EB', dotClass: 'dot-blue', badgeClass: 'bubble-blue', travelTime: '45 - 60 Menit', position: { top: '22%', left: '24%' } },
-  { id: 'tulungagung', name: 'Tulungagung & Trenggalek', region: 'Koridor Jalur Lintas Selatan (JLS)', pax: 290, percentage: 11.8, gtv: 5800000, character: 'Paket Terusan Wahana Edukasi Coklat', color: '#059669', dotClass: 'dot-green', badgeClass: 'bubble-green', travelTime: '45 - 60 Menit', position: { top: '70%', left: '18%' } },
-  { id: 'malang-sby', name: 'Malang & Surabaya', region: 'Regional Jawa Timur & Tol Trans-Jawa', pax: 250, percentage: 10.2, gtv: 5000000, character: 'Rombongan Bus Study Tour & Biro Wisata', color: '#7C3AED', dotClass: 'dot-purple', badgeClass: 'bubble-purple', travelTime: '90 - 150 Menit', position: { top: '26%', left: '80%' } }
+  { 
+    id: 'blitar-kota', 
+    name: 'Kota Blitar', 
+    keyword: 'Blitar',
+    region: 'Pusat Kota & Wisatawan Lokal', 
+    pax: 940, 
+    percentage: 38.4, 
+    gtv: 18800000, 
+    crmCount: 3,
+    crmSpend: 9850000,
+    crmSegments: 'Member Reguler (PR) & Agen Biro (PT)',
+    character: 'Wisatawan Keluarga & Repeat Member', 
+    color: '#D97706', 
+    dotClass: 'dot-gold', 
+    badgeClass: 'bubble-gold', 
+    travelTime: '< 15 Menit', 
+    position: { top: '34%', left: '45%' } 
+  },
+  { 
+    id: 'blitar-kab', 
+    name: 'Kab. Blitar', 
+    keyword: 'Blitar',
+    region: 'Wlingi, Kanigoro & Sekitar', 
+    pax: 580, 
+    percentage: 23.7, 
+    gtv: 11600000, 
+    crmCount: 2,
+    crmSpend: 5650000,
+    crmSegments: 'Jamaah Majlis & Santri (PP)',
+    character: 'Keluarga, Anak & Santri Akhir Pekan', 
+    color: '#F59E0B', 
+    dotClass: 'dot-amber', 
+    badgeClass: 'bubble-amber', 
+    travelTime: '20 - 40 Menit', 
+    position: { top: '72%', left: '62%' } 
+  },
+  { 
+    id: 'kediri', 
+    name: 'Kediri Raya', 
+    keyword: 'Kediri',
+    region: 'Koridor Mataraman Utara', 
+    pax: 390, 
+    percentage: 15.9, 
+    gtv: 7800000, 
+    crmCount: 3,
+    crmSpend: 5100000,
+    crmSegments: 'Jamaah Majlis (PP) & Reguler (PR)',
+    character: 'Wisata Edukasi & Rombongan Komunitas', 
+    color: '#2563EB', 
+    dotClass: 'dot-blue', 
+    badgeClass: 'bubble-blue', 
+    travelTime: '45 - 60 Menit', 
+    position: { top: '22%', left: '24%' } 
+  },
+  { 
+    id: 'tulungagung', 
+    name: 'Tulungagung & Trenggalek', 
+    keyword: 'Tulungagung',
+    region: 'Koridor Jalur Lintas Selatan (JLS)', 
+    pax: 290, 
+    percentage: 11.8, 
+    gtv: 5800000, 
+    crmCount: 1,
+    crmSpend: 4100000,
+    crmSegments: 'Jamaah Majelis Taklim (PP)',
+    character: 'Paket Terusan Wahana Edukasi Coklat', 
+    color: '#059669', 
+    dotClass: 'dot-green', 
+    badgeClass: 'bubble-green', 
+    travelTime: '45 - 60 Menit', 
+    position: { top: '70%', left: '18%' } 
+  },
+  { 
+    id: 'malang-sby', 
+    name: 'Malang & Surabaya', 
+    keyword: 'Malang / Surabaya',
+    region: 'Regional Jawa Timur & Tol Trans-Jawa', 
+    pax: 250, 
+    percentage: 10.2, 
+    gtv: 5000000, 
+    crmCount: 5,
+    crmSpend: 6575000,
+    crmSegments: 'Agen Biro (PT) & Member Reguler (PR)',
+    character: 'Rombongan Bus Study Tour & Biro Wisata', 
+    color: '#7C3AED', 
+    dotClass: 'dot-purple', 
+    badgeClass: 'bubble-purple', 
+    travelTime: '90 - 150 Menit', 
+    position: { top: '26%', left: '80%' } 
+  }
 ])
 
 // -------------------------------------------------------------------------
@@ -754,9 +886,30 @@ const currentMetrics = computed(() => {
 // [API INTEGRATION POINT: CRM MEMBER SEGMENTS & RESONANCE SCORES]
 // -------------------------------------------------------------------------
 const memberSegments = ref([
-  { code: 'PR', title: 'Reguler Kasir POS', count: 8640, percentage: 58.3, color: '#F97316', desc: 'Pelanggan langsung (walk-in) yang melakukan transaksi reguler di loket kasir utama dan wahana.' },
-  { code: 'PP', title: 'Promo WhatsApp', count: 4320, percentage: 29.2, color: '#271710', desc: 'Pelanggan aktif hasil konversi dari kampanye broadcast diskon & promo tiket via WhatsApp Official.' },
-  { code: 'PT', title: 'Paket Terusan Edukasi', count: 1860, percentage: 12.5, color: '#684534', desc: 'Pelanggan VIP prioritas yang mereservasi paket lengkap (termasuk wahana bermain & mini bioskop 3D).' }
+  { 
+    code: 'PR', 
+    title: 'Member Reguler (PR)', 
+    count: 4, 
+    percentage: 50.0, 
+    color: '#F97316', 
+    desc: 'Pelanggan keluarga & perorangan langsung / walk-in serta registrasi mandiri self-service.' 
+  },
+  { 
+    code: 'PP', 
+    title: 'Jamaah Pengajian (PP)', 
+    count: 2, 
+    percentage: 25.0, 
+    color: '#10B981', 
+    desc: 'Komunitas majelis taklim, rombongan pengajian muslimat & agenda wisata safari religi.' 
+  },
+  { 
+    code: 'PT', 
+    title: 'Agen Tour / B2B (PT)', 
+    count: 2, 
+    percentage: 25.0, 
+    color: '#EF4444', 
+    desc: 'Mitra biro pariwisata, agen travel bus wisata, dan koordinator rombongan instansi/sekolah.' 
+  }
 ])
 
 const memberSegmentTotal = computed(() => memberSegments.value.reduce((acc, seg) => acc + seg.count, 0))
@@ -1051,6 +1204,10 @@ const initSegmentDonutChart = () => {
 }
 
 onMounted(() => {
+  if (currentRole.value === 'kasir') {
+    navigateTo('/pos/tiket-masuk')
+    return
+  }
   initRevenueChart()
   initSegmentDonutChart()
 })
@@ -1099,27 +1256,16 @@ watch(selectedPeriod, () => {
 }
 
 .section-header-title {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: -6px;
-  margin-bottom: 0px;
-}
-
-.section-icon-dash {
-  width: 12px;
-  height: 4px;
-  border-radius: 4px;
-  background: #F59E0B;
+  margin-top: -2px;
+  margin-bottom: 8px;
 }
 
 .section-header-title h2 {
-  font-size: 16px;
+  font-size: 20px;
   font-weight: 800;
-  color: #5A4034;
+  color: #111827;
   margin: 0;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
+  letter-spacing: -0.4px;
 }
 
 .header-main-title {
@@ -1280,6 +1426,150 @@ watch(selectedPeriod, () => {
   border-color: #D97706;
   color: #D97706;
 }
+
+/* Sales Channel Segment Banner (POS vs Self-Service) */
+.sales-channel-segment-banner {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+@media (max-width: 768px) {
+  .sales-channel-segment-banner {
+    grid-template-columns: 1fr;
+  }
+}
+
+.channel-segment-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #FFFFFF;
+  border: 1px solid #EFEAE2;
+  border-radius: 14px;
+  padding: 16px 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  transition: all 0.2s ease;
+}
+
+.channel-segment-card:hover {
+  border-color: #D97706;
+  box-shadow: 0 4px 14px rgba(44, 26, 19, 0.06);
+}
+
+.channel-card-pos {
+  border-left: 4px solid #F97316;
+}
+
+.channel-card-self {
+  border-left: 4px solid #2563EB;
+}
+
+.channel-icon-pill {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.bg-orange-soft {
+  background: #FFF7ED;
+  color: #EA580C;
+}
+
+.bg-blue-soft {
+  background: #EFF6FF;
+  color: #2563EB;
+}
+
+.text-blue {
+  color: #2563EB !important;
+}
+
+.channel-content {
+  flex: 1;
+}
+
+.channel-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.channel-name {
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #6B7280;
+}
+
+.channel-pct-badge {
+  font-size: 11px;
+  font-weight: 800;
+  padding: 2px 7px;
+  border-radius: 6px;
+}
+
+.pct-orange {
+  background: #FFF7ED;
+  color: #EA580C;
+  border: 1px solid #FFEDD5;
+}
+
+.pct-blue {
+  background: #EFF6FF;
+  color: #2563EB;
+  border: 1px solid #DBEAFE;
+}
+
+.channel-main-val {
+  font-size: 20px;
+  font-weight: 800;
+  color: #1F120B;
+  letter-spacing: -0.5px;
+  margin-bottom: 2px;
+}
+
+.channel-sub-info {
+  font-size: 12px;
+  color: #78655C;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.channel-dot {
+  color: #D1D5DB;
+}
+
+/* Channel Pill Tag for Transaksi Terakhir */
+.channel-pill-tag {
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 5px;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+.channel-pill-tag.channel-pos {
+  background: #FFF7ED;
+  color: #C2410C;
+  border: 1px solid #FFEDD5;
+}
+
+.channel-pill-tag.channel-self {
+  background: #EFF6FF;
+  color: #1D4ED8;
+  border: 1px solid #DBEAFE;
+}
+
+
 
 @keyframes spin {
   from { transform: rotate(0deg); }
@@ -2044,26 +2334,150 @@ watch(selectedPeriod, () => {
 .pin-visitors { font-weight: 900; color: #F97316; font-variant-numeric: tabular-nums; }
 .pin-share { font-size: 11px; color: #6B7280; font-weight: 700; }
 
-.demo-bottom-cities-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
-.city-metric-slate { background: #F9FAFB; border: 1px solid #E5E7EB; border-radius: 14px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1); cursor: pointer; }
-.city-metric-slate:hover, .city-metric-slate.is-hover-highlight { background: #FFFFFF; border-color: #D1D5DB; transform: translateY(-2px); box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04); }
-.city-metric-slate.is-lead-city { border-color: #F97316; background: #FFFFFF; }
-.slate-top-row { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
-.slate-rank-wrap { display: flex; align-items: center; gap: 6px; }
-.slate-rank-badge { font-size: 10px; font-weight: 900; color: #4B5563; background: #E5E7EB; padding: 2px 6px; border-radius: 5px; }
-.slate-rank-badge.badge-crown { background: #111827; color: #F97316; }
-.slate-city-name { font-size: 13.5px; font-weight: 800; color: #111827; white-space: nowrap; }
-.slate-pct-text { font-size: 14px; font-weight: 900; font-variant-numeric: tabular-nums; }
-.slate-metrics-clean { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
-.slate-val-pax { font-size: 13.5px; font-weight: 800; color: #111827; font-variant-numeric: tabular-nums; }
-.slate-val-pax small { font-size: 10.5px; color: #6B7280; }
-.slate-val-divider { color: #D1D5DB; font-size: 10px; }
-.slate-val-gtv { font-size: 13.5px; font-weight: 900; color: #F97316; font-variant-numeric: tabular-nums; }
-.slate-track-line { width: 100%; height: 5px; background: #E5E7EB; border-radius: 4px; overflow: hidden; margin-top: 4px; margin-bottom: 4px; }
-.slate-fill-line { height: 100%; border-radius: 4px; transition: width 0.5s ease; }
-.slate-bottom-sub { font-size: 10.5px; color: #6B7280; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.4; }
+.demo-bottom-cities-grid { 
+  display: grid; 
+  grid-template-columns: repeat(5, minmax(0, 1fr)); 
+  gap: 12px; 
+  width: 100%;
+  box-sizing: border-box;
+}
 
-.demographic-footer-luxury { display: flex; align-items: flex-start; gap: 10px; background: #FFFDF8; border: 1px dashed #E2D9CE; border-radius: 12px; padding: 10px 14px; }
+.city-metric-slate { 
+  background: #F9FAFB; 
+  border: 1px solid #E5E7EB; 
+  border-radius: 14px; 
+  padding: 12px 14px; 
+  display: flex; 
+  flex-direction: column; 
+  justify-content: space-between;
+  gap: 8px; 
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1); 
+  cursor: pointer; 
+}
+
+.city-metric-slate:hover, .city-metric-slate.is-hover-highlight { 
+  background: #FFFFFF; 
+  border-color: #D1D5DB; 
+  transform: translateY(-2px); 
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.04); 
+}
+
+.city-metric-slate.is-lead-city { 
+  border-color: #F97316; 
+  background: #FFFFFF; 
+}
+
+.slate-top-row { 
+  display: flex; 
+  align-items: center; 
+  justify-content: space-between; 
+  gap: 4px; 
+  min-width: 0;
+}
+
+.slate-rank-wrap { 
+  display: flex; 
+  align-items: center; 
+  gap: 5px; 
+  min-width: 0;
+  overflow: hidden;
+}
+
+.slate-rank-badge { 
+  font-size: 10px; 
+  font-weight: 900; 
+  color: #4B5563; 
+  background: #E5E7EB; 
+  padding: 2px 5px; 
+  border-radius: 5px; 
+  flex-shrink: 0;
+}
+
+.slate-rank-badge.badge-crown { 
+  background: #111827; 
+  color: #F97316; 
+}
+
+.slate-city-name { 
+  font-size: 12px; 
+  font-weight: 800; 
+  color: #111827; 
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis;
+}
+
+.slate-pct-text { 
+  font-size: 13px; 
+  font-weight: 900; 
+  font-variant-numeric: tabular-nums; 
+  flex-shrink: 0;
+}
+
+.slate-metrics-clean { 
+  display: flex; 
+  align-items: baseline; 
+  gap: 4px; 
+  white-space: nowrap; 
+  min-width: 0;
+  overflow: hidden;
+}
+
+.slate-val-pax { 
+  font-size: 12px; 
+  font-weight: 800; 
+  color: #111827; 
+  font-variant-numeric: tabular-nums; 
+  white-space: nowrap; 
+}
+
+.slate-val-pax small { 
+  font-size: 10px; 
+  color: #6B7280; 
+}
+
+.slate-val-divider { 
+  color: #D1D5DB; 
+  font-size: 9px; 
+  flex-shrink: 0;
+}
+
+.slate-val-gtv { 
+  font-size: 12px; 
+  font-weight: 900; 
+  color: #F97316; 
+  font-variant-numeric: tabular-nums; 
+  white-space: nowrap; 
+}
+
+.slate-track-line { 
+  width: 100%; 
+  height: 5px; 
+  background: #E5E7EB; 
+  border-radius: 4px; 
+  overflow: hidden; 
+  margin-top: 2px; 
+  margin-bottom: 2px; 
+}
+
+.slate-fill-line { 
+  height: 100%; 
+  border-radius: 4px; 
+  transition: width 0.5s ease; 
+}
+
+.slate-bottom-sub { 
+  font-size: 10.5px; 
+  color: #6B7280; 
+  font-weight: 500; 
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
+  line-height: 1.4; 
+}
 .insight-icon-box { width: 26px; height: 26px; border-radius: 8px; background: #FEF3C7; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
 .insight-text-group { display: flex; align-items: baseline; gap: 6px; flex-wrap: wrap; font-size: 11.5px; line-height: 1.45; }
 .insight-body { font-size: 13.5px; font-weight: 600; line-height: 1.5; color: #111111; }

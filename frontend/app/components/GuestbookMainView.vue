@@ -2,13 +2,13 @@
 import type { GuestBookRecord } from '~/composables/useGuestBookApi'
 
 
-const { getGuestBookData } = useGuestBookApi()
+const { getGuestBookData, records } = useGuestBookApi()
 
 /* =========================================================
    TYPES
 ========================================================= */
 
-type GuestBookRecord = GuestBookRecord & {
+type ExtendedGuestBookRecord = GuestBookRecord & {
   id: number
   nama: string
   whatsapp?: string
@@ -55,124 +55,11 @@ const total = ref(0)
 const selected = ref<number[]>([])
 
 const isLoading = ref(false)
-const isDemoData = ref(false)
 
 const showBlastModal = ref(false)
 
 const showDetailModal = ref(false)
 const selectedGuestBookRecord = ref<GuestBookRecord | null>(null)
-
-/* =========================================================
-   DEMO DATA
-   Dipakai sementara kalau API belum punya data.
-========================================================= */
-
-const demoEntries: GuestBookRecord[] = [
-  {
-    id: 1,
-    nama: 'Callista Danis',
-    whatsapp: '628123456789',
-    domisili: 'Blitar',
-    tipeKunjungan: 'pengajian',
-    status: 'terdaftar',
-    namaAcara: 'Pengajian Akbar Ahad Pagi',
-    tanggalKunjungan: '12 Oktober 2022',
-    tanggalLahir: '1972-04-12',
-    umur: 54,
-    kategoriUmur: 'Lansia'
-  },
-  {
-    id: 2,
-    nama: 'Budi Santoso',
-    whatsapp: '6285711223344',
-    domisili: 'Kediri',
-    tipeKunjungan: 'hall',
-    status: 'terdaftar',
-    namaAcara: 'Reuni SMA 1 Kediri',
-    tanggalKunjungan: '18 Januari 2023',
-    tanggalLahir: '1988-11-20',
-    umur: 38,
-    kategoriUmur: 'Dewasa'
-  },
-  {
-    id: 3,
-    nama: 'Siti Khadijah',
-    whatsapp: '6281999887766',
-    domisili: 'Malang',
-    tipeKunjungan: 'b2b',
-    status: 'terverifikasi',
-    namaAcara: 'Studi Banding UMKM Malang',
-    tanggalKunjungan: '03 Maret 2023',
-    tanggalLahir: '1998-06-15',
-    umur: 28,
-    kategoriUmur: 'Dewasa'
-  },
-  {
-    id: 4,
-    nama: 'Rizky Maulana',
-    whatsapp: '6282255512345',
-    domisili: 'Surabaya',
-    tipeKunjungan: 'pengajian',
-    status: 'terdaftar',
-    namaAcara: 'Kunjungan Majelis Taklim Surabaya',
-    tanggalKunjungan: '20 April 2023',
-    tanggalLahir: '2004-09-08',
-    umur: 22,
-    kategoriUmur: 'Remaja'
-  },
-  {
-    id: 5,
-    nama: 'Nadia Putri',
-    whatsapp: '6281334567890',
-    domisili: 'Tulungagung',
-    tipeKunjungan: 'hall',
-    status: 'terdaftar',
-    namaAcara: 'Gathering Keluarga Besar Bapak Harun',
-    tanggalKunjungan: '11 Mei 2023',
-    tanggalLahir: '1990-12-03',
-    umur: 36,
-    kategoriUmur: 'Dewasa'
-  },
-  {
-    id: 6,
-    nama: 'Fajar Hidayat',
-    whatsapp: '6285788812345',
-    domisili: 'Kediri',
-    tipeKunjungan: 'pengajian',
-    status: 'terdaftar',
-    namaAcara: 'Pengajian Rutin Muslimat NU',
-    tanggalKunjungan: '09 Juni 2023',
-    tanggalLahir: '1969-01-25',
-    umur: 57,
-    kategoriUmur: 'Lansia'
-  },
-  {
-    id: 7,
-    nama: 'Aulia Rahma',
-    whatsapp: '6281239988776',
-    domisili: 'Blitar',
-    tipeKunjungan: 'b2b',
-    status: 'terdaftar',
-    namaAcara: 'Kunjungan Industri SMK 1 Blitar',
-    tanggalKunjungan: '21 Juli 2023',
-    tanggalLahir: '2008-08-10',
-    umur: 18,
-    kategoriUmur: 'Remaja'
-  },
-  {
-    id: 8,
-    nama: 'Dimas Pratama',
-    whatsapp: '6282145678901',
-    domisili: 'Malang',
-    tipeKunjungan: 'pengajian',
-    status: 'terverifikasi',
-    namaAcara: 'Rombongan Pengajian Masjid Al-Huda',
-    tanggalKunjungan: '14 Agustus 2023',
-    tanggalLahir: '1975-03-14',
-    umur: 51,
-    kategoriUmur: 'Lansia'
-  }
-]
 
 /* =========================================================
    LOAD DATA
@@ -184,84 +71,18 @@ async function loadEntries() {
   try {
     const res = await getGuestBookData({
       page: page.value,
+      perPage,
       ...filters.value
     })
 
-    const apiData = Array.isArray(res?.data)
-      ? res.data
-      : []
-
-    if (apiData.length > 0) {
-      entries.value = apiData as GuestBookRecord[]
-      total.value = Number(res.total ?? apiData.length)
-      isDemoData.value = false
-    } else {
-      useDemoData()
-    }
+    const apiData = Array.isArray(res?.data) ? res.data : []
+    entries.value = apiData
+    total.value = Number(res.total ?? apiData.length)
   } catch (error) {
-    console.warn('API member belum tersedia. Menggunakan data demo.', error)
-
-    useDemoData()
+    console.error('Error loading guestbook data:', error)
   } finally {
     isLoading.value = false
   }
-}
-
-/* =========================================================
-   DEMO DATA FILTER
-========================================================= */
-
-function useDemoData() {
-  let data = [...demoEntries]
-
-  if (filters.value.tipeKunjungan) {
-    data = data.filter(
-      member =>
-        member.tipeKunjungan === filters.value.tipeKunjungan
-    )
-  }
-
-  if (filters.value.kategoriUmur) {
-    data = data.filter(
-      member =>
-        member.kategoriUmur === filters.value.kategoriUmur
-    )
-  }
-
-  if (filters.value.domisili) {
-    const keyword =
-      filters.value.domisili.toLowerCase()
-
-    data = data.filter(member =>
-      member.domisili
-        ?.toLowerCase()
-        .includes(keyword)
-    )
-  }
-
-  if (filters.value.search) {
-    const keyword =
-      filters.value.search.toLowerCase()
-
-    data = data.filter(member =>
-      member.nama
-        ?.toLowerCase()
-        .includes(keyword) ||
-      member.whatsapp
-        ?.toLowerCase()
-        .includes(keyword)
-    )
-  }
-
-  total.value = data.length
-
-  const start =
-    (page.value - 1) * perPage
-
-  entries.value =
-    data.slice(start, start + perPage)
-
-  isDemoData.value = true
 }
 
 /* =========================================================
@@ -278,12 +99,12 @@ watch(
 )
 
 watch(page, () => {
-  if (isDemoData.value) {
-    useDemoData()
-  } else {
-    loadEntries()
-  }
+  loadEntries()
 })
+
+watch(records, () => {
+  loadEntries()
+}, { deep: true })
 
 onMounted(() => {
   loadEntries()
@@ -297,7 +118,7 @@ const groupedEvents = computed(() => {
   const groups = new Map<string, GroupedEvent>()
   
   for (const record of entries.value) {
-    const key = `${record.namaAcara || 'Tanpa Acara'}-${record.tanggalKunjungan || '-'}`
+    const key = `${(record.namaAcara || 'Tanpa Acara').trim()}-${(record.tanggalKunjungan || '-').trim()}`
     if (!groups.has(key)) {
       groups.set(key, {
         id: key,
@@ -313,8 +134,30 @@ const groupedEvents = computed(() => {
     }
     groups.get(key)!.members.push(record)
   }
+
+  const result: GroupedEvent[] = []
+  for (const group of groups.values()) {
+    // Sort members chronologically: first / earliest registered first
+    group.members.sort((a, b) => {
+      const timeA = a.createdAt ? new Date(a.createdAt).getTime() : (a.id || 0)
+      const timeB = b.createdAt ? new Date(b.createdAt).getTime() : (b.id || 0)
+      return timeA - timeB
+    })
+    
+    // The very first person who registered in this event is the official PIC
+    const firstRegistrant = group.members[0]
+    if (firstRegistrant) {
+      group.picNama = firstRegistrant.nama || '-'
+      group.picWhatsapp = firstRegistrant.whatsapp || '-'
+      group.picDomisili = firstRegistrant.domisili || '-'
+      group.status = firstRegistrant.status || 'terdaftar'
+      group.tipeKunjungan = firstRegistrant.tipeKunjungan || group.tipeKunjungan
+    }
+
+    result.push(group)
+  }
   
-  return Array.from(groups.values())
+  return result
 })
 
 /* =========================================================
@@ -457,14 +300,11 @@ function nextPage() {
    STATISTICS
 ========================================================= */
 
+const totalGuestBookRecordPR = computed(() => records.value.filter(m => m.tipeKunjungan === 'hall' || m.tipeKunjungan === 'reguler' || m.tipeKunjungan === 'PR').length)
+const totalGuestBookRecordPP = computed(() => records.value.filter(m => m.tipeKunjungan === 'pengajian' || m.tipeKunjungan === 'PP').length)
+const totalGuestBookRecordPT = computed(() => records.value.filter(m => m.tipeKunjungan === 'b2b' || m.tipeKunjungan === 'PT').length)
 
-const totalGuestBookRecordPR = computed(() => entries.value.filter(m => m.tipeKunjungan === 'pengajian').length)
-const totalGuestBookRecordPP = computed(() => entries.value.filter(m => m.tipeKunjungan === 'hall').length)
-const totalGuestBookRecordPT = computed(() => entries.value.filter(m => m.tipeKunjungan === 'b2b').length)
-
-const totalGuestBookRecord = computed(() =>
-  total.value
-)
+const totalGuestBookRecord = computed(() => records.value.length)
 
 const totalAktif = computed(() =>
   entries.value.filter(
@@ -749,22 +589,27 @@ function getTypeClass(type?: string) {
                  </tr>
                </thead>
                <tbody>
-                 <tr v-for="member in selectedEvent.members" :key="member.id">
-                   <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: center;">
-                     <input 
-                       type="checkbox" 
-                       :checked="selected.includes(member.id)" 
-                       @change="toggleGuestBookRecord(member.id)"
-                     >
-                   </td>
-                   <td style="padding: 10px; border-bottom: 1px solid #eee;">{{ member.nama }}</td>
-                   <td style="padding: 10px; border-bottom: 1px solid #eee;" class="font-mono text-cocoa font-bold">{{ formatWhatsApp(member.whatsapp) }}</td>
-                   <td style="padding: 10px; border-bottom: 1px solid #eee;">{{ member.domisili || '-' }}</td>
-                   <td style="padding: 10px; border-bottom: 1px solid #eee;">
-                     <span v-if="member.status === 'terdaftar'" class="badge-voucher">Voucher Aktif</span>
-                     <span v-else class="text-xs text-muted">Tidak ada</span>
-                   </td>
-                 </tr>
+                 <tr v-for="(member, idx) in selectedEvent.members" :key="member.id">
+                    <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: center;">
+                      <input 
+                        type="checkbox" 
+                        :checked="selected.includes(member.id)" 
+                        @change="toggleGuestBookRecord(member.id)"
+                      >
+                    </td>
+                    <td style="padding: 10px; border-bottom: 1px solid #eee;">
+                      <div style="display: flex; align-items: center; gap: 6px;">
+                        <span>{{ member.nama }}</span>
+                        <span v-if="idx === 0" style="font-size: 10.5px; font-weight: 700; background: #FEF3C7; color: #92400E; border: 1px solid #FDE68A; padding: 2px 6px; border-radius: 4px;">👑 PIC Utama</span>
+                      </div>
+                    </td>
+                    <td style="padding: 10px; border-bottom: 1px solid #eee;" class="font-mono text-cocoa font-bold">{{ formatWhatsApp(member.whatsapp) }}</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #eee;">{{ member.domisili || '-' }}</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #eee;">
+                      <span v-if="member.status === 'terdaftar'" class="badge-voucher">Voucher Aktif</span>
+                      <span v-else class="text-xs text-muted">Tidak ada</span>
+                    </td>
+                  </tr>
                </tbody>
              </table>
           </div>

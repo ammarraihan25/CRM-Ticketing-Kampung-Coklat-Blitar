@@ -5,6 +5,7 @@ export interface PosTransactionItem {
   time: string
   category: 'Tiket Masuk' | 'Wahana' | 'Sewa Hall' | 'Edukasi' | 'B2B'
   type: string
+  channel?: 'POS' | 'Self-Service'
   items: Array<{ name: string; qty: number; price: number }>
   qty: number
   total: number
@@ -20,6 +21,7 @@ const DEFAULT_TRANSACTIONS: PosTransactionItem[] = [
     time: '14:02', 
     category: 'Tiket Masuk', 
     type: 'Tiket Terusan', 
+    channel: 'Self-Service',
     items: [{ name: 'Tiket Terusan Unlimited', qty: 4, price: 75000 }],
     qty: 4, 
     total: 300000, 
@@ -32,6 +34,7 @@ const DEFAULT_TRANSACTIONS: PosTransactionItem[] = [
     time: '13:55', 
     category: 'Tiket Masuk', 
     type: 'Tiket Reguler', 
+    channel: 'POS',
     items: [{ name: 'Tiket Reguler Masuk', qty: 2, price: 20000 }],
     qty: 2, 
     total: 40000, 
@@ -44,6 +47,7 @@ const DEFAULT_TRANSACTIONS: PosTransactionItem[] = [
     time: '13:40', 
     category: 'Wahana', 
     type: 'Golf Car & Bom Bom Car', 
+    channel: 'POS',
     items: [
       { name: 'Golf Car Wisata (1 Armada)', qty: 1, price: 100000 },
       { name: 'Bom Bom Car', qty: 2, price: 25000 }
@@ -59,10 +63,11 @@ const DEFAULT_TRANSACTIONS: PosTransactionItem[] = [
     time: '13:15', 
     category: 'Tiket Masuk', 
     type: 'Tiket Reguler', 
+    channel: 'Self-Service',
     items: [{ name: 'Tiket Reguler Masuk', qty: 5, price: 20000 }],
     qty: 5, 
     total: 100000, 
-    payment: 'Tunai', 
+    payment: 'QRIS', 
     customer: 'Rombongan Keluarga Solo',
     status: 'LUNAS' 
   },
@@ -71,6 +76,7 @@ const DEFAULT_TRANSACTIONS: PosTransactionItem[] = [
     time: '12:50', 
     category: 'Tiket Masuk', 
     type: 'Tiket Terusan', 
+    channel: 'Self-Service',
     items: [{ name: 'Tiket Terusan Unlimited', qty: 2, price: 75000 }],
     qty: 2, 
     total: 150000, 
@@ -83,6 +89,7 @@ const DEFAULT_TRANSACTIONS: PosTransactionItem[] = [
     time: '12:30', 
     category: 'Edukasi', 
     type: 'Paket Edukasi TK / PAUD', 
+    channel: 'POS',
     items: [{ name: 'Paket Edukasi Cilik + Cooking', qty: 25, price: 35000 }],
     qty: 25, 
     total: 875000, 
@@ -95,6 +102,7 @@ const DEFAULT_TRANSACTIONS: PosTransactionItem[] = [
     time: '11:45', 
     category: 'Sewa Hall', 
     type: 'Kampung Coklat Hall (DP)', 
+    channel: 'POS',
     items: [{ name: 'Sewa Venue Indoor Convention', qty: 1, price: 1500000 }],
     qty: 1, 
     total: 1500000, 

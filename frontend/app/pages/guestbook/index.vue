@@ -82,7 +82,8 @@ function resetForm() {
     tanggalKunjungan: '',
     nama: '',
     whatsapp: '',
-    domisili: ''
+    domisili: '',
+    tanggalLahir: ''
   }
 
   errorMessage.value = ''

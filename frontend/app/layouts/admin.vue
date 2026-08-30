@@ -13,20 +13,20 @@
 
       <div class="sidebar-nav-section">
         <!-- Main Menu -->
-        <div class="nav-group">
+        <div v-if="hasVisibleMainMenu" class="nav-group">
           <h4 class="nav-group-title">MAIN MENU</h4>
           
-          <NuxtLink to="/dashboard" exact-active-class="active" class="nav-link">
+          <NuxtLink v-if="canAccessModule('dashboard')" to="/dashboard" exact-active-class="active" class="nav-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="nav-icon">
               <rect x="3" y="3" width="7" height="7" rx="2" />
               <rect x="14" y="3" width="7" height="7" rx="2" />
               <rect x="14" y="14" width="7" height="7" rx="2" />
               <rect x="3" y="14" width="7" height="7" rx="2" />
             </svg>
-            <span>{{ currentRole === 'owner' ? 'Dashboard Eksekutif' : (currentRole === 'kasir' ? 'Dashboard Kasir' : 'Dashboard Overview') }}</span>
+            <span>{{ currentRole === 'owner' ? 'Dashboard Eksekutif' : 'Dashboard Overview' }}</span>
           </NuxtLink>
 
-          <NuxtLink v-if="['admin', 'manager', 'owner'].includes(currentRole)" to="/dashboard/crm" exact-active-class="active" class="nav-link">
+          <NuxtLink v-if="canAccessModule('diskon_promo')" to="/dashboard/crm" exact-active-class="active" class="nav-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
               <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
               <circle cx="9" cy="7" r="4" />
@@ -36,7 +36,7 @@
             <span>{{ currentRole === 'owner' ? 'CRM Member Analytics' : 'CRM Member' }}</span>
           </NuxtLink>
 
-          <NuxtLink v-if="['admin', 'manager'].includes(currentRole)" to="/dashboard/daftar-membership" exact-active-class="active" class="nav-link">
+          <NuxtLink v-if="canAccessModule('diskon_promo') && currentRole !== 'owner'" to="/dashboard/daftar-membership" exact-active-class="active" class="nav-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
               <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
               <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -46,7 +46,7 @@
             <span>Daftar Membership</span>
           </NuxtLink>
 
-          <NuxtLink v-if="['admin', 'manager', 'owner'].includes(currentRole)" to="/dashboard/crm-guestbook" exact-active-class="active" class="nav-link">
+          <NuxtLink v-if="canAccessModule('diskon_promo')" to="/dashboard/crm-guestbook" exact-active-class="active" class="nav-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
               <polyline points="14 2 14 8 20 8" />
@@ -57,7 +57,7 @@
             <span>CRM Guestbook</span>
           </NuxtLink>
 
-          <NuxtLink v-if="['admin', 'manager', 'owner'].includes(currentRole)" to="/reports" exact-active-class="active" class="nav-link">
+          <NuxtLink v-if="canAccessModule('laporan_ekspor')" to="/reports" exact-active-class="active" class="nav-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
               <polyline points="14 2 14 8 20 8"/>
@@ -68,8 +68,8 @@
             <span>Laporan &amp; Rekonsiliasi</span>
           </NuxtLink>
 
-          <!-- Quick link to POS for admin/manager -->
-          <NuxtLink v-if="['admin', 'manager'].includes(currentRole)" to="/pos" exact-active-class="active" class="nav-link">
+          <!-- POS Kasir Terminal link for roles with pos_terminal permission -->
+          <NuxtLink v-if="canAccessModule('pos_terminal') && currentRole !== 'kasir'" to="/pos/tiket-masuk" exact-active-class="active" class="nav-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
               <rect x="2" y="5" width="20" height="14" rx="2"></rect>
               <line x1="2" y1="10" x2="22" y2="10"></line>
@@ -79,7 +79,7 @@
         </div>
 
         <!-- POS Cashier Modules for Kasir Role -->
-        <div v-if="currentRole === 'kasir'" class="nav-group">
+        <div v-if="hasVisiblePosMenu" class="nav-group">
           <h4 class="nav-group-title">LOKET PENJUALAN POS</h4>
           
           <NuxtLink to="/pos/tiket-masuk" exact-active-class="active" class="nav-link">
@@ -123,10 +123,10 @@
         </div>
 
         <!-- Konfigurasi & Operasional -->
-        <div v-if="['admin', 'manager'].includes(currentRole)" class="nav-group">
+        <div v-if="hasVisibleConfigMenu" class="nav-group">
           <h4 class="nav-group-title">{{ currentRole === 'admin' ? 'KONFIGURASI SISTEM' : 'MANAJEMEN OPERASIONAL' }}</h4>
           
-          <NuxtLink to="/admin/config/tickets-rides" exact-active-class="active" class="nav-link">
+          <NuxtLink v-if="canAccessModule('tarif_wahana')" to="/admin/config/tickets-rides" exact-active-class="active" class="nav-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
               <path d="M3 9l9-6 9 6v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
               <polyline points="9 22 9 12 15 12 15 22"/>
@@ -134,7 +134,7 @@
             <span>Tarif Tiket Masuk</span>
           </NuxtLink>
 
-          <NuxtLink to="/admin/config/wahana" exact-active-class="active" class="nav-link">
+          <NuxtLink v-if="canAccessModule('tarif_wahana')" to="/admin/config/wahana" exact-active-class="active" class="nav-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
               <circle cx="12" cy="12" r="10"/>
               <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
@@ -142,25 +142,23 @@
             <span>Status Wahana</span>
           </NuxtLink>
           
-          <template v-if="currentRole === 'admin'">
-            <NuxtLink to="/admin/config/discounts" exact-active-class="active" class="nav-link">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
-                <rect x="2" y="6" width="20" height="12" rx="3" />
-                <circle cx="8" cy="12" r="1.5" />
-                <path d="M13 9l3 6" />
-                <circle cx="16" cy="12" r="1.5" />
-              </svg>
-              <span>Voucher Diskon &amp; Promo</span>
-            </NuxtLink>
+          <NuxtLink v-if="canAccessModule('diskon_promo') && canWriteModule('diskon_promo')" to="/admin/config/discounts" exact-active-class="active" class="nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
+              <rect x="2" y="6" width="20" height="12" rx="3" />
+              <circle cx="8" cy="12" r="1.5" />
+              <path d="M13 9l3 6" />
+              <circle cx="16" cy="12" r="1.5" />
+            </svg>
+            <span>Voucher Diskon &amp; Promo</span>
+          </NuxtLink>
 
-            <NuxtLink to="/admin/config/roles" exact-active-class="active" class="nav-link">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
-                <circle cx="12" cy="12" r="3" />
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
-              </svg>
-              <span>Manajemen Role (RBAC)</span>
-            </NuxtLink>
-          </template>
+          <NuxtLink v-if="canAccessModule('manajemen_rbac')" to="/admin/config/roles" exact-active-class="active" class="nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
+              <circle cx="12" cy="12" r="3" />
+              <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+            </svg>
+            <span>Manajemen Role (RBAC)</span>
+          </NuxtLink>
         </div>
       </div>
 
@@ -180,13 +178,13 @@
             <span class="user-role-text" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 11.5px; opacity: 0.9;">{{ user.roleTitle }}</span>
           </div>
           
-          <NuxtLink to="/login" class="btn-logout-icon" :title="currentRole === 'kasir' ? 'Tutup Kasir' : 'Keluar Sesi'">
+          <button type="button" @click="logout" class="btn-logout-icon" style="background: transparent; border: none; cursor: pointer; color: #A89382;" :title="currentRole === 'kasir' ? 'Tutup Kasir' : 'Keluar Sesi'">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
               <polyline points="16 17 21 12 16 7"/>
               <line x1="21" y1="12" x2="9" y2="12"/>
             </svg>
-          </NuxtLink>
+          </button>
         </div>
       </div>
     </aside>
@@ -204,7 +202,7 @@ import { useAuth } from '~/composables/useAuth'
 import { useRoute } from 'vue-router'
 import logoImg from '~/assets/assets_POS/KAMPUNGCOKLAT.png'
 
-const { user, currentRole } = useAuth()
+const { user, currentRole, canAccessModule, canWriteModule, logout } = useAuth()
 const route = useRoute()
 
 const pageTitle = computed(() => {
@@ -213,6 +211,23 @@ const pageTitle = computed(() => {
   if (currentRole.value === 'owner') return 'OWNER / DIREKSI'
   if (currentRole.value === 'kasir') return 'KASIR LOKET'
   return 'TICKETING ADMIN'
+})
+
+const hasVisibleMainMenu = computed(() => {
+  return canAccessModule('dashboard') || 
+         canAccessModule('diskon_promo') || 
+         canAccessModule('laporan_ekspor') || 
+         (canAccessModule('pos_terminal') && currentRole.value !== 'kasir')
+})
+
+const hasVisiblePosMenu = computed(() => {
+  return canAccessModule('pos_terminal') && currentRole.value === 'kasir'
+})
+
+const hasVisibleConfigMenu = computed(() => {
+  return canAccessModule('tarif_wahana') || 
+         (canAccessModule('diskon_promo') && canWriteModule('diskon_promo')) || 
+         canAccessModule('manajemen_rbac')
 })
 </script>
 

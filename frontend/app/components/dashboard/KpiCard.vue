@@ -112,6 +112,7 @@ const isLongValue = computed(() => {
   color: #6B5A52;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  white-space: nowrap;
 }
 
 .pop-value-row {
