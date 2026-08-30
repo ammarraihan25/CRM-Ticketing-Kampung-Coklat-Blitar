@@ -236,14 +236,22 @@ function formatCurrency(val: number) {
                 </td>
                 <td class="font-medium">{{ m.nama }}</td>
                 <td class="font-mono text-cocoa font-bold">{{ formatWhatsApp(m.whatsapp) }}</td>
-                <td>{{ m.domisili }}</td>
+                <td>{{ m.domisili || '-' }}</td>
                 <td>
-                  <div style="display: flex; flex-direction: column; gap: 3px; align-items: flex-start;">
-                    <span style="font-weight: 700; font-size: 13px; color: #43281C;">{{ m.umur ? m.umur + ' th' : '-' }}</span>
-                    <span v-if="m.kategoriUmur" class="member-tag" :class="`tag-age-${m.kategoriUmur.toLowerCase()}`" style="font-size: 10px; padding: 2px 7px;">{{ m.kategoriUmur }}</span>
+                  <div class="crm-table-cell-age">
+                    <span class="crm-age-val">{{ m.umur ? m.umur + ' th' : '-' }}</span>
+                    <span 
+                      v-if="m.kategoriUmur" 
+                      class="crm-age-pill" 
+                      :class="`age-${m.kategoriUmur.toLowerCase().replace(/[^a-z]/g, '')}`"
+                    >
+                      {{ m.kategoriUmur }}
+                    </span>
                   </div>
                 </td>
-                <td><span class="member-tag" :class="`tag-${(m.source || 'pr').toLowerCase()}`">{{ getVisitorTypeLabel(m.source) }}</span></td>
+                <td>
+                  <span class="plain-type-text">{{ getVisitorTypeLabel(m.source) }}</span>
+                </td>
                 <td>{{ formatRupiah(m.totalSpend) }}</td>
                 <td>{{ m.tanggalKunjungan || '-' }}</td>
                 <td>
@@ -792,20 +800,92 @@ function formatCurrency(val: number) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 6px 12px;
+  padding: 5px 10px;
   border-radius: 6px;
   font-size: 11.5px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
-.tag-pr { background-color: #DCE6F5; color: #1A365D; }
-.tag-pp { background-color: #FEF08A; color: #422006; }
-.tag-pt { background-color: #C4DCFB; color: #1A365D; }
+/* CRM Table Age & Visit Badges (Super Clean & Structured) */
+.crm-table-cell-age {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  align-items: flex-start;
+}
 
-.tag-age-anak-anak { background-color: #E0F2FE; color: #0369A1; border: 1px solid #BAE6FD; }
-.tag-age-remaja { background-color: #FEF3C7; color: #B45309; border: 1px solid #FDE68A; }
-.tag-age-dewasa { background-color: #DCFCE7; color: #15803D; border: 1px solid #BBF7D0; }
-.tag-age-lansia { background-color: #F3E8FF; color: #7E22CE; border: 1px solid #E9D5FF; }
+.crm-age-val {
+  font-weight: 800;
+  font-size: 13.5px;
+  color: #1E293B;
+  line-height: 1.2;
+}
+
+.crm-age-pill {
+  display: inline-flex;
+  align-items: center;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 5px;
+  line-height: 1.2;
+}
+
+.crm-age-pill.age-anak,
+.crm-age-pill.age-anakanak {
+  background: #EFF6FF;
+  color: #1D4ED8;
+  border: 1px solid #BFDBFE;
+}
+
+.crm-age-pill.age-remaja {
+  background: #FEF3C7;
+  color: #B45309;
+  border: 1px solid #FDE68A;
+}
+
+.crm-age-pill.age-dewasa {
+  background: #ECFDF5;
+  color: #047857;
+  border: 1px solid #A7F3D0;
+}
+
+.crm-age-pill.age-lansia {
+  background: #F3E8FF;
+  color: #7E22CE;
+  border: 1px solid #E9D5FF;
+}
+
+.plain-type-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Visit Purpose Badges */
+.crm-visit-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  letter-spacing: 0.2px;
+}
+
+.crm-visit-badge.visit-pos {
+  background: #FEF9C3;
+  color: #854D0E;
+  border: 1px solid #FEF08A;
+}
+
+.crm-visit-badge.visit-selfservice {
+  background: #E0F2FE;
+  color: #0369A1;
+  border: 1px solid #BAE6FD;
+}
 
 .badge-voucher {
   display: inline-block;
@@ -864,16 +944,22 @@ function formatCurrency(val: number) {
 
 /* Search Head */
 .search-head {
-  flex-wrap: wrap;
-  gap: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 14px;
+  margin-bottom: 16px;
 }
-
-
 
 .member-filter-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  width: 100%;
+}
+
+.member-filter-row .whatsapp-box-btn {
+  margin-left: auto;
 }
 
 .btn-sm {

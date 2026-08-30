@@ -346,19 +346,8 @@ function getAgeCategoryBadge(category: string) {
 
           <td>
 
-            <span
-              class="type-badge"
-              :class="
-                getBadgeClass(
-                  member.tipeMember
-                )
-              "
-            >
-
-              <span class="badge-dot"></span>
-
+            <span class="plain-type-text">
               {{ member.tipeMember }}
-
             </span>
 
           </td>
@@ -1068,58 +1057,66 @@ input[type="checkbox"] {
 
 /* ================================================= */
 /* AGE / SEGMENTASI */
-/* ================================================= */
+.plain-type-text {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: #111827;
+}
 
 .age-cell {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
   align-items: flex-start;
 }
 
 .age-num {
-  font-size: 14px;
-  color: #3b281f;
-  font-weight: 700;
+  font-size: 13.5px;
+  color: #1E293B;
+  font-weight: 800;
+  line-height: 1.2;
 }
 
 .age-badge {
   display: inline-flex;
   align-items: center;
-  padding: 3px 8px;
-  border-radius: 12px;
-  font-size: 11px;
+  padding: 2px 7px;
+  border-radius: 5px;
+  font-size: 10.5px;
   font-weight: 700;
   white-space: nowrap;
+  line-height: 1.2;
 }
 
-.age-badge.age-anak {
-  background: #e0f2fe;
-  color: #0369a1;
-  border: 1px solid #bae6fd;
+.age-badge.age-anak,
+.age-badge.age-anakanak {
+  background: #EFF6FF;
+  color: #1D4ED8;
+  border: 1px solid #BFDBFE;
 }
 
 .age-badge.age-remaja {
-  background: #fef3c7;
-  color: #b45309;
-  border: 1px solid #fde68a;
+  background: #FEF3C7;
+  color: #B45309;
+  border: 1px solid #FDE68A;
 }
 
 .age-badge.age-dewasa {
-  background: #dcfce7;
-  color: #15803d;
-  border: 1px solid #bbf7d0;
+  background: #ECFDF5;
+  color: #047857;
+  border: 1px solid #A7F3D0;
 }
 
 .age-badge.age-lansia {
-  background: #f3e8ff;
-  color: #7e22ce;
-  border: 1px solid #e9d5ff;
+  background: #F3E8FF;
+  color: #7E22CE;
+  border: 1px solid #E9D5FF;
 }
 
 .age-badge.age-default {
-  background: #f3f4f6;
-  color: #6b7280;
+  background: #F1F5F9;
+  color: #475569;
+  border: 1px solid #CBD5E1;
 }
 
 </style>

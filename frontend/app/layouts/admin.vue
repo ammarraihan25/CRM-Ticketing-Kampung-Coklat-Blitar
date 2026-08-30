@@ -15,6 +15,7 @@
         <!-- Main Menu -->
         <div class="nav-group">
           <h4 class="nav-group-title">MAIN MENU</h4>
+          
           <NuxtLink to="/dashboard" exact-active-class="active" class="nav-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="nav-icon">
               <rect x="3" y="3" width="7" height="7" rx="2" />
@@ -22,18 +23,20 @@
               <rect x="14" y="14" width="7" height="7" rx="2" />
               <rect x="3" y="14" width="7" height="7" rx="2" />
             </svg>
-            <span>Dashboard Overview</span>
+            <span>{{ currentRole === 'owner' ? 'Dashboard Eksekutif' : (currentRole === 'kasir' ? 'Dashboard Kasir' : 'Dashboard Overview') }}</span>
           </NuxtLink>
-          <NuxtLink to="/dashboard/crm" exact-active-class="active" class="nav-link">
+
+          <NuxtLink v-if="['admin', 'manager', 'owner'].includes(currentRole)" to="/dashboard/crm" exact-active-class="active" class="nav-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
               <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
               <circle cx="9" cy="7" r="4" />
               <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
               <path d="M16 3.13a4 4 0 0 1 0 7.75" />
             </svg>
-            <span>CRM Member</span>
+            <span>{{ currentRole === 'owner' ? 'CRM Member Analytics' : 'CRM Member' }}</span>
           </NuxtLink>
-          <NuxtLink to="/dashboard/daftar-membership" exact-active-class="active" class="nav-link">
+
+          <NuxtLink v-if="['admin', 'manager'].includes(currentRole)" to="/dashboard/daftar-membership" exact-active-class="active" class="nav-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
               <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
               <line x1="16" y1="2" x2="16" y2="6"></line>
@@ -42,7 +45,8 @@
             </svg>
             <span>Daftar Membership</span>
           </NuxtLink>
-          <NuxtLink to="/dashboard/crm-guestbook" exact-active-class="active" class="nav-link">
+
+          <NuxtLink v-if="['admin', 'manager', 'owner'].includes(currentRole)" to="/dashboard/crm-guestbook" exact-active-class="active" class="nav-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
               <polyline points="14 2 14 8 20 8" />
@@ -52,7 +56,8 @@
             </svg>
             <span>CRM Guestbook</span>
           </NuxtLink>
-          <NuxtLink to="/reports" exact-active-class="active" class="nav-link">
+
+          <NuxtLink v-if="['admin', 'manager', 'owner'].includes(currentRole)" to="/reports" exact-active-class="active" class="nav-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
               <polyline points="14 2 14 8 20 8"/>
@@ -62,11 +67,65 @@
             </svg>
             <span>Laporan &amp; Rekonsiliasi</span>
           </NuxtLink>
+
+          <!-- Quick link to POS for admin/manager -->
+          <NuxtLink v-if="['admin', 'manager'].includes(currentRole)" to="/pos" exact-active-class="active" class="nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
+              <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+              <line x1="2" y1="10" x2="22" y2="10"></line>
+            </svg>
+            <span>POS Kasir Tiket</span>
+          </NuxtLink>
         </div>
 
-        <!-- Konfigurasi -->
-        <div class="nav-group">
-          <h4 class="nav-group-title">KONFIGURASI</h4>
+        <!-- POS Cashier Modules for Kasir Role -->
+        <div v-if="currentRole === 'kasir'" class="nav-group">
+          <h4 class="nav-group-title">LOKET PENJUALAN POS</h4>
+          
+          <NuxtLink to="/pos/tiket-masuk" exact-active-class="active" class="nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
+              <path d="M15 5v2m0 4v2m0 4v2M5 5a2 2 0 00-2 2v3a2 2 0 110 4v3a2 2 0 002 2h14a2 2 0 002-2v-3a2 2 0 110-4V7a2 2 0 00-2-2H5z"/>
+            </svg>
+            <span>Tiket Masuk Reguler</span>
+          </NuxtLink>
+
+          <NuxtLink to="/pos/wahana" exact-active-class="active" class="nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
+              <circle cx="12" cy="12" r="10"/>
+              <polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/>
+            </svg>
+            <span>Wahana &amp; Atraksi</span>
+          </NuxtLink>
+
+          <NuxtLink to="/pos/edukasi" exact-active-class="active" class="nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
+              <path d="M12 2l9 4.9V17L12 22l-9-4.9V7z"/>
+            </svg>
+            <span>Paket Edukasi</span>
+          </NuxtLink>
+
+          <NuxtLink to="/pos/sewa-hall" exact-active-class="active" class="nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
+              <path d="M3 21h18M3 7v14M21 7v14M6 7V4a1 1 0 011-1h10a1 1 0 011 1v3M9 21v-6h6v6"/>
+            </svg>
+            <span>Sewa Hall &amp; Venue</span>
+          </NuxtLink>
+
+          <NuxtLink to="/pos/b2b" exact-active-class="active" class="nav-link">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+            <span>Rombongan &amp; B2B</span>
+          </NuxtLink>
+        </div>
+
+        <!-- Konfigurasi & Operasional -->
+        <div v-if="['admin', 'manager'].includes(currentRole)" class="nav-group">
+          <h4 class="nav-group-title">{{ currentRole === 'admin' ? 'KONFIGURASI SISTEM' : 'MANAJEMEN OPERASIONAL' }}</h4>
+          
           <NuxtLink to="/admin/config/tickets-rides" exact-active-class="active" class="nav-link">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
               <path d="M3 9l9-6 9 6v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
@@ -97,7 +156,7 @@
             <NuxtLink to="/admin/config/roles" exact-active-class="active" class="nav-link">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round" class="nav-icon">
                 <circle cx="12" cy="12" r="3" />
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
               </svg>
               <span>Manajemen Role (RBAC)</span>
             </NuxtLink>
@@ -121,7 +180,7 @@
             <span class="user-role-text" style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 11.5px; opacity: 0.9;">{{ user.roleTitle }}</span>
           </div>
           
-          <NuxtLink to="/login" class="btn-logout-icon" title="Tutup Kasir">
+          <NuxtLink to="/login" class="btn-logout-icon" :title="currentRole === 'kasir' ? 'Tutup Kasir' : 'Keluar Sesi'">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
               <polyline points="16 17 21 12 16 7"/>
@@ -149,11 +208,10 @@ const { user, currentRole } = useAuth()
 const route = useRoute()
 
 const pageTitle = computed(() => {
-  const path = route.path
-  if (path.includes('dashboard')) return 'DASHBOARD KASIR'
-  if (path.includes('crm')) return 'CRM MEMBER'
-  if (path.includes('reports')) return 'LAPORAN & REKAP'
-  if (path.includes('config')) return 'KONFIGURASI SISTEM'
+  if (currentRole.value === 'admin') return 'SUPER ADMIN'
+  if (currentRole.value === 'manager') return 'OPERATIONAL MANAGER'
+  if (currentRole.value === 'owner') return 'OWNER / DIREKSI'
+  if (currentRole.value === 'kasir') return 'KASIR LOKET'
   return 'TICKETING ADMIN'
 })
 </script>

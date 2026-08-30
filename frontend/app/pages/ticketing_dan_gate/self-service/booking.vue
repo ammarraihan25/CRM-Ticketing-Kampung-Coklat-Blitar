@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 // -- WAHANA & ENTRY TICKETS IMAGES --
@@ -31,7 +31,7 @@ import imgSepedaUdara from '~/assets/assets_POS/POS/wahana/sepeda_udara_idr.20k.
 import imgTerapiIkan from '~/assets/assets_POS/POS/wahana/terapi_ikan_idr.5k_freeterusan.jpg'
 import imgTrampolin from '~/assets/assets_POS/POS/wahana/Trampolin_idr.10k_freeterusan.jpg'
 
-// -- SEWA TEMPAT IMAGES --
+// -- SEWA TEMPAT & GENERAL VENUE IMAGES --
 import bale_coklat from '~/assets/assets_POS/POS/sewa_tempat/bale_coklat.jpg'
 import coklat_caffe from '~/assets/assets_POS/POS/sewa_tempat/coklat_caffe.jpg'
 import coklat_garden from '~/assets/assets_POS/POS/sewa_tempat/coklat_garden.jpg'
@@ -43,6 +43,17 @@ import taman_edel from '~/assets/assets_POS/POS/sewa_tempat/taman_edel.png'
 import theobromine_hall from '~/assets/assets_POS/POS/sewa_tempat/theobromine_hall.jpg'
 import trinitario_hall from '~/assets/assets_POS/POS/sewa_tempat/trinitario_hall.jpg'
 import wisma_criollo from '~/assets/assets_POS/POS/sewa_tempat/wisma_criollo.jpg'
+
+// -- GENERAL FACILITY OVERVIEW & SLIDE IMAGES --
+import slide1 from '~/assets/assets_POS/slide/slide1.jpg'
+import slide2 from '~/assets/assets_POS/slide/slide2.jpg'
+import slide3 from '~/assets/assets_POS/slide/slide3.jpg'
+import slide4 from '~/assets/assets_POS/slide/slide4.jpg'
+import bangunan1 from '~/assets/assets_POS/bangunan1.jpg'
+import hall from '~/assets/assets_POS/hall.jpg'
+import kamcok1 from '~/assets/assets_POS/kamcok1.jpg'
+import ticket_reguler from '~/assets/tickets/ticket_reguler.jpg'
+import ticket_terusan from '~/assets/tickets/ticket_terusan.jpg'
 
 // -- EDUKASI IMAGES --
 import paket_tk from '~/assets/assets_POS/POS/paket_edukasi/FLYER-PAKET-TK-PAUD.png'
@@ -56,8 +67,37 @@ const selectedProduct = ref(route.query.category as string || 'Tiket Masuk')
 
 const showArticleModal = ref(false)
 const selectedArticleItem = ref<any>(null)
+const currentModalImageIndex = ref(0)
+
+const getModalImages = (item: any): string[] => {
+  if (!item) return []
+  if (Array.isArray(item.images) && item.images.length > 0) {
+    return item.images
+  }
+  if (item.image) {
+    return [item.image]
+  }
+  return []
+}
+
+const nextModalImage = () => {
+  const images = getModalImages(selectedArticleItem.value)
+  if (!images.length) return
+  currentModalImageIndex.value = (currentModalImageIndex.value + 1) % images.length
+}
+
+const prevModalImage = () => {
+  const images = getModalImages(selectedArticleItem.value)
+  if (!images.length) return
+  currentModalImageIndex.value = (currentModalImageIndex.value - 1 + images.length) % images.length
+}
+
+const setModalImageIndex = (idx: number) => {
+  currentModalImageIndex.value = idx
+}
 
 const openArticleModal = (item: any) => {
+  currentModalImageIndex.value = 0
   selectedArticleItem.value = item
   showArticleModal.value = true
 }
@@ -66,6 +106,7 @@ const closeArticleModal = () => {
   showArticleModal.value = false
   setTimeout(() => {
     selectedArticleItem.value = null
+    currentModalImageIndex.value = 0
   }, 300)
 }
 
@@ -502,6 +543,7 @@ const defaultSewaTempatTickets = [
     capacity: 'Kapasitas 500 - 1.500 Orang',
     desc: 'Hall termegah dan terluas di Kampung Coklat dengan arsitektur elegan modern berpadu aksen kayu alami. Dilengkapi panggung utama megah, tata lampu profesional, dan tata akustik prima untuk event berskala besar.',
     image: trinitario_hall,
+    images: [trinitario_hall, kampung_coklat_hall, hall, bangunan1],
     benefits: [
       'Sound System Line-Array Profesional + 4 Wireless Microphone Shure',
       'AC Central dingin merata + Blower bantuan pendingin udara',
@@ -525,6 +567,7 @@ const defaultSewaTempatTickets = [
     capacity: 'Kapasitas 300 - 800 Orang',
     desc: 'Gedung pertemuan indoor luas dengan pencahayaan terang dan plafon tinggi. Sangat tepat untuk kegiatan wisuda sekolah, rapat akbar tahunan perusahaan, seminar nasional, hingga gathering komunitas.',
     image: kampung_coklat_hall,
+    images: [kampung_coklat_hall, hall, theobromine_hall, bangunan1],
     benefits: [
       'Sound System Event Lengkap + 2 Wireless Mic & Mixer Audio',
       'Full AC berkapasitas besar menjaga ruangan tetap sejuk',
@@ -546,6 +589,7 @@ const defaultSewaTempatTickets = [
     capacity: 'Kapasitas 200 - 500 Orang',
     desc: 'Hall bernuansa hangat dengan elemen dinding ekspos dan kayu berkualitas. Sangat cocok untuk pesta perayaan, pameran produk, workshop korporat, maupun reuni akbar.',
     image: theobromine_hall,
+    images: [theobromine_hall, coklat_caffe, bangunan1, kampung_coklat_hall],
     benefits: [
       'Sound System Indoor Terkalibrasi + Wireless Mic',
       'Ruangan ber-AC sejuk dengan sirkulasi udara optimal',
@@ -565,6 +609,7 @@ const defaultSewaTempatTickets = [
     capacity: 'Kapasitas 20 - 60 Orang',
     desc: 'Ruangan meeting eksekutif privat kedap suara dengan interior mewah, meja rapat solid wood, dan kursi direksi ergonomis. Menjamin kenyamanan dan kerahasiaan rapat bisnis penting Anda.',
     image: pbk,
+    images: [pbk, ruang_pertemuan, kamcok1],
     benefits: [
       'Smart TV Display 75 Inch / Proyektor HDMI untuk Presentasi',
       'Sound System Meeting Konferensi & Mic Meja',
@@ -585,6 +630,7 @@ const defaultSewaTempatTickets = [
     capacity: 'Kapasitas 100 - 250 Orang',
     desc: 'Gedung serbaguna berkonsep pavilion klasik yang elegan. Cocok untuk acara lamaran, arisan keluarga besar, gala dinner, ataupun rapat kerja instansi pemerintahan.',
     image: wisma_criollo,
+    images: [wisma_criollo, joglo_jatimarto, kamcok1],
     benefits: [
       'Sound System Berkualitas + Wireless Mic',
       'Pendingin Ruangan AC & Kipas Angin Langit-langit',
@@ -604,6 +650,7 @@ const defaultSewaTempatTickets = [
     capacity: 'Kapasitas 150 - 350 Orang',
     desc: 'Pendopo joglo kayu jati berukir khas Jawa dengan suasana adem dan terbuka. Menghadirkan atmosfer sakral nan agung untuk pernikahan adat, temu kangen, sarasehan budaya, dan pentas seni.',
     image: joglo_jatimarto,
+    images: [joglo_jatimarto, bale_coklat, taman_edel, kamcok1],
     benefits: [
       'Sound system standar pendopo dengan jangkauan suara jernih',
       'Suasana semi-outdoor semilir angin alami + Blower sejuk',
@@ -623,6 +670,7 @@ const defaultSewaTempatTickets = [
     capacity: 'Kapasitas 100 - 300 Orang',
     desc: 'Area bale panggung semi-outdoor yang luas dan santai, dikelilingi taman kakao hijau. Menjadi pilihan terfavorit untuk gathering komunitas motor/mobil, arisan, dan reuni akrab.',
     image: bale_coklat,
+    images: [bale_coklat, coklat_garden, taman_edel, kamcok1],
     benefits: [
       'Sound System Standar Gathering + 2 Mic',
       'Panggung semi-permanen untuk MC & Akustik',
@@ -642,6 +690,7 @@ const defaultSewaTempatTickets = [
     capacity: 'Kapasitas 40 - 100 Orang',
     desc: 'Ruang pertemuan format kelas / teater dengan fasilitas audio-visual lengkap. Sangat praktis untuk pelatihan karyawan, bimtek, workshop guru, dan presentasi produk.',
     image: ruang_pertemuan,
+    images: [ruang_pertemuan, pbk, bangunan1],
     benefits: [
       'Ruang Ber-AC Sejuk dan Tenang',
       'Sound System Ruangan + 2 Mic Wireless',
@@ -661,6 +710,7 @@ const defaultSewaTempatTickets = [
     capacity: 'Kapasitas 100 - 400 Orang',
     desc: 'Area taman rumput hijau asri di tengah rindang kebun kakao. Sangat cocok untuk acara pernikahan tema garden party, fun games outbound, pentas seni sekolah, dan BBQ party.',
     image: coklat_garden,
+    images: [coklat_garden, taman_edel, bale_coklat, kamcok1],
     benefits: [
       'Area taman rumput terawat bebas becek',
       'Sound System outdoor portable bertenaga tinggi',
@@ -679,6 +729,7 @@ const defaultSewaTempatTickets = [
     capacity: 'Kapasitas 50 - 150 Orang',
     desc: 'Spot taman dengan dekorasi tanaman hias eksotis dan bangku taman artistik. Pilihan tepat untuk acara komunitas hobi, arisan santai, atau perayaan ulang tahun anak.',
     image: taman_edel,
+    images: [taman_edel, coklat_garden, kamcok1],
     benefits: [
       'Sound system mini dan microphone',
       'Suasana santai dikelilingi bunga dan pohon kakao',
@@ -696,6 +747,7 @@ const defaultSewaTempatTickets = [
     capacity: 'Kapasitas 40 - 120 Orang',
     desc: 'Area kafe dengan desain interior modern berpadu aroma harum seduhan coklat dan kopi murni. Sangat cocok untuk perayaan ulang tahun, nobar, talkshow santai, dan live performance akustik.',
     image: coklat_caffe,
+    images: [coklat_caffe, theobromine_hall, bale_coklat],
     benefits: [
       'Tata suara audio kafe jernih & Mic performance',
       'Dekorasi meja kafe dan kursi bar modern',
@@ -829,6 +881,7 @@ const sewaTempatTickets = computed(() => {
         capacity: def.capacity,
         desc: t.description || def.desc,
         image: def.image,
+        images: def.images || [def.image],
         benefits: def.benefits,
         facilities: def.facilities
       }
@@ -1014,12 +1067,8 @@ const formatArticleDesc = (desc: string) => {
                 
                 <!-- Badges Header Row -->
                 <div class="cmc-badges-row">
-                  <span class="cmc-badge-category">{{ selectedArticleItem.label }}</span>
-                  <span v-if="selectedArticleItem.subLabel" class="cmc-badge-sub">{{ selectedArticleItem.subLabel }}</span>
-                  <span v-if="selectedArticleItem.capacity" class="cmc-badge-capacity">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                    {{ selectedArticleItem.capacity }}
-                  </span>
+                  <span class="cmc-badge-pill cmc-badge-category">{{ selectedArticleItem.label }}</span>
+                  <span v-if="selectedArticleItem.subLabel" class="cmc-badge-pill cmc-badge-sub">{{ selectedArticleItem.subLabel }}</span>
                 </div>
 
                 <!-- Title & Price Row -->
@@ -1034,9 +1083,89 @@ const formatArticleDesc = (desc: string) => {
                   </div>
                 </div>
 
-                <!-- Gambar Sesuai Tiket (Tepat Dibawah Judul & Harga) -->
-                <div class="cmc-image-card" v-if="selectedArticleItem.image" :class="{ 'is-edukasi-flyer': selectedProduct === 'Wisata Edukasi' }">
-                  <img :src="selectedArticleItem.image" :alt="selectedArticleItem.name" class="cmc-ticket-image" />
+                <!-- Gambar Slide Bergeser (Gambaran Fasilitas) -->
+                <div class="cmc-media-wrapper" v-if="getModalImages(selectedArticleItem).length">
+                  <div 
+                    class="cmc-slider-container" 
+                    :class="{ 'is-edukasi-flyer': selectedProduct === 'Wisata Edukasi' }"
+                  >
+                    <!-- Slider Track -->
+                    <div 
+                      class="cmc-slider-track" 
+                      :style="{ transform: `translateX(-${currentModalImageIndex * 100}%)` }"
+                    >
+                      <div 
+                        v-for="(imgSrc, imgIdx) in getModalImages(selectedArticleItem)" 
+                        :key="imgIdx" 
+                        class="cmc-slide-item"
+                      >
+                        <img 
+                          :src="imgSrc" 
+                          :alt="`${selectedArticleItem.name} - Foto ${imgIdx + 1}`" 
+                          class="cmc-ticket-image" 
+                        />
+                      </div>
+                    </div>
+
+                    <!-- Navigation Controls if > 1 images -->
+                    <template v-if="getModalImages(selectedArticleItem).length > 1">
+                      <!-- Arrow Prev -->
+                      <button 
+                        type="button"
+                        class="cmc-slider-btn prev" 
+                        @click.stop="prevModalImage" 
+                        aria-label="Foto Sebelumnya"
+                        title="Foto Sebelumnya"
+                      >
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                      </button>
+
+                      <!-- Arrow Next -->
+                      <button 
+                        type="button"
+                        class="cmc-slider-btn next" 
+                        @click.stop="nextModalImage" 
+                        aria-label="Foto Selanjutnya"
+                        title="Foto Selanjutnya"
+                      >
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                      </button>
+
+                      <!-- Photo Counter Badge -->
+                      <div class="cmc-photo-counter">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                        <span>{{ currentModalImageIndex + 1 }} / {{ getModalImages(selectedArticleItem).length }} Foto</span>
+                      </div>
+
+                      <!-- Pagination Dots -->
+                      <div class="cmc-slider-dots">
+                        <button 
+                          v-for="(_, dotIdx) in getModalImages(selectedArticleItem)" 
+                          :key="dotIdx"
+                          type="button"
+                          class="cmc-dot-btn"
+                          :class="{ active: currentModalImageIndex === dotIdx }"
+                          @click.stop="setModalImageIndex(dotIdx)"
+                          :aria-label="`Pilih Foto ${dotIdx + 1}`"
+                        ></button>
+                      </div>
+                    </template>
+                  </div>
+
+                  <!-- Mini Thumbnail Preview Strip (jika lebih dari 1 gambar) -->
+                  <div class="cmc-thumb-strip" v-if="getModalImages(selectedArticleItem).length > 1">
+                    <button 
+                      v-for="(tImg, tIdx) in getModalImages(selectedArticleItem)" 
+                      :key="tIdx"
+                      type="button"
+                      class="cmc-thumb-btn"
+                      :class="{ active: currentModalImageIndex === tIdx }"
+                      @click.stop="setModalImageIndex(tIdx)"
+                      :aria-label="`Lihat Foto ${tIdx + 1}`"
+                    >
+                      <img :src="tImg" :alt="`Thumbnail ${tIdx + 1}`" class="cmc-thumb-img" />
+                    </button>
+                  </div>
                 </div>
 
                 <!-- Description Narrative -->
@@ -1045,7 +1174,7 @@ const formatArticleDesc = (desc: string) => {
                 </div>
 
                 <!-- Benefits & Inclusions Section -->
-                <div class="cmc-section" v-if="selectedArticleItem.benefits && selectedArticleItem.benefits.length">
+                <div class="cmc-section" v-if="(selectedArticleItem.benefits && selectedArticleItem.benefits.length) || selectedArticleItem.capacity">
                   <div class="cmc-section-title">
                     <div class="cmc-title-icon bg-amber">
                       <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#D97706" stroke-width="3"><polyline points="20 6 9 17 4 12"></polyline></svg>
@@ -1053,6 +1182,14 @@ const formatArticleDesc = (desc: string) => {
                     <span>Benefit & Fasilitas yang Diperoleh:</span>
                   </div>
                   <div class="cmc-benefits-grid">
+                    <!-- Kapasitas Venue / Peserta -->
+                    <div v-if="selectedArticleItem.capacity" class="cmc-benefit-item is-capacity-item">
+                      <div class="cmc-benefit-bullet">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                      </div>
+                      <span class="cmc-benefit-text font-bold"><strong>{{ selectedArticleItem.capacity.includes('Kapasitas') || selectedArticleItem.capacity.includes('Min.') ? selectedArticleItem.capacity : 'Kapasitas ' + selectedArticleItem.capacity }}</strong></span>
+                    </div>
+
                     <div v-for="(benefit, bIdx) in selectedArticleItem.benefits" :key="bIdx" class="cmc-benefit-item">
                       <div class="cmc-benefit-bullet">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
@@ -1439,34 +1576,218 @@ const formatArticleDesc = (desc: string) => {
   background: #94A3B8;
 }
 
-.cmc-image-card {
+.cmc-media-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
   width: 100%;
-  border-radius: 16px;
-  overflow: hidden;
+}
+
+.cmc-slider-container {
+  position: relative;
+  width: 100%;
+  height: 380px;
   background: #0F172A;
+  border-radius: 18px;
+  overflow: hidden;
   border: 1.5px solid #E2E8F0;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.cmc-image-card.is-edukasi-flyer {
-  background: #24140D;
+@media (max-width: 640px) {
+  .cmc-slider-container {
+    height: 240px;
+    border-radius: 14px;
+  }
+}
+
+.cmc-slider-container.is-edukasi-flyer {
+  height: 480px;
+  background: #18110B;
+}
+
+@media (max-width: 640px) {
+  .cmc-slider-container.is-edukasi-flyer {
+    height: 340px;
+  }
+}
+
+.cmc-slider-track {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.cmc-slide-item {
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0F172A;
 }
 
 .cmc-ticket-image {
   width: 100%;
-  height: auto;
-  max-height: 440px;
+  height: 100%;
   object-fit: cover;
+  object-position: center;
   display: block;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
-.cmc-image-card.is-edukasi-flyer .cmc-ticket-image {
-  max-height: 650px;
+.is-edukasi-flyer .cmc-ticket-image {
   object-fit: contain;
-  margin: 0 auto;
+  background: #18110B;
+}
+
+.cmc-slider-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 10;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.cmc-slider-btn:hover {
+  background: #F29727;
+  border-color: #F29727;
+  color: #FFFFFF;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 6px 18px rgba(242, 151, 39, 0.45);
+}
+
+.cmc-slider-btn:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.cmc-slider-btn.prev {
+  left: 14px;
+}
+
+.cmc-slider-btn.next {
+  right: 14px;
+}
+
+.cmc-photo-counter {
+  position: absolute;
+  top: 14px;
+  left: 14px;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #FFFFFF;
+  font-size: 11.5px;
+  font-weight: 700;
+  padding: 5px 12px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.cmc-slider-dots {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  z-index: 10;
+  background: rgba(15, 23, 42, 0.55);
+  padding: 5px 12px;
+  border-radius: 20px;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.cmc-dot-btn {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.cmc-dot-btn.active {
+  width: 22px;
+  border-radius: 10px;
+  background: #F29727;
+}
+
+.cmc-thumb-strip {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding: 2px 2px 6px 2px;
+  scrollbar-width: thin;
+}
+
+.cmc-thumb-strip::-webkit-scrollbar {
+  height: 4px;
+}
+.cmc-thumb-strip::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 4px;
+}
+
+.cmc-thumb-btn {
+  flex: 0 0 72px;
+  height: 50px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 2px solid #E2E8F0;
+  padding: 0;
+  background: #0F172A;
+  cursor: pointer;
+  opacity: 0.6;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.cmc-thumb-btn:hover {
+  opacity: 0.9;
+  border-color: #CBD5E1;
+}
+
+.cmc-thumb-btn.active {
+  border-color: #F29727;
+  opacity: 1;
+  transform: scale(1.05);
+  box-shadow: 0 3px 10px rgba(242, 151, 39, 0.35);
+}
+
+.cmc-thumb-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .cmc-close-btn {

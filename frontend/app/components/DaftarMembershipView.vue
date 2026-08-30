@@ -244,13 +244,19 @@ const handleReject = () => {
                 </div>
               </td>
               <td>
-                <div style="display: flex; flex-direction: column; gap: 2px;">
-                  <span style="font-weight: 700; font-size: 13px; color: #1F2937;">{{ member.age ? member.age + ' th' : '-' }}</span>
-                  <span v-if="member.ageCategory" class="type-badge" style="font-size: 10px; padding: 2px 7px; background: #FEF3C7; color: #B45309;">{{ member.ageCategory }}</span>
+                <div class="crm-table-cell-age">
+                  <span class="crm-age-val">{{ member.age ? member.age + ' th' : '-' }}</span>
+                  <span 
+                    v-if="member.ageCategory" 
+                    class="crm-age-pill" 
+                    :class="`age-${member.ageCategory.toLowerCase().replace(/[^a-z]/g, '')}`"
+                  >
+                    {{ member.ageCategory }}
+                  </span>
                 </div>
               </td>
               <td>
-                <span class="type-badge" :class="getTypeClass(member.type)">{{ member.type }}</span>
+                <span class="plain-type-text">{{ member.type }}</span>
               </td>
               <td class="text-gray">{{ member.date }}</td>
               <td>
@@ -870,5 +876,61 @@ const handleReject = () => {
   border-radius: 8px;
   text-align: center;
   font-size: 12px;
+}
+
+.plain-type-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* CRM Table Age Pill Badges */
+.crm-table-cell-age {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  align-items: flex-start;
+}
+
+.crm-age-val {
+  font-weight: 800;
+  font-size: 13.5px;
+  color: #1E293B;
+  line-height: 1.2;
+}
+
+.crm-age-pill {
+  display: inline-flex;
+  align-items: center;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 5px;
+  line-height: 1.2;
+}
+
+.crm-age-pill.age-anak,
+.crm-age-pill.age-anakanak {
+  background: #EFF6FF;
+  color: #1D4ED8;
+  border: 1px solid #BFDBFE;
+}
+
+.crm-age-pill.age-remaja {
+  background: #FEF3C7;
+  color: #B45309;
+  border: 1px solid #FDE68A;
+}
+
+.crm-age-pill.age-dewasa {
+  background: #ECFDF5;
+  color: #047857;
+  border: 1px solid #A7F3D0;
+}
+
+.crm-age-pill.age-lansia {
+  background: #F3E8FF;
+  color: #7E22CE;
+  border: 1px solid #E9D5FF;
 }
 </style>

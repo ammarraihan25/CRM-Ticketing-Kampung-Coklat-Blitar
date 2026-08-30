@@ -601,22 +601,23 @@ function resetFilter() {
 
 
               <td>
-                <div style="display: flex; flex-direction: column; gap: 2px;">
-                  <strong style="font-size: 13px; color: #374151;">{{ item.umur ? item.umur + ' th' : '-' }}</strong>
-                  <span v-if="item.kategoriUmur" class="type-badge" style="font-size: 10px; padding: 2px 7px; background: #FEF3C7; color: #B45309;">{{ item.kategoriUmur }}</span>
+                <div class="crm-table-cell-age">
+                  <span class="crm-age-val">{{ item.umur ? item.umur + ' th' : '-' }}</span>
+                  <span 
+                    v-if="item.kategoriUmur" 
+                    class="crm-age-pill" 
+                    :class="`age-${item.kategoriUmur.toLowerCase().replace(/[^a-z]/g, '')}`"
+                  >
+                    {{ item.kategoriUmur }}
+                  </span>
                 </div>
               </td>
 
 
               <td>
-
-                <span
-                  class="type-badge"
-                  :class="getTypeClass(item.tipeKunjungan)"
-                >
+                <span class="plain-type-text">
                   {{ getTypeLabel(item.tipeKunjungan) }}
                 </span>
-
               </td>
 
 
@@ -1124,39 +1125,123 @@ tbody tr:hover {
 
 
 /* =========================================================
-   TYPE BADGE
+   TYPE & AGE BADGES (STANDARDIZED & CLEAN)
 ========================================================= */
+
+.crm-table-cell-age {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  align-items: flex-start;
+}
+
+.crm-age-val {
+  font-weight: 800;
+  font-size: 13.5px;
+  color: #1E293B;
+  line-height: 1.2;
+}
+
+.crm-age-pill {
+  display: inline-flex;
+  align-items: center;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 5px;
+  line-height: 1.2;
+}
+
+.crm-age-pill.age-anak,
+.crm-age-pill.age-anakanak {
+  background: #EFF6FF;
+  color: #1D4ED8;
+  border: 1px solid #BFDBFE;
+}
+
+.crm-age-pill.age-remaja {
+  background: #FEF3C7;
+  color: #B45309;
+  border: 1px solid #FDE68A;
+}
+
+.crm-age-pill.age-dewasa {
+  background: #ECFDF5;
+  color: #047857;
+  border: 1px solid #A7F3D0;
+}
+
+.crm-age-pill.age-lansia {
+  background: #F3E8FF;
+  color: #7E22CE;
+  border: 1px solid #E9D5FF;
+}
+
+.plain-type-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.crm-visit-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  letter-spacing: 0.2px;
+}
+
+.crm-visit-badge.visit-pengajian,
+.crm-visit-badge.visit-pp {
+  background: #EEF2FF;
+  color: #4338CA;
+  border: 1px solid #C7D2FE;
+}
+
+.crm-visit-badge.visit-hall,
+.crm-visit-badge.visit-sewahall {
+  background: #FEF9C3;
+  color: #854D0E;
+  border: 1px solid #FEF08A;
+}
+
+.crm-visit-badge.visit-b2b,
+.crm-visit-badge.visit-pt,
+.crm-visit-badge.visit-travel {
+  background: #E0F2FE;
+  color: #0369A1;
+  border: 1px solid #BAE6FD;
+}
 
 .type-badge {
   display: inline-flex;
-
   align-items: center;
-
-  padding: 6px 10px;
-
-  border-radius: 8px;
-
-  font-size: 12px;
-
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11.5px;
   font-weight: 700;
 }
 
 .type-pengajian {
-  background: #fff0dd;
-
-  color: #bd6a0e;
+  background: #EEF2FF;
+  color: #4338CA;
+  border: 1px solid #C7D2FE;
 }
 
 .type-hall {
-  background: #eee7e2;
-
-  color: #65483a;
+  background: #FEF9C3;
+  color: #854D0E;
+  border: 1px solid #FEF08A;
 }
 
 .type-b2b {
-  background: #fff5d9;
-
-  color: #8a6719;
+  background: #E0F2FE;
+  color: #0369A1;
+  border: 1px solid #BAE6FD;
 }
 
 

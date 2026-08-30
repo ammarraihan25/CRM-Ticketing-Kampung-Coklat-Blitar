@@ -522,20 +522,26 @@ function getVisitTypeLabel(
   type?: string
 ) {
   const labels: Record<string, string> = {
-    PR: 'Pengunjung Reguler',
-    PP: 'Pengunjung Pengajian',
-    PT: 'Pengunjung Tour'
+    PR: 'Reguler',
+    PP: 'Pengajian',
+    PT: 'B2B / Travel',
+    pengajian: 'Pengajian',
+    hall: 'Sewa Hall',
+    b2b: 'B2B / Travel',
+    edukasi: 'Wisata Edukasi',
+    reguler: 'Reguler'
   }
 
-  return labels[type || ''] || type || '-'
+  return labels[type || ''] || (type ? type.charAt(0).toUpperCase() + type.slice(1) : '-')
 }
 
 function getTypeClass(type?: string) {
-  if (type === 'pengajian') return 'type-pr'
-  if (type === 'hall') return 'type-pp'
-  if (type === 'b2b') return 'type-pt'
+  if (type === 'pengajian' || type === 'PP') return 'visit-pengajian'
+  if (type === 'hall') return 'visit-hall'
+  if (type === 'b2b' || type === 'PT') return 'visit-b2b'
+  if (type === 'edukasi') return 'visit-edukasi'
 
-  return ''
+  return 'visit-reguler'
 }
 </script>
 
@@ -654,6 +660,7 @@ function getTypeClass(type?: string) {
                 <th>Nama Acara</th>
                 <th>Nama PIC / Rombongan</th>
                 <th>WhatsApp PIC</th>
+                <th>Domisili PIC</th>
                 <th>Usia PIC & Kategori</th>
                 <th>Tujuan Kunjungan</th>
                 <th>Tanggal Kunjungan</th>
@@ -673,13 +680,22 @@ function getTypeClass(type?: string) {
                 <td class="font-medium">{{ evt.namaAcara }}</td>
                 <td>{{ evt.picNama }}</td>
                 <td class="font-mono text-cocoa font-bold">{{ formatWhatsApp(evt.picWhatsapp) }}</td>
+                <td>{{ evt.picDomisili || '-' }}</td>
                 <td>
-                  <div style="display: flex; flex-direction: column; gap: 3px; align-items: flex-start;">
-                    <span style="font-weight: 700; font-size: 13px; color: #43281C;">{{ evt.members[0]?.umur ? evt.members[0].umur + ' th' : '-' }}</span>
-                    <span v-if="evt.members[0]?.kategoriUmur" class="member-tag" :class="`tag-age-${evt.members[0].kategoriUmur.toLowerCase()}`" style="font-size: 10px; padding: 2px 7px;">{{ evt.members[0].kategoriUmur }}</span>
+                  <div class="crm-table-cell-age">
+                    <span class="crm-age-val">{{ evt.members[0]?.umur ? evt.members[0].umur + ' th' : '-' }}</span>
+                    <span 
+                      v-if="evt.members[0]?.kategoriUmur" 
+                      class="crm-age-pill" 
+                      :class="`age-${evt.members[0].kategoriUmur.toLowerCase().replace(/[^a-z]/g, '')}`"
+                    >
+                      {{ evt.members[0].kategoriUmur }}
+                    </span>
                   </div>
                 </td>
-                <td><span class="member-tag" :class="`tag-${(evt.tipeKunjungan || 'pr').toLowerCase()}`">{{ getVisitTypeLabel(evt.tipeKunjungan) }}</span></td>
+                <td>
+                  <span class="plain-type-text">{{ getVisitTypeLabel(evt.tipeKunjungan) }}</span>
+                </td>
                 <td>{{ evt.tanggalKunjungan || '-' }}</td>
                 <td>
                   <span v-if="evt.status === 'terdaftar'" class="badge-voucher">Voucher Aktif</span>
@@ -1132,20 +1148,115 @@ function getTypeClass(type?: string) {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 6px 12px;
+  padding: 5px 10px;
   border-radius: 6px;
   font-size: 11.5px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
-.tag-pengajian { background-color: #DCE6F5; color: #1A365D; }
-.tag-hall { background-color: #FEF08A; color: #422006; }
-.tag-b2b { background-color: #C4DCFB; color: #1A365D; }
+/* CRM Table Age & Visit Badges (Super Clean & Structured) */
+.crm-table-cell-age {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  align-items: flex-start;
+}
 
-.tag-age-anak-anak { background-color: #E0F2FE; color: #0369A1; border: 1px solid #BAE6FD; }
-.tag-age-remaja { background-color: #FEF3C7; color: #B45309; border: 1px solid #FDE68A; }
-.tag-age-dewasa { background-color: #DCFCE7; color: #15803D; border: 1px solid #BBF7D0; }
-.tag-age-lansia { background-color: #F3E8FF; color: #7E22CE; border: 1px solid #E9D5FF; }
+.crm-age-val {
+  font-weight: 800;
+  font-size: 13.5px;
+  color: #1E293B;
+  line-height: 1.2;
+}
+
+.crm-age-pill {
+  display: inline-flex;
+  align-items: center;
+  font-size: 10.5px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 5px;
+  line-height: 1.2;
+}
+
+.crm-age-pill.age-anak,
+.crm-age-pill.age-anakanak {
+  background: #EFF6FF;
+  color: #1D4ED8;
+  border: 1px solid #BFDBFE;
+}
+
+.crm-age-pill.age-remaja {
+  background: #FEF3C7;
+  color: #B45309;
+  border: 1px solid #FDE68A;
+}
+
+.crm-age-pill.age-dewasa {
+  background: #ECFDF5;
+  color: #047857;
+  border: 1px solid #A7F3D0;
+}
+
+.crm-age-pill.age-lansia {
+  background: #F3E8FF;
+  color: #7E22CE;
+  border: 1px solid #E9D5FF;
+}
+
+.plain-type-text {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* Visit Purpose Badges */
+.crm-visit-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  white-space: nowrap;
+  letter-spacing: 0.2px;
+}
+
+.crm-visit-badge.visit-pengajian,
+.crm-visit-badge.visit-pp {
+  background: #EEF2FF;
+  color: #4338CA;
+  border: 1px solid #C7D2FE;
+}
+
+.crm-visit-badge.visit-hall,
+.crm-visit-badge.visit-sewahall {
+  background: #FEF9C3;
+  color: #854D0E;
+  border: 1px solid #FEF08A;
+}
+
+.crm-visit-badge.visit-b2b,
+.crm-visit-badge.visit-pt,
+.crm-visit-badge.visit-travel {
+  background: #E0F2FE;
+  color: #0369A1;
+  border: 1px solid #BAE6FD;
+}
+
+.crm-visit-badge.visit-edukasi {
+  background: #ECFDF5;
+  color: #065F46;
+  border: 1px solid #A7F3D0;
+}
+
+.crm-visit-badge.visit-pr,
+.crm-visit-badge.visit-reguler {
+  background: #F1F5F9;
+  color: #475569;
+  border: 1px solid #E2E8F0;
+}
 
 .badge-voucher {
   background-color: #ECFDF5;
@@ -1202,8 +1313,11 @@ function getTypeClass(type?: string) {
 
 /* Search Head */
 .search-head {
-  flex-wrap: wrap;
-  gap: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 14px;
+  margin-bottom: 16px;
 }
 
 .search-box {
@@ -1244,11 +1358,15 @@ function getTypeClass(type?: string) {
   box-shadow: 0 0 0 4px rgba(217, 119, 6, 0.1);
 }
 
-
 .member-filter-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  width: 100%;
+}
+
+.member-filter-row .whatsapp-box-btn {
+  margin-left: auto;
 }
 
 .btn-sm {
