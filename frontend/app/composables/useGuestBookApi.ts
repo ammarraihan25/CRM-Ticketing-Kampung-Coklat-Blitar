@@ -8,6 +8,13 @@ export type GuestBookVisitType =
   | 'PR'
   | 'PT'
 
+export interface GuestBookMember {
+  id?: string | number
+  nama: string
+  whatsapp: string
+  domisili: string
+}
+
 export interface GuestBookPayload {
   nama: string
   whatsapp: string
@@ -16,6 +23,9 @@ export interface GuestBookPayload {
   namaAcara: string
   tanggalKunjungan: string
   tanggalLahir?: string
+  jumlahRombongan?: number
+  anggota?: GuestBookMember[]
+  bookingCode?: string
 }
 
 export interface GuestBookRecord extends GuestBookPayload {
@@ -218,6 +228,9 @@ export const useGuestBookApi = () => {
       tanggalLahir: payload.tanggalLahir || '',
       umur: ageInfo.umur,
       kategoriUmur: ageInfo.kategoriUmur,
+      jumlahRombongan: payload.jumlahRombongan || (payload.anggota ? payload.anggota.length : 1),
+      anggota: payload.anggota || [],
+      bookingCode: payload.bookingCode || `KC-GB-${Math.floor(10000 + Math.random() * 90000)}`,
       createdAt: new Date().toISOString()
     }
 

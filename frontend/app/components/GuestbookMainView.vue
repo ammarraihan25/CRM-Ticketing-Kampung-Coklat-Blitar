@@ -39,6 +39,7 @@ type ExtendedGuestBookRecord = GuestBookRecord & {
 
 interface GroupedEvent {
   id: string
+  bookingCode?: string
   namaAcara: string
   tanggalKunjungan: string
   tipeKunjungan: string
@@ -167,6 +168,7 @@ const groupedEvents = computed(() => {
       group.picDomisili = firstRegistrant.domisili || '-'
       group.status = firstRegistrant.status || 'terdaftar'
       group.tipeKunjungan = firstRegistrant.tipeKunjungan || group.tipeKunjungan
+      group.bookingCode = firstRegistrant.bookingCode || (firstRegistrant.id ? `KC-GB-${String(firstRegistrant.id).slice(-5)}` : 'KC-GB-84920')
     }
 
     result.push(group)
@@ -174,6 +176,15 @@ const groupedEvents = computed(() => {
   
   return result
 })
+
+function getEventBookingCode(evt: GroupedEvent | null): string {
+  if (!evt) return '-'
+  if (evt.bookingCode) return evt.bookingCode
+  const first = evt.members?.[0]
+  if (first?.bookingCode) return first.bookingCode
+  if (first?.id) return `KC-GB-${String(first.id).slice(-5)}`
+  return 'KC-GB-84920'
+}
 
 /* =========================================================
    SELECTION
@@ -580,13 +591,27 @@ function getTypeClass(type?: string) {
 
         <Teleport to="body">
       <div v-if="showDetailModal && selectedEvent" class="modal-backdrop" @click.self="closeEventDetail">
-        <div class="modal-card" style="max-width: 700px;">
+        <div class="modal-card" style="max-width: 720px;">
           <div class="modal-header">
             <div class="modal-head-title">
-              <div class="modal-icon-badge" style="background-color: #FFF6E8; border: 1px solid #FDE68A; color: #B45309;">👥</div>
+              <div class="modal-icon-badge" style="background-color: #FFF6E8; border: 1px solid #FDE68A; color: #B45309; width: 44px; height: 44px; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                  <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+              </div>
               <div>
-                <h3>Detail Acara: {{ selectedEvent.namaAcara }}</h3>
-                <p class="modal-sub">{{ selectedEvent.tanggalKunjungan }} | {{ selectedEvent.members.length }} Peserta</p>
+                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                  <h3 style="margin: 0; font-size: 17px; font-weight: 800; color: #1E1B18;">Detail Acara: {{ selectedEvent.namaAcara }}</h3>
+                  <span style="font-size: 11.5px; font-weight: 800; font-family: monospace; background: #FEF3C7; color: #92400E; border: 1px solid #FDE68A; padding: 2px 8px; border-radius: 6px; letter-spacing: 0.5px;">
+                    {{ getEventBookingCode(selectedEvent) }}
+                  </span>
+                </div>
+                <p class="modal-sub" style="margin-top: 4px; font-size: 13px; color: #6B5A52;">
+                  <span style="font-weight: 700; color: #B45309;">ID Acara: {{ getEventBookingCode(selectedEvent) }}</span> &bull; {{ selectedEvent.tanggalKunjungan }} &bull; {{ selectedEvent.members.length }} Peserta
+                </p>
               </div>
             </div>
             <button class="btn-close" @click="closeEventDetail">×</button>
@@ -616,7 +641,10 @@ function getTypeClass(type?: string) {
                     <td style="padding: 10px; border-bottom: 1px solid #eee;">
                       <div style="display: flex; align-items: center; gap: 6px;">
                         <span>{{ member.nama }}</span>
-                        <span v-if="idx === 0" style="font-size: 10.5px; font-weight: 700; background: #FEF3C7; color: #92400E; border: 1px solid #FDE68A; padding: 2px 6px; border-radius: 4px;">👑 PIC Utama</span>
+                        <span v-if="idx === 0" style="display: inline-flex; align-items: center; gap: 4px; font-size: 10.5px; font-weight: 700; background: #FEF3C7; color: #92400E; border: 1px solid #FDE68A; padding: 2px 6px; border-radius: 4px;">
+                          <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                          PIC Utama
+                        </span>
                       </div>
                     </td>
                     <td style="padding: 10px; border-bottom: 1px solid #eee;" class="font-mono text-cocoa font-bold">{{ formatWhatsApp(member.whatsapp) }}</td>
