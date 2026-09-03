@@ -151,7 +151,7 @@ const verifyAndOpenGate = async (rawCode?: string) => {
   // 2. Try Backend API Verification
   let isBackendSuccess = false
   try {
-    const res = await $fetch<{ success: boolean; message?: string; data?: any }>('http://localhost:8000/api/v1/gate/scan', {
+    const res = await $fetch<{ success: boolean; message?: string; data?: any }>('/api/v1/gate/scan', {
       method: 'POST',
       body: { encrypted_payload: code },
       timeout: 2000

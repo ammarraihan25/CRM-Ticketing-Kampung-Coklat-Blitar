@@ -329,13 +329,13 @@ const toggleRideStatus = async (ride: any) => {
   try {
     if (ride.ridePhysicalId) {
       // Mesin fisik sudah ada di DB
-      await $fetch(`http://localhost:3001/api/v1/config/rides/${ride.ridePhysicalId}`, {
+      await $fetch(`/api/v1/config/rides/${ride.ridePhysicalId}`, {
         method: 'PUT',
         body: { status: newStatus }
       })
     } else {
       // Mesin fisik belum terdaftar! Buat baru agar sinkron.
-      await $fetch(`http://localhost:3001/api/v1/config/rides`, {
+      await $fetch(`/api/v1/config/rides`, {
         method: 'POST',
         body: {
           name: ride.name,
@@ -406,7 +406,7 @@ const editRide = (ride: any) => {
   rideForm.isFreeTerusan = ride.isFreeTerusan
   rideForm.status = ride.status
   rideForm.imageMode = 'url'
-  rideForm.imageUrl = ride.imageUrl.startsWith('http') ? ride.imageUrl.replace('http://localhost:3001', '') : ride.imageUrl
+  rideForm.imageUrl = ride.imageUrl || ''
   rideForm.imageFile = null
   showRideModal.value = true
 }
@@ -418,7 +418,7 @@ const saveRide = async () => {
     const formData = new FormData()
     formData.append('file', toRaw(rideForm.imageFile))
     try {
-      const uploadRes = await $fetch<{ url: string }>('http://localhost:3001/api/v1/config/upload', {
+      const uploadRes = await $fetch<{ url: string }>('/api/v1/config/upload', {
         method: 'POST',
         body: formData
       })
@@ -440,12 +440,12 @@ const saveRide = async () => {
   
   try {
     if (isEditingRide.value && rideForm.id) {
-      await $fetch(`http://localhost:3001/api/v1/config/tickets/${rideForm.id}`, {
+      await $fetch(`/api/v1/config/tickets/${rideForm.id}`, {
         method: 'PUT',
         body: ticketPayload
       })
     } else {
-      await $fetch('http://localhost:3001/api/v1/config/tickets', {
+      await $fetch('/api/v1/config/tickets', {
         method: 'POST',
         body: ticketPayload
       })
@@ -464,13 +464,13 @@ const saveRide = async () => {
     }
     
     if (rideForm.ridePhysicalId) {
-       await $fetch(`http://localhost:3001/api/v1/config/rides/${rideForm.ridePhysicalId}`, {
+       await $fetch(`/api/v1/config/rides/${rideForm.ridePhysicalId}`, {
          method: 'PUT',
          body: ridePayload
        })
     } else {
        // Buat baru fisik
-       await $fetch(`http://localhost:3001/api/v1/config/rides`, {
+       await $fetch(`/api/v1/config/rides`, {
          method: 'POST',
          body: ridePayload
        })
@@ -503,7 +503,7 @@ const saveTicketPrice = async () => {
   if (ticketForm.imageMode === 'upload' && ticketForm.imageFile) {
     const formData = new FormData()
     formData.append('file', toRaw(ticketForm.imageFile))
-    const uploadRes = await $fetch<{ url: string }>('http://localhost:3001/api/v1/config/upload', {
+    const uploadRes = await $fetch<{ url: string }>('/api/v1/config/upload', {
       method: 'POST',
       body: formData
     })
@@ -519,9 +519,9 @@ const saveTicketPrice = async () => {
   }
   try {
     if (ticketForm.id) {
-      await $fetch(`http://localhost:3001/api/v1/config/tickets/${ticketForm.id}`, { method: 'PUT', body: payload })
+      await $fetch(`/api/v1/config/tickets/${ticketForm.id}`, { method: 'PUT', body: payload })
     } else {
-      await $fetch('http://localhost:3001/api/v1/config/tickets', { method: 'POST', body: payload })
+      await $fetch('/api/v1/config/tickets', { method: 'POST', body: payload })
     }
     await fetchConfig()
     showTicketModal.value = false

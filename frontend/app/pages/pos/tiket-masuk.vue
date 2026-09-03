@@ -116,7 +116,7 @@ const checkMemberId = async () => {
   }
   
   try {
-    const member: any = await $fetch(`http://localhost:3001/api/v1/members/${bookingData.value.memberId}`)
+    const member: any = await $fetch(`/api/v1/members/${bookingData.value.memberId}`)
     if (member && member.data) {
       memberStatus.value = 'valid'
       bookingData.value.isMember = true
@@ -281,7 +281,7 @@ const processPayment = async () => {
 
     let res: any = null
     try {
-      res = await $fetch('http://localhost:3001/api/v1/pos/checkout', {
+      res = await $fetch('/api/v1/pos/checkout', {
         method: 'POST',
         body: payload
       })

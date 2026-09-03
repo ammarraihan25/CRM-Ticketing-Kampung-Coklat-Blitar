@@ -317,10 +317,10 @@ const ticketRates = ref<TicketRate[]>([])
 
 const fetchTickets = async () => {
   try {
-    const data = await $fetch<TicketRate[]>('http://localhost:3001/api/v1/config/tickets')
+    const data = await $fetch<TicketRate[]>('/api/v1/config/tickets')
     ticketRates.value = data.map(t => ({
       ...t,
-      imageUrl: t.imageUrl.startsWith('http') ? t.imageUrl : `http://localhost:3001${t.imageUrl}`
+      imageUrl: t.imageUrl || ''
     }))
   } catch (error) {
     console.error('Failed to fetch tickets', error)
@@ -388,7 +388,7 @@ const editTicketPrice = (ticket: TicketRate) => {
   ticketForm.description = ticket.description
   ticketForm.isActive = ticket.isActive
   ticketForm.imageMode = 'url'
-  ticketForm.imageUrl = ticket.imageUrl ? ticket.imageUrl.replace('http://localhost:3001', '') : ''
+  ticketForm.imageUrl = ticket.imageUrl || ''
   ticketForm.imageFile = null
   showTicketModal.value = true
 }
@@ -396,7 +396,7 @@ const editTicketPrice = (ticket: TicketRate) => {
 const deleteTicketPrice = async (id: string) => {
   if (!confirm('Apakah Anda yakin ingin menghapus data ini?')) return
   try {
-    await $fetch(`http://localhost:3001/api/v1/config/tickets/${id}`, {
+    await $fetch(`/api/v1/config/tickets/${id}`, {
       method: 'DELETE'
     })
     await fetchTickets()
@@ -415,7 +415,7 @@ const saveTicketPrice = async () => {
     formData.append('file', toRaw(ticketForm.imageFile))
     
     try {
-      const uploadRes = await $fetch<{ url: string }>('http://localhost:3001/api/v1/config/upload', {
+      const uploadRes = await $fetch<{ url: string }>('/api/v1/config/upload', {
         method: 'POST',
         body: formData
       })
@@ -437,12 +437,12 @@ const saveTicketPrice = async () => {
 
   try {
     if (selectedTicket.value) {
-      await $fetch(`http://localhost:3001/api/v1/config/tickets/${selectedTicket.value.id}`, {
+      await $fetch(`/api/v1/config/tickets/${selectedTicket.value.id}`, {
         method: 'PUT',
         body: payload
       })
     } else {
-      await $fetch('http://localhost:3001/api/v1/config/tickets', {
+      await $fetch('/api/v1/config/tickets', {
         method: 'POST',
         body: payload
       })
@@ -475,10 +475,10 @@ const ridesList = ref<RideItem[]>([])
 
 const fetchRides = async () => {
   try {
-    const data = await $fetch<RideItem[]>('http://localhost:3001/api/v1/config/rides')
+    const data = await $fetch<RideItem[]>('/api/v1/config/rides')
     ridesList.value = data.map(r => ({
       ...r,
-      imageUrl: r.imageUrl.startsWith('http') ? r.imageUrl : `http://localhost:3001${r.imageUrl}`
+      imageUrl: r.imageUrl || ''
     }))
   } catch (error) {
     console.error('Failed to fetch rides', error)
@@ -532,7 +532,7 @@ const onRideFileChange = (e: Event) => {
 const toggleRideStatus = async (ride: RideItem) => {
   const newStatus = ride.status === 'MAINTENANCE' ? 'BUKA' : 'MAINTENANCE'
   try {
-    await $fetch(`http://localhost:3001/api/v1/config/rides/${ride.id}`, {
+    await $fetch(`/api/v1/config/rides/${ride.id}`, {
       method: 'PUT',
       body: { status: newStatus }
     })
@@ -567,7 +567,7 @@ const editRide = (ride: RideItem) => {
   rideForm.isFreeTerusan = ride.isFreeTerusan
   rideForm.status = ride.status
   rideForm.imageMode = 'url'
-  rideForm.imageUrl = ride.imageUrl.replace('http://localhost:3001', '')
+  rideForm.imageUrl = ride.imageUrl || ''
   rideForm.imageFile = null
   showRideModal.value = true
 }
@@ -580,7 +580,7 @@ const saveRide = async () => {
     formData.append('file', toRaw(rideForm.imageFile))
     
     try {
-      const uploadRes = await $fetch<{ url: string }>('http://localhost:3001/api/v1/config/upload', {
+      const uploadRes = await $fetch<{ url: string }>('/api/v1/config/upload', {
         method: 'POST',
         body: formData
       })
@@ -604,12 +604,12 @@ const saveRide = async () => {
 
   try {
     if (isEditingRide.value) {
-      await $fetch(`http://localhost:3001/api/v1/config/rides/${rideForm.id}`, {
+      await $fetch(`/api/v1/config/rides/${rideForm.id}`, {
         method: 'PUT',
         body: payload
       })
     } else {
-      await $fetch('http://localhost:3001/api/v1/config/rides', {
+      await $fetch('/api/v1/config/rides', {
         method: 'POST',
         body: payload
       })

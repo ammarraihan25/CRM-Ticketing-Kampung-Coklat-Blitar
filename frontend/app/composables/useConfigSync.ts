@@ -7,10 +7,10 @@ export const useConfigSync = () => {
 
   const fetchTickets = async () => {
     try {
-      const data = await $fetch<any[]>('http://localhost:3001/api/v1/config/tickets')
+      const data = await $fetch<any[]>('/api/v1/config/tickets')
       ticketRates.value = data.map(t => ({
         ...t,
-        imageUrl: t.imageUrl ? (t.imageUrl.startsWith('http') ? t.imageUrl : `http://localhost:3001${t.imageUrl}`) : ''
+        imageUrl: t.imageUrl || ''
       }))
     } catch (err) {
       console.error('Failed to fetch tickets:', err)
@@ -19,10 +19,10 @@ export const useConfigSync = () => {
 
   const fetchRides = async () => {
     try {
-      const data = await $fetch<any[]>('http://localhost:3001/api/v1/config/rides')
+      const data = await $fetch<any[]>('/api/v1/config/rides')
       rides.value = data.map(t => ({
         ...t,
-        imageUrl: t.imageUrl ? (t.imageUrl.startsWith('http') ? t.imageUrl : `http://localhost:3001${t.imageUrl}`) : ''
+        imageUrl: t.imageUrl || ''
       }))
     } catch (err) {
       console.error('Failed to fetch rides:', err)
@@ -30,7 +30,7 @@ export const useConfigSync = () => {
   }
 
   const setupSSE = () => {
-    eventSource = new EventSource('http://localhost:3001/api/v1/config/events')
+    eventSource = new EventSource('/api/v1/config/events')
 
     eventSource.onmessage = (event) => {
       try {
