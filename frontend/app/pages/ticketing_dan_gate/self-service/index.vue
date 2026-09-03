@@ -2215,8 +2215,12 @@ const logout = () => {
 }
 
 .widget-action {
-  margin-top: 16px;
+  margin-top: 18px;
   flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
 }
 
 @media (min-width: 992px) {
@@ -2224,6 +2228,7 @@ const logout = () => {
     margin-top: 0;
     margin-left: 14px;
     padding-right: 4px;
+    width: auto;
   }
 }
 
@@ -2244,6 +2249,7 @@ const logout = () => {
   justify-content: center;
   gap: 10px;
   box-shadow: 0 8px 20px -4px rgba(180, 83, 9, 0.45);
+  margin: 0 auto;
 }
 
 .cta-btn:hover {

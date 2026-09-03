@@ -54,7 +54,7 @@
       <div 
         v-if="isOpen" 
         class="calendar-popover" 
-        :class="popoverPlacement"
+        :class="dynamicPlacement"
         style="position: absolute; top: calc(100% + 6px); z-index: 99999;"
       >
         <!-- Calendar Header -->
@@ -348,11 +348,22 @@ const clearDate = () => {
   isOpen.value = false
 }
 
+const dynamicPlacement = ref(props.popoverPlacement)
+
 const togglePicker = () => {
   if (props.disabled) return
   isOpen.value = !isOpen.value
   if (isOpen.value) {
     syncFromModelValue()
+    if (wrapperRef.value) {
+      const rect = wrapperRef.value.getBoundingClientRect()
+      const spaceRight = window.innerWidth - rect.left
+      if (spaceRight < 330 || props.popoverPlacement === 'bottom-right') {
+        dynamicPlacement.value = 'bottom-right'
+      } else {
+        dynamicPlacement.value = 'bottom-left'
+      }
+    }
   }
 }
 
@@ -522,10 +533,12 @@ onUnmounted(() => {
 
 .calendar-popover.bottom-left {
   left: 0;
+  right: auto;
 }
 
 .calendar-popover.bottom-right {
   right: 0;
+  left: auto;
 }
 
 /* Calendar Header */
@@ -720,6 +733,14 @@ onUnmounted(() => {
   background: #FDE68A;
   border-color: #F59E0B;
   color: #78350F;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .calendar-popover {
+    width: min(300px, 92vw);
+    padding: 12px;
+  }
 }
 
 /* Animation */

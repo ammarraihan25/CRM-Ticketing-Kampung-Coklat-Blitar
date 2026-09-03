@@ -110,6 +110,7 @@ const goBack = () => {
                   <AppDatePicker 
                     v-model="form.birthDate" 
                     placeholder="Pilih Tanggal Lahir"
+                    popover-placement="bottom-right"
                   />
                 </div>
               </div>
@@ -154,29 +155,31 @@ const goBack = () => {
 * { box-sizing: border-box; }
 
 .login-role-page {
-  height: 100vh;
+  min-height: 100vh;
   width: 100%;
   background: #fffaf5;
   color: #321d16;
   font-family: 'Jost', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  overflow: hidden;
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .form-section {
   background: #fffaf5;
   width: 100%;
-  height: 100%;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 32px 16px;
 }
 
 .form-container {
   width: 100%;
-  max-width: 1040px;
-  padding: 0 24px;
+  max-width: 1000px;
+  padding: 0 16px;
   margin: 0 auto;
   display: flex;
   justify-content: center;
@@ -190,49 +193,52 @@ const goBack = () => {
   border: 1px solid rgba(44, 26, 19, 0.08);
   border-radius: 24px;
   padding: 0;
-  box-shadow: 0 24px 48px rgba(44, 26, 19, 0.08), 0 8px 16px rgba(44, 26, 19, 0.04);
+  box-shadow: 0 20px 40px rgba(44, 26, 19, 0.06), 0 4px 12px rgba(44, 26, 19, 0.03);
   display: grid;
-  grid-template-columns: 1fr 1.1fr;
-  overflow: hidden;
-  min-height: 600px;
+  grid-template-columns: 1fr 1.15fr;
+  overflow: visible;
+  min-height: 580px;
 }
 
 .card-left-article {
   background-image: 
-    linear-gradient(145deg, rgba(44, 26, 19, 0.65) 0%, rgba(23, 13, 9, 0.82) 100%),
+    linear-gradient(145deg, rgba(44, 26, 19, 0.7) 0%, rgba(23, 13, 9, 0.88) 100%),
     url('~/assets/assets_POS/kamcok1.jpg');
   background-size: cover;
   background-position: center;
   color: white;
-  padding: 60px 48px;
+  padding: 60px 44px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  border-radius: 24px 0 0 24px;
 }
 
 .article-title {
   font-family: 'Jost', 'Plus Jakarta Sans', sans-serif;
-  font-size: 32px;
+  font-size: 30px;
   font-weight: 800;
   color: #FFFFFF;
-  margin: 0 0 16px 0;
+  margin: 0 0 12px 0;
   line-height: 1.25;
 }
 
 .article-content {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 15px;
+  font-size: 14.5px;
   color: rgba(255, 255, 255, 0.9);
   line-height: 1.6;
   margin: 0;
 }
 
 .card-right-form {
-  padding: 60px 56px;
+  padding: 36px 44px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   background: #FFFFFF;
+  position: relative;
+  border-radius: 0 24px 24px 0;
 }
 
 .relative-form {
@@ -241,22 +247,25 @@ const goBack = () => {
 
 .back-btn-new {
   position: absolute;
-  top: 32px;
-  left: 32px;
+  top: 20px;
+  left: 20px;
   background: #F3F4F6;
-  border: none;
-  color: #6B7280;
+  border: 1px solid #E5E7EB;
+  color: #4B5563;
   cursor: pointer;
-  padding: 10px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 10;
 }
 .back-btn-new:hover {
   background: #E5E7EB;
   color: #111827;
+  transform: scale(1.05);
 }
 
 .form-header-unified {
@@ -264,7 +273,8 @@ const goBack = () => {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
+  padding-top: 6px;
 }
 
 .info-title {
@@ -277,7 +287,7 @@ const goBack = () => {
 
 .info-desc {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 14px;
+  font-size: 13.5px;
   color: #6B7280;
   margin: 0;
 }
@@ -285,7 +295,7 @@ const goBack = () => {
 .clean-auth-form {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
 }
 
 .form-row-2 {
@@ -297,12 +307,12 @@ const goBack = () => {
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
 }
 
 .field-label {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 13.5px;
+  font-size: 12.5px;
   font-weight: 700;
   color: #374151;
 }
@@ -328,16 +338,15 @@ const goBack = () => {
 .field-input {
   font-family: 'Plus Jakarta Sans', sans-serif;
   width: 100%;
-  padding: 12px 14px 12px 42px;
+  padding: 10px 14px 10px 42px;
   background: #FFFFFF;
-  border: 1px solid #D1D5DB;
-  border-radius: 10px;
+  border: 1.5px solid #E5E7EB;
+  border-radius: 12px;
   font-size: 14px;
   color: #111827;
   font-weight: 500;
   outline: none;
   transition: all 0.2s ease;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.01) inset;
   height: 46px;
   box-sizing: border-box;
 }
@@ -348,27 +357,16 @@ const goBack = () => {
   min-height: 80px;
 }
 
-.date-input {
-  padding-right: 12px;
-  color: #374151;
-}
-
-@media (max-width: 640px) {
-  .form-row-2 {
-    grid-template-columns: 1fr;
-  }
-}
-
 .field-input::placeholder { color: #9CA3AF; }
-.field-input:focus { border-color: #F59E0B; box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1); }
+.field-input:focus { border-color: #D97706; box-shadow: 0 0 0 3.5px rgba(217, 119, 6, 0.12); }
 
 .btn-submit-primary {
   font-family: 'Jost', 'Plus Jakarta Sans', sans-serif;
   background: #2C1A13;
   color: white;
   border: none;
-  padding: 14px 20px;
-  border-radius: 10px;
+  padding: 12px 20px;
+  border-radius: 12px;
   font-size: 15px;
   font-weight: 700;
   cursor: pointer;
@@ -377,13 +375,14 @@ const goBack = () => {
   align-items: center;
   justify-content: center;
   margin-top: 8px;
-  box-shadow: 0 2px 4px rgba(44, 26, 19, 0.1);
+  box-shadow: 0 3px 6px rgba(44, 26, 19, 0.12);
   min-height: 48px;
+  width: 100%;
 }
 
 .btn-submit-primary:hover:not(:disabled) {
-  background: #F59E0B;
-  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+  background: #D97706;
+  box-shadow: 0 6px 16px rgba(217, 119, 6, 0.25);
   transform: translateY(-1px);
 }
 .btn-submit-primary:disabled {
@@ -403,8 +402,113 @@ const goBack = () => {
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
 @media (max-width: 860px) {
+  .form-section {
+    padding: 24px 14px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .form-container {
+    max-width: 460px;
+    width: 100%;
+    padding: 0;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .login-card-split {
     grid-template-columns: 1fr;
+    min-height: auto;
+    border-radius: 24px;
+    box-shadow: 0 16px 36px rgba(44, 26, 19, 0.08), 0 4px 12px rgba(44, 26, 19, 0.04);
+    margin: auto;
+    width: 100%;
+  }
+
+  .card-left-article {
+    display: flex !important;
+    height: 190px;
+    min-height: 190px;
+    padding: 28px 22px 20px 22px;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    border-radius: 24px 24px 0 0;
+  }
+
+  .article-title {
+    font-size: 26px;
+    margin-bottom: 6px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+  }
+
+  .article-content {
+    font-size: 13px;
+    line-height: 1.45;
+    max-width: 320px;
+    color: rgba(255, 255, 255, 0.95);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  }
+
+  .card-right-form {
+    padding: 24px 20px 28px 20px;
+    border-radius: 0 0 24px 24px;
+  }
+
+  .back-btn-new {
+    top: 18px;
+    left: 18px;
+    width: 38px;
+    height: 38px;
+  }
+
+  .form-header-unified {
+    margin-bottom: 20px;
+    padding-top: 4px;
+    padding-left: 28px;
+    padding-right: 28px;
+  }
+
+  .info-title {
+    font-size: 22px;
+    font-weight: 800;
+  }
+
+  .info-desc {
+    font-size: 13px;
+    line-height: 1.4;
+  }
+}
+
+@media (max-width: 640px) {
+  .form-row-2 {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .form-section {
+    padding: 12px 10px;
+  }
+
+  .card-right-form {
+    padding: 22px 16px 26px 16px;
+  }
+
+  .field-input {
+    font-size: 14px;
+    height: 46px;
+    border-radius: 12px;
+  }
+
+  .btn-submit-primary {
+    min-height: 48px;
+    font-size: 15px;
+    border-radius: 12px;
   }
 }
 </style>
+

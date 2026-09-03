@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useState } from '#app'
 import AppDatePicker from '~/components/shared/AppDatePicker.vue'
+import logoImg from '~/assets/assets_POS/KAMPUNGCOKLAT.png'
 
 definePageMeta({
   layout: false
@@ -20,6 +21,8 @@ const form = ref({
   password: '',
   passwordConfirm: ''
 })
+
+const todayStr = new Date().toISOString().split('T')[0]
 
 const isLoading = ref(false)
 
@@ -54,13 +57,13 @@ const goBack = () => {
       <div class="form-container">
         <div class="login-card-split">
           
-          <!-- Left Column: Article Panel with Image -->
+          <!-- Left Column: Article Panel with Image (Hidden on Mobile) -->
           <div class="card-left-article">
             <h2 class="article-title">Kampung Coklat</h2>
             <p class="article-content">Bergabunglah bersama kami dan dapatkan berbagai promo menarik setiap harinya.</p>
           </div>
 
-          <!-- Right Column: Form -->
+          <!-- Right Column: Form (Full Width on Mobile) -->
           <div class="card-right-form relative-form">
             
             <!-- Back Button -->
@@ -70,6 +73,7 @@ const goBack = () => {
 
             <!-- Header -->
             <div class="form-header-unified">
+              <img :src="logoImg" alt="Kampung Coklat" class="mobile-brand-logo" />
               <h2 class="info-title">Daftar Akun Baru</h2>
               <p class="info-desc">Lengkapi data diri Anda untuk menikmati layanan kami</p>
             </div>
@@ -134,6 +138,8 @@ const goBack = () => {
                   <AppDatePicker 
                     v-model="form.birthDate" 
                     placeholder="Pilih Tanggal Lahir"
+                    :max="todayStr"
+                    popover-placement="bottom-right"
                   />
                 </div>
               </div>
@@ -206,29 +212,30 @@ const goBack = () => {
 * { box-sizing: border-box; }
 
 .login-role-page {
-  height: 100vh;
+  min-height: 100vh;
   width: 100%;
   background: #fffaf5;
   color: #321d16;
   font-family: 'Jost', 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-  overflow: hidden;
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .form-section {
   background: #fffaf5;
   width: 100%;
-  height: 100%;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 32px 16px;
 }
 
 .form-container {
   width: 100%;
-  max-width: 1040px;
-  padding: 0 24px;
+  max-width: 1000px;
   margin: 0 auto;
   display: flex;
   justify-content: center;
@@ -238,53 +245,58 @@ const goBack = () => {
 
 .login-card-split {
   width: 100%;
-  background: white;
+  background: #FFFFFF;
   border: 1px solid rgba(44, 26, 19, 0.08);
   border-radius: 24px;
-  padding: 0;
-  box-shadow: 0 24px 48px rgba(44, 26, 19, 0.08), 0 8px 16px rgba(44, 26, 19, 0.04);
+  box-shadow: 0 20px 40px rgba(44, 26, 19, 0.06), 0 4px 12px rgba(44, 26, 19, 0.03);
   display: grid;
-  grid-template-columns: 1fr 1.1fr;
-  overflow: hidden;
+  grid-template-columns: 1fr 1.15fr;
+  overflow: visible;
   min-height: 600px;
 }
 
+/* Left Column: Article Panel with Image */
 .card-left-article {
   background-image: 
-    linear-gradient(145deg, rgba(44, 26, 19, 0.65) 0%, rgba(23, 13, 9, 0.82) 100%),
+    linear-gradient(145deg, rgba(44, 26, 19, 0.7) 0%, rgba(23, 13, 9, 0.88) 100%),
     url('~/assets/assets_POS/kamcok1.jpg');
   background-size: cover;
   background-position: center;
   color: white;
-  padding: 60px 48px;
+  padding: 60px 44px;
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  position: relative;
+  border-radius: 24px 0 0 24px;
 }
 
 .article-title {
   font-family: 'Jost', 'Plus Jakarta Sans', sans-serif;
-  font-size: 32px;
+  font-size: 30px;
   font-weight: 800;
   color: #FFFFFF;
-  margin: 0 0 16px 0;
+  margin: 0 0 12px 0;
   line-height: 1.25;
 }
 
 .article-content {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 15px;
+  font-size: 14.5px;
   color: rgba(255, 255, 255, 0.9);
   line-height: 1.6;
   margin: 0;
 }
 
+/* Right Column: Form */
 .card-right-form {
-  padding: 40px 56px;
+  padding: 36px 44px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   background: #FFFFFF;
+  position: relative;
+  border-radius: 0 24px 24px 0;
 }
 
 .relative-form {
@@ -293,22 +305,30 @@ const goBack = () => {
 
 .back-btn-new {
   position: absolute;
-  top: 16px;
-  left: 16px;
+  top: 20px;
+  left: 20px;
   background: #F3F4F6;
-  border: none;
-  color: #6B7280;
+  border: 1px solid #E5E7EB;
+  color: #4B5563;
   cursor: pointer;
-  padding: 10px;
+  width: 36px;
+  height: 36px;
   border-radius: 50%;
-  transition: all 0.2s;
+  transition: all 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 10;
 }
+
 .back-btn-new:hover {
   background: #E5E7EB;
   color: #111827;
+  transform: scale(1.05);
+}
+
+.back-btn-new:active {
+  transform: scale(0.95);
 }
 
 .form-header-unified {
@@ -316,7 +336,8 @@ const goBack = () => {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
+  padding-top: 10px;
 }
 
 .info-title {
@@ -325,13 +346,15 @@ const goBack = () => {
   font-weight: 800;
   color: #2C1A13;
   margin: 0 0 6px 0;
+  letter-spacing: -0.3px;
 }
 
 .info-desc {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 14px;
+  font-size: 13.5px;
   color: #6B7280;
   margin: 0;
+  max-width: 320px;
 }
 
 .clean-auth-form {
@@ -354,7 +377,7 @@ const goBack = () => {
 
 .field-label {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 700;
   color: #374151;
 }
@@ -367,43 +390,36 @@ const goBack = () => {
 
 .input-icon {
   position: absolute;
-  left: 14px;
+  left: 13px;
   color: #9CA3AF;
   display: flex;
   align-items: center;
   pointer-events: none;
+  z-index: 2;
 }
 
 .field-input {
   font-family: 'Plus Jakarta Sans', sans-serif;
   width: 100%;
-  padding: 10px 14px 10px 42px;
+  padding: 10px 14px 10px 40px;
   background: #FFFFFF;
-  border: 1px solid #D1D5DB;
+  border: 1.5px solid #E5E7EB;
   border-radius: 10px;
   font-size: 13.5px;
   color: #111827;
   font-weight: 500;
   outline: none;
   transition: all 0.2s ease;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.01) inset;
   height: 44px;
   box-sizing: border-box;
 }
 
-.date-input {
-  padding-right: 12px;
-  color: #374151;
+.field-input::placeholder { color: #9CA3AF; font-size: 13px; }
+.field-input:focus {
+  border-color: #D97706;
+  background: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(217, 119, 6, 0.12);
 }
-
-@media (max-width: 640px) {
-  .form-row-2 {
-    grid-template-columns: 1fr;
-  }
-}
-
-.field-input::placeholder { color: #9CA3AF; }
-.field-input:focus { border-color: #F59E0B; box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.1); }
 
 .btn-submit-primary {
   font-family: 'Jost', 'Plus Jakarta Sans', sans-serif;
@@ -419,16 +435,22 @@ const goBack = () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 4px;
-  box-shadow: 0 2px 4px rgba(44, 26, 19, 0.1);
-  min-height: 44px;
+  margin-top: 6px;
+  box-shadow: 0 3px 6px rgba(44, 26, 19, 0.12);
+  min-height: 46px;
+  width: 100%;
 }
 
 .btn-submit-primary:hover:not(:disabled) {
-  background: #F59E0B;
-  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+  background: #D97706;
+  box-shadow: 0 6px 16px rgba(217, 119, 6, 0.25);
   transform: translateY(-1px);
 }
+
+.btn-submit-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
 .btn-submit-primary:disabled {
   background: #E5E7EB;
   color: #9CA3AF;
@@ -440,7 +462,7 @@ const goBack = () => {
 .mt-4 { margin-top: 16px; }
 .text-sm { font-size: 13px; }
 .font-bold { font-weight: 700; }
-.text-orange { color: #F59E0B; text-decoration: none; }
+.text-orange { color: #D97706; text-decoration: none; }
 .text-orange:hover { text-decoration: underline; }
 .text-gray { color: #6B7280; }
 
@@ -453,9 +475,122 @@ const goBack = () => {
 .spin-anim { animation: spin 0.8s linear infinite; }
 @keyframes spin { 100% { transform: rotate(360deg); } }
 
+.mobile-brand-logo {
+  display: none;
+}
+
+
+
+/* ========================================================================= */
+/* RESPONSIVE BREAKPOINTS FOR MOBILE & TABLET                                */
+/* ========================================================================= */
 @media (max-width: 860px) {
+  .form-section {
+    padding: 24px 14px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .form-container {
+    max-width: 460px;
+    width: 100%;
+    padding: 0;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
   .login-card-split {
     grid-template-columns: 1fr;
+    min-height: auto;
+    border-radius: 24px;
+    box-shadow: 0 16px 36px rgba(44, 26, 19, 0.08), 0 4px 12px rgba(44, 26, 19, 0.04);
+    margin: auto;
+    width: 100%;
+  }
+
+  .card-left-article {
+    display: flex !important;
+    height: 190px;
+    min-height: 190px;
+    padding: 28px 22px 20px 22px;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+    border-radius: 24px 24px 0 0;
+  }
+
+  .article-title {
+    font-size: 26px;
+    margin-bottom: 6px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+  }
+
+  .article-content {
+    font-size: 13px;
+    line-height: 1.45;
+    max-width: 320px;
+    color: rgba(255, 255, 255, 0.95);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+  }
+
+  .card-right-form {
+    padding: 24px 20px 28px 20px;
+    border-radius: 0 0 24px 24px;
+  }
+
+  .back-btn-new {
+    top: 18px;
+    left: 18px;
+    width: 38px;
+    height: 38px;
+  }
+
+  .form-header-unified {
+    margin-bottom: 20px;
+    padding-top: 4px;
+    padding-left: 28px;
+    padding-right: 28px;
+  }
+
+  .info-title {
+    font-size: 22px;
+    font-weight: 800;
+  }
+
+  .info-desc {
+    font-size: 13px;
+    line-height: 1.4;
+  }
+}
+
+@media (max-width: 640px) {
+  .form-row-2 {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .form-section {
+    padding: 12px 10px;
+  }
+
+  .card-right-form {
+    padding: 22px 16px 26px 16px;
+  }
+
+  .field-input {
+    font-size: 14px;
+    height: 46px;
+    border-radius: 12px;
+  }
+
+  .btn-submit-primary {
+    min-height: 48px;
+    font-size: 15px;
+    border-radius: 12px;
   }
 }
 </style>
