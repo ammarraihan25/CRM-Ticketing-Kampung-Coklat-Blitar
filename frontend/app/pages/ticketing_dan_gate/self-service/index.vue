@@ -539,7 +539,7 @@ const validateVoucher = async () => {
   }
 
   try {
-    const res = await fetch('http://localhost:3001/api/v1/voucher/validate', {
+    const res = await fetch('/api/v1/voucher/validate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ code: voucherCodeInput.value, whatsapp: appliedMember.value?.whatsapp })
@@ -562,7 +562,7 @@ const validateMember = async () => {
   if (!memberWaInput.value) return;
   memberError.value = '';
   try {
-    const res = await fetch(`http://localhost:3001/api/v1/members/${memberWaInput.value}`);
+    const res = await fetch(`/api/v1/members/${memberWaInput.value}`);
     const data = await res.json();
     if (res.ok && data) {
       appliedMember.value = { ...data, whatsapp: memberWaInput.value, isAuto: false };
