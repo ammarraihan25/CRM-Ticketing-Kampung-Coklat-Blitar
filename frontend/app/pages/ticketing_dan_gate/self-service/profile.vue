@@ -34,6 +34,12 @@ const savedUserName = useState('selfServiceUserName', () => userCookie.value || 
 const userName = ref(savedUserName.value)
 const userEmail = ref(`${userName.value.toLowerCase().replace(/\s/g, '')}@gmail.com`)
 const userPhone = ref('+62 812-3456-7890')
+const userBirthDate = ref('12 Januari 1995')
+const userIdNumber = ref('3505123456789001')
+const userAddress = ref('Jl. Coklat Raya No. 42, Blitar')
+const userPassword = ref('••••••••')
+
+const isDataExpanded = ref(false)
 
 const userPhoto = useState<string | null>('selfServiceUserPhoto', () => null)
 const photoInput = ref<HTMLInputElement | null>(null)
@@ -48,7 +54,9 @@ const handlePhotoUpload = (event: Event) => {
   const target = event.target as HTMLInputElement
   if (target.files && target.files.length > 0) {
     const file = target.files[0]
-    userPhoto.value = URL.createObjectURL(file)
+    if (file) {
+      userPhoto.value = URL.createObjectURL(file)
+    }
   }
 }
 
@@ -68,24 +76,47 @@ const isEditing = ref(false)
 const editForm = ref({
   name: '',
   email: '',
-  phone: ''
+  phone: '',
+  birthDate: '',
+  idNumber: '',
+  address: '',
+  password: '',
+  oldPassword: ''
 })
 
 const startEdit = () => {
   editForm.value = {
     name: userName.value,
     email: userEmail.value,
-    phone: userPhone.value
+    phone: userPhone.value,
+    birthDate: userBirthDate.value,
+    idNumber: userIdNumber.value,
+    address: userAddress.value,
+    password: '',
+    oldPassword: ''
   }
   isEditing.value = true
 }
 
 const saveEdit = () => {
+  if (editForm.value.password) {
+    if (!editForm.value.oldPassword) {
+      alert('Mohon masukkan password yang aktif saat ini untuk alasan keamanan sebelum mengganti password baru.')
+      return
+    }
+  }
+
   userName.value = editForm.value.name
   savedUserName.value = editForm.value.name // sync with global state
   userCookie.value = editForm.value.name // sync with cookie
   userEmail.value = editForm.value.email
   userPhone.value = editForm.value.phone
+  userBirthDate.value = editForm.value.birthDate
+  userIdNumber.value = editForm.value.idNumber
+  userAddress.value = editForm.value.address
+  if (editForm.value.password) {
+    userPassword.value = '••••••••'
+  }
   isEditing.value = false
 }
 
@@ -173,6 +204,51 @@ const cancelEdit = () => {
                   <span class="data-value">{{ userPhone }}</span>
                 </div>
               </div>
+              
+              <template v-if="isDataExpanded">
+                <div class="data-item modern-data-item">
+                  <div class="di-icon bg-purple-50 text-purple-600">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                  </div>
+                  <div class="di-content">
+                    <span class="data-label">Tanggal Lahir</span>
+                    <span class="data-value">{{ userBirthDate }}</span>
+                  </div>
+                </div>
+                <div class="data-item modern-data-item">
+                  <div class="di-icon bg-red-50 text-red-600">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="7" y1="15" x2="9" y2="15"></line></svg>
+                  </div>
+                  <div class="di-content">
+                    <span class="data-label">Nomor Identitas (KTP/KIA)</span>
+                    <span class="data-value">{{ userIdNumber }}</span>
+                  </div>
+                </div>
+                <div class="data-item modern-data-item">
+                  <div class="di-icon bg-yellow-50 text-yellow-600">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                  </div>
+                  <div class="di-content">
+                    <span class="data-label">Alamat Lengkap</span>
+                    <span class="data-value">{{ userAddress }}</span>
+                  </div>
+                </div>
+                <div class="data-item modern-data-item">
+                  <div class="di-icon bg-gray-50 text-gray-600">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                  </div>
+                  <div class="di-content">
+                    <span class="data-label">Password</span>
+                    <span class="data-value">{{ userPassword }}</span>
+                  </div>
+                </div>
+              </template>
+
+              <button class="btn-expand-collapse mt-2" @click="isDataExpanded = !isDataExpanded">
+                <svg v-if="!isDataExpanded" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mr-1 inline-block"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="mr-1 inline-block"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                {{ isDataExpanded ? 'Tampilkan Lebih Sedikit' : 'Tampilkan Lebih Banyak' }}
+              </button>
             </div>
 
             <!-- Edit Mode -->
@@ -188,6 +264,26 @@ const cancelEdit = () => {
               <div class="input-group">
                 <label>No. WhatsApp</label>
                 <input type="tel" v-model="editForm.phone" class="modern-input" />
+              </div>
+              <div class="input-group">
+                <label>Tanggal Lahir</label>
+                <input type="text" v-model="editForm.birthDate" class="modern-input" />
+              </div>
+              <div class="input-group">
+                <label>Nomor Identitas (KTP/KIA)</label>
+                <input type="text" v-model="editForm.idNumber" class="modern-input" />
+              </div>
+              <div class="input-group">
+                <label>Alamat Lengkap</label>
+                <textarea v-model="editForm.address" class="modern-input" rows="3" style="resize: vertical;"></textarea>
+              </div>
+              <div class="input-group">
+                <label>Password Saat Ini <span class="text-gray-400 font-normal" v-if="editForm.password">*Wajib diisi jika ganti password</span></label>
+                <input type="password" v-model="editForm.oldPassword" class="modern-input" placeholder="Masukkan password saat ini" />
+              </div>
+              <div class="input-group">
+                <label>Ganti Password Baru <span class="text-gray-400 font-normal">(Opsional)</span></label>
+                <input type="password" v-model="editForm.password" class="modern-input" placeholder="Masukkan password baru" />
               </div>
               <div class="form-actions mt-4">
                 <button class="btn-cancel" @click="cancelEdit">Batal</button>
@@ -680,6 +776,18 @@ const cancelEdit = () => {
 .text-orange-600 { color: #EA580C; }
 .bg-green-50 { background: #F0FDF4; }
 .text-green-600 { color: #16A34A; }
+.bg-purple-50 { background: #FAF5FF; }
+.text-purple-600 { color: #9333EA; }
+.bg-red-50 { background: #FEF2F2; }
+.text-red-600 { color: #DC2626; }
+.bg-yellow-50 { background: #FEFCE8; }
+.text-yellow-600 { color: #CA8A04; }
+.bg-gray-50 { background: #F8FAFC; }
+.text-gray-600 { color: #475569; }
+.text-gray-400 { color: #9CA3AF; }
+.font-normal { font-weight: 400; }
+.mr-1 { margin-right: 4px; }
+.inline-block { display: inline-block; vertical-align: middle; }
 .di-content {
   display: flex;
   flex-direction: column;
@@ -756,6 +864,26 @@ const cancelEdit = () => {
   background: #E2E8F0;
   color: #0F172A;
   border-color: #CBD5E1;
+}
+
+.btn-expand-collapse {
+  background: transparent;
+  border: 1px dashed #CBD5E1;
+  color: #64748B;
+  padding: 12px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.btn-expand-collapse:hover {
+  background: #F8FAFC;
+  color: #0F172A;
+  border-color: #94A3B8;
 }
 
 .stats-grid {

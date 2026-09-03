@@ -21,6 +21,12 @@ const goToProfile = () => {
   router.push('/ticketing_dan_gate/self-service/profile')
 }
 
+const handleLogout = () => {
+  const authCookie = useCookie('selfServiceAuth')
+  authCookie.value = 'false'
+  router.push('/ticketing_dan_gate/self-service/login')
+}
+
 const handleMenuClick = (menu: string) => {
   isMobileMenuOpen.value = false // close menu on click
   
@@ -110,6 +116,10 @@ const toggleMobileMenu = () => {
               <span v-else>{{ userName.charAt(0).toUpperCase() }}</span>
             </div>
             <span class="username-nav">{{ userName }}</span>
+          </button>
+          
+          <button class="logout-nav-btn" @click="handleLogout" title="Keluar Akun">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
           </button>
         </div>
       </div>
@@ -255,6 +265,25 @@ const toggleMobileMenu = () => {
   font-weight: 800;
   color: #0F172A;
   font-size: 15px;
+}
+.logout-nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: #FEF2F2;
+  color: #EF4444;
+  border: 1px solid #FEE2E2;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.logout-nav-btn:hover {
+  background: #FEE2E2;
+  color: #DC2626;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
 }
 
 /* Mobile Responsive */
